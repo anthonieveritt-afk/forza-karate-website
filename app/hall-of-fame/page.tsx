@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { Star } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -58,8 +59,14 @@ export default function HallOfFamePage() {
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-2xl">
             <div className="rounded-2xl bg-white border border-black/8 p-5 text-center">
-              <div className="w-16 h-16 rounded-full bg-[#111111] mx-auto mb-3 flex items-center justify-center">
-                <span className="text-white text-lg font-bold">RD</span>
+              <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3">
+                <Image
+                  src="/hall-of-fame/richard-dahler.webp"
+                  alt="Richard Dahler"
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <p className="text-sm font-semibold text-[#111111]">Richard Dahler</p>
               <p className="text-xs text-[#dc2626] mt-1 font-medium">Honorary Black Belt</p>
