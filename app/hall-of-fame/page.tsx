@@ -72,6 +72,14 @@ export default function HallOfFamePage() {
               <p className="text-xs text-[#dc2626] mt-1 font-medium">Honorary Black Belt</p>
               <p className="text-xs text-gray-400 mt-0.5">5 Jan 2001</p>
             </div>
+            <div className="rounded-2xl bg-white border border-black/8 p-5 text-center">
+              <div className="w-16 h-16 rounded-full bg-[#111111] mx-auto mb-3 flex items-center justify-center">
+                <span className="text-white text-lg font-bold">ME</span>
+              </div>
+              <p className="text-sm font-semibold text-[#111111]">Medhi El-Wahabi</p>
+              <p className="text-xs text-[#dc2626] mt-1 font-medium">Honorary Black Belt</p>
+              <p className="text-xs text-gray-400 mt-0.5">14 Jun 2017</p>
+            </div>
           </div>
         </div>
       </section>
