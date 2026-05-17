@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import Hero from '@/components/sections/Hero'
 import StatsBand from '@/components/sections/StatsBand'
 import ClassCard from '@/components/sections/ClassCard'
@@ -157,6 +158,26 @@ export default function HomePage() {
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
+
+          {/* Safeguarding Code badge */}
+          <div className="mt-10 flex justify-center">
+            <Link
+              href="/safeguarding"
+              className="flex items-center gap-3 px-5 py-3 rounded-2xl border border-black/8 bg-[#fafaf9] hover:border-black/20 transition-colors group"
+            >
+              <Image
+                src="/safeguarding-code-logo.webp"
+                alt="Safeguarding Code in Martial Arts"
+                width={48}
+                height={48}
+                className="w-12 h-12 object-contain"
+              />
+              <div className="text-left">
+                <p className="text-xs font-bold text-[#111111] uppercase tracking-wider">Safeguarding Code</p>
+                <p className="text-xs text-gray-400">in Martial Arts — certified</p>
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
     </>
