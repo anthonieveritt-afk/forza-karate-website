@@ -1,17 +1,47 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight } from 'lucide-react'
 import AnimatedWord from '@/components/ui/AnimatedWord'
 
+const photos = [
+  { src: '/hero.webp', alt: 'Forza Karate Club members' },
+  { src: '/hero2.webp', alt: 'Forza Karate Club competition squad' },
+]
+
 export default function Hero() {
+  const [current, setCurrent] = useState(0)
+  const [fading, setFading] = useState(false)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFading(true)
+      setTimeout(() => {
+        setCurrent((i) => {
+          // pick a random different index
+          const next = (i + 1 + Math.floor(Math.random() * (photos.length - 1))) % photos.length
+          return next
+        })
+        setFading(false)
+      }, 700)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-white">
-      {/* Background photo — left side */}
-      <div className="absolute inset-0">
+      {/* Background photo — crossfades between images */}
+      <div
+        className="absolute inset-0 transition-opacity duration-700"
+        style={{ opacity: fading ? 0 : 1 }}
+      >
         <Image
-          src="/hero.webp"
-          alt="Forza Karate Club members"
+          key={photos[current].src}
+          src={photos[current].src}
+          alt={photos[current].alt}
           fill
           priority
           className="object-cover object-center"
@@ -19,7 +49,7 @@ export default function Hero() {
         />
       </div>
 
-      {/* White fade — covers right half, blends into photo */}
+      {/* White fade — blends right side */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-white" />
 
       {/* Content — sits on the right over the white fade */}
