@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Trophy } from 'lucide-react'
+import TeamBanner from '@/components/sections/TeamBanner'
 
 export const metadata: Metadata = {
   title: 'Team Forza',
@@ -9,6 +10,9 @@ export const metadata: Metadata = {
 export default function TeamPage() {
   return (
     <div className="bg-white">
+      {/* Scrolling photo banner */}
+      <TeamBanner />
+
       {/* Header */}
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
         <div className="max-w-7xl mx-auto">
