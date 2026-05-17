@@ -1,12 +1,19 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
-import { MapPin, ArrowRight } from 'lucide-react'
+import { MapPin, Clock, ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Rayleigh Dojo',
-  description: 'Forza Karate Club Rayleigh dojo — karate classes for all ages at Rayleigh Primary School, Essex.',
+  description: 'Forza Karate Club Rayleigh dojo — karate classes for all ages at Rayleigh Primary School, Love Lane, Essex SS6 7DD.',
 }
+
+const timetable = [
+  { day: 'Tuesday',  time: '6:15 – 7:00pm',  desc: '4 years+ · 10 yrs all grades' },
+  { day: 'Tuesday',  time: '7:00 – 8:00pm',  desc: '11 years+ · all grades' },
+  { day: 'Friday',   time: '3:30 – 4:30pm',  desc: '4 years+ · after school club' },
+  { day: 'Saturday', time: '10:00 – 11:00am', desc: '4 years+ · all grades and ages' },
+]
 
 export default function RayleighPage() {
   return (
@@ -24,56 +31,64 @@ export default function RayleighPage() {
           </div>
           <h1 className="text-5xl font-bold text-[#111111] mb-4">Rayleigh</h1>
           <p className="text-xl text-gray-500 max-w-2xl">
-            Rayleigh Primary School, Rayleigh, Essex. Classes for Ninjas, Juniors, and Senior/Adult students.
+            Rayleigh Primary School, Love Lane, Rayleigh, Essex. SS6 7DD
           </p>
         </div>
       </section>
 
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <div>
-            <h2 className="text-2xl font-bold text-[#111111] mb-4">Location</h2>
-            <p className="text-gray-500 mb-2">Rayleigh Primary School</p>
-            <p className="text-gray-500 mb-8">Rayleigh, Essex</p>
 
-            {/* Map placeholder */}
-            <div className="w-full h-64 rounded-2xl bg-[#fafaf9] border border-black/8 flex items-center justify-center">
-              <div className="text-center text-gray-400">
-                <MapPin className="h-8 w-8 mx-auto mb-2" />
-                <p className="text-sm">Map coming soon</p>
-              </div>
-            </div>
-          </div>
+          {/* Location */}
           <div>
-            <h2 className="text-2xl font-bold text-[#111111] mb-4">Class timetable</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-black/10">
-                    <th className="text-left py-3 pr-6 font-semibold text-[#111111]">Class</th>
-                    <th className="text-left py-3 pr-6 font-semibold text-[#111111]">Day</th>
-                    <th className="text-left py-3 font-semibold text-[#111111]">Time</th>
-                  </tr>
-                </thead>
-                <tbody className="text-gray-500">
-                  <tr className="border-b border-black/5">
-                    <td className="py-3 pr-6">Contact us</td>
-                    <td className="py-3 pr-6">—</td>
-                    <td className="py-3">—</td>
-                  </tr>
-                </tbody>
-              </table>
+            <h2 className="text-2xl font-bold text-[#111111] mb-6">Location</h2>
+            <div className="space-y-1 text-gray-500 text-sm mb-6">
+              <p className="font-semibold text-[#111111]">Rayleigh Primary School</p>
+              <p>Love Lane</p>
+              <p>Rayleigh</p>
+              <p>Essex</p>
+              <p className="font-medium text-[#111111]">SS6 7DD</p>
             </div>
-            <p className="text-xs text-gray-400 mt-3">* Contact us for the current timetable.</p>
+            <a
+              href="https://maps.google.com/?q=Rayleigh+Primary+School,+Love+Lane,+Rayleigh,+Essex+SS6+7DD"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-[#dc2626] hover:underline font-medium"
+            >
+              <MapPin className="h-4 w-4" />
+              Open in Google Maps
+            </a>
 
             <div className="mt-10">
               <Button asChild>
-                <Link href="/trial-class">
+                <Link href="/join">
                   Book Free Trial at Rayleigh
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
+          </div>
+
+          {/* Timetable */}
+          <div>
+            <div className="flex items-center gap-2 mb-6">
+              <Clock className="h-5 w-5 text-[#dc2626]" />
+              <h2 className="text-2xl font-bold text-[#111111]">Class timetable</h2>
+            </div>
+            <div className="space-y-3">
+              {timetable.map((cls, i) => (
+                <div key={i} className="flex items-start gap-4 p-4 rounded-2xl bg-[#fafaf9] border border-black/5">
+                  <div className="w-20 flex-shrink-0">
+                    <span className="text-xs font-bold text-[#dc2626] uppercase tracking-wide">{cls.day}</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-[#111111]">{cls.time}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{cls.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-400 mt-4">Term time only — 40 weeks per year.</p>
           </div>
         </div>
       </section>

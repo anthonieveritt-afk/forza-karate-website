@@ -1,12 +1,19 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
-import { MapPin, ArrowRight } from 'lucide-react'
+import { MapPin, Clock, ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Upminster Dojo',
-  description: 'Forza Karate Club Upminster dojo — karate classes for all ages in Upminster, East London.',
+  description: 'Forza Karate Club Upminster dojo — karate classes for all ages at St Lawrence Church Hall, Corbets Tey Rd, Upminster RM14 2BB.',
 }
+
+const timetable = [
+  { day: 'Wednesday', time: '4:00 – 4:30pm',  desc: 'Beginner infants (4–6 yrs)' },
+  { day: 'Wednesday', time: '4:30 – 5:00pm',  desc: 'Infant all grades (4–6 yrs)' },
+  { day: 'Wednesday', time: '5:00 – 5:45pm',  desc: 'Junior all grades (7–10 yrs)' },
+  { day: 'Wednesday', time: '5:45 – 7:00pm',  desc: 'Senior all grades (11 years+)' },
+]
 
 export default function UpminsterPage() {
   return (
@@ -24,55 +31,63 @@ export default function UpminsterPage() {
           </div>
           <h1 className="text-5xl font-bold text-[#111111] mb-4">Upminster</h1>
           <p className="text-xl text-gray-500 max-w-2xl">
-            Upminster, East London. Classes for Ninjas, Juniors, and Senior/Adult students.
+            Minor Hall, St Lawrence Church Hall, Corbets Tey Rd, Upminster. RM14 2BB
           </p>
         </div>
       </section>
 
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <div>
-            <h2 className="text-2xl font-bold text-[#111111] mb-4">Location</h2>
-            <p className="text-gray-500 mb-8">Upminster, East London</p>
 
-            {/* Map placeholder */}
-            <div className="w-full h-64 rounded-2xl bg-[#fafaf9] border border-black/8 flex items-center justify-center">
-              <div className="text-center text-gray-400">
-                <MapPin className="h-8 w-8 mx-auto mb-2" />
-                <p className="text-sm">Map coming soon</p>
-              </div>
-            </div>
-          </div>
+          {/* Location */}
           <div>
-            <h2 className="text-2xl font-bold text-[#111111] mb-4">Class timetable</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-black/10">
-                    <th className="text-left py-3 pr-6 font-semibold text-[#111111]">Class</th>
-                    <th className="text-left py-3 pr-6 font-semibold text-[#111111]">Day</th>
-                    <th className="text-left py-3 font-semibold text-[#111111]">Time</th>
-                  </tr>
-                </thead>
-                <tbody className="text-gray-500">
-                  <tr className="border-b border-black/5">
-                    <td className="py-3 pr-6">Contact us</td>
-                    <td className="py-3 pr-6">—</td>
-                    <td className="py-3">—</td>
-                  </tr>
-                </tbody>
-              </table>
+            <h2 className="text-2xl font-bold text-[#111111] mb-6">Location</h2>
+            <div className="space-y-1 text-gray-500 text-sm mb-6">
+              <p className="font-semibold text-[#111111]">Minor Hall, St Lawrence Church Hall</p>
+              <p>Corbets Tey Road</p>
+              <p>Upminster</p>
+              <p className="font-medium text-[#111111]">RM14 2BB</p>
             </div>
-            <p className="text-xs text-gray-400 mt-3">* Contact us for the current timetable.</p>
+            <a
+              href="https://maps.google.com/?q=St+Lawrence+Church+Hall,+Corbets+Tey+Rd,+Upminster+RM14+2BB"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-[#dc2626] hover:underline font-medium"
+            >
+              <MapPin className="h-4 w-4" />
+              Open in Google Maps
+            </a>
 
             <div className="mt-10">
               <Button asChild>
-                <Link href="/trial-class">
+                <Link href="/join">
                   Book Free Trial at Upminster
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
+          </div>
+
+          {/* Timetable */}
+          <div>
+            <div className="flex items-center gap-2 mb-6">
+              <Clock className="h-5 w-5 text-[#dc2626]" />
+              <h2 className="text-2xl font-bold text-[#111111]">Class timetable</h2>
+            </div>
+            <div className="space-y-3">
+              {timetable.map((cls, i) => (
+                <div key={i} className="flex items-start gap-4 p-4 rounded-2xl bg-[#fafaf9] border border-black/5">
+                  <div className="w-24 flex-shrink-0">
+                    <span className="text-xs font-bold text-[#dc2626] uppercase tracking-wide">{cls.day}</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-[#111111]">{cls.time}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{cls.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-400 mt-4">Term time only — 40 weeks per year.</p>
           </div>
         </div>
       </section>
