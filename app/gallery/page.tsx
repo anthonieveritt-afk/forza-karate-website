@@ -1,14 +1,36 @@
-import type { Metadata } from 'next'
-import { ImageIcon } from 'lucide-react'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Gallery',
-  description: 'Photos from Forza Karate Club — competitions, dojos, black belt ceremonies, and training.',
-}
+import Image from 'next/image'
+import { useState } from 'react'
+
+const albums = [
+  {
+    category: 'Competition',
+    title: 'BKF 4 Nations 2025',
+    photos: [
+      '/gallery/competitions/bkf-4-nations-2025/file_53.jpg',
+      '/gallery/competitions/bkf-4-nations-2025/file_54.jpg',
+      '/gallery/competitions/bkf-4-nations-2025/file_55.jpg',
+      '/gallery/competitions/bkf-4-nations-2025/file_56.jpg',
+      '/gallery/competitions/bkf-4-nations-2025/file_57.jpg',
+      '/gallery/competitions/bkf-4-nations-2025/file_58.jpg',
+    ],
+  },
+]
+
+// Flatten all photos with their metadata for the grid
+const allPhotos = albums.flatMap((album) =>
+  album.photos.map((src) => ({ src, category: album.category, album: album.title }))
+)
 
 const categories = ['All', 'Competition', 'Dojos', 'Black Belts', 'Training']
 
 export default function GalleryPage() {
+  const [active, setActive] = useState('All')
+  const [lightbox, setLightbox] = useState<string | null>(null)
+
+  const filtered = active === 'All' ? allPhotos : allPhotos.filter((p) => p.category === active)
+
   return (
     <div className="bg-white">
       {/* Header */}
@@ -25,15 +47,16 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Category tabs */}
       <section className="py-8 px-4 sm:px-6 lg:px-8 border-b border-black/5">
         <div className="max-w-7xl mx-auto">
           <div className="flex gap-2 flex-wrap">
             {categories.map((cat) => (
               <button
                 key={cat}
+                onClick={() => setActive(cat)}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                  cat === 'All'
+                  active === cat
                     ? 'bg-[#111111] text-white border-[#111111]'
                     : 'bg-white text-gray-600 border-black/12 hover:border-black/25'
                 }`}
@@ -45,29 +68,77 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      {/* Grid */}
+      {/* Photo grid */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={i}
-                className={`rounded-2xl bg-[#fafaf9] border border-black/5 flex items-center justify-center ${
-                  i === 0 ? 'col-span-2 row-span-2 h-64' : 'h-40'
-                }`}
-              >
-                <div className="text-center text-gray-300">
-                  <ImageIcon className="h-8 w-8 mx-auto mb-1" />
-                  <p className="text-xs">Photo</p>
+          {filtered.length > 0 ? (
+            <>
+              {/* Album label */}
+              {active !== 'All' && (
+                <div className="mb-8">
+                  <p className="text-xs font-medium text-[#dc2626] uppercase tracking-wider mb-1">{active}</p>
+                  <h2 className="text-2xl font-bold text-[#111111]">
+                    {albums.find((a) => a.category === active)?.title}
+                  </h2>
                 </div>
+              )}
+
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {filtered.map((photo, i) => (
+                  <div
+                    key={photo.src}
+                    className={`relative overflow-hidden rounded-2xl cursor-pointer group bg-[#fafaf9] ${
+                      i === 0 ? 'col-span-2 row-span-2' : ''
+                    }`}
+                    style={{ aspectRatio: i === 0 ? '4/3' : '1/1' }}
+                    onClick={() => setLightbox(photo.src)}
+                  >
+                    <Image
+                      src={photo.src}
+                      alt={`${photo.album} — photo ${i + 1}`}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                    <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <p className="text-white text-xs font-medium drop-shadow">{photo.album}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <p className="text-sm text-gray-400 mt-8 text-center">
-            Real photos coming soon. If you have photos from events, contact us to share them.
-          </p>
+            </>
+          ) : (
+            <div className="text-center py-24">
+              <p className="text-gray-400 text-sm">No photos in this category yet.</p>
+            </div>
+          )}
         </div>
       </section>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white text-3xl leading-none hover:text-gray-300"
+            onClick={() => setLightbox(null)}
+          >
+            ×
+          </button>
+          <div className="relative max-w-5xl max-h-[90vh] w-full h-full">
+            <Image
+              src={lightbox}
+              alt="Gallery photo"
+              fill
+              className="object-contain"
+              sizes="100vw"
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
