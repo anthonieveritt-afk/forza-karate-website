@@ -34,20 +34,20 @@ export default function BeltIcon({ color, border, stripe, doubleStripe }: BeltIc
   const bandLeft        = "M165,260 c0,0,95,28,170,32"
   // Right half of band: picks up after the knot
   const bandRight       = "M472,237 c60,-12,120,-30,146,-52"
-  // Left tail: diagonal, stops before reaching the knot
-  const leftTailStripe  = "M186,374 c40,-25,90,-52,140,-82"
-  // Right tail: diagonal, starts outside the knot
-  const rightTailStripe = "M490,272 c50,26,98,50,143,86"
+  // Left tail: centred down the diagonal belt
+  const leftTailStripe  = "M190,382 c40,-25,90,-52,140,-82"
+  // Right tail: mirrored — centred down the diagonal belt
+  const rightTailStripe = "M490,302 c50,26,98,50,143,86"
 
-  // Double stripe offsets
+  // Double stripe offsets (either side of each centreline)
   const bandLeftTop     = "M165,250 c0,0,95,27,170,31"
   const bandLeftBot     = "M165,270 c0,0,95,29,170,33"
   const bandRightTop    = "M472,228 c60,-12,120,-29,146,-51"
   const bandRightBot    = "M472,246 c60,-12,120,-31,146,-53"
-  const leftTop         = "M184,368 c40,-25,90,-52,140,-82"
-  const leftBot         = "M188,380 c40,-25,90,-52,140,-82"
-  const rightTop        = "M490,264 c50,26,98,50,143,86"
-  const rightBot        = "M490,280 c50,26,98,50,143,86"
+  const leftTop         = "M190,374 c40,-25,90,-52,140,-82"
+  const leftBot         = "M190,390 c40,-25,90,-52,140,-82"
+  const rightTop        = "M490,294 c50,26,98,50,143,86"
+  const rightBot        = "M490,310 c50,26,98,50,143,86"
 
   return (
     <svg
