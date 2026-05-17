@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { Shield, Mail, Phone, FileText, Users } from 'lucide-react'
+import Image from 'next/image'
+import { Mail, Phone, FileText, Users } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Safeguarding',
@@ -176,21 +177,22 @@ export default function SafeguardingPage() {
         </div>
       </section>
 
-      {/* Safeguarding Code badge — bottom right */}
+      {/* Safeguarding Code badge — bottom right, safeguarding page only */}
       <div className="fixed bottom-6 right-6 z-50">
         <a
           href="https://www.safeguardingcode.com/course/view.php?id=7"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 bg-white border border-black/10 shadow-lg rounded-full px-4 py-2.5 hover:shadow-xl transition-shadow group"
+          className="block bg-white border border-black/10 shadow-lg rounded-2xl p-3 hover:shadow-xl transition-shadow"
+          title="Safeguarding Code in Martial Arts"
         >
-          <div className="w-7 h-7 rounded-full bg-[#dc2626] flex items-center justify-center flex-shrink-0">
-            <Shield className="h-3.5 w-3.5 text-white" />
-          </div>
-          <div className="leading-tight">
-            <p className="text-[10px] font-bold text-[#111111] uppercase tracking-wider">Safeguarding Code</p>
-            <p className="text-[10px] text-gray-400">Certified Training</p>
-          </div>
+          <Image
+            src="/safeguarding-code-logo.webp"
+            alt="Safeguarding Code in Martial Arts"
+            width={80}
+            height={80}
+            className="w-20 h-20 object-contain"
+          />
         </a>
       </div>
     </div>
