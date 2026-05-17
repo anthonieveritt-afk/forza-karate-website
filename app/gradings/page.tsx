@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
-import { ArrowRight } from 'lucide-react'
-import GradingRegForm from '@/components/forms/GradingRegForm'
+import { ArrowRight, Lock } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Gradings',
@@ -91,18 +90,22 @@ export default function GradingsPage() {
         </div>
       </section>
 
-      {/* Registration form */}
+      {/* Members CTA */}
       <section className="bg-[#fafaf9] py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#111111] mb-4">Register for grading</h2>
-            <p className="text-gray-500">
-              Use this form to register for an upcoming grading. Your instructor will confirm your place.
-            </p>
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#111111] mb-6">
+            <Lock className="h-6 w-6 text-white" />
           </div>
-          <div className="bg-white rounded-2xl border border-black/8 p-8">
-            <GradingRegForm />
-          </div>
+          <h2 className="text-3xl font-bold text-[#111111] mb-4">Register for grading</h2>
+          <p className="text-gray-500 mb-8">
+            Grading registration is available to Forza members. Log in to your members area to register.
+          </p>
+          <Button asChild size="lg">
+            <Link href="/members">
+              Members login
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
         </div>
       </section>
     </div>
