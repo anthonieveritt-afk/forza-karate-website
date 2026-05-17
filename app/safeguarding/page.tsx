@@ -175,6 +175,24 @@ export default function SafeguardingPage() {
 
         </div>
       </section>
+
+      {/* Safeguarding Code badge — bottom right */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <a
+          href="https://www.safeguardingcode.com/course/view.php?id=7"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 bg-white border border-black/10 shadow-lg rounded-full px-4 py-2.5 hover:shadow-xl transition-shadow group"
+        >
+          <div className="w-7 h-7 rounded-full bg-[#dc2626] flex items-center justify-center flex-shrink-0">
+            <Shield className="h-3.5 w-3.5 text-white" />
+          </div>
+          <div className="leading-tight">
+            <p className="text-[10px] font-bold text-[#111111] uppercase tracking-wider">Safeguarding Code</p>
+            <p className="text-[10px] text-gray-400">Certified Training</p>
+          </div>
+        </a>
+      </div>
     </div>
   )
 }
