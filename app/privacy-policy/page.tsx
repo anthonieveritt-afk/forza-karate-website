@@ -68,7 +68,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-xl font-bold text-[#111111] mb-3">5. Data sharing</h2>
               <p className="mb-3">We may share your data with:</p>
               <ul className="list-disc pl-5 space-y-1">
-                <li>FKA (Federation of Karate Associations) for affiliation and competition purposes</li>
+                <li>FKA (Frontier Karate Association) for affiliation and competition purposes</li>
                 <li>Payment processors (GoCardless, Stripe) for billing</li>
                 <li>Service providers who help us operate the club (e.g., database hosting)</li>
               </ul>
