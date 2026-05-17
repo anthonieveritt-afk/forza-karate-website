@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Menu, X, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 const navLinks = [
@@ -13,6 +13,11 @@ const navLinks = [
   { href: '/team', label: 'Team' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/shop', label: 'Shop' },
+]
+
+const membersLinks = [
+  { href: '/members/grading', label: 'Register to Grade' },
+  { href: '/members/syllabus', label: 'Syllabus' },
 ]
 
 export default function Navbar() {
@@ -45,6 +50,24 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            {/* Members dropdown */}
+            <div className="relative group">
+              <button className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-[#111111] transition-colors">
+                Members
+                <ChevronDown className="h-3.5 w-3.5 mt-0.5" />
+              </button>
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-black/8 rounded-xl shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+                {membersLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </nav>
 
           {/* CTA */}
@@ -79,6 +102,19 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <div className="pt-1 border-t border-black/5">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-0 py-2">Members</p>
+              {membersLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block text-sm font-medium text-gray-600 hover:text-[#dc2626] py-1 transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
             <div className="pt-2">
               <Button asChild size="sm" className="w-full">
                 <Link href="/trial-class" onClick={() => setOpen(false)}>
