@@ -6,61 +6,66 @@ interface BeltIconProps {
 }
 
 export default function BeltIcon({ color, border, stripe, doubleStripe }: BeltIconProps) {
-  // Darken the border slightly for knot depth lines
-  const foldOpacity = color === '#ffffff' ? '0.12' : '0.22'
+  const foldOpacity = color === '#ffffff' ? '0.12' : '0.20'
 
   return (
     <svg
-      viewBox="0 0 100 46"
+      viewBox="0 0 80 92"
       xmlns="http://www.w3.org/2000/svg"
       className="w-full h-auto drop-shadow-sm"
       aria-hidden="true"
     >
-      {/* ── Left tail ── */}
-      <rect x="1" y="14" width="36" height="18" rx="3"
+      {/* ── Horizontal wrap (belt around the waist) ── */}
+      <rect x="1" y="3" width="78" height="16" rx="3"
         fill={color} stroke={border} strokeWidth="1.2" />
 
-      {/* ── Right tail ── */}
-      <rect x="63" y="14" width="36" height="18" rx="3"
+      {/* ── Knot (front centre, overlaps the wrap) ── */}
+      <rect x="22" y="10" width="36" height="28" rx="3"
         fill={color} stroke={border} strokeWidth="1.2" />
 
-      {/* ── Knot background (slightly taller than tails) ── */}
-      <rect x="33" y="8" width="34" height="30" rx="3"
-        fill={color} stroke={border} strokeWidth="1.2" />
-
-      {/* ── Knot fold lines (vertical crease marks) ── */}
-      <rect x="44" y="8" width="3" height="30" rx="1"
+      {/* Knot fold lines */}
+      <rect x="33" y="10" width="3" height="28" rx="1"
         fill={border} opacity={foldOpacity} />
-      <rect x="53" y="8" width="3" height="30" rx="1"
+      <rect x="44" y="10" width="3" height="28" rx="1"
         fill={border} opacity={foldOpacity} />
 
-      {/* ── Stripe: single ── */}
+      {/* ── Left tail hanging down ── */}
+      <rect x="26" y="36" width="12" height="52" rx="3"
+        fill={color} stroke={border} strokeWidth="1.2" />
+
+      {/* ── Right tail hanging down ── */}
+      <rect x="42" y="36" width="12" height="52" rx="3"
+        fill={color} stroke={border} strokeWidth="1.2" />
+
+      {/* ── Single stripe ── */}
       {stripe && !doubleStripe && (
         <>
-          {/* Left tail stripe */}
-          <rect x="1" y="20.5" width="36" height="5" rx="0"
-            fill={stripe} opacity="0.92" />
-          {/* Right tail stripe */}
-          <rect x="63" y="20.5" width="36" height="5" rx="0"
-            fill={stripe} opacity="0.92" />
-          {/* Knot stripe */}
-          <rect x="33" y="20.5" width="34" height="5" rx="0"
-            fill={stripe} opacity="0.92" />
+          {/* Wrap */}
+          <rect x="1"  y="9"  width="78" height="4" fill={stripe} opacity="0.92" />
+          {/* Knot */}
+          <rect x="22" y="22" width="36" height="4" fill={stripe} opacity="0.92" />
+          {/* Left tail */}
+          <rect x="26" y="56" width="12" height="4" fill={stripe} opacity="0.92" />
+          {/* Right tail */}
+          <rect x="42" y="56" width="12" height="4" fill={stripe} opacity="0.92" />
         </>
       )}
 
-      {/* ── Stripe: double (two stripe) ── */}
+      {/* ── Double stripe ── */}
       {stripe && doubleStripe && (
         <>
-          {/* Left tail */}
-          <rect x="1" y="16" width="36" height="4" fill={stripe} opacity="0.92" />
-          <rect x="1" y="26" width="36" height="4" fill={stripe} opacity="0.92" />
-          {/* Right tail */}
-          <rect x="63" y="16" width="36" height="4" fill={stripe} opacity="0.92" />
-          <rect x="63" y="26" width="36" height="4" fill={stripe} opacity="0.92" />
+          {/* Wrap */}
+          <rect x="1"  y="7"  width="78" height="3.5" fill={stripe} opacity="0.92" />
+          <rect x="1"  y="13" width="78" height="3.5" fill={stripe} opacity="0.92" />
           {/* Knot */}
-          <rect x="33" y="16" width="34" height="4" fill={stripe} opacity="0.92" />
-          <rect x="33" y="26" width="34" height="4" fill={stripe} opacity="0.92" />
+          <rect x="22" y="18" width="36" height="3.5" fill={stripe} opacity="0.92" />
+          <rect x="22" y="26" width="36" height="3.5" fill={stripe} opacity="0.92" />
+          {/* Left tail */}
+          <rect x="26" y="50" width="12" height="3.5" fill={stripe} opacity="0.92" />
+          <rect x="26" y="60" width="12" height="3.5" fill={stripe} opacity="0.92" />
+          {/* Right tail */}
+          <rect x="42" y="50" width="12" height="3.5" fill={stripe} opacity="0.92" />
+          <rect x="42" y="60" width="12" height="3.5" fill={stripe} opacity="0.92" />
         </>
       )}
     </svg>
