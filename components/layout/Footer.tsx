@@ -81,7 +81,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/8 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-600">
-          <p>© 2026 Forza Karate Club. All rights reserved.</p>
+          <p>© 2012 – 2026 Forza Karate Club. All rights reserved.</p>
           <p>FKA (Frontier Karate Association) Affiliated</p>
         </div>
       </div>
