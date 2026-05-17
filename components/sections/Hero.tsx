@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight } from 'lucide-react'
+import AnimatedWord from '@/components/ui/AnimatedWord'
 
 export default function Hero() {
   return (
@@ -36,7 +37,7 @@ export default function Hero() {
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#111111] leading-[1.05] tracking-tight mb-6">
             This is where<br />
             champions{' '}
-            <span className="text-[#dc2626]">begin.</span>
+            <AnimatedWord />
           </h1>
 
           {/* Subheading */}
