@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, Lock } from 'lucide-react'
 import BeltIcon from '@/components/ui/BeltIcon'
+import GradingCountdown from '@/components/sections/GradingCountdown'
 
 export const metadata: Metadata = {
   title: 'Gradings',
@@ -61,7 +62,8 @@ export default function GradingsPage() {
       {/* Philosophy */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <div>
+          <div className="space-y-8">
+            <div>
             <h2 className="text-2xl font-bold text-[#111111] mb-6">Grading criteria</h2>
             <div className="space-y-6">
               {criteria.map((item, i) => (
@@ -82,6 +84,8 @@ export default function GradingsPage() {
                 are held separately and require FKA approval.
               </p>
             </div>
+            </div>
+            <GradingCountdown />
           </div>
 
           {/* Belt order */}
