@@ -8,8 +8,8 @@ import { ArrowRight } from 'lucide-react'
 import AnimatedWord from '@/components/ui/AnimatedWord'
 
 const photos = [
-  { src: '/hero.webp', alt: 'Forza Karate Club members' },
-  { src: '/hero2.webp', alt: 'Forza Karate Club competition squad' },
+  { src: '/hero.webp',  alt: 'Forza Karate Club members',          position: '50% 25%' },
+  { src: '/hero2.webp', alt: 'Forza Karate Club competition squad', position: '50% 20%' },
 ]
 
 export default function Hero() {
@@ -44,7 +44,8 @@ export default function Hero() {
           alt={photos[current].alt}
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover"
+          style={{ objectPosition: photos[current].position }}
           sizes="100vw"
         />
       </div>
