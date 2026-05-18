@@ -67,7 +67,7 @@ export default function Hero() {
           {/* Heading */}
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#111111] leading-[1.05] tracking-tight mb-6">
             This is where<br />
-            champions{' '}
+            our students{' '}
             <AnimatedWord />
           </h1>
 
