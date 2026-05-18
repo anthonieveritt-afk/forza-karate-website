@@ -12,22 +12,26 @@ function LoginForm() {
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') ?? '/members/grading'
 
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail]           = useState('')
+  const [password, setPassword]     = useState('')
+  const [licence, setLicence]       = useState('')
+  const [error, setError]           = useState('')
+  const [loading, setLoading]       = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const result = await loginMembers(password)
+    const result = await loginMembers({ email, password, licenceNumber: licence })
     if (result.success) {
       router.push(redirect)
     } else {
-      setError(result.error ?? 'Incorrect password.')
+      setError(result.error ?? 'Invalid credentials.')
       setLoading(false)
     }
   }
+
+  const input = 'w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -37,17 +41,37 @@ function LoginForm() {
         </div>
       )}
       <div>
-        <label className="block text-sm font-medium text-[#111111] mb-1.5">
-          Members password
-        </label>
+        <label className="block text-sm font-medium text-[#111111] mb-1.5">Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          autoFocus
+          placeholder="your@email.com"
+          className={input}
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-[#111111] mb-1.5">Password</label>
         <input
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
           required
-          autoFocus
-          placeholder="Enter your password"
-          className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
+          placeholder="Your portal password"
+          className={input}
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-[#111111] mb-1.5">Licence number</label>
+        <input
+          type="text"
+          value={licence}
+          onChange={e => setLicence(e.target.value)}
+          required
+          placeholder="Your FKA licence number"
+          className={input}
         />
       </div>
       <Button type="submit" size="lg" className="w-full" disabled={loading}>
@@ -61,7 +85,6 @@ export default function MembersLoginPage() {
   return (
     <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="flex justify-center mb-8">
           <Image src="/forza-logo.webp" alt="Forza Karate Club" width={140} height={56} className="h-14 w-auto" />
         </div>
@@ -73,7 +96,7 @@ export default function MembersLoginPage() {
             </div>
             <h1 className="text-2xl font-bold text-[#111111]">Members area</h1>
             <p className="text-sm text-gray-500 mt-2">
-              This area is for Forza Karate Club members only.
+              Log in with your Club Honbu email, password and licence number.
             </p>
           </div>
 
@@ -82,7 +105,7 @@ export default function MembersLoginPage() {
           </Suspense>
 
           <p className="text-xs text-gray-400 text-center mt-6">
-            Don't have the password? Ask your instructor at your next class.
+            Don&apos;t have a portal account? Ask your instructor to set one up for you.
           </p>
         </div>
       </div>
