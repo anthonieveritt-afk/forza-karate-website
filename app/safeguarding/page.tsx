@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { Mail, Phone, FileText, Users } from 'lucide-react'
+import { Shield, Mail, Phone, FileText, Users } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Safeguarding',

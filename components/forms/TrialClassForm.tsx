@@ -17,22 +17,23 @@ export default function TrialClassForm() {
     const form = e.currentTarget
     const data = new FormData(form)
 
-    const result = await submitTrialBooking({
-      parentName: data.get('parentName') as string,
-      childName: data.get('childName') as string || undefined,
-      email: data.get('email') as string,
-      phone: data.get('phone') as string,
-      ageGroup: data.get('ageGroup') as string,
-      preferredDojo: data.get('preferredDojo') as string,
-      message: data.get('message') as string || undefined,
-    })
-
-    if (result.success) {
+    try {
+      await submitTrialBooking({
+        firstName: data.get('parentName') as string,
+        lastName: '',
+        email: data.get('email') as string,
+        phone: data.get('phone') as string,
+        dateOfBirth: '',
+        dojo: data.get('preferredDojo') as string,
+        classTime: data.get('ageGroup') as string,
+        parentName: data.get('parentName') as string || undefined,
+        medicalNotes: data.get('message') as string || undefined,
+      })
       setStatus('success')
       form.reset()
-    } else {
+    } catch {
       setStatus('error')
-      setErrorMsg(result.error || 'Something went wrong.')
+      setErrorMsg('Something went wrong.')
     }
   }
 
