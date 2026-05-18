@@ -83,7 +83,7 @@ function LoginForm() {
 
 export default function MembersLoginPage() {
   return (
-    <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
           <Image src="/forza-logo.webp" alt="Forza Karate Club" width={140} height={56} className="h-14 w-auto" />
