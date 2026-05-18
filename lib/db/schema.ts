@@ -66,3 +66,23 @@ export const orders = pgTable('orders', {
   status: varchar('status', { length: 30 }).default('pending'),
   createdAt: timestamp('created_at').defaultNow(),
 })
+
+// Event registrations (Super Champs, Prep Training, Championships, Invitational)
+export const eventRegistrations = pgTable('event_registrations', {
+  id: serial('id').primaryKey(),
+  event: varchar('event', { length: 100 }).notNull(), // super-champs | prep-training | championships | invitational
+  firstName: varchar('first_name', { length: 255 }).notNull(),
+  lastName: varchar('last_name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  phone: varchar('phone', { length: 50 }).notNull(),
+  dateOfBirth: varchar('date_of_birth', { length: 20 }),
+  dojo: varchar('dojo', { length: 50 }),
+  currentBelt: varchar('current_belt', { length: 100 }),
+  ageGroup: varchar('age_group', { length: 50 }),
+  parentName: varchar('parent_name', { length: 255 }),
+  medicalNotes: text('medical_notes'),
+  sessionDate: varchar('session_date', { length: 100 }),
+  paymentStatus: varchar('payment_status', { length: 30 }).default('unpaid'), // unpaid | paid | pending
+  stripeSessionId: varchar('stripe_session_id', { length: 255 }),
+  createdAt: timestamp('created_at').defaultNow(),
+})
