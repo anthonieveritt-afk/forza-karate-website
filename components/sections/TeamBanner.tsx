@@ -13,6 +13,7 @@ const photos = [
   { src: '/team/team-08.jpg', alt: 'Team Forza 8' },
   { src: '/team/team-09.jpg', alt: 'Team Forza 9' },
   { src: '/team/team-10.jpg', alt: 'Team Forza 10' },
+  { src: '/team/team-11.jpg', alt: 'Team Forza 11' },
 ]
 
 export default function TeamBanner() {
