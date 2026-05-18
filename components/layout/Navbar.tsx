@@ -18,6 +18,7 @@ const navLinks = [
 const membersLinks = [
   { href: '/members/grading', label: 'Register to Grade' },
   { href: '/members/syllabus', label: 'Syllabus' },
+  { href: '/members/licence', label: 'Renew your licence' },
 ]
 
 export default function Navbar() {
