@@ -1,5 +1,3 @@
-import Image from 'next/image'
-
 const photos = [
   '/team/team-01.jpg',
   '/team/team-02.jpg',
@@ -13,27 +11,26 @@ const photos = [
   '/team/team-10.jpg',
 ]
 
-// Duplicate for seamless infinite loop
 const track = [...photos, ...photos]
 
 export default function TeamBanner() {
   return (
-    <div className="w-full overflow-hidden bg-[#111111] py-4">
-      <div className="team-scroll-track flex gap-3 w-max">
+    <div style={{ width: '100%', overflow: 'hidden', background: '#111111', padding: '16px 0' }}>
+      <div className="team-scroll-track" style={{ display: 'flex', gap: '12px', width: 'max-content' }}>
         {track.map((src, i) => (
-          <div
+          <img
             key={i}
-            className="relative flex-shrink-0 rounded-xl overflow-hidden"
-            style={{ width: '280px', height: '210px' }}
-          >
-            <Image
-              src={src}
-              alt={`Forza Karate Team photo ${(i % photos.length) + 1}`}
-              fill
-              className="object-cover"
-              sizes="280px"
-            />
-          </div>
+            src={src}
+            alt={`Forza Karate Team ${(i % photos.length) + 1}`}
+            style={{
+              width: '280px',
+              height: '210px',
+              objectFit: 'cover',
+              borderRadius: '12px',
+              flexShrink: 0,
+              display: 'block',
+            }}
+          />
         ))}
       </div>
     </div>
