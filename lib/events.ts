@@ -56,8 +56,8 @@ export const EVENTS: ClubEvent[] = [
   { id: 'kata-may',     title: 'Kata Training (BKF)',                          date: '2026-05-09', time: '3:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: 'All ages' },
   { id: 'wkf-sel',      title: 'WKF Youth Camp & U12 — Training & Selection', date: '2026-05-09', venue: 'Rayleigh, Essex',                                      category: 'Coaching',   eligibility: '11 years & below, 12yr olds welcome' },
   { id: 'jhka-6th',     title: 'JHKA 6th Open Championships',                 date: '2026-05-16', venue: 'Romford',                                               category: 'Competition', eligibility: 'Open to all FKA students incl. beginners' },
-  { id: 'kum-u12-may',  title: 'Kumite Training',                              date: '2026-05-24', time: '11:00am', venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '12 years & below' },
-  { id: 'kum-s-may',    title: 'Kumite Training',                              date: '2026-05-24', time: '1:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '13 years+' },
+  { id: 'kum-u12-may',  title: 'Kumite Training',                              date: '2026-05-17', time: '11:00am', venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '12 years & below' },
+  { id: 'kum-s-may',    title: 'Kumite Training',                              date: '2026-05-17', time: '1:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '13 years+' },
 
   // ── JUNE ──
   { id: 'sc-jun',       title: 'Saturday Super Champs',                        date: '2026-06-06', time: '2:30pm',  venue: 'Chingford',                            category: 'Super Champs' },
