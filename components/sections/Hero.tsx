@@ -11,6 +11,7 @@ const photos = [
   { src: '/hero.webp',  alt: 'Forza Karate Club members',          position: '50% 25%' },
   { src: '/hero2.webp', alt: 'Forza Karate Club competition squad', position: '50% 20%' },
   { src: '/hero3.jpg',  alt: 'Forza Karate Club podium',           position: '50% 25%' },
+  { src: '/hero4.jpg',  alt: 'Forza Karate Club training hall',     position: '50% 35%' },
 ]
 
 export default function Hero() {
