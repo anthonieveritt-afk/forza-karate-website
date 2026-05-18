@@ -17,3 +17,16 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@keyframes team-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.team-scroll-track {
+  animation: team-scroll 40s linear infinite;
+}
+
+.team-scroll-track:hover {
+  animation-play-state: paused;
+}

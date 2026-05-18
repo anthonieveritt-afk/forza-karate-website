@@ -19,17 +19,12 @@ const track = [...photos, ...photos]
 export default function TeamBanner() {
   return (
     <div className="w-full overflow-hidden bg-[#111111] py-4">
-      <div
-        className="flex gap-3 w-max"
-        style={{
-          animation: 'team-scroll 40s linear infinite',
-        }}
-      >
+      <div className="team-scroll-track flex gap-3 w-max">
         {track.map((src, i) => (
           <div
             key={i}
             className="relative flex-shrink-0 rounded-xl overflow-hidden"
-            style={{ width: 280, height: 210 }}
+            style={{ width: '280px', height: '210px' }}
           >
             <Image
               src={src}
@@ -41,15 +36,6 @@ export default function TeamBanner() {
           </div>
         ))}
       </div>
-      <style>{`
-        @keyframes team-scroll {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .team-banner-track { animation: none; }
-        }
-      `}</style>
     </div>
   )
 }
