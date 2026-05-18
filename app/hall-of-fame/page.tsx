@@ -32,7 +32,7 @@ export default function HallOfFamePage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {[...Array(10)].map((_, i) => (
               <div key={i} className="rounded-2xl bg-[#fafaf9] border border-black/5 p-5 text-center">
-                <div className="w-16 h-16 rounded-full bg-gray-200 mx-auto mb-3 flex items-center justify-center">
+                <div className="w-full aspect-[3/4] rounded-2xl bg-gray-100 mb-4 flex items-center justify-center overflow-hidden">
                   <span className="text-gray-400 text-xs">Photo</span>
                 </div>
                 <p className="text-sm font-medium text-[#111111]">Member name</p>
@@ -59,13 +59,13 @@ export default function HallOfFamePage() {
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-2xl">
             <div className="rounded-2xl bg-white border border-black/8 p-5 text-center">
-              <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3">
+              <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden mb-4">
                 <Image
                   src="/hall-of-fame/richard-dahler.webp"
                   alt="Richard Dahler"
-                  width={64}
-                  height={64}
-                  className="w-full h-full object-cover"
+                  width={300}
+                  height={400}
+                  className="w-full h-full object-cover object-top"
                 />
               </div>
               <p className="text-sm font-semibold text-[#111111]">Richard Dahler</p>
@@ -73,12 +73,12 @@ export default function HallOfFamePage() {
               <p className="text-xs text-gray-400 mt-0.5">5 Jan 2001</p>
             </div>
             <div className="rounded-2xl bg-white border border-black/8 p-5 text-center">
-              <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3">
+              <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden mb-4">
                 <Image
                   src="/hall-of-fame/medhi-el-wahabi.webp"
                   alt="Medhi El-Wahabi"
-                  width={64}
-                  height={64}
+                  width={300}
+                  height={400}
                   className="w-full h-full object-cover object-top"
                 />
               </div>

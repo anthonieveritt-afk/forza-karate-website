@@ -63,9 +63,9 @@ export default function InstructorsPage() {
             {instructors.map((instructor, i) => (
               <div key={i} className="rounded-2xl border border-black/8 overflow-hidden">
                 {/* Photo placeholder */}
-                <div className="w-full h-48 bg-[#fafaf9] flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-3xl font-bold text-gray-400">
+                <div className="w-full aspect-[4/3] bg-[#fafaf9] flex items-center justify-center">
+                  <div className="w-24 h-32 rounded-2xl bg-gray-200 flex items-center justify-center">
+                    <span className="text-4xl font-bold text-gray-400">
                       {instructor.name.charAt(0)}
                     </span>
                   </div>

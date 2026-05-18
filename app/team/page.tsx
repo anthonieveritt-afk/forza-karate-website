@@ -37,7 +37,7 @@ export default function TeamPage() {
               <div className="mt-8 grid grid-cols-3 gap-4">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="rounded-2xl bg-[#fafaf9] border border-black/5 p-4 text-center">
-                    <div className="w-14 h-14 rounded-full bg-gray-200 mx-auto mb-3 flex items-center justify-center">
+                    <div className="w-full aspect-[3/4] rounded-2xl bg-gray-100 mb-3 flex items-center justify-center">
                       <span className="text-gray-400 text-xs">Photo</span>
                     </div>
                     <p className="text-xs font-medium text-[#111111]">Team member</p>
@@ -65,7 +65,7 @@ export default function TeamPage() {
               <div className="mt-8 grid grid-cols-3 gap-4">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="rounded-2xl bg-[#fafaf9] border border-black/5 p-4 text-center">
-                    <div className="w-14 h-14 rounded-full bg-gray-200 mx-auto mb-3 flex items-center justify-center">
+                    <div className="w-full aspect-[3/4] rounded-2xl bg-gray-100 mb-3 flex items-center justify-center">
                       <span className="text-gray-400 text-xs">Photo</span>
                     </div>
                     <p className="text-xs font-medium text-[#111111]">Team member</p>
