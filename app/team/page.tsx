@@ -13,20 +13,7 @@ export default function TeamPage() {
       {/* Scrolling photo banner */}
       <TeamBanner />
 
-      {/* Header */}
-      <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-0.5 bg-[#dc2626]" />
-            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Competition</span>
-          </div>
-          <h1 className="text-5xl font-bold text-[#111111] mb-4">Team Forza</h1>
-          <p className="text-xl text-gray-500 max-w-2xl">
-            Our competitive squad represents Forza Karate Club at regional and national level in both
-            kata and kumite disciplines.
-          </p>
-        </div>
-      </section>
+
 
       {/* Kata Team */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
