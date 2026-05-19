@@ -142,28 +142,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Team photo */}
-      <section className="bg-white py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-0.5 bg-[#dc2626]" />
-            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Team Forza</span>
-          </div>
-          <Link href="/team">
-            <div className="rounded-2xl overflow-hidden border border-black/8 hover:border-black/20 transition-colors">
-              <Image
-                src="/team-photo.jpg"
-                alt="Team Forza — Forza Karate Club"
-                width={1400}
-                height={800}
-                className="w-full object-cover"
-                priority
-              />
-            </div>
-          </Link>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section className="bg-white py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center">
