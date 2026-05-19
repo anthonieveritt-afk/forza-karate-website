@@ -1,0 +1,2593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Forza Karate Club — Syllabus 2026</title>
+<style>
+  /* === BASE === */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, Arial, sans-serif; background: #fff; color: #111; }
+  
+  /* === PAGE === */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 15mm;
+    margin: 0 auto 10px;
+    background: #fff;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* === PRINT === */
+  @media print {
+    body { margin: 0; }
+    .page { margin: 0; box-shadow: none; page-break-after: always; }
+    .no-print { display: none; }
+    input, textarea, [contenteditable] { 
+      border: none !important; 
+      border-bottom: 1px solid #999 !important;
+      background: transparent !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .belt-strip, .grade-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  @page { size: A4; margin: 0; }
+
+  /* === TYPOGRAPHY === */
+  h1 { font-size: 36pt; font-weight: 900; letter-spacing: -1px; }
+  h2 { font-size: 18pt; font-weight: 700; }
+  h3 { font-size: 12pt; font-weight: 700; margin-bottom: 6px; color: #dc2626; text-transform: uppercase; letter-spacing: 0.5px; }
+  h4 { font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; color: #555; }
+  p { font-size: 10pt; line-height: 1.6; }
+
+  /* === COVER === */
+  .cover { display: flex; flex-direction: column; justify-content: space-between; }
+  .cover-top { border-top: 6px solid #dc2626; padding-top: 20px; }
+  .cover-club { font-size: 11pt; font-weight: 700; color: #dc2626; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; }
+  .cover-title { font-size: 60pt; font-weight: 900; line-height: 1; margin-bottom: 8px; }
+  .cover-subtitle { font-size: 16pt; color: #555; font-weight: 400; margin-bottom: 4px; }
+  .cover-range { font-size: 13pt; color: #888; }
+  .cover-bottom { border-bottom: 6px solid #dc2626; padding-bottom: 20px; text-align: right; }
+  .cover-edition { font-size: 12pt; font-weight: 700; color: #dc2626; letter-spacing: 2px; }
+  .cover-mid { flex: 1; display: flex; align-items: center; }
+  .cover-belt-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+  /* === INSIDE COVER === */
+  .inside-cover { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+
+  /* === CONTENTS === */
+  .contents-list { margin-top: 16px; }
+  .contents-item { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; border-bottom: 1px dotted #ddd; font-size: 10pt; }
+  .contents-item:last-child { border-bottom: none; }
+  .contents-num { color: #dc2626; font-weight: 700; min-width: 24px; }
+
+  /* === INTRO === */
+  .intro-quote { background: #fafafa; border-left: 4px solid #dc2626; padding: 12px 16px; margin: 16px 0; font-size: 10pt; font-style: italic; line-height: 1.6; }
+  .intro-body { font-size: 10pt; line-height: 1.8; margin-bottom: 10px; }
+  .intro-sig { margin-top: 20px; font-size: 10pt; }
+
+  /* === GRADE PAGE === */
+  .grade-header { padding: 10px 0; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; }
+  .grade-kyu { font-size: 10pt; font-weight: 700; color: #dc2626; text-transform: uppercase; letter-spacing: 1px; }
+  .grade-name { font-size: 22pt; font-weight: 900; line-height: 1; }
+  .belt-strip { height: 18px; border-radius: 4px; margin-bottom: 12px; position: relative; overflow: hidden; }
+  .belt-stripe { position: absolute; top: 0; bottom: 0; right: 20px; width: 8px; }
+  .belt-stripe-2 { position: absolute; top: 0; bottom: 0; right: 32px; width: 8px; }
+
+  .grade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+  .grade-full { margin-bottom: 10px; }
+  .section-box { border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px; }
+  .section-box h4 { border-bottom: 2px solid #dc2626; padding-bottom: 4px; margin-bottom: 8px; }
+  .section-box h4[contenteditable] { cursor: text; border-radius: 3px; transition: background 0.15s; }
+  .section-box h4[contenteditable]:hover { background: #fff3f3; }
+  .section-box h4[contenteditable]:focus { outline: none; background: #fff3f3; box-shadow: 0 0 0 2px #dc262640; border-radius: 3px; }
+  @media print { .section-box h4[contenteditable] { background: transparent !important; box-shadow: none !important; } }
+
+  /* === EDITABLE LINES === */
+  .edit-line { 
+    display: block; 
+    width: 100%; 
+    border: none; 
+    border-bottom: 1px solid #d1d5db; 
+    padding: 3px 4px; 
+    font-family: inherit; 
+    font-size: 9.5pt; 
+    background: transparent; 
+    margin-bottom: 2px;
+    outline: none;
+  }
+  .edit-line:focus { border-bottom-color: #dc2626; background: #fff9f9; }
+
+  /* === REFERENCE PAGES === */
+  .ref-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 9.5pt; }
+  .ref-table th { background: #dc2626; color: #fff; padding: 6px 10px; text-align: left; font-size: 9pt; }
+  .ref-table td { padding: 5px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+  .ref-table tr:nth-child(even) td { background: #fafafa; }
+
+  /* === NOTES PAGE === */
+  .note-line { border-bottom: 1px solid #d1d5db; height: 28px; margin-bottom: 2px; }
+
+  /* === PAGE HEADER BAND === */
+  .page-band { background: #dc2626; color: #fff; padding: 5px 15mm; margin: -15mm -15mm 12mm; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; }
+
+  /* === BELT SVG === */
+  .belt-svg-wrap { flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- NO PRINT INSTRUCTIONS -->
+<div class="no-print" style="background:#111;color:#fff;padding:12px 20px;text-align:center;font-size:13px;font-family:system-ui">
+  <strong>Forza Karate Club — Syllabus Template 2026</strong> &nbsp;|&nbsp; 
+  Click any field to edit &nbsp;|&nbsp; 
+  <strong>Chrome → File → Print → Save as PDF</strong> to export &nbsp;|&nbsp;
+  Set paper size to A4, margins to None
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 1: COVER -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page cover">
+  <div class="cover-top">
+    <div class="cover-club">Forza Karate Club</div>
+    <div class="cover-title">Syllabus</div>
+    <div class="cover-subtitle">Beginner to 3rd Dan</div>
+    <div class="cover-range">18th Kyu — 3rd Dan Black Belt</div>
+  </div>
+  <div class="cover-mid">
+    <div class="cover-belt-row">
+      <!-- mini belt strips -->
+      <div style="height:14px;width:36px;border-radius:3px;background:#fff;border:2px solid #d1d5db"></div>
+      <div style="height:14px;width:36px;border-radius:3px;background:#ef4444"></div>
+      <div style="height:14px;width:36px;border-radius:3px;background:#facc15"></div>
+      <div style="height:14px;width:36px;border-radius:3px;background:#f97316"></div>
+      <div style="height:14px;width:36px;border-radius:3px;background:#22c55e"></div>
+      <div style="height:14px;width:36px;border-radius:3px;background:#3b82f6"></div>
+      <div style="height:14px;width:36px;border-radius:3px;background:#9333ea"></div>
+      <div style="height:14px;width:36px;border-radius:3px;background:#92400e"></div>
+      <div style="height:14px;width:36px;border-radius:3px;background:#111"></div>
+    </div>
+  </div>
+  <div class="cover-bottom">
+    <div class="cover-edition">2026 Edition</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 2: INSIDE COVER -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page inside-cover">
+  <div style="border-top:4px solid #dc2626;width:80px;margin:0 auto 24px"></div>
+  <h2 style="font-size:24pt;font-weight:900;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Wado Ryu Karate Do</h2>
+  <p style="font-size:12pt;color:#555;margin-bottom:32px">和道流空手道</p>
+  <p style="font-size:11pt;font-weight:700;margin-bottom:4px">Forza Karate Club</p>
+  <p style="font-size:10pt;color:#555;margin-bottom:4px">Member of the Frontier Karate Association (FKA)</p>
+  <p style="font-size:10pt;color:#888;margin-top:8px">frontierkarateassociation.co.uk</p>
+  <div style="border-bottom:4px solid #dc2626;width:80px;margin:32px auto 0"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 3: CONTENTS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>Syllabus 2026</span></div>
+  <h2 style="margin-bottom:4px">Contents</h2>
+  <div class="contents-list">
+    <div class="contents-item"><span><span class="contents-num">1</span> Introduction</span><span>4</span></div>
+    <div class="contents-item"><span><span class="contents-num">2</span> 18th Kyu — White Belt</span><span>5</span></div>
+    <div class="contents-item"><span><span class="contents-num">3</span> 17th Kyu — White Belt / Red Stripe</span><span>6</span></div>
+    <div class="contents-item"><span><span class="contents-num">4</span> 16th Kyu — White Belt / Yellow Stripe</span><span>7</span></div>
+    <div class="contents-item"><span><span class="contents-num">5</span> 15th Kyu — Red Belt</span><span>8</span></div>
+    <div class="contents-item"><span><span class="contents-num">6</span> 14th Kyu — Red Belt / White Stripe</span><span>9</span></div>
+    <div class="contents-item"><span><span class="contents-num">7</span> 13th Kyu — Yellow Belt</span><span>10</span></div>
+    <div class="contents-item"><span><span class="contents-num">8</span> 12th Kyu — Yellow Belt / White Stripe</span><span>11</span></div>
+    <div class="contents-item"><span><span class="contents-num">9</span> 11th Kyu — Orange Belt</span><span>12</span></div>
+    <div class="contents-item"><span><span class="contents-num">10</span> 10th Kyu — Orange Belt / White Stripe</span><span>13</span></div>
+    <div class="contents-item"><span><span class="contents-num">11</span> 9th Kyu — Green Belt</span><span>14</span></div>
+    <div class="contents-item"><span><span class="contents-num">12</span> 8th Kyu — Green Belt / White Stripe</span><span>15</span></div>
+    <div class="contents-item"><span><span class="contents-num">13</span> 7th Kyu — Blue Belt</span><span>16</span></div>
+    <div class="contents-item"><span><span class="contents-num">14</span> 6th Kyu — Blue Belt / White Stripe</span><span>17</span></div>
+    <div class="contents-item"><span><span class="contents-num">15</span> 5th Kyu — Purple Belt</span><span>18</span></div>
+    <div class="contents-item"><span><span class="contents-num">16</span> 4th Kyu — Purple Belt / White Stripe</span><span>19</span></div>
+    <div class="contents-item"><span><span class="contents-num">17</span> 3rd Kyu — Brown Belt</span><span>20</span></div>
+    <div class="contents-item"><span><span class="contents-num">18</span> 2nd Kyu — Brown Belt / White Stripe</span><span>21</span></div>
+    <div class="contents-item"><span><span class="contents-num">19</span> 1st Kyu — Brown Belt / Two White Stripes</span><span>22</span></div>
+    <div class="contents-item"><span><span class="contents-num">20</span> Brown Belt / Black Stripe</span><span>23</span></div>
+    <div class="contents-item"><span><span class="contents-num">21</span> Black Belt / White Stripe</span><span>24</span></div>
+    <div class="contents-item"><span><span class="contents-num">22</span> 1st Dan — Black Belt</span><span>25</span></div>
+    <div class="contents-item"><span><span class="contents-num">23</span> 2nd Dan — Black Belt</span><span>26</span></div>
+    <div class="contents-item"><span><span class="contents-num">24</span> 3rd Dan — Black Belt</span><span>27</span></div>
+    <div class="contents-item"><span><span class="contents-num">25</span> Translations</span><span>28</span></div>
+    <div class="contents-item"><span><span class="contents-num">26</span> Stances</span><span>29</span></div>
+    <div class="contents-item"><span><span class="contents-num">27</span> Terminology</span><span>30</span></div>
+    <div class="contents-item"><span><span class="contents-num">28</span> Competition Terminology</span><span>31</span></div>
+    <div class="contents-item"><span><span class="contents-num">29</span> Notes</span><span>32</span></div>
+    <div class="contents-item"><span><span class="contents-num">30</span> Association</span><span>34</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 4: INTRODUCTION -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>Introduction</span></div>
+  <h2 style="margin-bottom:4px">Introduction</h2>
+  <p style="font-size:10pt;color:#dc2626;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Welcome Karateka</p>
+  <div class="intro-quote">
+    "THE ULTIMATE AIM OF THE ART OF KARATE LIES NOT IN VICTORY OR DEFEAT, BUT IN THE PERFECTION OF THE CHARACTER OF ITS PARTICIPANTS." — MASTER GICHIN FUNAKOSHI
+  </div>
+  <p class="intro-body">Welcome to Forza Karate Club. By joining us, you have taken the first step on one of the most rewarding journeys of your life — the path from white belt to black belt and beyond.</p>
+  <p class="intro-body">This syllabus has been carefully designed to guide you through every stage of your training with Forza. Each grade represents a milestone — a recognition of your hard work, dedication, and growth, both on and off the mat.</p>
+  <p class="intro-body">Do not rush your journey. Every champion you see on the competition floor, every black belt you admire — they all started exactly where you are now. The belt is earned, never given. Train consistently, listen to your Sensei and Sempai, and above all, enjoy the process.</p>
+  <p class="intro-body">When training feels hard, remember — that is exactly when the real development happens. Karate will teach you discipline, focus, resilience, and confidence. These are not just skills for the dojo; they are skills for life.</p>
+  <p class="intro-body">I look forward to seeing each and every one of you progress through this syllabus and one day stand before us as a Forza black belt. That day will come — stay the course.</p>
+  <p class="intro-body">Train hard. Respect others. Never give up.</p>
+  <div class="intro-sig">
+    <p style="font-weight:700">Sensei Anthoni Everitt</p>
+    <p style="color:#dc2626;font-size:9pt">6th Dan — Chief Instructor, Forza Karate Club</p>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>18th Kyu — White Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#d1d5db" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">18th Kyu</div>
+      <div class="grade-name">White Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#ffffff;border:2px solid #d1d5db;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>17th Kyu — White Belt / Red Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#d1d5db" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">17th Kyu</div>
+      <div class="grade-name">White Belt / Red Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#ffffff;border:2px solid #d1d5db;"><div class="belt-stripe" style="background:#ef4444"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>16th Kyu — White Belt / Yellow Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#d1d5db" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#facc15" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">16th Kyu</div>
+      <div class="grade-name">White Belt / Yellow Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#ffffff;border:2px solid #d1d5db;"><div class="belt-stripe" style="background:#facc15"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>15th Kyu — Red Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#ef4444" stroke="#dc2626" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#ef4444" stroke="#dc2626" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#dc2626" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">15th Kyu</div>
+      <div class="grade-name">Red Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#ef4444;border:2px solid #dc2626;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>14th Kyu — Red Belt / White Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#ef4444" stroke="#dc2626" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#ef4444" stroke="#dc2626" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#dc2626" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">14th Kyu</div>
+      <div class="grade-name">Red Belt / White Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#ef4444;border:2px solid #dc2626;"><div class="belt-stripe" style="background:#ffffff"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>13th Kyu — Yellow Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#facc15" stroke="#eab308" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#facc15" stroke="#eab308" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#eab308" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">13th Kyu</div>
+      <div class="grade-name">Yellow Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#facc15;border:2px solid #eab308;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>12th Kyu — Yellow Belt / White Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#facc15" stroke="#eab308" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#facc15" stroke="#eab308" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#eab308" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">12th Kyu</div>
+      <div class="grade-name">Yellow Belt / White Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#facc15;border:2px solid #eab308;"><div class="belt-stripe" style="background:#ffffff"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>11th Kyu — Orange Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#f97316" stroke="#ea580c" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#f97316" stroke="#ea580c" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#ea580c" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">11th Kyu</div>
+      <div class="grade-name">Orange Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#f97316;border:2px solid #ea580c;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>10th Kyu — Orange Belt / White Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#f97316" stroke="#ea580c" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#f97316" stroke="#ea580c" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#ea580c" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">10th Kyu</div>
+      <div class="grade-name">Orange Belt / White Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#f97316;border:2px solid #ea580c;"><div class="belt-stripe" style="background:#ffffff"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>9th Kyu — Green Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#22c55e" stroke="#16a34a" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#22c55e" stroke="#16a34a" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#16a34a" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">9th Kyu</div>
+      <div class="grade-name">Green Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#22c55e;border:2px solid #16a34a;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>8th Kyu — Green Belt / White Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#22c55e" stroke="#16a34a" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#22c55e" stroke="#16a34a" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#16a34a" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">8th Kyu</div>
+      <div class="grade-name">Green Belt / White Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#22c55e;border:2px solid #16a34a;"><div class="belt-stripe" style="background:#ffffff"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>7th Kyu — Blue Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#2563eb" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">7th Kyu</div>
+      <div class="grade-name">Blue Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#3b82f6;border:2px solid #2563eb;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>6th Kyu — Blue Belt / White Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#2563eb" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">6th Kyu</div>
+      <div class="grade-name">Blue Belt / White Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#3b82f6;border:2px solid #2563eb;"><div class="belt-stripe" style="background:#ffffff"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>5th Kyu — Purple Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#9333ea" stroke="#7e22ce" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#9333ea" stroke="#7e22ce" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#7e22ce" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">5th Kyu</div>
+      <div class="grade-name">Purple Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#9333ea;border:2px solid #7e22ce;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>4th Kyu — Purple Belt / White Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#9333ea" stroke="#7e22ce" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#9333ea" stroke="#7e22ce" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#7e22ce" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">4th Kyu</div>
+      <div class="grade-name">Purple Belt / White Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#9333ea;border:2px solid #7e22ce;"><div class="belt-stripe" style="background:#ffffff"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>3rd Kyu — Brown Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#92400e" stroke="#78350f" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#92400e" stroke="#78350f" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#78350f" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">3rd Kyu</div>
+      <div class="grade-name">Brown Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#92400e;border:2px solid #78350f;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>2nd Kyu — Brown Belt / White Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#92400e" stroke="#78350f" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#92400e" stroke="#78350f" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#78350f" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">2nd Kyu</div>
+      <div class="grade-name">Brown Belt / White Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#92400e;border:2px solid #78350f;"><div class="belt-stripe" style="background:#ffffff"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>1st Kyu — Brown Belt / Two White Stripes</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#92400e" stroke="#78350f" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#92400e" stroke="#78350f" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#78350f" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+  <!-- Second stripe -->
+  <line x1="90" y1="14" x2="90" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">1st Kyu</div>
+      <div class="grade-name">Brown Belt / Two White Stripes</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#92400e;border:2px solid #78350f;"><div class="belt-stripe" style="background:#ffffff"></div><div class="belt-stripe-2" style="background:#ffffff"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>Brown Belt / Black Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#92400e" stroke="#78350f" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#92400e" stroke="#78350f" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#78350f" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#111111" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">Transitional Grade</div>
+      <div class="grade-name">Brown Belt / Black Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#92400e;border:2px solid #78350f;"><div class="belt-stripe" style="background:#111111"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+    <div class="grade-full section-box">
+      <h4>Additional Dan Grade Requirements</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>Black Belt / White Stripe</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#111111" stroke="#000000" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#111111" stroke="#000000" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#000000" opacity="0.3"/>
+  <!-- Stripe -->
+  <line x1="82" y1="14" x2="82" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">Transitional Grade</div>
+      <div class="grade-name">Black Belt / White Stripe</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#111111;border:2px solid #000000;"><div class="belt-stripe" style="background:#ffffff"></div></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+    <div class="grade-full section-box">
+      <h4>Additional Dan Grade Requirements</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>1st Dan — Black Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#111111" stroke="#000000" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#111111" stroke="#000000" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#000000" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">1st Dan</div>
+      <div class="grade-name">Black Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#111111;border:2px solid #000000;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+    <div class="grade-full section-box">
+      <h4>Additional Dan Grade Requirements</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>2nd Dan — Black Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#111111" stroke="#000000" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#111111" stroke="#000000" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#000000" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">2nd Dan</div>
+      <div class="grade-name">Black Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#111111;border:2px solid #000000;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+    <div class="grade-full section-box">
+      <h4>Additional Dan Grade Requirements</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>3rd Dan — Black Belt</span></div>
+  
+  <div class="grade-header">
+    <div class="belt-svg-wrap"><svg width="110" height="44" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Belt body -->
+  <path d="M10,12 Q5,22 10,32 L100,32 Q105,22 100,12 Z" fill="#111111" stroke="#000000" stroke-width="1.5"/>
+  <!-- Knot -->
+  <ellipse cx="55" cy="22" rx="10" ry="9" fill="#111111" stroke="#000000" stroke-width="1.5"/>
+  <ellipse cx="55" cy="22" rx="6" ry="5" fill="#000000" opacity="0.3"/>
+</svg></div>
+    <div>
+      <div class="grade-kyu">3rd Dan</div>
+      <div class="grade-name">Black Belt</div>
+    </div>
+  </div>
+  
+  <div class="belt-strip" style="background:#111111;border:2px solid #000000;"></div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Basic Techniques (Kihon)</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Kata</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-grid">
+    <div class="section-box">
+      <h4>Kumite</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+    <div class="section-box">
+      <h4>Combinations / Set Work</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+
+  <div class="grade-full section-box">
+    <h4>Terminology for this Grade</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  </div>
+  
+    <div class="grade-full section-box">
+      <h4>Additional Dan Grade Requirements</h4>
+      <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+    </div>
+  <div class="grade-full section-box" style="margin-top:10px">
+    <h4>Notes</h4>
+    <input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+<input type="text" class="edit-line" placeholder="&nbsp;">
+
+  </div>
+</div>
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TRANSLATIONS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>Translations</span></div>
+  <h2 style="margin-bottom:12px">Translations</h2>
+  <table class="ref-table">
+    <tr><th>Japanese</th><th>English</th><th>Japanese</th><th>English</th></tr>
+    <tr><td>Dojo</td><td>Training hall</td><td>Sensei</td><td>Teacher / Instructor</td></tr>
+    <tr><td>Sempai</td><td>Senior student</td><td>Kohai</td><td>Junior student</td></tr>
+    <tr><td>Rei</td><td>Bow</td><td>Mokuso</td><td>Meditation</td></tr>
+    <tr><td>Yoi</td><td>Ready</td><td>Hajime</td><td>Begin</td></tr>
+    <tr><td>Yame</td><td>Stop</td><td>Matte</td><td>Wait</td></tr>
+    <tr><td>Osu</td><td>Acknowledgement / Respect</td><td>Kiai</td><td>Spirit shout</td></tr>
+    <tr><td>Jodan</td><td>Upper level</td><td>Chudan</td><td>Middle level</td></tr>
+    <tr><td>Gedan</td><td>Lower level</td><td>Maai</td><td>Fighting distance</td></tr>
+    <tr><td>Oi Tsuki</td><td>Stepping punch</td><td>Gyaku Tsuki</td><td>Reverse punch</td></tr>
+    <tr><td>Uraken</td><td>Back fist</td><td>Shuto</td><td>Knife hand</td></tr>
+    <tr><td>Mae Geri</td><td>Front kick</td><td>Mawashi Geri</td><td>Roundhouse kick</td></tr>
+    <tr><td>Yoko Geri</td><td>Side kick</td><td>Ushiro Geri</td><td>Back kick</td></tr>
+    <tr><td>Age Uke</td><td>Rising block</td><td>Soto Uke</td><td>Outside block</td></tr>
+    <tr><td>Uchi Uke</td><td>Inside block</td><td>Gedan Barai</td><td>Downward sweep</td></tr>
+    <tr><td>Shuto Uke</td><td>Knife hand block</td><td>Morote Uke</td><td>Augmented block</td></tr>
+    <tr><td>Kihon</td><td>Basics</td><td>Kata</td><td>Form / Pattern</td></tr>
+    <tr><td>Kumite</td><td>Sparring</td><td>Ippon</td><td>One full point</td></tr>
+    <tr><td>Waza-ari</td><td>Half point</td><td>Hansoku</td><td>Violation / Foul</td></tr>
+    <tr><td>Dojo Kun</td><td>Training rules</td><td>Gi / Karate-gi</td><td>Training suit</td></tr>
+    <tr><td>Obi</td><td>Belt</td><td>Kyu</td><td>Grade (below black belt)</td></tr>
+    <tr><td>Dan</td><td>Grade (black belt)</td><td>Bunkai</td><td>Application of kata</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- STANCES -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>Stances</span></div>
+  <h2 style="margin-bottom:12px">Stances</h2>
+  <table class="ref-table">
+    <tr><th>Japanese</th><th>English</th><th>Description</th></tr>
+    <tr><td>Musubi Dachi</td><td>Attention stance</td><td>Heels together, toes pointing outward at 45°</td></tr>
+    <tr><td>Heiko Dachi</td><td>Parallel stance</td><td>Feet shoulder-width apart, toes forward</td></tr>
+    <tr><td>Zenkutsu Dachi</td><td>Front stance</td><td>Weight forward, front knee bent over toes, back leg straight</td></tr>
+    <tr><td>Kokutsu Dachi</td><td>Back stance</td><td>Weight mostly on rear leg, front foot pointing forward</td></tr>
+    <tr><td>Kiba Dachi</td><td>Horse riding / Straddle stance</td><td>Wide stance, toes forward, knees pushed outward</td></tr>
+    <tr><td>Neko Ashi Dachi</td><td>Cat stance</td><td>90% weight on rear leg, front foot lightly touching floor on ball of foot</td></tr>
+    <tr><td>Sanchin Dachi</td><td>Hourglass stance</td><td>Feet one step apart, toes turned inward, tensed</td></tr>
+    <tr><td>Fudo Dachi</td><td>Rooted / Immovable stance</td><td>Similar to zenkutsu but wider with tension throughout body</td></tr>
+    <tr><td>Hangetsu Dachi</td><td>Half moon stance</td><td>Feet turned inward, wider than sanchin</td></tr>
+    <tr><td>Tsuru Ashi Dachi</td><td>Crane stance</td><td>Standing on one leg, other foot raised to knee level</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TERMINOLOGY -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>Miscellaneous Terminology</span></div>
+  <h2 style="margin-bottom:12px">Miscellaneous Terminology</h2>
+  <table class="ref-table">
+    <tr><th colspan="2">Numbers</th><th colspan="2">Belt Colours (Japanese)</th></tr>
+    <tr><td>Ichi</td><td>One</td><td>Shiro</td><td>White</td></tr>
+    <tr><td>Ni</td><td>Two</td><td>Aka</td><td>Red</td></tr>
+    <tr><td>San</td><td>Three</td><td>Ki</td><td>Yellow</td></tr>
+    <tr><td>Shi / Yon</td><td>Four</td><td>Daidai</td><td>Orange</td></tr>
+    <tr><td>Go</td><td>Five</td><td>Midori</td><td>Green</td></tr>
+    <tr><td>Roku</td><td>Six</td><td>Ao</td><td>Blue</td></tr>
+    <tr><td>Shichi / Nana</td><td>Seven</td><td>Murasaki</td><td>Purple</td></tr>
+    <tr><td>Hachi</td><td>Eight</td><td>Cha</td><td>Brown</td></tr>
+    <tr><td>Ku / Kyuu</td><td>Nine</td><td>Kuro</td><td>Black</td></tr>
+    <tr><td>Ju</td><td>Ten</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+  </table>
+  <table class="ref-table" style="margin-top:12px">
+    <tr><th>Term</th><th>Meaning</th><th>Term</th><th>Meaning</th></tr>
+    <tr><td>Hidari</td><td>Left</td><td>Migi</td><td>Right</td></tr>
+    <tr><td>Mae</td><td>Front / Forward</td><td>Ushiro</td><td>Back / Rear</td></tr>
+    <tr><td>Yoko</td><td>Side</td><td>Mawashi</td><td>Round / Circular</td></tr>
+    <tr><td>Tate</td><td>Vertical</td><td>Yoko</td><td>Horizontal / Side</td></tr>
+    <tr><td>Empi / Hiji</td><td>Elbow</td><td>Hiza</td><td>Knee</td></tr>
+    <tr><td>Ashi</td><td>Leg / Foot</td><td>Te</td><td>Hand</td></tr>
+    <tr><td>Tsuki</td><td>Punch / Thrust</td><td>Geri / Keri</td><td>Kick</td></tr>
+    <tr><td>Uke</td><td>Block / Receive</td><td>Uchi</td><td>Strike</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- COMPETITION TERMINOLOGY -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>Competition Terminology</span></div>
+  <h2 style="margin-bottom:12px">Competition Terminology</h2>
+  <table class="ref-table">
+    <tr><th>Term</th><th>Meaning</th></tr>
+    <tr><td>Aka</td><td>Red — competitor wearing red</td></tr>
+    <tr><td>Ao</td><td>Blue — competitor wearing blue</td></tr>
+    <tr><td>Ippon</td><td>Full point (worth 3 in WKF kumite for kicks to head/take-down)</td></tr>
+    <tr><td>Waza-ari</td><td>Half point (worth 2 in WKF kumite)</td></tr>
+    <tr><td>Yuko</td><td>One point score in WKF kumite</td></tr>
+    <tr><td>Hansoku</td><td>Violation — results in disqualification or points to opponent</td></tr>
+    <tr><td>Hansoku Chui</td><td>Penalty warning — next infringement results in hansoku</td></tr>
+    <tr><td>Chui</td><td>Warning</td></tr>
+    <tr><td>Jogai</td><td>Stepping out of the competition area</td></tr>
+    <tr><td>Mubobi</td><td>Neglect of self-defence / not protecting yourself</td></tr>
+    <tr><td>Shikkaku</td><td>Disqualification from the entire competition</td></tr>
+    <tr><td>Senshu</td><td>First scoring advantage — used to decide tied matches</td></tr>
+    <tr><td>Encho-sen</td><td>Extension period — used when match is tied</td></tr>
+    <tr><td>Hantei</td><td>Judges' decision</td></tr>
+    <tr><td>Hikiwake</td><td>Draw</td></tr>
+    <tr><td>Atoshi Baraku</td><td>Announcement that 30 seconds remain</td></tr>
+    <tr><td>Shobu Hajime</td><td>Begin the match / fight</td></tr>
+    <tr><td>Yame</td><td>Stop</td></tr>
+    <tr><td>Tsuzukete Hajime</td><td>Continue / restart the match</td></tr>
+    <tr><td>Motonoichi</td><td>Return to starting positions</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- NOTES PAGE 1 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>Notes</span></div>
+  <h2 style="margin-bottom:16px">Notes</h2>
+  <div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- NOTES PAGE 2 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-band"><span>Forza Karate Club</span><span>Notes</span></div>
+  <h2 style="margin-bottom:16px">Notes</h2>
+  <div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+<div class="note-line"></div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- ASSOCIATION PAGE -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page inside-cover">
+  <div style="border-top:4px solid #dc2626;width:80px;margin:0 auto 32px"></div>
+  <h2 style="font-size:20pt;font-weight:900;margin-bottom:24px">Association</h2>
+  
+  <div style="text-align:center;margin-bottom:24px">
+    <p style="font-size:13pt;font-weight:700;margin-bottom:4px">Forza Karate Club</p>
+    <p style="font-size:10pt;color:#555;margin-bottom:2px">Chief Instructor: Sensei Anthoni Everitt, 6th Dan</p>
+    <p style="font-size:10pt;color:#888">forzakarate.co.uk &nbsp;|&nbsp; @forzakarate</p>
+  </div>
+
+  <div style="text-align:center;margin-bottom:24px">
+    <p style="font-size:13pt;font-weight:700;margin-bottom:4px">Frontier Karate Association (FKA)</p>
+    <p style="font-size:10pt;color:#888">frontierkarateassociation.co.uk</p>
+  </div>
+
+  <div style="border-bottom:4px solid #dc2626;width:80px;margin:0 auto 24px"></div>
+  <p style="font-size:8pt;color:#aaa;text-align:center">This syllabus is the property of Forza Karate Club.<br>© 2026 Forza Karate Club. All rights reserved.</p>
+</div>
+
+<script>
+  // Make section titles (Kihon, Kata, Combinations etc.) editable
+  document.querySelectorAll('.section-box h4').forEach(function(h4) {
+    h4.contentEditable = 'true';
+    h4.setAttribute('spellcheck', 'false');
+    // Prevent Enter key from inserting <div> or <br>
+    h4.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); h4.blur(); }
+    });
+  });
+</script>
+</body>
+</html>
