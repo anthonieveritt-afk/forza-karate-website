@@ -14,7 +14,6 @@ function LoginForm() {
 
   const [email, setEmail]           = useState('')
   const [password, setPassword]     = useState('')
-  const [licence, setLicence]       = useState('')
   const [error, setError]           = useState('')
   const [loading, setLoading]       = useState(false)
 
@@ -22,7 +21,7 @@ function LoginForm() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const result = await loginMembers({ email, password, licenceNumber: licence })
+    const result = await loginMembers({ email, password, licenceNumber: '' })
     if (result.success) {
       router.push(redirect)
     } else {
@@ -63,17 +62,6 @@ function LoginForm() {
           className={input}
         />
       </div>
-      <div>
-        <label className="block text-sm font-medium text-[#111111] mb-1.5">Licence number</label>
-        <input
-          type="text"
-          value={licence}
-          onChange={e => setLicence(e.target.value)}
-          required
-          placeholder="Your FKA licence number"
-          className={input}
-        />
-      </div>
       <Button type="submit" size="lg" className="w-full" disabled={loading}>
         {loading ? 'Checking…' : 'Enter members area'}
       </Button>
@@ -96,7 +84,7 @@ export default function MembersLoginPage() {
             </div>
             <h1 className="text-2xl font-bold text-[#111111]">Members area</h1>
             <p className="text-sm text-gray-500 mt-2">
-              Log in with your Club Honbu email, password and licence number.
+              Log in with your Club Honbu email and password.
             </p>
           </div>
 

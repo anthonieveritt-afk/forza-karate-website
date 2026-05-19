@@ -75,8 +75,8 @@
   .grade-kyu { font-size: 10pt; font-weight: 700; color: #dc2626; text-transform: uppercase; letter-spacing: 1px; }
   .grade-name { font-size: 22pt; font-weight: 900; line-height: 1; }
   .belt-strip { height: 18px; border-radius: 4px; margin-bottom: 12px; position: relative; overflow: hidden; }
-  .belt-stripe { position: absolute; top: 0; bottom: 0; right: 20px; width: 8px; }
-  .belt-stripe-2 { position: absolute; top: 0; bottom: 0; right: 32px; width: 8px; }
+  .belt-stripe { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 8px; }
+  .belt-stripe-2 { position: absolute; top: 0; bottom: 0; left: calc(50% - 12px); width: 8px; }
 
   .grade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
   .grade-full { margin-bottom: 10px; }
