@@ -41,7 +41,7 @@ const kataAthletes = [
 ]
 
 const paraAthletes = [
-  'Leo Buss',
+  'L. Buss',
 ]
 
 const coaches = [
