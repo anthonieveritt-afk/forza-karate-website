@@ -132,6 +132,27 @@ export default function TeamPage() {
                 <h2 className="text-2xl font-bold text-[#111111]">Kumite Team</h2>
               </div>
               <p className="text-sm text-gray-400">{kumiteAthletes.length} athletes</p>
+              <div className="mt-6 grid grid-cols-3 gap-3">
+                {[
+                  { src: '/team/kumite-y-yogarajah.jpg', name: 'Y. Yogarajah' },
+                  { src: '/team/kumite-q-wong.jpg',      name: 'Q. Wong' },
+                  { src: '/team/kumite-h-dosser.jpg',    name: 'H. Dosser' },
+                  { src: '/team/kumite-q-godfrey.jpg',   name: 'Q. Godfrey' },
+                  { src: '/team/kumite-a-tebbutt.jpg',   name: 'A. Tebbutt' },
+                  { src: '/team/kumite-a-buss.jpg',      name: 'A. Buss' },
+                ].map((a) => (
+                  <div key={a.name} className="rounded-2xl overflow-hidden border border-black/8">
+                    <Image
+                      src={a.src}
+                      alt={a.name}
+                      width={300}
+                      height={380}
+                      className="w-full object-cover object-top"
+                    />
+                    <p className="text-xs font-semibold text-center text-[#111111] py-2">{a.name}</p>
+                  </div>
+                ))}
+              </div>
               <AthleteList names={kumiteAthletes} />
             </div>
 
