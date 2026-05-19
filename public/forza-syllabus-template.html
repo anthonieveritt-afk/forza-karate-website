@@ -10,9 +10,9 @@
   
   /* === PAGE === */
   .page {
-    width: 210mm;
-    min-height: 297mm;
-    padding: 15mm;
+    width: 148mm;
+    min-height: 210mm;
+    padding: 10mm;
     margin: 0 auto 10px;
     background: #fff;
     page-break-after: always;
@@ -35,7 +35,7 @@
     .belt-strip, .grade-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
 
-  @page { size: A4; margin: 0; }
+  @page { size: A5; margin: 0; }
 
   /* === TYPOGRAPHY === */
   h1 { font-size: 36pt; font-weight: 900; letter-spacing: -1px; }
@@ -112,7 +112,7 @@
   .note-line { border-bottom: 1px solid #d1d5db; height: 28px; margin-bottom: 2px; }
 
   /* === PAGE HEADER BAND === */
-  .page-band { background: #dc2626; color: #fff; padding: 5px 15mm; margin: -15mm -15mm 12mm; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; }
+  .page-band { background: #dc2626; color: #fff; padding: 5px 10mm; margin: -10mm -10mm 10mm; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; }
 
   /* === BELT SVG === */
   .belt-svg-wrap { flex-shrink: 0; }
@@ -122,7 +122,7 @@
 
 <!-- NO PRINT INSTRUCTIONS -->
 <div class="no-print" style="background:#111;color:#fff;padding:12px 20px;text-align:center;font-size:13px;font-family:system-ui;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap">
-  <span><strong>Forza Karate Club — Syllabus Template 2026</strong> &nbsp;|&nbsp; Click any field to edit &nbsp;|&nbsp; <strong>Chrome → File → Print → Save as PDF</strong> to export &nbsp;|&nbsp; Set paper size to A4, margins to None</span>
+  <span><strong>Forza Karate Club — Syllabus Template 2026</strong> &nbsp;|&nbsp; Click any field to edit &nbsp;|&nbsp; <strong>Chrome → File → Print → Save as PDF</strong> to export &nbsp;|&nbsp; Set paper size to A5, margins to None</span>
   <span style="display:flex;gap:8px;align-items:center">
     <button id="saveBtn" onclick="saveAll()" style="background:#dc2626;color:#fff;border:none;padding:7px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.3px">💾 Save</button>
     <button id="clearBtn" onclick="clearSaved()" style="background:#444;color:#fff;border:none;padding:7px 14px;border-radius:6px;font-size:13px;cursor:pointer">Clear saved</button>
