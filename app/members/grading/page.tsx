@@ -20,6 +20,8 @@ export default function MembersGradingPage() {
             <Image src="/forza-logo.webp" alt="Forza Karate Club" width={120} height={48} className="h-10 w-auto" />
           </Link>
           <div className="flex items-center gap-4">
+            <Link href="/members/syllabus" className="text-sm text-[#dc2626] hover:underline font-medium">Syllabus</Link>
+            <span className="text-gray-300">|</span>
             <span className="text-sm text-gray-500">Members area</span>
             <form action={logoutMembers}>
               <Button type="submit" variant="outline" size="sm">Log out</Button>

@@ -42,11 +42,16 @@ export default function MembersSyllabusPage() {
             <p className="text-gray-500">Grading requirements and techniques for each belt level.</p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-black/8 p-8 shadow-sm text-center">
-            <p className="text-gray-500 mb-6">Syllabus content coming soon. Contact your instructor for the current requirements.</p>
-            <Button asChild variant="outline">
-              <Link href="/members/grading">Register to Grade →</Link>
-            </Button>
+          <div className="bg-white rounded-2xl border border-black/8 p-8 shadow-sm">
+            <p className="text-gray-600 mb-6">View or download the Forza Karate Club grading syllabus. Click the button below to open the interactive syllabus — you can fill it in and save as PDF.</p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button asChild>
+                <a href="/forza-syllabus-template.html" target="_blank" rel="noopener noreferrer">Open Syllabus →</a>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/members/grading">Register to Grade →</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </main>
