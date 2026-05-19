@@ -152,7 +152,6 @@ export default function TeamPage() {
                   </div>
                 ))}
               </div>
-              <AthleteList names={kumiteAthletes} />
             </div>
 
             {/* Kata */}
@@ -179,7 +178,6 @@ export default function TeamPage() {
                   </div>
                 ))}
               </div>
-              <AthleteList names={kataAthletes} />
             </div>
 
             {/* Para Karate */}
@@ -198,7 +196,6 @@ export default function TeamPage() {
                   className="w-full object-cover object-top"
                 />
               </div>
-              <AthleteList names={paraAthletes} />
             </div>
 
           </div>
