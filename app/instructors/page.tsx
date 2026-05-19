@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { Shield, Award, Heart } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -12,11 +13,23 @@ const credentials = [
   { icon: Heart, title: 'First Aid Qualified', desc: 'All instructors hold current first aid certification.' },
 ]
 
-// Placeholder instructors — replace with real data
 const instructors = [
-  { name: 'Instructor name TBC', role: 'Head Instructor', dojo: 'Rayleigh & Upminster', bio: 'Bio to be added.' },
-  { name: 'Instructor name TBC', role: 'Senior Instructor', dojo: 'Rayleigh', bio: 'Bio to be added.' },
-  { name: 'Instructor name TBC', role: 'Instructor', dojo: 'Upminster', bio: 'Bio to be added.' },
+  {
+    name: 'Sensei Jade Honeywood',
+    grade: '4th Dan',
+    role: 'Instructor',
+    dojo: 'Rayleigh & Upminster',
+    photo: '/instructors/jade-honeywood.png',
+    bio: '',
+  },
+  {
+    name: 'Sensei Anthoni Everitt',
+    grade: '6th Dan',
+    role: 'Head Instructor',
+    dojo: 'Rayleigh & Upminster',
+    photo: '/team/anthoni-everitt.jpg',
+    bio: 'Dedicated and accomplished karate coach with four decades of experience in traditional and sport karate. Proven record of developing athletes from grassroots to world-class level. Renowned for mentoring national and international champions, promoting karate through community-based initiatives and fostering discipline, technical excellence and mental resilience. Skilled in designing structured training programmes for athletes of all ages and abilities.\n\nFormer England Assistant Coach\nFormer Southern Regional Coach',
+  },
 ]
 
 export default function InstructorsPage() {
@@ -62,19 +75,29 @@ export default function InstructorsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {instructors.map((instructor, i) => (
               <div key={i} className="rounded-2xl border border-black/8 overflow-hidden">
-                {/* Photo placeholder */}
-                <div className="w-full aspect-[4/3] bg-[#fafaf9] flex items-center justify-center">
-                  <div className="w-24 h-32 rounded-2xl bg-gray-200 flex items-center justify-center">
-                    <span className="text-4xl font-bold text-gray-400">
-                      {instructor.name.charAt(0)}
-                    </span>
-                  </div>
+                <div className="w-full aspect-[4/3] bg-[#fafaf9] relative overflow-hidden">
+                  {instructor.photo ? (
+                    <Image
+                      src={instructor.photo}
+                      alt={instructor.name}
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="text-4xl font-bold text-gray-400">{instructor.name.charAt(0)}</span>
+                    </div>
+                  )}
                 </div>
                 <div className="p-6">
-                  <h3 className="font-bold text-[#111111] text-lg mb-0.5">{instructor.name}</h3>
+                  <div className="flex items-baseline gap-2 mb-0.5">
+                    <h3 className="font-bold text-[#111111] text-lg">{instructor.name}</h3>
+                    {'grade' in instructor && <span className="text-xs font-semibold text-gray-400">{instructor.grade}</span>}
+                  </div>
                   <p className="text-sm text-[#dc2626] font-medium mb-1">{instructor.role}</p>
                   <p className="text-xs text-gray-400 mb-4">{instructor.dojo}</p>
-                  <p className="text-sm text-gray-500">{instructor.bio}</p>
+                  <p className="text-sm text-gray-500 whitespace-pre-line">{instructor.bio}</p>
                 </div>
               </div>
             ))}
