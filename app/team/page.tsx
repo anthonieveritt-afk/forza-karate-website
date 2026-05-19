@@ -140,6 +140,7 @@ export default function TeamPage() {
                   { src: '/team/kumite-q-godfrey.jpg',   name: 'Q. Godfrey' },
                   { src: '/team/kumite-a-tebbutt.jpg',   name: 'A. Tebbutt' },
                   { src: '/team/kumite-a-buss.jpg',      name: 'A. Buss' },
+                  { src: '/team/kumite-7.jpg',            name: 'Kumite 7' },
                 ].map((a) => (
                   <div key={a.name} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
