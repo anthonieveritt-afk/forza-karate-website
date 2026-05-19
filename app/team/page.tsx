@@ -144,12 +144,11 @@ export default function TeamPage() {
                   <div key={a.name} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
                       src={a.src}
-                      alt={a.name}
+                      alt="Kumite athlete"
                       width={300}
                       height={380}
                       className="w-full object-cover object-top"
                     />
-                    <p className="text-xs font-semibold text-center text-[#111111] py-2">{a.name}</p>
                   </div>
                 ))}
               </div>
@@ -172,12 +171,11 @@ export default function TeamPage() {
                   <div key={a.name} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
                       src={a.src}
-                      alt={a.name}
+                      alt="Kata athlete"
                       width={300}
                       height={380}
                       className="w-full object-cover object-top"
                     />
-                    <p className="text-xs font-semibold text-center text-[#111111] py-2">{a.name}</p>
                   </div>
                 ))}
               </div>
@@ -194,12 +192,11 @@ export default function TeamPage() {
               <div className="mt-6 rounded-2xl overflow-hidden border border-black/8">
                 <Image
                   src="/team/leo-buss.jpg"
-                  alt="L. Buss — Para Karate"
+                  alt="Para Karate athlete"
                   width={600}
                   height={750}
                   className="w-full object-cover object-top"
                 />
-                <p className="text-xs font-semibold text-center text-[#111111] py-2">L. Buss</p>
               </div>
               <AthleteList names={paraAthletes} />
             </div>
