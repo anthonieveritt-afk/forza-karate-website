@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { Trophy } from 'lucide-react'
 import TeamBanner from '@/components/sections/TeamBanner'
 
@@ -7,73 +8,162 @@ export const metadata: Metadata = {
   description: 'Meet Team Forza — our competitive kata and kumite teams representing Forza Karate Club at regional and national level.',
 }
 
+const eliteSquad = [
+  'Kobe Yogarajah',
+  'Yuan Yogarajah',
+  'Quintin Wong',
+  'Ayden Wong',
+]
+
+const kumiteAthletes = [
+  'Kobe Yogarajah',
+  'Yuan Yogarajah',
+  'Quintin Wong',
+  'Ayden Wong',
+  'Nam Mac',
+  'Harry Dossor',
+  'David Butlin',
+  'Alex Austin',
+  'Claire Buss',
+  'Annabelle Buss',
+  'Quinn Godfrey',
+  'Archie Tebbutt',
+  'Lukas Tran',
+]
+
+const kataAthletes = [
+  'Kobe Yogarajah',
+  'Yuan Yogarajah',
+  'Claire Buss',
+  'Ahm Mac',
+  'Nam Mac',
+  'Lukas Tran',
+]
+
+const paraAthletes = [
+  'Leo Buss',
+]
+
+const coaches = [
+  { name: 'Anthoni Everitt', grade: '6th Dan' },
+  { name: 'Jade Honeywood',  grade: '4th Dan' },
+  { name: 'Kobe Yogarajah',  grade: '2nd Dan' },
+]
+
+const paraCoaches = [
+  { name: 'Claire Buss', grade: '2nd Kyu', role: 'Para Team Coach' },
+]
+
+function AthleteList({ names }: { names: string[] }) {
+  return (
+    <ul className="mt-6 space-y-2">
+      {names.map((name) => (
+        <li
+          key={name}
+          className="flex items-center gap-3 py-2.5 border-b border-black/5 last:border-0"
+        >
+          <div className="w-1.5 h-1.5 rounded-full bg-[#dc2626] flex-shrink-0" />
+          <span className="text-sm font-medium text-[#111111]">{name}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 export default function TeamPage() {
   return (
     <div className="bg-white">
       {/* Scrolling photo banner */}
       <TeamBanner />
 
+      {/* Coaches */}
+      <section className="bg-[#fafaf9] py-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-2 mb-8">
+            <div className="w-8 h-0.5 bg-[#dc2626]" />
+            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Coaching Staff</span>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            {coaches.map((c) => (
+              <div key={c.name} className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white border border-black/8">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#dc2626]" />
+                <span className="text-sm font-semibold text-[#111111]">{c.name}</span>
+                <span className="text-xs font-medium text-gray-400">{c.grade}</span>
+              </div>
+            ))}
+            {paraCoaches.map((c) => (
+              <div key={c.name} className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white border border-black/8">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#dc2626]" />
+                <span className="text-sm font-semibold text-[#111111]">{c.name}</span>
+                <span className="text-xs font-medium text-gray-400">{c.grade}</span>
+                <span className="text-xs text-[#dc2626] font-medium">{c.role}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-
-      {/* Kata Team */}
+      {/* Teams */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <Trophy className="h-5 w-5 text-[#dc2626]" />
-                <h2 className="text-2xl font-bold text-[#111111]">Kata Team</h2>
-              </div>
-              <p className="text-gray-500 leading-relaxed mb-6">
-                Our kata team competes at WKF-aligned events across the region and nationally.
-                Team members are selected based on technical ability, consistency of performance,
-                and competition experience.
-              </p>
-              <p className="text-gray-500 leading-relaxed">
-                We field individual, pair, and team kata competitors across all age categories.
-              </p>
-
-              {/* Placeholder team members */}
-              <div className="mt-8 grid grid-cols-3 gap-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="rounded-2xl bg-[#fafaf9] border border-black/5 p-4 text-center">
-                    <div className="w-full aspect-[3/4] rounded-2xl bg-gray-100 mb-3 flex items-center justify-center">
-                      <span className="text-gray-400 text-xs">Photo</span>
-                    </div>
-                    <p className="text-xs font-medium text-[#111111]">Team member</p>
-                    <p className="text-xs text-gray-400">Kata</p>
-                  </div>
-                ))}
-              </div>
+          {/* Elite Squad */}
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-2">
+              <Trophy className="h-5 w-5 text-[#dc2626]" />
+              <h2 className="text-2xl font-bold text-[#111111]">Elite Squad</h2>
             </div>
+            <p className="text-sm text-gray-400 mb-6">{eliteSquad.length} athletes</p>
+            <div className="flex flex-wrap gap-3">
+              {eliteSquad.map((name) => (
+                <div key={name} className="flex items-center gap-2.5 px-5 py-3 rounded-2xl border border-[#dc2626]/20 bg-red-50">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#dc2626]" />
+                  <span className="text-sm font-semibold text-[#111111]">{name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+            {/* Kumite */}
             <div>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-2">
                 <Trophy className="h-5 w-5 text-[#dc2626]" />
                 <h2 className="text-2xl font-bold text-[#111111]">Kumite Team</h2>
               </div>
-              <p className="text-gray-500 leading-relaxed mb-6">
-                Our kumite team competes across multiple weight and age categories at WKF-aligned
-                events. Training is structured, strategic, and high-intensity.
-              </p>
-              <p className="text-gray-500 leading-relaxed">
-                Competition prep includes sparring, tactical coaching, and conditioning — all within
-                the regular club schedule.
-              </p>
-
-              {/* Placeholder team members */}
-              <div className="mt-8 grid grid-cols-3 gap-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="rounded-2xl bg-[#fafaf9] border border-black/5 p-4 text-center">
-                    <div className="w-full aspect-[3/4] rounded-2xl bg-gray-100 mb-3 flex items-center justify-center">
-                      <span className="text-gray-400 text-xs">Photo</span>
-                    </div>
-                    <p className="text-xs font-medium text-[#111111]">Team member</p>
-                    <p className="text-xs text-gray-400">Kumite</p>
-                  </div>
-                ))}
-              </div>
+              <p className="text-sm text-gray-400">{kumiteAthletes.length} athletes</p>
+              <AthleteList names={kumiteAthletes} />
             </div>
+
+            {/* Kata */}
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Trophy className="h-5 w-5 text-[#dc2626]" />
+                <h2 className="text-2xl font-bold text-[#111111]">Kata Team</h2>
+              </div>
+              <p className="text-sm text-gray-400">{kataAthletes.length} athletes</p>
+              <AthleteList names={kataAthletes} />
+            </div>
+
+            {/* Para Karate */}
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Trophy className="h-5 w-5 text-[#dc2626]" />
+                <h2 className="text-2xl font-bold text-[#111111]">Para Karate</h2>
+              </div>
+              <p className="text-sm text-gray-400">{paraAthletes.length} athlete</p>
+              <div className="mt-6 rounded-2xl overflow-hidden border border-black/8">
+                <Image
+                  src="/team/leo-buss.jpg"
+                  alt="Leo Buss — Para Karate"
+                  width={600}
+                  height={750}
+                  className="w-full object-cover object-top"
+                />
+              </div>
+              <AthleteList names={paraAthletes} />
+            </div>
+
           </div>
         </div>
       </section>
