@@ -19,7 +19,7 @@ const instructors = [
     grade: '4th Dan',
     role: 'Instructor',
     dojo: 'Rayleigh & Upminster',
-    photo: '',
+    photo: '/instructors/jade-honeywood.png',
     bio: '',
   },
   {
