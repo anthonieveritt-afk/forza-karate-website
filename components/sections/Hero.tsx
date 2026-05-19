@@ -17,7 +17,6 @@ const photos = [
   { src: '/hero7.jpg',  alt: 'Forza Karate Club',                    position: '50% 25%' },
   { src: '/hero8.jpg',  alt: 'Forza Karate Club',                    position: '50% 25%' },
   { src: '/hero9.jpg',  alt: 'Forza Karate Club',                    position: '50% 25%' },
-  { src: '/hero11.jpg', alt: 'Forza Karate Club',                    position: '50% 25%' },
   { src: '/hero12.jpg', alt: 'Forza Karate Club',                    position: '50% 25%' },
   { src: '/hero14.jpg', alt: 'Forza Karate Club',                    position: '50% 25%' },
 ]
