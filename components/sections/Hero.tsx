@@ -103,28 +103,36 @@ export default function Hero() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
+            <Button asChild size="lg">
+              <Link href="/join">
+                Join Now
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+
+          {/* Safeguarding Code badge + View Classes */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <Link
+              href="/safeguarding"
+              className="inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl border border-black/10 bg-white/80 hover:bg-white hover:border-black/20 transition-colors group"
+            >
+              <Image
+                src="/safeguarding-code-logo.webp"
+                alt="Safeguarding Code in Martial Arts"
+                width={44}
+                height={44}
+                className="w-11 h-11 object-contain"
+              />
+              <div className="text-left">
+                <p className="text-xs font-bold text-[#111111] uppercase tracking-wider leading-tight">Safeguarding Code</p>
+                <p className="text-xs text-gray-500 leading-tight">in Martial Arts — certified</p>
+              </div>
+            </Link>
             <Button asChild variant="outline" size="lg">
               <Link href="/classes">View Classes</Link>
             </Button>
           </div>
-
-          {/* Safeguarding Code badge */}
-          <Link
-            href="/safeguarding"
-            className="inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl border border-black/10 bg-white/80 hover:bg-white hover:border-black/20 transition-colors group"
-          >
-            <Image
-              src="/safeguarding-code-logo.webp"
-              alt="Safeguarding Code in Martial Arts"
-              width={44}
-              height={44}
-              className="w-11 h-11 object-contain"
-            />
-            <div className="text-left">
-              <p className="text-xs font-bold text-[#111111] uppercase tracking-wider leading-tight">Safeguarding Code</p>
-              <p className="text-xs text-gray-500 leading-tight">in Martial Arts — certified</p>
-            </div>
-          </Link>
         </div>
       </div>
     </section>
