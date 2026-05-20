@@ -14,6 +14,7 @@ const albums = [
       '/gallery/competitions/bkf-4-nations-2025/file_56.jpg',
       '/gallery/competitions/bkf-4-nations-2025/file_57.jpg',
       '/gallery/competitions/bkf-4-nations-2025/file_58.jpg',
+      '/gallery/competitions/bkf-4-nations-2025/competition-celebrate.jpg',
     ],
   },
 ]

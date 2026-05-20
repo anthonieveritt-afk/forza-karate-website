@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Trophy } from 'lucide-react'
-import TeamBanner from '@/components/sections/TeamBanner'
+
 
 export const metadata: Metadata = {
   title: 'Team Forza',
@@ -73,8 +73,21 @@ function AthleteList({ names }: { names: string[] }) {
 export default function TeamPage() {
   return (
     <div className="bg-white">
-      {/* Scrolling photo banner */}
-      <TeamBanner />
+      {/* Page header */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 border-b border-black/5 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-0.5 bg-[#dc2626]" />
+            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Team Forza</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-bold text-[#111111] tracking-tight mb-4">
+            Built to compete.
+          </h1>
+          <p className="text-lg text-gray-500 max-w-xl">
+            Our competitive squad represents Forza Karate Club at regional and national level in both kata and kumite.
+          </p>
+        </div>
+      </section>
 
       {/* Coaches */}
       <section className="bg-[#fafaf9] py-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">

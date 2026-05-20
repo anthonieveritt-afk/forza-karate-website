@@ -86,3 +86,41 @@ export const eventRegistrations = pgTable('event_registrations', {
   stripeSessionId: varchar('stripe_session_id', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow(),
 })
+
+// Full enrolments — trialist to member journey
+export const enrolments = pgTable('enrolments', {
+  id: serial('id').primaryKey(),
+  // Student
+  firstName: varchar('first_name', { length: 255 }).notNull(),
+  lastName: varchar('last_name', { length: 255 }).notNull(),
+  dateOfBirth: date('date_of_birth').notNull(),
+  gender: varchar('gender', { length: 20 }),
+  email: varchar('email', { length: 255 }).notNull(),
+  phone: varchar('phone', { length: 50 }).notNull(),
+  addressLine1: varchar('address_line1', { length: 255 }),
+  addressLine2: varchar('address_line2', { length: 255 }),
+  town: varchar('town', { length: 100 }),
+  postcode: varchar('postcode', { length: 20 }),
+  // Parent / Guardian
+  parentFirstName: varchar('parent_first_name', { length: 255 }),
+  parentLastName: varchar('parent_last_name', { length: 255 }),
+  parentEmail: varchar('parent_email', { length: 255 }),
+  parentPhone: varchar('parent_phone', { length: 50 }),
+  parentRelationship: varchar('parent_relationship', { length: 100 }),
+  // Emergency contact
+  emergencyName: varchar('emergency_name', { length: 255 }),
+  emergencyPhone: varchar('emergency_phone', { length: 50 }),
+  emergencyRelationship: varchar('emergency_relationship', { length: 100 }),
+  // Medical
+  medicalConditions: text('medical_conditions'),
+  // Training
+  dojo: varchar('dojo', { length: 50 }).notNull(),
+  classTime: varchar('class_time', { length: 100 }),
+  currentBelt: varchar('current_belt', { length: 50 }).default('none'),
+  membershipType: varchar('membership_type', { length: 50 }).default('trial'), // trial | single | family2 | family3plus
+  heardAboutUs: varchar('heard_about_us', { length: 100 }),
+  // Status
+  status: varchar('status', { length: 30 }).default('new'), // new | contacted | trial_booked | member | declined
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow(),
+})

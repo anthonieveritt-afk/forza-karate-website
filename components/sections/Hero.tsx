@@ -8,17 +8,24 @@ import { ArrowRight } from 'lucide-react'
 import AnimatedWord from '@/components/ui/AnimatedWord'
 
 const photos = [
-  { src: '/hero.webp',  alt: 'Forza Karate Club members',          position: '50% 25%' },
-  { src: '/hero2.webp', alt: 'Forza Karate Club competition squad', position: '50% 20%' },
-  { src: '/hero3.jpg',  alt: 'Forza Karate Club podium',           position: '50% 25%' },
-  { src: '/hero4.jpg',  alt: 'Forza Karate Club training hall',     position: '50% 35%' },
-  { src: '/hero5.jpg',  alt: 'Forza Karate Club competition victory', position: '50% 30%' },
-  { src: '/hero6.webp', alt: 'Forza Karate Club',                    position: '50% 25%' },
-  { src: '/hero7.jpg',  alt: 'Forza Karate Club',                    position: '50% 25%' },
-  { src: '/hero8.jpg',  alt: 'Forza Karate Club',                    position: '50% 25%' },
-  { src: '/hero9.jpg',  alt: 'Forza Karate Club',                    position: '50% 25%' },
-  { src: '/hero12.jpg', alt: 'Forza Karate Club',                    position: '50% 25%' },
-  { src: '/hero14.jpg', alt: 'Forza Karate Club',                    position: '50% 25%' },
+  { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 25%' },
+  { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 20%' },
+  { src: '/hero3.jpg',                      alt: 'Forza Karate Club podium',           position: '50% 25%' },
+  { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 35%' },
+  { src: '/hero5.jpg',                      alt: 'Forza Karate Club competition victory', position: '50% 30%' },
+  { src: '/hero6.webp',                     alt: 'Forza Karate Club',                  position: '50% 25%' },
+  { src: '/hero7.jpg',                      alt: 'Forza Karate Club',                  position: '50% 25%' },
+  { src: '/hero8.jpg',                      alt: 'Forza Karate Club',                  position: '50% 25%' },
+  { src: '/hero9.jpg',                      alt: 'Forza Karate Club',                  position: '50% 25%' },
+  { src: '/hero12.jpg',                     alt: 'Forza Karate Club',                  position: '50% 25%' },
+  { src: '/hero14.jpg',                     alt: 'Forza Karate Club',                  position: '50% 25%' },
+  { src: '/team/team-01.jpg',               alt: 'Forza Karate squad',                 position: '50% 25%' },
+  { src: '/team/team-02.jpg',               alt: 'Forza Karate squad',                 position: '50% 25%' },
+  { src: '/team/team-03.jpg',               alt: 'Forza Karate squad',                 position: '50% 25%' },
+  { src: '/team/team-04.jpg',               alt: 'Forza Karate squad',                 position: '50% 25%' },
+  { src: '/team/team-05.jpg',               alt: 'Forza Karate squad',                 position: '50% 25%' },
+  { src: '/team/team-group.jpg',            alt: 'Forza Karate squad group',           position: '50% 25%' },
+  { src: '/team/team-competition-01.jpg',   alt: 'Forza Karate competition',           position: '50% 25%' },
 ]
 
 export default function Hero() {
