@@ -25,7 +25,7 @@ const instructors = [
   {
     name: 'Sensei Jade Honeywood',
     grade: '4th Dan',
-    role: 'Instructor',
+    role: 'Senior Instructor',
     dojo: 'Rayleigh & Upminster',
     photo: '/instructors/jade-honeywood.png',
     bio: '',
