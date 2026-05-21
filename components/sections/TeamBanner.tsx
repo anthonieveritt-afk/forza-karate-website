@@ -17,6 +17,10 @@ const photos = [
   { src: '/team/team-12.jpg', alt: 'Team Forza 12' },
   { src: '/team/team-competition-01.jpg', alt: 'Team Forza competition victory' },
   { src: '/team/team-group.jpg', alt: 'Team Forza group photo' },
+  { src: '/team/team-13.jpg', alt: 'Team Forza 13' },
+  { src: '/team/team-14.jpg', alt: 'Team Forza 14' },
+  { src: '/team/team-15.jpg', alt: 'Team Forza 15' },
+  { src: '/team/team-16.jpg', alt: 'Team Forza 16' },
 ]
 
 export default function TeamBanner() {
