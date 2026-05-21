@@ -40,9 +40,6 @@ export async function POST(req: NextRequest) {
       mode: 'payment',
       success_url: `${SITE_URL}/shop/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/shop`,
-      shipping_address_collection: {
-        allowed_countries: ['GB'],
-      },
       metadata: {
         source: 'forza-karate-website',
       },

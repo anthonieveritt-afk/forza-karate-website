@@ -251,9 +251,10 @@ export default function ShopPage() {
           {/* Footer note */}
           <div className="mt-12 p-6 rounded-2xl bg-[#fafaf9] border border-black/5 text-center">
             <ShoppingBag className="h-6 w-6 text-[#dc2626] mx-auto mb-3" />
-            <p className="text-sm font-semibold text-[#111111] mb-1">Secure checkout via Stripe</p>
+            <p className="text-sm font-semibold text-[#111111] mb-1">Collection at class only</p>
             <p className="text-sm text-gray-500">
-              All major cards accepted. Orders dispatched within 3–5 working days.
+              We don&apos;t post orders — all items are collected at your next class.
+              Pay securely online and we&apos;ll have your kit ready at the dojo.
             </p>
           </div>
         </div>

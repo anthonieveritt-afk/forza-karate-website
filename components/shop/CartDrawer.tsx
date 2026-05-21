@@ -123,6 +123,7 @@ export default function CartDrawer({ open, onClose }: Props) {
               </span>
             </div>
             {error && <p className="text-xs text-[#dc2626]">{error}</p>}
+            <p className="text-xs text-gray-400 text-center">📦 Collection at class only — we don't post orders</p>
             <button
               onClick={handleCheckout}
               disabled={loading}
