@@ -4,10 +4,23 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { ShoppingBag } from 'lucide-react'
 
+// ─── PRICES ── edit here to update shop prices ───────────────────────────────
+const PRICES: Record<string, string> = {
+  'smai-shin-red':      '£65.00',
+  'chest-guard':        '£35.00',
+  'mouthguards':        '£5.00',
+  'smai-mitts':         '£45.00',
+  'forza-tshirt':       '£20.00',
+  'forza-gi-student':   '£35.00',
+  'blitz-shin-blue':    '£45.00',
+  'blitz-gi':           '£40.00',
+}
+// ──────────────────────────────────────────────────────────────────────────────
+
 const products = [
   {
     name: 'SMAI WKF Shin & Instep Guards',
-    price: '£65.00',
+    price: PRICES['smai-shin-red'],
     category: 'Equipment',
     colour: 'Red',
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -16,7 +29,7 @@ const products = [
   },
   {
     name: 'Chest Guard / Body Protector',
-    price: '£35.00',
+    price: PRICES['chest-guard'],
     category: 'Equipment',
     colour: 'White',
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -24,7 +37,7 @@ const products = [
   },
   {
     name: 'Mouthguards',
-    price: '£5.00',
+    price: PRICES['mouthguards'],
     category: 'Equipment',
     colour: 'Assorted colours',
     sizes: ['Junior', 'Senior'],
@@ -32,7 +45,7 @@ const products = [
   },
   {
     name: 'SMAI WKF Kumite Mitts',
-    price: '£45.00',
+    price: PRICES['smai-mitts'],
     category: 'Equipment',
     colour: 'Red & Blue pair',
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -41,14 +54,14 @@ const products = [
   },
   {
     name: 'Forza Karate T-Shirt',
-    price: '£20.00',
+    price: PRICES['forza-tshirt'],
     category: 'Clothing',
     sizes: ['Age 3–4', 'Age 5–6', 'Age 7–8', 'Age 9–10', 'Age 11–12', 'S', 'M', 'L', 'XL'],
     img: '/shop/forza-tshirt.jpg',
   },
   {
     name: 'Forza Karate Student Gi',
-    price: '£35.00',
+    price: PRICES['forza-gi-student'],
     category: 'Clothing',
     sizes: ['100cm', '110cm', '120cm', '130cm', '140cm', '150cm', '160cm', '170cm', '180cm', '190cm'],
     img: '/shop/forza-gi-student.jpg',
@@ -56,7 +69,7 @@ const products = [
   },
   {
     name: 'Blitz Shin & Instep Guards',
-    price: '£45.00',
+    price: PRICES['blitz-shin-blue'],
     category: 'Equipment',
     colour: 'Blue',
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -64,7 +77,7 @@ const products = [
   },
   {
     name: 'Blitz Karate Gi',
-    price: '£40.00',
+    price: PRICES['blitz-gi'],
     category: 'Clothing',
     sizes: ['100cm', '110cm', '120cm', '130cm', '140cm', '150cm', '160cm', '170cm', '180cm', '190cm'],
     img: '/shop/blitz-gi.jpg',
