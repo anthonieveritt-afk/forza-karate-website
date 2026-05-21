@@ -15,7 +15,7 @@ const photos = [
   { src: '/hero5.jpg',                      alt: 'Forza Karate Club competition victory', position: '50% 30%' },
   { src: '/hero6.webp',                     alt: 'Forza Karate Club',                  position: '50% 25%' },
   { src: '/hero7.jpg',                      alt: 'Forza Karate Club',                  position: '50% 25%' },
-  { src: '/hero8.jpg',                      alt: 'Forza Karate Club',                  position: '50% 25%' },
+  { src: '/hero18.jpg',                     alt: 'Forza Karate Club young student',    position: '50% 25%' },
   { src: '/hero9.jpg',                      alt: 'Forza Karate Club',                  position: '50% 25%' },
   { src: '/hero12.jpg',                     alt: 'Forza Karate Club',                  position: '50% 25%' },
   { src: '/hero14.jpg',                     alt: 'Forza Karate Club',                  position: '50% 25%' },
