@@ -46,7 +46,7 @@ export default function Hero() {
         })
         setFading(false)
       }, 700)
-    }, 5000)
+    }, 3000)
     return () => clearInterval(interval)
   }, [])
 
