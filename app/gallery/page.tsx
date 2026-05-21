@@ -6,6 +6,14 @@ import { useState } from 'react'
 const albums = [
   {
     category: 'Competition',
+    title: 'English Kyu Grade Championships 2025',
+    photos: [
+      '/gallery/competitions/english-kyu-grade-champs-2025/ekgc-01.jpg',
+      '/gallery/competitions/english-kyu-grade-champs-2025/ekgc-02.jpg',
+    ],
+  },
+  {
+    category: 'Competition',
     title: 'BKF 4 Nations 2025',
     photos: [
       '/gallery/competitions/bkf-4-nations-2025/file_53.jpg',
