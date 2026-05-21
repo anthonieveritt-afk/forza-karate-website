@@ -116,7 +116,7 @@ export default function NinjasPage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10">
+            <Button asChild size="lg" className="bg-white text-[#dc2626] hover:bg-gray-50">
               <Link href="/join">Join Today</Link>
             </Button>
           </div>

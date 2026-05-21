@@ -104,7 +104,7 @@ export default function Hero() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild size="lg">
+            <Button asChild size="lg" className="bg-white text-[#dc2626] hover:bg-gray-50 border border-white">
               <Link href="/join">
                 Join Now
                 <ArrowRight className="h-4 w-4" />
