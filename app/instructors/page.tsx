@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Shield, Award, Heart } from 'lucide-react'
+import InstructorsClient from './InstructorsClient'
 
 export const metadata: Metadata = {
   title: 'Instructors',
@@ -69,41 +70,7 @@ export default function InstructorsPage() {
         </div>
       </section>
 
-      {/* Instructor cards */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {instructors.map((instructor, i) => (
-              <div key={i} className="rounded-2xl border border-black/8 overflow-hidden">
-                <div className="w-full aspect-[4/3] bg-[#fafaf9] relative overflow-hidden">
-                  {instructor.photo ? (
-                    <Image
-                      src={instructor.photo}
-                      alt={instructor.name}
-                      fill
-                      className="object-cover object-top"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-4xl font-bold text-gray-400">{instructor.name.charAt(0)}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="p-6">
-                  <div className="flex items-baseline gap-2 mb-0.5">
-                    <h3 className="font-bold text-[#111111] text-lg">{instructor.name}</h3>
-                    {'grade' in instructor && <span className="text-xs font-semibold text-gray-400">{instructor.grade}</span>}
-                  </div>
-                  <p className="text-sm text-[#dc2626] font-medium mb-1">{instructor.role}</p>
-                  <p className="text-xs text-gray-400 mb-4">{instructor.dojo}</p>
-                  <p className="text-sm text-gray-500 whitespace-pre-line">{instructor.bio}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <InstructorsClient instructors={instructors} />
     </div>
   )
 }
