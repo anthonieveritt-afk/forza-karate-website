@@ -154,6 +154,7 @@ export default function TeamPage() {
                   { src: '/team/kumite-a-tebbutt.jpg',   name: 'A. Tebbutt' },
                   { src: '/team/kumite-a-buss.jpg',      name: 'A. Buss' },
                   { src: '/team/kumite-7.jpg',            name: 'Kumite 7' },
+                  { src: '/team/kumite-new-01.jpg',       name: 'Kumite' },
                 ].map((a) => (
                   <div key={a.name} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
@@ -191,6 +192,25 @@ export default function TeamPage() {
                     />
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* B Squad Kata */}
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Trophy className="h-5 w-5 text-[#dc2626]" />
+                <h2 className="text-2xl font-bold text-[#111111]">B Squad Kata</h2>
+              </div>
+              <div className="mt-6 grid grid-cols-3 gap-3">
+                <div className="rounded-2xl overflow-hidden border border-black/8">
+                  <Image
+                    src="/team/kata-b-squad-01.jpg"
+                    alt="B Squad Kata athlete"
+                    width={300}
+                    height={380}
+                    className="w-full object-cover object-top"
+                  />
+                </div>
               </div>
             </div>
 
