@@ -136,7 +136,7 @@ export default function TeamPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
             {/* Kumite */}
             <div>
@@ -195,43 +195,6 @@ export default function TeamPage() {
               </div>
             </div>
 
-            {/* B Squad Kata */}
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <Trophy className="h-5 w-5 text-[#dc2626]" />
-                <h2 className="text-2xl font-bold text-[#111111]">B Squad Kata</h2>
-              </div>
-              <div className="mt-6 grid grid-cols-3 gap-3">
-                <div className="rounded-2xl overflow-hidden border border-black/8">
-                  <Image
-                    src="/team/kata-b-squad-01.jpg"
-                    alt="B Squad Kata athlete"
-                    width={300}
-                    height={380}
-                    className="w-full object-cover object-top"
-                  />
-                </div>
-                <div className="rounded-2xl overflow-hidden border border-black/8">
-                  <Image
-                    src="/team/kata-b-squad-02.jpg"
-                    alt="B Squad Kata athlete"
-                    width={300}
-                    height={380}
-                    className="w-full object-cover object-top"
-                  />
-                </div>
-                <div className="rounded-2xl overflow-hidden border border-black/8">
-                  <Image
-                    src="/team/kata-b-squad-03.jpg"
-                    alt="B Squad Kata athlete"
-                    width={300}
-                    height={380}
-                    className="w-full object-cover object-top"
-                  />
-                </div>
-              </div>
-            </div>
-
             {/* Para Karate */}
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -251,6 +214,26 @@ export default function TeamPage() {
             </div>
 
           </div>
+
+          {/* B Squad Kata — full width below Kata Team */}
+          <div className="mt-12">
+            <div className="flex items-center gap-3 mb-2">
+              <Trophy className="h-5 w-5 text-[#dc2626]" />
+              <h2 className="text-2xl font-bold text-[#111111]">B Squad Kata</h2>
+            </div>
+            <div className="mt-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+              <div className="rounded-2xl overflow-hidden border border-black/8">
+                <Image src="/team/kata-b-squad-01.jpg" alt="B Squad Kata athlete" width={300} height={380} className="w-full object-cover object-top" />
+              </div>
+              <div className="rounded-2xl overflow-hidden border border-black/8">
+                <Image src="/team/kata-b-squad-02.jpg" alt="B Squad Kata athlete" width={300} height={380} className="w-full object-cover object-top" />
+              </div>
+              <div className="rounded-2xl overflow-hidden border border-black/8">
+                <Image src="/team/kata-b-squad-03.jpg" alt="B Squad Kata athlete" width={300} height={380} className="w-full object-cover object-top" />
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
