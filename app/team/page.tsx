@@ -189,14 +189,16 @@ export default function TeamPage() {
                 <h2 className="text-2xl font-bold text-[#111111]">Para Karate</h2>
               </div>
               <p className="text-sm text-gray-400">{paraAthletes.length} athlete</p>
-              <div className="mt-6 rounded-2xl overflow-hidden border border-black/8">
-                <Image
-                  src="/team/leo-buss.jpg"
-                  alt="Para Karate athlete"
-                  width={600}
-                  height={750}
-                  className="w-full object-cover object-top"
-                />
+              <div className="mt-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                <div className="rounded-2xl overflow-hidden border border-black/8">
+                  <Image
+                    src="/team/leo-buss.jpg"
+                    alt="Para Karate athlete"
+                    width={300}
+                    height={380}
+                    className="w-full object-cover object-top"
+                  />
+                </div>
               </div>
             </div>
 
