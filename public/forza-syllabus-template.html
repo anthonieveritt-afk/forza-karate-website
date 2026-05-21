@@ -102,6 +102,22 @@
   }
   .edit-line:focus { border-bottom-color: #dc2626; background: #fff9f9; }
 
+  /* === TICK ROW === */
+  .tick-row { display: flex; align-items: center; gap: 5px; margin-bottom: 2px; }
+  .tick-row .edit-line { margin-bottom: 0; flex: 1; }
+  .tick-cb {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    accent-color: #dc2626;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .tick-cb:checked + .edit-line { text-decoration: line-through; color: #aaa; }
+  @media print {
+    .tick-cb { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
   /* === REFERENCE PAGES === */
   .ref-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 9.5pt; }
   .ref-table th { background: #dc2626; color: #fff; padding: 6px 10px; text-align: left; font-size: 9pt; }
@@ -2580,6 +2596,19 @@
 
 <script>
   var SAVE_KEY = 'forzaSyllabus_v1';
+  var TICK_KEY = 'forzaSyllabus_ticks_v1';
+
+  // === Wrap every edit-line with a tick checkbox ===
+  document.querySelectorAll('input.edit-line').forEach(function(input) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'tick-row';
+    input.parentNode.insertBefore(wrapper, input);
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.className = 'tick-cb';
+    wrapper.appendChild(cb);
+    wrapper.appendChild(input);
+  });
 
   // Make section titles (Kihon, Kata, Combinations etc.) editable
   document.querySelectorAll('.section-box h4').forEach(function(h4) {
@@ -2590,17 +2619,26 @@
     });
   });
 
-  // Collect all saveable elements in DOM order
+  // Collect all text editables in DOM order
   function getEditables() {
     return Array.from(document.querySelectorAll('input.edit-line, [contenteditable="true"]'));
   }
 
-  // Save all content to localStorage
+  // Collect all tick checkboxes in DOM order
+  function getTicks() {
+    return Array.from(document.querySelectorAll('input.tick-cb'));
+  }
+
+  // Save all content + tick states to localStorage
   function saveAll() {
     var data = getEditables().map(function(el) {
       return el.tagName === 'INPUT' ? el.value : el.innerText;
     });
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+
+    var ticks = getTicks().map(function(cb) { return cb.checked; });
+    localStorage.setItem(TICK_KEY, JSON.stringify(ticks));
+
     var s = document.getElementById('saveStatus');
     s.style.color = '#4ade80';
     s.textContent = '✓ Saved ' + new Date().toLocaleTimeString();
@@ -2609,31 +2647,53 @@
 
   // Clear saved data
   function clearSaved() {
-    if (!confirm('Clear all saved content? This cannot be undone.')) return;
+    if (!confirm('Clear all saved content and ticks? This cannot be undone.')) return;
     localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem(TICK_KEY);
+    // Untick all
+    getTicks().forEach(function(cb) { cb.checked = false; });
+    // Clear all inputs
+    getEditables().forEach(function(el) {
+      if (el.tagName === 'INPUT') el.value = '';
+    });
     document.getElementById('saveStatus').textContent = 'Cleared';
   }
 
   // Restore saved content on load
   (function restoreAll() {
+    // Restore text
     var raw = localStorage.getItem(SAVE_KEY);
-    if (!raw) return;
-    try {
-      var data = JSON.parse(raw);
-      var els = getEditables();
-      els.forEach(function(el, i) {
-        if (data[i] === undefined || data[i] === null) return;
-        if (el.tagName === 'INPUT') {
-          el.value = data[i];
-        } else {
-          // Only restore if content differs (preserves default labels when empty)
-          if (data[i].trim() !== '') el.innerText = data[i];
-        }
-      });
+    if (raw) {
+      try {
+        var data = JSON.parse(raw);
+        var els = getEditables();
+        els.forEach(function(el, i) {
+          if (data[i] === undefined || data[i] === null) return;
+          if (el.tagName === 'INPUT') {
+            el.value = data[i];
+          } else {
+            if (data[i].trim() !== '') el.innerText = data[i];
+          }
+        });
+      } catch(e) {}
+    }
+
+    // Restore ticks
+    var tickRaw = localStorage.getItem(TICK_KEY);
+    if (tickRaw) {
+      try {
+        var ticks = JSON.parse(tickRaw);
+        getTicks().forEach(function(cb, i) {
+          if (ticks[i]) cb.checked = true;
+        });
+      } catch(e) {}
+    }
+
+    if (raw || tickRaw) {
       var s = document.getElementById('saveStatus');
       s.textContent = 'Restored from save';
       setTimeout(function() { s.textContent = ''; }, 3000);
-    } catch(e) {}
+    }
   })();
 </script>
 </body>
