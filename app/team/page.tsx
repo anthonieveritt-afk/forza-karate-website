@@ -211,6 +211,15 @@ export default function TeamPage() {
                     className="w-full object-cover object-top"
                   />
                 </div>
+                <div className="rounded-2xl overflow-hidden border border-black/8">
+                  <Image
+                    src="/team/kata-b-squad-02.jpg"
+                    alt="B Squad Kata athlete"
+                    width={300}
+                    height={380}
+                    className="w-full object-cover object-top"
+                  />
+                </div>
               </div>
             </div>
 
