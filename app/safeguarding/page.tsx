@@ -79,7 +79,7 @@ export default function SafeguardingPage() {
                 Forza Karate Club (FKC) acknowledges the duty of care to safeguard and promote the welfare of children. FKC are committed to ensuring safeguarding practice reflects statutory responsibilities, government guidance and complies with best practice and local authority requirements.
               </p>
               <p>
-                Forza Karate Club are affiliated to the English Karate Federation (EKF) via our association{' '}
+                Forza Karate Club are affiliated to the English Karate National Governing Body (EKNGB) via our association{' '}
                 <a href="http://frontierkarateassociation.co.uk/" target="_blank" rel="noopener noreferrer" className="text-[#dc2626] hover:underline font-medium">
                   Frontier Karate Association
                 </a>.
