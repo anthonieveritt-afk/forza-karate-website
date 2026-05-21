@@ -97,43 +97,36 @@ export default function Hero() {
             Term-time classes, real progression, and a community that lasts.
           </p>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-8">
-            <Button asChild size="lg">
+          {/* CTAs — 2×2 grid, all uniform */}
+          <div className="grid grid-cols-2 gap-3">
+            <Button asChild size="lg" className="w-full justify-center">
               <Link href="/trial-class">
-                Book Free Trial
-                <ArrowRight className="h-4 w-4" />
+                Book a Free Trial
               </Link>
             </Button>
-            <Button asChild size="lg" className="bg-white text-[#dc2626] hover:bg-gray-50 border-2 border-[#dc2626]">
+            <Button asChild size="lg" className="w-full justify-center bg-white text-[#dc2626] hover:bg-gray-50 border-2 border-[#dc2626]">
               <Link href="/join">
                 Join Now
-                <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
-          </div>
-
-          {/* Safeguarding Code badge + View Classes */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <Button asChild size="lg" variant="outline" className="w-full justify-center">
+              <Link href="/classes">
+                View Classes
+              </Link>
+            </Button>
             <Link
               href="/safeguarding"
-              className="inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl border border-black/10 bg-white/80 hover:bg-white hover:border-black/20 transition-colors group"
+              className="inline-flex items-center justify-center gap-2 px-4 h-12 rounded-2xl border border-black/12 bg-white/80 hover:bg-white hover:border-black/25 transition-colors text-sm font-medium"
             >
               <Image
                 src="/safeguarding-code-logo.webp"
-                alt="Safeguarding Code in Martial Arts"
-                width={44}
-                height={44}
-                className="w-11 h-11 object-contain"
+                alt="Safeguarding Code"
+                width={28}
+                height={28}
+                className="w-7 h-7 object-contain flex-shrink-0"
               />
-              <div className="text-left">
-                <p className="text-xs font-bold text-[#111111] uppercase tracking-wider leading-tight">Safeguarding Code</p>
-                <p className="text-xs text-gray-500 leading-tight">in Martial Arts — certified</p>
-              </div>
+              <span className="text-[#111111] leading-tight">Safeguarding Code</span>
             </Link>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/classes">View Classes</Link>
-            </Button>
           </div>
         </div>
       </div>
