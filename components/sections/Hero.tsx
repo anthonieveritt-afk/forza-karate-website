@@ -29,6 +29,7 @@ const photos = [
   { src: '/hero15.jpg',                     alt: 'Forza Karate sparring',              position: '50% 25%' },
   { src: '/hero16.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
   { src: '/hero17.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
+  { src: '/hero19.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
 ]
 
 export default function Hero() {
