@@ -148,18 +148,6 @@ export default function TrialClassForm() {
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-[#111111] mb-1.5">
-          Anything else? <span className="text-gray-400 font-normal">(optional)</span>
-        </label>
-        <textarea
-          name="message"
-          rows={4}
-          placeholder="Any questions, health notes, or anything else we should know..."
-          className="w-full px-4 py-3 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition resize-none"
-        />
-      </div>
-
       <Button
         type="submit"
         size="lg"
