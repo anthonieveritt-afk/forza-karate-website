@@ -64,6 +64,38 @@ export async function submitEnrolment(data: EnrolmentData): Promise<void> {
     )
   `
 
+  // Forward to Club Honbu
+  const honbuUrl = process.env.CLUB_HONBU_URL
+  const honbuSecret = process.env.CLUB_HONBU_WEBHOOK_SECRET
+  if (honbuUrl && honbuSecret) {
+    try {
+      await fetch(`${honbuUrl}/api/webhooks/formsmarts/licence?token=${honbuSecret}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          'First Name': data.firstName,
+          'Last Name': data.lastName,
+          'Email': data.email,
+          'Phone': data.phone,
+          'Date of Birth': data.dateOfBirth || '',
+          'Address': data.addressLine1 || '',
+          'Post Code': data.postcode || '',
+          'Parent Name': data.parentFirstName ? `${data.parentFirstName} ${data.parentLastName ?? ''}`.trim() : '',
+          'Emergency Contact': data.emergencyName || '',
+          'Emergency Phone': data.emergencyPhone || '',
+          'Medical': data.medicalConditions || '',
+          'Belt': data.currentBelt || '',
+          'Which Club': data.dojo || '',
+          'Preferred Class': data.classTime || '',
+          'Licence Type': data.membershipType || 'Student',
+          'Source': 'Forza website join form',
+        }),
+      })
+    } catch (err) {
+      console.error('Club Honbu enrolment forward failed:', err)
+    }
+  }
+
   await sql`
     INSERT INTO enrolments (
       first_name, last_name, date_of_birth, gender, email, phone,
