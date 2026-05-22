@@ -21,22 +21,6 @@ const photos = [
   { src: '/team/team-16.jpg', alt: 'Team Forza' },
   { src: '/team/team-group.jpg', alt: 'Team Forza group' },
   { src: '/team/team-competition-01.jpg', alt: 'Team Forza competition' },
-  { src: '/team/kumite-y-yogarajah.jpg', alt: 'Team Forza kumite' },
-  { src: '/team/kumite-q-wong.jpg', alt: 'Team Forza kumite' },
-  { src: '/team/kumite-h-dosser.jpg', alt: 'Team Forza kumite' },
-  { src: '/team/kumite-q-godfrey.jpg', alt: 'Team Forza kumite' },
-  { src: '/team/kumite-a-tebbutt.jpg', alt: 'Team Forza kumite' },
-  { src: '/team/kumite-a-buss.jpg', alt: 'Team Forza kumite' },
-  { src: '/team/kumite-7.jpg', alt: 'Team Forza kumite' },
-  { src: '/team/kumite-new-01.jpg', alt: 'Team Forza kumite' },
-  { src: '/team/y-yogarajah.jpg', alt: 'Team Forza kata' },
-  { src: '/team/a-wong.jpg', alt: 'Team Forza kata' },
-  { src: '/team/q-wong.jpg', alt: 'Team Forza kata' },
-  { src: '/team/kata-b-squad-01.jpg', alt: 'Team Forza B Squad' },
-  { src: '/team/kata-b-squad-02.jpg', alt: 'Team Forza B Squad' },
-  { src: '/team/kata-b-squad-03.jpg', alt: 'Team Forza B Squad' },
-  { src: '/team/leo-buss.jpg', alt: 'Team Forza para karate' },
-  { src: '/team/anthoni-everitt.jpg', alt: 'Team Forza coach' },
 ]
 
 export default function TeamBanner() {
