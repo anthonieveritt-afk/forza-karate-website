@@ -61,15 +61,18 @@ export default function Hero() {
         className="absolute inset-0 transition-opacity duration-700"
         style={{ opacity: fading ? 0 : 1 }}
       >
-        <Image
-          key={photos[current].src}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={photos[current].src}
           alt={photos[current].alt}
-          fill
-          priority
-          className="object-cover"
-          style={{ objectPosition: photos[current].position }}
-          sizes="100vw"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: photos[current].position,
+          }}
         />
       </div>
 
