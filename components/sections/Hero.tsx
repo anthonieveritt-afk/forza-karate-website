@@ -41,43 +41,39 @@ const photos = [
 
 export default function Hero() {
   const [current, setCurrent] = useState(0)
-  const [fading, setFading] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFading(true)
-      setTimeout(() => {
-        setCurrent((i) => (i + 1) % photos.length)
-        setFading(false)
-      }, 600)
+      setCurrent((i) => (i + 1) % photos.length)
     }, 3000)
     return () => clearInterval(interval)
   }, [])
 
   return (
     <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-white">
-      {/* Background photo — crossfades between images */}
-      <div
-        className="absolute inset-0 transition-opacity duration-700"
-        style={{ opacity: fading ? 0 : 1 }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+      {/* All photos stacked — CSS opacity crossfade, no src swapping */}
+      {photos.map((photo, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={photos[current].src}
-          alt={photos[current].alt}
+          key={photo.src}
+          src={photo.src}
+          alt={photo.alt}
           style={{
             position: 'absolute',
             inset: 0,
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            objectPosition: photos[current].position,
+            objectPosition: photo.position,
+            opacity: i === current ? 1 : 0,
+            transition: 'opacity 0.8s ease-in-out',
+            zIndex: i === current ? 1 : 0,
           }}
         />
-      </div>
+      ))}
 
       {/* White fade — blends right side */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-white" />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-white" style={{ zIndex: 2 }} />
 
       {/* Content — sits on the right over the white fade */}
       <div className="relative z-10 ml-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
