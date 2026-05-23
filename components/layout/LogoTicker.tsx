@@ -1,5 +1,4 @@
-import Image from 'next/image'
-import Link from 'next/link'
+'use client'
 
 const sponsors = [
   {
@@ -19,35 +18,33 @@ const sponsors = [
   },
 ]
 
-// Duplicate so the scroll loops seamlessly
+// Triple the list so the seamless loop works at any screen width
 const items = [...sponsors, ...sponsors, ...sponsors]
 
 export default function LogoTicker() {
   return (
-    <div className="bg-[#0a0a0a] border-t border-white/5 py-6 overflow-hidden">
-      <p className="text-center text-xs font-medium text-gray-500 uppercase tracking-widest mb-5">
+    <div className="bg-white border-t border-black/8 border-b border-black/8 py-6 overflow-hidden">
+      <p className="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-5">
         Our Partners &amp; Sponsors
       </p>
       <div className="relative flex">
-        <div className="flex animate-ticker gap-16 items-center whitespace-nowrap">
+        <div className="flex animate-ticker gap-20 items-center">
           {items.map((s, i) => (
-            <Link
+            <a
               key={i}
               href={s.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-shrink-0 bg-white/90 hover:bg-white transition-all duration-300 rounded-xl px-5 py-3 opacity-70 hover:opacity-100"
+              className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity duration-300"
               aria-label={s.name}
             >
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={s.logo}
                 alt={s.name}
-                width={140}
-                height={56}
-                className="h-10 w-auto object-contain"
-                unoptimized
+                style={{ height: '48px', width: 'auto', objectFit: 'contain', display: 'block' }}
               />
-            </Link>
+            </a>
           ))}
         </div>
       </div>
