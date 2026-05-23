@@ -47,13 +47,9 @@ export default function Hero() {
     const interval = setInterval(() => {
       setFading(true)
       setTimeout(() => {
-        setCurrent((i) => {
-          // pick a random different index
-          const next = (i + 1 + Math.floor(Math.random() * (photos.length - 1))) % photos.length
-          return next
-        })
+        setCurrent((i) => (i + 1) % photos.length)
         setFading(false)
-      }, 700)
+      }, 600)
     }, 3000)
     return () => clearInterval(interval)
   }, [])
