@@ -14,7 +14,7 @@ const sponsors = [
   },
   {
     name: 'VM Elevators',
-    logo: '/sponsors/vm-elevators.png',
+    logo: '/sponsors/vm-elevators.webp',
     href: 'https://vmelevators.com',
   },
 ]
