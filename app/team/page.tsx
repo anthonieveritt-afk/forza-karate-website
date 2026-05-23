@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Trophy } from 'lucide-react'
 import TeamBanner from '@/components/sections/TeamBanner'
+import LogoTicker from '@/components/layout/LogoTicker'
 
 
 export const metadata: Metadata = {
@@ -75,6 +76,7 @@ export default function TeamPage() {
   return (
     <div className="bg-white">
       <TeamBanner />
+      <LogoTicker />
 
       {/* Coaches */}
       <section className="bg-[#fafaf9] py-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">

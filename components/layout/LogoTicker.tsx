@@ -28,7 +28,7 @@ export default function LogoTicker() {
         Our Partners &amp; Sponsors
       </p>
       <div className="relative flex">
-        <div className="flex animate-ticker gap-20 items-center">
+        <div className="flex animate-ticker gap-28 items-center">
           {items.map((s, i) => (
             <a
               key={i}
@@ -42,7 +42,7 @@ export default function LogoTicker() {
               <img
                 src={s.logo}
                 alt={s.name}
-                style={{ height: '48px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                style={{ height: '72px', width: 'auto', objectFit: 'contain', display: 'block' }}
               />
             </a>
           ))}
