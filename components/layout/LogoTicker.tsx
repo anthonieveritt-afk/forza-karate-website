@@ -4,7 +4,7 @@ import Link from 'next/link'
 const sponsors = [
   {
     name: 'Favourite Chicken & Ribs',
-    logo: '/sponsors/favorite.png',
+    logo: '/sponsors/favorite.webp',
     href: 'https://favorite.co.uk/store-finder/favorite-chicken-ribs-rayleigh.html',
   },
   {
@@ -36,7 +36,7 @@ export default function LogoTicker() {
               href={s.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity duration-300"
+              className="flex-shrink-0 bg-white/90 hover:bg-white transition-all duration-300 rounded-xl px-5 py-3 opacity-70 hover:opacity-100"
               aria-label={s.name}
             >
               <Image
@@ -44,7 +44,7 @@ export default function LogoTicker() {
                 alt={s.name}
                 width={140}
                 height={56}
-                className="h-12 w-auto object-contain filter brightness-0 invert"
+                className="h-10 w-auto object-contain"
                 unoptimized
               />
             </Link>
