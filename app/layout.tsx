@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import LogoTicker from '@/components/layout/LogoTicker'
 import { CartProvider } from '@/lib/cart-context'
 
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default function RootLayout({
         <CartProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
+          <LogoTicker />
           <Footer />
         </CartProvider>
       </body>

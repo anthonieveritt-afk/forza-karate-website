@@ -30,3 +30,17 @@ body {
 .team-scroll-track:hover {
   animation-play-state: paused;
 }
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}
+
+.animate-ticker {
+  animation: ticker 18s linear infinite;
+  will-change: transform;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
