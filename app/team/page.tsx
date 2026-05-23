@@ -167,10 +167,11 @@ export default function TeamPage() {
               <p className="text-sm text-gray-400">{kataAthletes.length} athletes</p>
               <div className="mt-6 grid grid-cols-3 gap-3">
                 {[
-                  { src: '/team/kata-ahm-mac.jpg' },
-                  { src: '/team/kata-nam-mac.jpg' },
-                ].map((a, i) => (
-                  <div key={i} className="rounded-2xl overflow-hidden border border-black/8">
+                  { src: '/team/y-yogarajah.jpg', name: 'Y. Yogarajah' },
+                  { src: '/team/a-wong.jpg',      name: 'A. Wong' },
+                  { src: '/team/q-wong.jpg',      name: 'Q. Wong' },
+                ].map((a) => (
+                  <div key={a.name} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
                       src={a.src}
                       alt="Kata athlete"
@@ -220,9 +221,6 @@ export default function TeamPage() {
               </div>
               <div className="rounded-2xl overflow-hidden border border-black/8">
                 <Image src="/team/kata-b-squad-03.jpg" alt="B Squad Kata athlete" width={300} height={380} className="w-full object-cover object-top" />
-              </div>
-              <div className="rounded-2xl overflow-hidden border border-black/8">
-                <Image src="/team/kata-casielle.jpg" alt="B Squad Kata athlete" width={300} height={380} className="w-full object-cover object-top" />
               </div>
             </div>
           </div>
