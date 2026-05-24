@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  allowedDevOrigins: ['despite-gig-guidelines-explains.trycloudflare.com'],
 };
 
 export default nextConfig;

@@ -12,19 +12,7 @@ const albums = [
       '/gallery/competitions/english-kyu-grade-champs-2025/ekgc-02.jpg',
     ],
   },
-  {
-    category: 'Competition',
-    title: 'BKF 4 Nations 2025',
-    photos: [
-      '/gallery/competitions/bkf-4-nations-2025/file_53.jpg',
-      '/gallery/competitions/bkf-4-nations-2025/file_54.jpg',
-      '/gallery/competitions/bkf-4-nations-2025/file_55.jpg',
-      '/gallery/competitions/bkf-4-nations-2025/file_56.jpg',
-      '/gallery/competitions/bkf-4-nations-2025/file_57.jpg',
-      '/gallery/competitions/bkf-4-nations-2025/file_58.jpg',
-      '/gallery/competitions/bkf-4-nations-2025/competition-celebrate.jpg',
-    ],
-  },
+
 ]
 
 // Flatten all photos with their metadata for the grid
