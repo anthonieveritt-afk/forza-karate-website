@@ -167,14 +167,17 @@ export default function TeamPage() {
               <p className="text-sm text-gray-400">{kataAthletes.length} athletes</p>
               <div className="mt-6 grid grid-cols-3 gap-3">
                 {[
-                  { src: '/team/y-yogarajah.jpg', name: 'Y. Yogarajah' },
-                  { src: '/team/a-wong.jpg',      name: 'A. Wong' },
-                  { src: '/team/q-wong.jpg',      name: 'Q. Wong' },
+                  { src: '/team/y-yogarajah.jpg',  name: 'Y. Yogarajah' },
+                  { src: '/team/a-wong.jpg',         name: 'A. Wong' },
+                  { src: '/team/q-wong.jpg',         name: 'Q. Wong' },
+                  { src: '/team/kata-ahm-mac.jpg',   name: 'Ahm Mac' },
+                  { src: '/team/kata-nam-mac.jpg',   name: 'Nam Mac' },
+                  { src: '/team/kata-c-buss.jpg',    name: 'Claire Buss' },
                 ].map((a) => (
                   <div key={a.name} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
                       src={a.src}
-                      alt="Kata athlete"
+                      alt={`${a.name} – Kata athlete`}
                       width={300}
                       height={380}
                       className="w-full object-cover object-top"
