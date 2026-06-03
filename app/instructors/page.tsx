@@ -24,6 +24,14 @@ const instructors = [
     bio: 'Dedicated and accomplished karate coach with four decades of experience in traditional and sport karate. Proven record of developing athletes from grassroots to world-class level. Renowned for mentoring national and international champions, promoting karate through community-based initiatives and fostering discipline, technical excellence and mental resilience. Skilled in designing structured training programmes for athletes of all ages and abilities.\n\nFormer England Assistant Coach\nFormer Southern Regional Coach',
   },
   {
+    name: 'Sensei Scott Nicholls',
+    grade: '4th Dan',
+    role: 'Instructor',
+    dojo: 'Rayleigh & Upminster',
+    photo: '/instructors/scott-nicholls.jpg',
+    bio: '',
+  },
+  {
     name: 'Sensei Jade Honeywood',
     grade: '4th Dan',
     role: 'Senior Instructor',
