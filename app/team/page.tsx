@@ -144,6 +144,8 @@ export default function TeamPage() {
                   { src: '/team/kumite-a-buss.jpg',      name: 'A. Buss' },
                   { src: '/team/kumite-7.jpg',            name: 'Kumite 7' },
                   { src: '/team/kumite-new-01.jpg',       name: 'Kumite' },
+                  { src: '/team/kata-nam-mac.jpg',        name: 'Nam Mac' },
+                  { src: '/team/kata-c-buss.jpg',         name: 'Claire Buss' },
                 ].map((a) => (
                   <div key={a.name} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
