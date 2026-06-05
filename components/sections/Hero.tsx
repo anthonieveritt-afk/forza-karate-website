@@ -161,45 +161,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-          {/* Eyebrow */}
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-0.5 bg-[#dc2626]" />
-            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">
-              Forza Karate Club
-            </span>
-          </div>
-
-          {/* Heading */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#111111] leading-[1.05] tracking-tight mb-6">
-            This is where<br />
-            our students{' '}
-            <AnimatedWord />
-          </h1>
-
-          {/* Subheading */}
-          <p className="text-lg text-gray-600 leading-relaxed mb-10">
-            Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster.
-            Term-time classes, real progression, and a community that lasts.
-          </p>
-
-          {/* CTAs */}
-          <div className="grid grid-cols-2 gap-3">
-            <Button asChild size="lg" className="w-full justify-center">
-              <Link href="/trial-class">Book a Free Trial</Link>
-            </Button>
-            <Button asChild size="lg" className="w-full justify-center bg-white text-[#dc2626] hover:bg-gray-50 border-2 border-[#dc2626]">
-              <Link href="/join">Join Now</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="w-full justify-center">
-              <Link href="/classes">View Classes</Link>
-            </Button>
-            <Link href="/safeguarding" className="inline-flex items-center justify-center gap-2 px-4 h-12 rounded-2xl border border-black/12 bg-white/80 hover:bg-white hover:border-black/25 transition-colors text-sm font-medium">
-              <Image src="/safeguarding-code-logo.webp" alt="Safeguarding Code" width={28} height={28} className="w-7 h-7 object-contain flex-shrink-0" />
-              <span className="text-[#111111] leading-tight">Safeguarding Code</span>
-            </Link>
-          </div>
-        </div>
-      </div>
 
     </section>
   )
