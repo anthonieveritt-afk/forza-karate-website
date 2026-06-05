@@ -16,6 +16,11 @@ const sponsors = [
     logo: '/sponsors/vm-elevators.webp',
     href: 'https://vmelevators.com',
   },
+  {
+    name: 'Direct Property Care',
+    logo: '/sponsors/direct-property-care.jpg',
+    href: '#',
+  },
 ]
 
 // Triple the list so the seamless loop works at any screen width

@@ -9,18 +9,39 @@ import CartDrawer from '@/components/shop/CartDrawer'
 // ─── PRICES ── edit here to update shop prices ──────────────────────────────
 const PRICES: Record<string, number> = {
   // values in pence (£65.00 = 6500)
-  'smai-shin-red':      6500,
-  'chest-guard':        3500,
-  'mouthguards':         500,
-  'smai-mitts':         4500,
-  'forza-tshirt':       2000,
-  'forza-gi-student':   3500,
-  'blitz-shin-blue':    4500,
-  'blitz-gi':           4000,
+  'smai-shin-red':               6500,
+  'chest-guard':                 3500,
+  'mouthguards':                  500,
+  'smai-mitts':                  4500,
+  'forza-tshirt':                2000,
+  'forza-gi-student':            3500,
+  'blitz-shin-blue':             4500,
+  'blitz-gi':                    4000,
+  'sport-kumite-gi':            13600,  // WKF Kumite Gi — all sizes same price
+}
+
+// Per-size prices (overrides PRICES when a size is selected)
+const SIZE_PRICES: Record<string, Record<string, number>> = {
+  'sport-kumite-red-blue': {
+    '120cm': 13500, '130cm': 13500, '140cm': 13500, '150cm': 13500,
+    '160cm': 15600, '170cm': 15600, '180cm': 15600, '190cm': 15600, '200cm': 15600,
+  },
 }
 // ────────────────────────────────────────────────────────────────────────────
 
-const products = [
+type Product = {
+  key: string
+  name: string
+  category: string
+  colour?: string
+  sizes: string[]
+  img: string
+  badge?: string
+  desc?: string
+  priceOnRequest?: boolean
+}
+
+const products: Product[] = [
   {
     key: 'smai-shin-red',
     name: 'SMAI WKF Shin & Instep Guards',
@@ -86,6 +107,34 @@ const products = [
     img: '/shop/blitz-gi.jpg',
     desc: 'Sized by height. If between sizes, go up.',
   },
+  {
+    key: 'sport-kumite-gi',
+    name: 'WKF Approved Sport Kumite Gi',
+    category: 'Clothing',
+    sizes: ['170cm', '180cm', '190cm', '200cm'],
+    img: '/shop/blitz-gi.jpg',
+    badge: 'WKF Approved',
+    desc: 'Sized by height. If between sizes, go up.',
+  },
+  {
+    key: 'sport-kumite-gi-embroidered',
+    name: 'WKF Approved Sport Kumite Gi — Embroidered Shoulders',
+    category: 'Clothing',
+    sizes: ['170cm', '180cm', '190cm', '200cm'],
+    img: '/shop/blitz-gi.jpg',
+    badge: 'WKF Approved',
+    desc: 'Embroidered shoulders. Sized by height.',
+    priceOnRequest: true,
+  },
+  {
+    key: 'sport-kumite-red-blue',
+    name: 'WKF Approved Sport Kumite Gi — Red or Blue',
+    category: 'Clothing',
+    sizes: ['120cm', '130cm', '140cm', '150cm', '160cm', '170cm', '180cm', '190cm', '200cm'],
+    img: '/shop/blitz-gi.jpg',
+    badge: 'WKF Approved',
+    desc: 'Red or blue. Sized by height. Price varies by size.',
+  },
 ]
 
 const categories = ['All', 'Clothing', 'Equipment']
@@ -103,15 +152,22 @@ export default function ShopPage() {
 
   const filtered = active === 'All' ? products : products.filter(p => p.category === active)
 
-  const handleAdd = (product: typeof products[0]) => {
+  const getEffectivePrice = (productKey: string, size?: string): number | null => {
+    if (SIZE_PRICES[productKey] && size) return SIZE_PRICES[productKey][size] ?? null
+    return PRICES[productKey] ?? null
+  }
+
+  const handleAdd = (product: Product) => {
     const size = selected[product.key]
-    if (!size) return
+    if (!size || product.priceOnRequest) return
+    const price = getEffectivePrice(product.key, size)
+    if (price == null) return
     addItem({
       id: `${product.key}-${size}`,
       name: product.name,
       size,
-      price: PRICES[product.key],
-      priceLabel: priceLabel(PRICES[product.key]),
+      price,
+      priceLabel: priceLabel(price),
       img: product.img,
     })
     setAdded(prev => ({ ...prev, [product.key]: true }))
@@ -227,19 +283,33 @@ export default function ShopPage() {
                     </div>
 
                     <div className="flex items-center justify-between mt-auto pt-2">
-                      <span className="text-sm font-bold text-[#111111]">{priceLabel(PRICES[product.key])}</span>
+                      {product.priceOnRequest ? (
+                        <span className="text-sm font-semibold text-gray-400">POA</span>
+                      ) : SIZE_PRICES[product.key] ? (
+                        <span className="text-sm font-bold text-[#111111]">
+                          {size && SIZE_PRICES[product.key][size]
+                            ? priceLabel(SIZE_PRICES[product.key][size])
+                            : '£135–£156'}
+                        </span>
+                      ) : (
+                        <span className="text-sm font-bold text-[#111111]">
+                          {PRICES[product.key] != null ? priceLabel(PRICES[product.key]) : '—'}
+                        </span>
+                      )}
                       <button
                         onClick={() => handleAdd(product)}
-                        disabled={!size}
+                        disabled={!size || !!product.priceOnRequest}
                         className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
-                          isAdded
+                          product.priceOnRequest
+                            ? 'bg-black/5 text-gray-400 cursor-not-allowed'
+                            : isAdded
                             ? 'bg-green-500 text-white'
                             : size
                             ? 'bg-[#dc2626] hover:bg-[#b91c1c] text-white'
                             : 'bg-black/5 text-gray-400 cursor-not-allowed'
                         }`}
                       >
-                        {isAdded ? '✓ Added' : size ? 'Add to Cart' : 'Pick size'}
+                        {product.priceOnRequest ? 'Contact us' : isAdded ? '✓ Added' : size ? 'Add to Cart' : 'Pick size'}
                       </button>
                     </div>
                   </div>
