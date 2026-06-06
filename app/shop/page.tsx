@@ -234,6 +234,7 @@ export default function ShopPage() {
               return (
                 <div
                   key={product.key}
+                  id={product.key}
                   className="flex flex-col rounded-2xl border border-black/8 overflow-hidden hover:border-black/20 hover:shadow-md transition-all"
                 >
                   {/* Image */}

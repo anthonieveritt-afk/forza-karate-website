@@ -24,8 +24,8 @@ const nextSteps = [
     icon: ShoppingBag,
     title: 'Order your official karate suit',
     desc: 'Blitz Karate Gi — available in the Forza shop.',
-    href: '/shop',
-    cta: 'Visit Shop →',
+    href: '/shop#blitz-gi',
+    cta: 'Order Gi →',
   },
   {
     icon: Shield,
