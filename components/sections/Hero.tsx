@@ -39,6 +39,15 @@ const photos = [
   { src: '/hero26.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
   { src: '/hero27.jpg',                     alt: 'Forza Karate class training',        position: '50% 35%' },
   { src: '/hero28.jpg',                     alt: 'Forza Karate class',                 position: '50% 35%' },
+  { src: '/hero29.jpg',                     alt: 'Forza Karate class group',           position: '50% 30%' },
+  { src: '/hero30.jpg',                     alt: 'BKF Four Nations medals',            position: '50% 25%' },
+  { src: '/hero31.jpg',                     alt: 'Forza Karate competition action',    position: '50% 25%' },
+  { src: '/hero32.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
+  { src: '/hero33.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
+  { src: '/hero34.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
+  { src: '/hero35.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
+  { src: '/hero36.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
+  { src: '/hero37.jpg',                     alt: 'Forza Karate kata competition',      position: '50% 25%' },
 ]
 
 export default function Hero() {
