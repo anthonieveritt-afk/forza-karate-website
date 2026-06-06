@@ -13,6 +13,33 @@ interface Instructor {
   bio: string
 }
 
+function BioText({ bio }: { bio: string }) {
+  const [expanded, setExpanded] = useState(false)
+  const paragraphs = bio.split('\n\n').filter(Boolean)
+  const firstPara = paragraphs[0] ?? bio
+  const rest = paragraphs.slice(1).join('\n\n')
+  const hasMore = rest.trim().length > 0
+
+  return (
+    <div className="text-sm text-gray-500">
+      <p>{firstPara}</p>
+      {hasMore && (
+        <>
+          {expanded && (
+            <p className="mt-3 whitespace-pre-line">{rest}</p>
+          )}
+          <button
+            onClick={() => setExpanded(v => !v)}
+            className="mt-2 text-[#dc2626] font-medium text-xs hover:underline focus:outline-none"
+          >
+            {expanded ? 'Read less ↑' : 'Read more…'}
+          </button>
+        </>
+      )}
+    </div>
+  )
+}
+
 export default function InstructorsClient({ instructors }: { instructors: Instructor[] }) {
   const [lightbox, setLightbox] = useState<Instructor | null>(null)
 
@@ -49,7 +76,7 @@ export default function InstructorsClient({ instructors }: { instructors: Instru
                   </div>
                   <p className="text-sm text-[#dc2626] font-medium mb-1">{instructor.role}</p>
                   <p className="text-xs text-gray-400 mb-4">{instructor.dojo}</p>
-                  <p className="text-sm text-gray-500 whitespace-pre-line">{instructor.bio}</p>
+                  <BioText bio={instructor.bio} />
                 </div>
               </div>
             ))}
