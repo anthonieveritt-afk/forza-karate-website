@@ -12,16 +12,17 @@ function LoginForm() {
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') ?? '/members/grading'
 
-  const [email, setEmail]           = useState('')
-  const [password, setPassword]     = useState('')
-  const [error, setError]           = useState('')
-  const [loading, setLoading]       = useState(false)
+  const [email, setEmail]               = useState('')
+  const [licenceNumber, setLicenceNumber] = useState('')
+  const [password, setPassword]          = useState('')
+  const [error, setError]                = useState('')
+  const [loading, setLoading]            = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const result = await loginMembers({ email, password, licenceNumber: '' })
+    const result = await loginMembers({ email, password, licenceNumber })
     if (result.success) {
       router.push(redirect)
     } else {
@@ -48,6 +49,17 @@ function LoginForm() {
           required
           autoFocus
           placeholder="your@email.com"
+          className={input}
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-[#111111] mb-1.5">Licence Number</label>
+        <input
+          type="text"
+          value={licenceNumber}
+          onChange={e => setLicenceNumber(e.target.value)}
+          required
+          placeholder="e.g. BKF-12345"
           className={input}
         />
       </div>
