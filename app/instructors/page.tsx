@@ -32,20 +32,20 @@ const instructors = [
     bio: '',
   },
   {
-    name: 'Claire Buss',
-    grade: '1st Kyu',
-    role: 'Assistant Instructor & Para Head Coach',
-    dojo: 'Rayleigh & Upminster',
-    photo: '/instructors/claire-buss.jpg',
-    bio: '',
-  },
-  {
     name: 'Sensei Jade Honeywood',
     grade: '4th Dan',
     role: 'Senior Instructor',
     dojo: 'Rayleigh & Upminster',
     photo: '/instructors/jade-honeywood.png',
     bio: 'Sensei Jade\'s experience in Karate began at the age of 5. Her love of kumite (competition fighting) helped her to establish herself and gain selection onto the England National Karate Team from 2006–2008. Sensei Jade has been coached by many of Great Britain\'s elite karate ka and coaches — Sensei Ticky Donavan (OBE), Sensei Wayne Otto (OBE), Sensei Willie Thomas, Sensei Molly Samuels, Sensei Tyrone Whyte and Sensei Ian Cole. Sensei Jade has won numerous medals at both English and British International Championships and was a finalist at the EKF European Karate Championships in Izmir, Turkey.\n\nSensei Jade competed in the Wado International Karate Federation (WIKF) World Championships in Texas, USA at the age of 15, winning a gold medal. She later competed at the WIKF European Championships in Amsterdam, Holland, where she also won a gold medal in her style of karate.\n\nIn 2022, Sensei Jade returned to the competition tatami to compete at the EKF Senior English Karate Championships, making a spectacular comeback to win the Senior English National title in the under 68kg category. The spotlight final on the centre tatami at Ponds Forge International Sports Centre, Sheffield, saw Sensei Jade win 4–0, scoring an excellent head kick in the final second — coached throughout by Sensei Anthoni Everitt.\n\nSensei Jade holds a first class BA (Hons) Degree in Sport, Leisure and Educational Development, holds the rank of 4th Dan, and is fully insured, DBS (enhanced) and first aid qualified. She works in partnership with many local primary schools.',
+  },
+  {
+    name: 'Claire Buss',
+    grade: '1st Kyu',
+    role: 'Assistant Instructor & Para Head Coach',
+    dojo: 'Rayleigh & Upminster',
+    photo: '/instructors/claire-buss.jpg',
+    bio: '',
   },
 ]
 
