@@ -15,6 +15,7 @@ const albums = [
       '/gallery/competitions/bkf-four-nations/bkf-05.jpg',
       '/gallery/competitions/bkf-four-nations/bkf-06.jpg',
       '/gallery/competitions/bkf-four-nations/bkf-07.jpg',
+      '/gallery/competitions/bkf-four-nations/bkf-08.jpg',
     ],
   },
   {
