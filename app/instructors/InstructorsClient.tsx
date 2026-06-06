@@ -43,9 +43,9 @@ export default function InstructorsClient({ instructors }: { instructors: Instru
                   )}
                 </div>
                 <div className="p-6">
-                  <div className="flex items-baseline gap-2 mb-0.5">
+                  <div className="flex items-baseline gap-3 mb-0.5">
                     <h3 className="font-bold text-[#111111] text-lg">{instructor.name}</h3>
-                    <span className="text-xs font-semibold text-gray-400">{instructor.grade}</span>
+                    <span className="text-base font-bold text-[#dc2626]">{instructor.grade}</span>
                   </div>
                   <p className="text-sm text-[#dc2626] font-medium mb-1">{instructor.role}</p>
                   <p className="text-xs text-gray-400 mb-4">{instructor.dojo}</p>
