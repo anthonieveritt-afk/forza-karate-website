@@ -9,7 +9,7 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
 export async function loginMembers(data: {
   email: string
   password: string
-  licenceNumber: string
+  licenceNumber?: string
 }): Promise<{ success: boolean; name?: string; error?: string }> {
   try {
     const res = await fetch(`${CLUB_HONBU_API}/portal/login`, {
@@ -18,7 +18,6 @@ export async function loginMembers(data: {
       body: JSON.stringify({
         email: data.email,
         password: data.password,
-        licenceNumber: data.licenceNumber,
       }),
     })
 
