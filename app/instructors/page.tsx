@@ -20,7 +20,7 @@ const instructors = [
     grade: '6th Dan',
     role: 'Head Instructor',
     dojo: 'Rayleigh & Upminster',
-    photo: '/instructors/anthoni-everitt.jpg',
+    photo: '/instructors/anthoni-everitt.png',
     bio: 'Dedicated and accomplished karate coach with four decades of experience in traditional and sport karate. Proven record of developing athletes from grassroots to world-class level. Renowned for mentoring national and international champions, promoting karate through community-based initiatives and fostering discipline, technical excellence and mental resilience. Skilled in designing structured training programmes for athletes of all ages and abilities.\n\nFormer England Assistant Coach\nFormer Southern Regional Coach',
   },
   {
