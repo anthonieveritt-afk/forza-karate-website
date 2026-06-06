@@ -23,9 +23,9 @@ const nextSteps = [
   {
     icon: ShoppingBag,
     title: 'Order your official karate suit',
-    desc: '2020 Forza Karate Gi — £40. Embroidered with the club logo.',
-    href: 'https://forzakarate.co.uk/shop/2020ForzaKarateGi-p223518731',
-    cta: 'Order Gi →',
+    desc: 'Blitz Karate Gi — available in the Forza shop.',
+    href: '/shop',
+    cta: 'Visit Shop →',
   },
   {
     icon: Shield,
