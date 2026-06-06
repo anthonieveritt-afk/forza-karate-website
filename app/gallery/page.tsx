@@ -12,7 +12,13 @@ const albums = [
       '/gallery/competitions/english-kyu-grade-champs-2025/ekgc-02.jpg',
     ],
   },
-
+  {
+    category: 'Training',
+    title: 'Club Training',
+    photos: [
+      '/gallery/training/club-training/training-01.jpg',
+    ],
+  },
 ]
 
 // Flatten all photos with their metadata for the grid
