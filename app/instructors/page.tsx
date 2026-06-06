@@ -32,6 +32,14 @@ const instructors = [
     bio: '',
   },
   {
+    name: 'Claire Buss',
+    grade: '1st Kyu',
+    role: 'Assistant Instructor & Para Head Coach',
+    dojo: 'Rayleigh & Upminster',
+    photo: '/instructors/claire-buss.jpg',
+    bio: '',
+  },
+  {
     name: 'Sensei Jade Honeywood',
     grade: '4th Dan',
     role: 'Senior Instructor',
