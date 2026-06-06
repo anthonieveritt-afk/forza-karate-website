@@ -6,20 +6,6 @@ import { useState } from 'react'
 const albums = [
   {
     category: 'Competition',
-    title: 'BKF Four Nations',
-    photos: [
-      '/gallery/competitions/bkf-four-nations/bkf-01.jpg',
-      '/gallery/competitions/bkf-four-nations/bkf-02.jpg',
-      '/gallery/competitions/bkf-four-nations/bkf-03.jpg',
-      '/gallery/competitions/bkf-four-nations/bkf-04.jpg',
-      '/gallery/competitions/bkf-four-nations/bkf-05.jpg',
-      '/gallery/competitions/bkf-four-nations/bkf-06.jpg',
-      '/gallery/competitions/bkf-four-nations/bkf-07.jpg',
-      '/gallery/competitions/bkf-four-nations/bkf-08.jpg',
-    ],
-  },
-  {
-    category: 'Competition',
     title: 'English Kyu Grade Championships 2025',
     photos: [
       '/gallery/competitions/english-kyu-grade-champs-2025/ekgc-01.jpg',
