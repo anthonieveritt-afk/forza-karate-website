@@ -1,8 +1,8 @@
 const stats = [
-  { value: '200+', label: 'Members' },
+  { value: 'Est 2012', label: '' },
   { value: '2', label: 'Dojos' },
   { value: '40', label: 'Weeks per Year' },
-  { value: 'FKA', label: 'Affiliated' },
+  { value: 'Beginners', label: 'welcome' },
 ]
 
 export default function StatsBand() {

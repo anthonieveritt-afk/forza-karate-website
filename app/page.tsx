@@ -147,7 +147,7 @@ export default function HomePage() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="w-16 h-0.5 bg-[#dc2626] mx-auto mb-8" />
           <h2 className="text-4xl sm:text-5xl font-bold text-[#111111] mb-4 leading-tight">
-            First class is free.<br />No kit needed. Just show up.
+            First class is free.<br />Register for a free trial class today!
           </h2>
           <p className="text-gray-500 mb-10 text-lg">
             Book a free trial at Rayleigh or Upminster and see if Forza is right for you.
