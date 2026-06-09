@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Button } from '@/components/ui/Button'
-import { logoutMembers } from '@/app/actions/members-auth'
 import { Shield, ExternalLink, CreditCard, ArrowRight } from 'lucide-react'
+import { Navbar } from '@/components/layout/Navbar'
 
 export const metadata: Metadata = {
   title: 'Renew Your Licence — Members',
@@ -30,22 +27,7 @@ const steps = [
 export default function MembersLicencePage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Members header */}
-      <header className="bg-white border-b border-black/8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto h-16 flex items-center justify-between">
-          <Link href="/">
-            <Image src="/forza-logo.webp" alt="Forza Karate Club" width={120} height={48} className="h-10 w-auto" />
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/members/grading" className="text-sm text-gray-500 hover:text-[#111111] transition-colors">Register to Grade</Link>
-            <Link href="/members/syllabus" className="text-sm text-gray-500 hover:text-[#111111] transition-colors">Syllabus</Link>
-            <span className="text-gray-300">|</span>
-            <form action={logoutMembers}>
-              <Button type="submit" variant="outline" size="sm">Log out</Button>
-            </form>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <main className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
