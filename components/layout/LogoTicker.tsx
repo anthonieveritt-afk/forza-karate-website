@@ -54,7 +54,7 @@ function SponsorLogo({ s, index }: { s: typeof sponsors[0]; index: number }) {
       <img
         src={s.logo}
         alt={s.name}
-        style={{ height: '72px', width: 'auto', objectFit: 'contain', display: 'block' }}
+        style={{ height: '110px', width: 'auto', objectFit: 'contain', display: 'block' }}
       />
     </a>
   )
