@@ -27,6 +27,7 @@ export default function TrialClassForm() {
         dojo: data.get('preferredDojo') as string,
         classTime: data.get('ageGroup') as string,
         parentName: data.get('parentName') as string || undefined,
+        childName: data.get('childName') as string || undefined,
         medicalNotes: data.get('message') as string || undefined,
       })
       setStatus('success')

@@ -16,6 +16,13 @@ export interface TrialBookingData {
   childName?: string
 }
 
+function splitName(full: string): { first: string; last: string } {
+  const parts = (full || '').trim().split(/\s+/)
+  const first = parts[0] || ''
+  const last = parts.slice(1).join(' ') || first // fallback: use first name as surname if only one word
+  return { first, last }
+}
+
 export async function submitTrialBooking(data: TrialBookingData): Promise<void> {
   const honbuUrl = process.env.CLUB_HONBU_URL || 'https://club-honbu-production.up.railway.app'
   const honbuSecret = process.env.CLUB_HONBU_WEBHOOK_SECRET
@@ -24,12 +31,16 @@ export async function submitTrialBooking(data: TrialBookingData): Promise<void> 
     throw new Error('Club Honbu webhook secret not configured')
   }
 
+  // Determine the student name: use childName if provided, else parentName
+  const studentFullName = (data.childName || '').trim() || (data.parentName || '').trim() || data.firstName
+  const { first, last } = splitName(studentFullName)
+
   const res = await fetch(`${honbuUrl}/api/webhooks/formsmarts/trial?token=${honbuSecret}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      'First Name': data.firstName,
-      'Last Name': data.lastName || '',
+      'First Name': first,
+      'Last Name': last,
       'Email': data.email,
       'Phone': data.phone,
       'Date of Birth': data.dateOfBirth || '',
