@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Shield, ExternalLink, CreditCard, ArrowRight } from 'lucide-react'
-import { Navbar } from '@/components/layout/Navbar'
+import Navbar from '@/components/layout/Navbar'
 
 export const metadata: Metadata = {
   title: 'Renew Your Licence — Members',
