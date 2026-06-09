@@ -28,7 +28,7 @@ export default function TrialClassForm() {
         classTime: data.get('ageGroup') as string,
         parentName: data.get('parentName') as string || undefined,
         childName: data.get('childName') as string || undefined,
-        medicalNotes: data.get('message') as string || undefined,
+        medicalNotes: [data.get('message') as string || '', data.get('age') ? `Age: ${data.get('age')}` : ''].filter(Boolean).join(' | ') || undefined,
       })
       setStatus('success')
       form.reset()
@@ -73,16 +73,31 @@ export default function TrialClassForm() {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-[#111111] mb-1.5">
-            Child&apos;s name <span className="text-gray-400 font-normal">(if applicable)</span>
-          </label>
-          <input
-            name="childName"
-            type="text"
-            placeholder="Tommy Smith"
-            className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
-          />
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium text-[#111111] mb-1.5">
+              Child&apos;s name <span className="text-gray-400 font-normal">(if applicable)</span>
+            </label>
+            <input
+              name="childName"
+              type="text"
+              placeholder="Tommy Smith"
+              className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#111111] mb-1.5">
+              Their age <span className="text-gray-400 font-normal">(if applicable)</span>
+            </label>
+            <input
+              name="age"
+              type="number"
+              min="3"
+              max="99"
+              placeholder="e.g. 7"
+              className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
+            />
+          </div>
         </div>
       </div>
 
