@@ -82,15 +82,7 @@ export default function MembersLicencePage() {
             ))}
           </div>
 
-          <div className="mt-8 p-5 rounded-2xl bg-[#fafaf9] border border-black/5">
-            <p className="text-sm text-gray-500">
-              <strong className="text-[#111111]">Not sure if your licence is current?</strong>{' '}
-              Check with your instructor at your next class or email{' '}
-              <a href="mailto:scott.nicholls@forzakarate.co.uk" className="text-[#dc2626] hover:underline">
-                scott.nicholls@forzakarate.co.uk
-              </a>
-            </p>
-          </div>
+
         </div>
       </main>
     </div>
