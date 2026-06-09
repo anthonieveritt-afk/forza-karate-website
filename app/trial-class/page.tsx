@@ -12,7 +12,7 @@ const perks = [
   'No kit or uniform needed',
   'No commitment required',
   'All ages welcome — 4 to adult',
-  "We'll be in touch within 24 hours",
+  "We'll be in touch within 72 hours",
 ]
 
 export default function TrialClassPage() {

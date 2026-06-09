@@ -44,7 +44,7 @@ export default function TrialClassForm() {
         <CheckCircle className="h-14 w-14 text-green-500 mb-4" />
         <h3 className="text-2xl font-bold text-[#111111] mb-2">You&apos;re booked in!</h3>
         <p className="text-gray-500 max-w-sm">
-          Thanks! We&apos;ll be in touch within 24 hours to confirm your free trial class.
+          Thanks! We&apos;ll be in touch within 72 hours to confirm your free trial class.
         </p>
       </div>
     )
@@ -159,7 +159,7 @@ export default function TrialClassForm() {
       </Button>
 
       <p className="text-xs text-gray-400 text-center">
-        We&apos;ll be in touch within 24 hours. No obligation, no kit needed.
+        We&apos;ll be in touch within 72 hours. No obligation, no kit needed.
       </p>
     </form>
   )
