@@ -23,7 +23,7 @@ export default function TrialClassForm() {
         lastName: '',
         email: data.get('email') as string,
         phone: data.get('phone') as string,
-        dateOfBirth: '',
+        dateOfBirth: data.get('dateOfBirth') as string || '',
         dojo: data.get('preferredDojo') as string,
         classTime: data.get('ageGroup') as string,
         parentName: data.get('parentName') as string || undefined,
@@ -110,6 +110,18 @@ export default function TrialClassForm() {
             required
             placeholder="07700 900000"
             className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
+          />
+        </div>
+      </div>
+
+        <div>
+          <label className="block text-sm font-medium text-[#111111] mb-1.5">
+            Date of Birth <span className="text-gray-400 text-xs">(optional)</span>
+          </label>
+          <input
+            name="dateOfBirth"
+            type="date"
+            className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
           />
         </div>
       </div>
