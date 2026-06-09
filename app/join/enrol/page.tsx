@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { CheckCircle, ChevronRight, User, ShoppingBag, CreditCard, Zap } from 'lucide-react'
+import { CheckCircle, ChevronRight, User, ShoppingBag, CreditCard, Zap, Tag, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://club-honbu-production.up.railway.app/api'
+const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
 const MEMBERSHIP_OPTIONS = [
   { key: 'yearly',          label: 'Annual — £540',          desc: '1 student · one payment · best value' },
@@ -114,6 +114,13 @@ export default function EnrolPage() {
   const [suitSize, setSuitSize]             = useState('')
   const [wantSuit, setWantSuit]             = useState(true)
 
+  // Access code
+  const [accessCodeInput, setAccessCodeInput]   = useState('')
+  const [accessCodeApplied, setAccessCodeApplied] = useState('')
+  const [accessCodeDiscount, setAccessCodeDiscount] = useState<{ discountPence: number; discountLabel: string } | null>(null)
+  const [accessCodeError, setAccessCodeError]   = useState('')
+  const [accessCodeLoading, setAccessCodeLoading] = useState(false)
+
   // Returned from API
   const [memberId, setMemberId]             = useState<number | null>(null)
   const [proRataPence, setProRataPence]     = useState(0)
@@ -146,6 +153,48 @@ export default function EnrolPage() {
       setStep(1)
     } catch { setError('Could not connect. Please try again.') }
     finally { setLoading(false) }
+  }
+
+  // ── Step 2: Validate access code ─────────────────────────────────────────
+  async function validateAccessCode() {
+    if (!accessCodeInput.trim()) return
+    setAccessCodeLoading(true)
+    setAccessCodeError('')
+    setAccessCodeDiscount(null)
+    try {
+      const membershipPrices: Record<string, number> = {
+        yearly: 54000,
+        monthly_single: 4500,
+        monthly_two: 7500,
+        monthly_family: 10000,
+      }
+      const amountPence = membershipPrices[membershipType] ?? 4500
+      const res = await fetch(`${HONBU_API}/public/validate-access-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: accessCodeInput.trim().toUpperCase(), amountPence }),
+      })
+      const data = await res.json()
+      if (data.valid) {
+        setAccessCodeDiscount({ discountPence: data.discountPence, discountLabel: data.discountLabel })
+        setAccessCodeApplied(accessCodeInput.trim().toUpperCase())
+        setAccessCodeError('')
+      } else {
+        setAccessCodeError(data.message ?? 'Invalid or expired access code')
+        setAccessCodeApplied('')
+      }
+    } catch {
+      setAccessCodeError('Could not validate code. Please try again.')
+    } finally {
+      setAccessCodeLoading(false)
+    }
+  }
+
+  function clearAccessCode() {
+    setAccessCodeInput('')
+    setAccessCodeApplied('')
+    setAccessCodeDiscount(null)
+    setAccessCodeError('')
   }
 
   // ── Step 3: Start GoCardless redirect ─────────────────────────────────────
@@ -181,6 +230,7 @@ export default function EnrolPage() {
           suitKey: wantSuit && suitSize ? 'blitz-gi' : null,
           suitSizePence: wantSuit && suitSize ? SUIT_PRICE_PENCE : null,
           successUrl, cancelUrl, membershipType,
+          accessCode: accessCodeApplied || null,
         }),
       })
       const data = await res.json()
@@ -363,6 +413,44 @@ export default function EnrolPage() {
               </div>
             </div>
 
+            {/* Access Code */}
+            <div>
+              <p className={labelClass}>Access Code <span className="text-gray-400 text-xs">(optional)</span></p>
+              {accessCodeDiscount ? (
+                <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-green-50 border border-green-200">
+                  <div className="flex items-center gap-2">
+                    <Tag className="h-4 w-4 text-green-600" />
+                    <span className="text-sm font-semibold text-green-700">✓ {accessCodeDiscount.discountLabel} applied</span>
+                    <span className="text-xs text-green-600 font-mono">{accessCodeApplied}</span>
+                  </div>
+                  <button onClick={clearAccessCode} className="text-green-400 hover:text-green-700 transition-colors">
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    className={`${inputClass} flex-1 uppercase`}
+                    placeholder="Enter access code"
+                    value={accessCodeInput}
+                    onChange={e => { setAccessCodeInput(e.target.value.toUpperCase()); setAccessCodeError('') }}
+                    onKeyDown={e => e.key === 'Enter' && validateAccessCode()}
+                  />
+                  <button
+                    type="button"
+                    onClick={validateAccessCode}
+                    disabled={accessCodeLoading || !accessCodeInput.trim()}
+                    className="px-4 py-2 rounded-xl bg-[#111111] text-white text-sm font-medium disabled:opacity-40 transition-opacity flex items-center gap-1.5 shrink-0"
+                  >
+                    {accessCodeLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Apply'}
+                  </button>
+                </div>
+              )}
+              {accessCodeError && (
+                <p className="mt-1.5 text-xs text-red-600">{accessCodeError}</p>
+              )}
+            </div>
+
             <Button
               size="lg" className="w-full"
               disabled={wantSuit && !suitSize}
@@ -429,10 +517,16 @@ export default function EnrolPage() {
                   <span className="font-semibold text-[#111111]">£540.00</span>
                 </div>
               )}
+              {accessCodeDiscount && (
+                <div className="flex justify-between text-green-700">
+                  <span className="flex items-center gap-1"><Tag className="h-3.5 w-3.5" /> Access code ({accessCodeApplied})</span>
+                  <span className="font-semibold">− £{(accessCodeDiscount.discountPence / 100).toFixed(2)}</span>
+                </div>
+              )}
               <div className="border-t border-black/8 pt-2 flex justify-between font-semibold">
                 <span>Total today</span>
                 <span className="text-[#dc2626]">
-                  £{((wantSuit && suitSize ? SUIT_PRICE_PENCE : 0) + (isMonthly ? proRataPence : 54000)).toFixed(2).replace(/(\d)(?=\d{2}$)/, '$1.')}
+                  £{(((wantSuit && suitSize ? SUIT_PRICE_PENCE : 0) + (isMonthly ? proRataPence : 54000) - (accessCodeDiscount?.discountPence ?? 0)) / 100).toFixed(2)}
                 </span>
               </div>
             </div>
