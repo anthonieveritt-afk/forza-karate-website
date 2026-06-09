@@ -112,8 +112,6 @@ export default function TrialClassForm() {
             className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
           />
         </div>
-      </div>
-
         <div>
           <label className="block text-sm font-medium text-[#111111] mb-1.5">
             Date of Birth <span className="text-gray-400 text-xs">(optional)</span>
