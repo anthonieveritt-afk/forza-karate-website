@@ -15,14 +15,14 @@ const steps = [
     icon: Shield,
     title: 'Apply for / renew your licence & insurance',
     desc: 'All active members require a valid FKA licence and insurance. Renew annually to stay covered.',
-    href: 'https://forzakarate.co.uk/apply-for-your-first-licence/',
+    href: 'https://forza-karate-website.vercel.app/join',
     cta: 'Apply / Renew Licence',
   },
   {
     icon: CreditCard,
     title: 'Set up or update your Direct Debit',
     desc: 'Pay your monthly club fees by Direct Debit via GoCardless. Safe, easy, cancel anytime.',
-    href: 'https://pay.gocardless.com/AL00041KG22CVH',
+    href: 'https://forza-karate-website.vercel.app/join',
     cta: 'Set up Direct Debit',
   },
 ]
