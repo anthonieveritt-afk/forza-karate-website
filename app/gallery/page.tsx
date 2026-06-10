@@ -52,7 +52,7 @@ export default function GalleryPage() {
   const [lightbox, setLightbox] = useState<Photo | null>(null)
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/public/gallery`, { next: { revalidate: 300 } } as any)
+    fetch(`${API_BASE}/api/public/gallery`)
       .then((r) => r.json())
       .then((data: Album[]) => {
         setAlbums(Array.isArray(data) ? data : [])
