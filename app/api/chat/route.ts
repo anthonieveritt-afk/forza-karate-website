@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
 import { NextRequest, NextResponse } from 'next/server'
 
 const SYSTEM_PROMPT = `You are Sempai, the friendly 24/7 virtual assistant for Forza Karate Club — a traditional Wado Ryu karate club based in Essex, England.
@@ -72,23 +71,35 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Chat not configured' }, { status: 503 })
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash',
-      systemInstruction: SYSTEM_PROMPT,
-    })
-
-    // Convert messages to Gemini format
-    const history = messages.slice(0, -1).map((m: { role: string; content: string }) => ({
+    // Build contents array for Gemini — include full conversation history
+    const contents = messages.map((m: { role: string; content: string }) => ({
       role: m.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: m.content }],
     }))
 
-    const lastMessage = messages[messages.length - 1].content
+    const body = {
+      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents,
+      generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
+    }
 
-    const chat = model.startChat({ history })
-    const result = await chat.sendMessage(lastMessage)
-    const reply = result.response.text()
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      }
+    )
+
+    if (!res.ok) {
+      const err = await res.text()
+      console.error('Gemini API error:', err)
+      return NextResponse.json({ error: 'Gemini error' }, { status: 502 })
+    }
+
+    const data = await res.json()
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "Sorry, I couldn't get a reply. Please try again."
 
     return NextResponse.json({ reply })
   } catch (err) {
