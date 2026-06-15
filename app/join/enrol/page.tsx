@@ -363,7 +363,11 @@ export default function EnrolPage() {
 
             {/* Suit */}
             <div>
-              <p className={labelClass}>Karate suit (Blitz Gi — £40)</p>
+              <p className={labelClass}>Karate suit</p>
+              <div className="mb-3 p-3 rounded-xl bg-[#fafaf9] border border-black/8">
+                <p className="text-sm font-semibold text-[#111111]">Blitz Karate Gi — £40</p>
+                <p className="text-xs text-gray-500 mt-0.5">Our basic club suit package. Includes jacket and trousers.</p>
+              </div>
               <div className="flex gap-2 mb-3">
                 <button
                   onClick={() => setWantSuit(true)}
