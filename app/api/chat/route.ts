@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     const body = {
       system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents,
-      generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
+      generationConfig: { maxOutputTokens: 800, temperature: 0.7 },
     }
 
     const res = await fetch(
