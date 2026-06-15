@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { Suspense } from 'react'
 import { CheckCircle, Loader2 } from 'lucide-react'
 
-const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://club-honbu-production.up.railway.app/api'
+const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
 function DDReturn() {
   const params = useSearchParams()
