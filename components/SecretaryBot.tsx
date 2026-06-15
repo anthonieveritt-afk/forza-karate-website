@@ -22,6 +22,16 @@ export default function SecretaryBot() {
   const [loading, setLoading]   = useState(false)
   const [started, setStarted]   = useState(false)
   const bottomRef               = useRef<HTMLDivElement>(null)
+
+  function renderMessage(text: string) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g
+    const parts = text.split(urlRegex)
+    return parts.map((part, i) =>
+      urlRegex.test(part)
+        ? <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="underline text-[#dc2626] break-all">{part}</a>
+        : <span key={i}>{part}</span>
+    )
+  }
   const inputRef                = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -109,7 +119,7 @@ export default function SecretaryBot() {
                     ? 'bg-[#111111] text-white rounded-br-sm'
                     : 'bg-[#fafaf9] text-[#111111] border border-black/6 rounded-bl-sm'
                 }`}>
-                  {m.content}
+                  {renderMessage(m.content)}
                 </div>
               </div>
             ))}
