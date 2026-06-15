@@ -28,7 +28,7 @@ export default function SecretaryBot() {
     if (open && !started) {
       setMessages([{
         role: 'assistant',
-        content: "Hi! I'm Sensei, Forza Karate Club's virtual assistant. I can answer questions about classes, membership, locations, and more. What would you like to know? 🥋",
+        content: "Hi! I'm Sempai, Forza Karate Club's virtual assistant. I can answer questions about classes, membership, locations, and more. What would you like to know? 🥋",
       }])
       setStarted(true)
     }
@@ -84,7 +84,7 @@ export default function SecretaryBot() {
               <Bot className="h-4 w-4 text-white" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-white">Sensei</p>
+              <p className="text-sm font-semibold text-white">Sempai</p>
               <p className="text-[11px] text-gray-400">Forza Karate Club · Always online</p>
             </div>
             <button
@@ -171,7 +171,7 @@ export default function SecretaryBot() {
       <button
         onClick={() => setOpen(o => !o)}
         className="fixed bottom-6 left-4 sm:left-6 w-14 h-14 bg-[#dc2626] hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 z-50"
-        aria-label="Chat with Sensei"
+        aria-label="Chat with Sempai"
       >
         {open
           ? <X className="h-5 w-5" />

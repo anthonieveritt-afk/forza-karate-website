@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { NextRequest, NextResponse } from 'next/server'
 
-const SYSTEM_PROMPT = `You are Sensei, the friendly 24/7 virtual assistant for Forza Karate Club — a traditional Wado Ryu karate club based in Essex, England.
+const SYSTEM_PROMPT = `You are Sempai, the friendly 24/7 virtual assistant for Forza Karate Club — a traditional Wado Ryu karate club based in Essex, England.
 
 ABOUT FORZA KARATE CLUB:
 - Style: Traditional Wado Ryu karate
