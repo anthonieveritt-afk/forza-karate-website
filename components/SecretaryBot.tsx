@@ -76,7 +76,7 @@ export default function SecretaryBot() {
     <>
       {/* Chat window */}
       {open && (
-        <div className="fixed bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-96 max-h-[600px] bg-white rounded-3xl shadow-2xl border border-black/8 flex flex-col z-50 overflow-hidden">
+        <div className="fixed bottom-24 left-4 sm:left-6 w-[calc(100vw-2rem)] sm:w-96 max-h-[600px] bg-white rounded-3xl shadow-2xl border border-black/8 flex flex-col z-50 overflow-hidden">
 
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 border-b border-black/5 bg-[#111111]">
@@ -170,7 +170,7 @@ export default function SecretaryBot() {
       {/* Floating button */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="fixed bottom-6 right-4 sm:right-6 w-14 h-14 bg-[#dc2626] hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 z-50"
+        className="fixed bottom-6 left-4 sm:left-6 w-14 h-14 bg-[#dc2626] hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 z-50"
         aria-label="Chat with Sensei"
       >
         {open
