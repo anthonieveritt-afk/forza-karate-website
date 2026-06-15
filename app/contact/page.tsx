@@ -27,6 +27,7 @@ export default function ContactPage() {
   }
 
   return (
+    <>
     <div className="bg-white">
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
         <div className="max-w-7xl mx-auto">
@@ -172,5 +173,6 @@ export default function ContactPage() {
       </section>
     </div>
     <SecretaryBot />
+    </>
   )
 }
