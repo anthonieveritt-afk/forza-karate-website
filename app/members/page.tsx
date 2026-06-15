@@ -93,7 +93,7 @@ export default function MembersLoginPage() {
           </Suspense>
 
           <p className="text-xs text-gray-400 text-center mt-6">
-            Don&apos;t have a portal account? Ask your instructor to set one up for you.
+            New member? Your login details were sent to your email when you enrolled. If you can&apos;t find them, speak to your instructor.
           </p>
         </div>
       </div>

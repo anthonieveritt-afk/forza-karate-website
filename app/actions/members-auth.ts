@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 
-const CLUB_HONBU_API = 'https://club-honbu-production.up.railway.app/api'
+const CLUB_HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 const COOKIE_NAME    = 'forza-members-auth'
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
 

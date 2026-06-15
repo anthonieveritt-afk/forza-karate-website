@@ -16,6 +16,7 @@ const navLinks = [
 ]
 
 const membersCoreLinks = [
+  { href: '/members',         label: '🔐 Members Login' },
   { href: '/members/grading', label: 'Register to Grade' },
   { href: '/members/syllabus', label: 'Syllabus' },
   { href: '/members/licence',  label: 'Renew your licence' },
