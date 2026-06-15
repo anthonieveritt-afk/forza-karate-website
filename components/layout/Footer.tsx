@@ -57,8 +57,9 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold text-sm mb-4">Club</h3>
             <ul className="space-y-2.5 text-sm">
-              <li><Link href="/instructors" className="hover:text-white transition-colors">Instructors</Link></li>
+
               <li><Link href="/team" className="hover:text-white transition-colors">Team Forza</Link></li>
+              <li><Link href="/instructors" className="hover:text-white transition-colors">Instructors</Link></li>
               <li><Link href="/hall-of-fame" className="hover:text-white transition-colors">Hall of Fame</Link></li>
               <li><Link href="/gallery" className="hover:text-white transition-colors">Gallery</Link></li>
               <li><Link href="/shop" className="hover:text-white transition-colors">Shop</Link></li>

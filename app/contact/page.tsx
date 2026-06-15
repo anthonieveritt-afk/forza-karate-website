@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Mail, MapPin, Clock, Send, Bot } from 'lucide-react'
+import SecretaryBot from '@/components/SecretaryBot'
 import { sendContactMessage } from '@/app/actions/contact'
 
 export default function ContactPage() {
@@ -170,5 +171,6 @@ export default function ContactPage() {
         </div>
       </section>
     </div>
+    <SecretaryBot />
   )
 }

@@ -20,7 +20,7 @@ const instructors = [
     grade: '6th Dan',
     role: 'Head Instructor',
     dojo: 'Rayleigh & Upminster',
-    photo: '/instructors/anthoni-everitt.png',
+    photo: '/instructors/anthoni-everitt.jpg',
     bio: 'Dedicated and accomplished karate coach with four decades of experience in traditional and sport karate. Proven record of developing athletes from grassroots to world-class level. Renowned for mentoring national and international champions, promoting karate through community-based initiatives and fostering discipline, technical excellence and mental resilience. Skilled in designing structured training programmes for athletes of all ages and abilities.\n\nFormer England Assistant Coach\nFormer Southern Regional Coach',
   },
   {
@@ -37,7 +37,7 @@ const instructors = [
     role: 'Senior Instructor',
     dojo: 'Rayleigh & Upminster',
     photo: '/instructors/jade-honeywood.png',
-    bio: 'Sensei Jade\'s experience in Karate began at the age of 5. Her love of kumite (competition fighting) helped her to establish herself and gain selection onto the England National Karate Team from 2006–2008. Sensei Jade has been coached by many of Great Britain\'s elite karate ka and coaches — Sensei Ticky Donavan (OBE), Sensei Wayne Otto (OBE), Sensei Willie Thomas, Sensei Molly Samuels, Sensei Tyrone Whyte and Sensei Ian Cole. Sensei Jade has won numerous medals at both English and British International Championships and was a finalist at the EKF European Karate Championships in Izmir, Turkey.\n\nSensei Jade competed in the Wado International Karate Federation (WIKF) World Championships in Texas, USA at the age of 15, winning a gold medal. She later competed at the WIKF European Championships in Amsterdam, Holland, where she also won a gold medal in her style of karate.\n\nIn 2022, Sensei Jade returned to the competition tatami to compete at the EKF Senior English Karate Championships, making a spectacular comeback to win the Senior English National title in the under 68kg category. The spotlight final on the centre tatami at Ponds Forge International Sports Centre, Sheffield, saw Sensei Jade win 4–0, scoring an excellent head kick in the final second — coached throughout by Sensei Anthoni Everitt.\n\nSensei Jade holds a first class BA (Hons) Degree in Sport, Leisure and Educational Development, holds the rank of 4th Dan, and is fully insured, DBS (enhanced) and first aid qualified. She works in partnership with many local primary schools.',
+    bio: 'Sensei Jade\'s experience in Karate began at the age of 5. Her love of kumite (competition fighting) helped her to establish herself and gain selection onto the England National Karate Team from 2006–2008. Sensei Jade has been coached by many of Great Britain\'s elite karate ka and coaches — Sensei Ticky Donavan (OBE), Sensei Wayne Otto (OBE), Sensei Willie Thomas, Sensei Molly Samuels, Sensei Tyrone Whyte and Sensei Ian Cole. Sensei Jade has won numerous medals at both English and British International Championships .\n\nSensei Jade competed in the Wado International Karate Federation (WIKF) World Championships in Texas, USA at the age of 15, winning a gold medal. She later competed at the WIKF European Championships in Amsterdam, Holland, where she also won a gold medal in her style of karate.\n\nIn 2022, Sensei Jade returned to the competition tatami to compete at the EKF Senior English Karate Championships, making a spectacular comeback to win the Senior English National title in the under 68kg category. The spotlight final on the centre tatami at Ponds Forge International Sports Centre, Sheffield, saw Sensei Jade win 4–0, scoring an excellent head kick in the final second — coached throughout by Sensei Anthoni Everitt.\n\nSensei Jade holds a first class BA (Hons) Degree in Sport, Leisure and Educational Development, holds the rank of 4th Dan, and is fully insured, DBS (enhanced) and first aid qualified. She works in partnership with many local primary schools.',
   },
   {
     name: 'Claire Buss',
@@ -46,6 +46,22 @@ const instructors = [
     dojo: 'Rayleigh & Upminster',
     photo: '/instructors/claire-buss.jpg',
     bio: '',
+  },
+  {
+    name: 'Yuan Yogarajah',
+    grade: '1st Dan',
+    role: 'Assistant Instructor',
+    dojo: 'Rayleigh & Upminster',
+    photo: '/instructors/yuan-yogarajah.jpg',
+    bio: '',
+  },
+  {
+    name: 'Kobe Yogarajah',
+    grade: '2nd Dan',
+    role: 'England Karate Team Athlete | International Kumite Competitor',
+    dojo: 'Rayleigh & Upminster',
+    photo: '/instructors/kobe-yogarajah.jpg',
+    bio: 'Kobe Yogarajah is one of England\'s leading young sport karate athletes, competing in WKF Kumite and representing England at the highest levels of international competition.\n\nBeginning his karate journey at Forza Karate Club, Kobe quickly established himself as one of the country\'s most promising competitors through a combination of technical excellence, determination, and consistent performances on both the national and international stage.\n\nOver the years, Kobe has earned selection for the England Karate Team and has represented his country at prestigious events including the EKF European Championships, Commonwealth Karate Championships, Karate1 Youth League events, and other major international tournaments.\n\nHis competitive achievements include:\n\n• Orléans, Bronze Medallist, Orléans, France (2023)\n• Active Essex Young Sport Personality of the Year (2022)\n• Central England International Open Champion (2022)\n• Commonwealth Karate Federation Bronze Medallist (2022)\n• BKF 4 Nations Champion (2022)\n• Multiple National and International Medal Winner\n• England Karate Team Representative\n\nCompeting in both Junior and U21 divisions, Kobe has consistently demonstrated the ability to perform against some of Europe\'s strongest athletes, earning recognition for his speed, tactical awareness, and fighting spirit.\n\nAs a member of the England programme, Kobe continues to pursue success at European and World level while inspiring the next generation of athletes through his commitment, professionalism, and dedication to excellence.\n\nHis journey from local club competitor to international medallist serves as an example of what can be achieved through hard work, perseverance, and a passion for karate.\n\nCareer Highlights\nClub: Forza Karate Club | Country: England | Discipline: WKF Kumite | England Team Competitor ID: ENG02903\n\nMajor Achievements\n• O\'leans, France, Bronze Medallist\n• Commonwealth Championships Bronze Medallist\n• BKF 4 Nations Champion\n• Active Essex Young Sport Personality of the Year\n• England International Athlete',
   },
 ]
 

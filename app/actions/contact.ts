@@ -1,11 +1,7 @@
 'use server'
 
-import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 import { Resend } from 'resend'
-
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -41,16 +37,13 @@ Email: ${data.email}
 Message: ${data.message}`
 
   // Generate AI reply
-  const response = await client.messages.create({
-    model: 'claude-haiku-4-5',
-    max_tokens: 300,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: userMessage }],
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+  const model = genAI.getGenerativeModel({
+    model: 'gemini-2.0-flash',
+    systemInstruction: SYSTEM_PROMPT,
   })
-
-  const reply = response.content[0].type === 'text'
-    ? response.content[0].text
-    : "Thanks for your message — we'll be in touch soon!"
+  const result = await model.generateContent(userMessage)
+  const reply = result.response.text() || "Thanks for your message — we'll be in touch soon!"
 
   // Send auto-reply email to the person
   await resend.emails.send({

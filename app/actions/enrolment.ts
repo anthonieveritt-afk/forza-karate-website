@@ -25,6 +25,7 @@ export interface EnrolmentData {
   currentBelt: string
   membershipType: string
   heardAboutUs?: string
+  discountCode?: string
 }
 
 export async function submitEnrolment(data: EnrolmentData): Promise<void> {
@@ -55,6 +56,7 @@ export async function submitEnrolment(data: EnrolmentData): Promise<void> {
       'Preferred Class': data.classTime || '',
       'Licence Type': data.membershipType || 'Student',
       'Source': 'Forza website join form',
+      'Discount Code': data.discountCode || '',
     }),
   })
 
