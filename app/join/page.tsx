@@ -84,6 +84,7 @@ export default function JoinPage() {
         currentBelt: g('currentBelt'),
         membershipType: g('membershipType'),
         heardAboutUs: g('heardAboutUs') || undefined,
+        discountCode: g('discountCode') || undefined,
       })
       setStatus('done')
     } catch {
@@ -105,7 +106,7 @@ export default function JoinPage() {
             <div className="w-8 h-0.5 bg-[#dc2626]" />
             <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Join</span>
           </div>
-          <h1 className="text-5xl font-bold text-[#111111] mb-4">Join Forza Karate</h1>
+          <h1 className="text-5xl font-bold text-[#111111] mb-4">Join Forza Karate Club</h1>
           <p className="text-xl text-gray-500 max-w-2xl">
             Start with a free trial or enrol directly. Fill in your details below and we'll be in touch to confirm your place.
           </p>
@@ -196,7 +197,7 @@ export default function JoinPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className={label}>Date of birth {req}</label>
-                  <input name="dateOfBirth" type="date" required className={input} />
+                  <input name="dateOfBirth" type="date" required min="1900-01-01" max={new Date().toISOString().split('T')[0]} className={input} />
                 </div>
                 <div>
                   <label className={label}>Gender</label>
@@ -345,6 +346,12 @@ export default function JoinPage() {
                   <option value="">Select</option>
                   {heardOptions.map(h => <option key={h} value={h}>{h}</option>)}
                 </select>
+              </div>
+
+              {/* ── Discount / members code ── */}
+              <div>
+                <label className={label}>Members / discount code <span className="text-gray-400 font-normal">(optional)</span></label>
+                <input name="discountCode" type="text" placeholder="Enter code if you have one" className={input} />
               </div>
 
               {/* ── Submit ── */}

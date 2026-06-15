@@ -250,7 +250,7 @@ export default function EnrolPage() {
           <Image src="/forza-logo.webp" alt="Forza Karate Club" width={120} height={48} className="h-12 w-auto" />
         </div>
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[#111111] mb-2">Join Forza Karate</h1>
+          <h1 className="text-3xl font-bold text-[#111111] mb-2">Join Forza Karate Club</h1>
           <p className="text-gray-500 text-sm">Complete all 4 steps to finish your enrolment.</p>
         </div>
 
