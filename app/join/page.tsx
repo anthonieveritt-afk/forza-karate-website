@@ -23,15 +23,15 @@ const nextSteps = [
   {
     icon: ShoppingBag,
     title: 'Order your official karate suit',
-    desc: 'Blitz Karate Gi — available in the Forza shop.',
-    href: '/shop#blitz-gi',
+    desc: 'Blitz Karate Gi — choose your size and add to order.',
+    href: '/join/enrol',
     cta: 'Order Gi →',
   },
   {
     icon: Shield,
     title: 'Apply for your licence & insurance',
     desc: 'All members need an FKA licence. Takes a few minutes to complete.',
-    href: 'https://forzakarate.co.uk/apply-for-your-first-licence/',
+    href: '/join/apply-licence',
     cta: 'Apply for Licence →',
   },
   {

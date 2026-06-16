@@ -10,7 +10,7 @@ const nextSteps = [
     step: 'Step 2',
     title: 'Apply for your licence & insurance',
     desc: 'All members need a valid FKA licence. Takes a few minutes online.',
-    href: 'https://forzakarate.co.uk/apply-for-your-first-licence/',
+    href: '/join/apply-licence',
     cta: 'Apply for Licence →',
     primary: true,
   },
@@ -52,6 +52,7 @@ export default function SuccessPage() {
                 href={s.href}
                 target={s.href.startsWith('http') ? '_blank' : undefined}
                 rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+
                 className={`flex items-center gap-4 p-4 rounded-2xl border transition-all group ${
                   s.primary
                     ? 'bg-[#dc2626] border-[#dc2626] hover:bg-[#b91c1c]'

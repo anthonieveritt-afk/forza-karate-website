@@ -6,14 +6,14 @@ const nextSteps = [
     icon: ShoppingBag,
     title: 'Order your official karate suit',
     desc: 'Blitz Karate Gi — available in the Forza shop.',
-    href: '/shop#blitz-gi',
+    href: '/join/enrol',
     cta: 'Order Gi →',
   },
   {
     icon: Shield,
     title: 'Apply for your licence & insurance',
     desc: 'All members need an FKA licence. Takes a few minutes to complete.',
-    href: 'https://forzakarate.co.uk/apply-for-your-first-licence/',
+    href: '/join/apply-licence',
     cta: 'Apply for Licence →',
   },
   {
@@ -42,8 +42,9 @@ export default function JoinSuccessPage() {
           <h3 className="text-lg font-bold text-[#111111] mb-5">Complete your membership</h3>
           <div className="space-y-4">
             {nextSteps.map((step, i) => (
-              <a key={i} href={step.href} target="_blank" rel="noopener noreferrer"
-                className="flex items-start gap-4 p-5 rounded-2xl border border-black/8 hover:border-[#dc2626] hover:shadow-sm transition-all group">
+              <a key={i} href={step.href}
+                className="flex items-start gap-4 p-5 rounded-2xl border border-black/8 hover:border-[#dc2626] hover:shadow-sm transition-all group"
+                {...(step.href.startsWith('http') && { target: '_blank', rel: 'noopener noreferrer' })}>
                 <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
                   <step.icon className="h-5 w-5 text-[#dc2626]" />
                 </div>

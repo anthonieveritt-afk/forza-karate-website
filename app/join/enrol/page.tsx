@@ -31,7 +31,7 @@ const UPMINSTER_CLASSES = [
   'Wednesday 5:45–7pm — Senior all grades (11 yrs+)',
 ]
 
-const SUIT_SIZES = ['100cm','110cm','120cm','130cm','140cm','150cm','160cm','170cm','180cm','190cm']
+const SUIT_SIZES = ['90cm','100cm','110cm','120cm','130cm','140cm','150cm','160cm','170cm','180cm','190cm','200cm']
 const SUIT_PRICE_PENCE = 4000 // £40
 
 const BELTS = ['None (complete beginner)', 'White', 'Red', 'Yellow', 'Orange', 'Green', 'Blue', 'Purple', 'Brown', 'Black']
