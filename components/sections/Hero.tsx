@@ -8,41 +8,42 @@ import { ArrowRight } from 'lucide-react'
 import AnimatedWord from '@/components/ui/AnimatedWord'
 
 const photos = [
-  { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 25%' },
-  { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 20%' },
-  { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 35%' },
-  { src: '/hero5.jpg',                      alt: 'Forza Karate Club competition victory', position: '50% 30%' },
-  { src: '/hero6.webp',                     alt: 'Forza Karate Club',                  position: '50% 25%' },
-  { src: '/hero7.jpg',                      alt: 'Forza Karate Club',                  position: '50% 25%' },
-  { src: '/hero18.jpg',                     alt: 'Forza Karate Club young student',    position: '50% 25%' },
-  { src: '/hero9.jpg',                      alt: 'Forza Karate Club',                  position: '50% 25%' },
-  { src: '/hero12.jpg',                     alt: 'Forza Karate Club',                  position: '50% 25%' },
-  { src: '/hero14.jpg',                     alt: 'Forza Karate Club',                  position: '50% 25%' },
-  { src: '/team/team-01.jpg',               alt: 'Forza Karate squad',                 position: '50% 25%' },
-  { src: '/team/team-02.jpg',               alt: 'Forza Karate squad',                 position: '50% 25%' },
-  { src: '/team/team-03.jpg',               alt: 'Forza Karate squad',                 position: '50% 25%' },
-  { src: '/team/team-04.jpg',               alt: 'Forza Karate squad',                 position: '50% 25%' },
-  { src: '/team/team-05.jpg',               alt: 'Forza Karate squad',                 position: '50% 25%' },
-  { src: '/team/team-group.jpg',            alt: 'Forza Karate squad group',           position: '50% 25%' },
-  { src: '/team/team-competition-01.jpg',   alt: 'Forza Karate competition',           position: '50% 25%' },
-  { src: '/hero16.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero17.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero19.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero20.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero21.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero25.jpg',                     alt: 'Forza Karate training kick',         position: '50% 25%' },
-  { src: '/hero26.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero27.jpg',                     alt: 'Forza Karate class training',        position: '50% 35%' },
-  { src: '/hero28.jpg',                     alt: 'Forza Karate class',                 position: '50% 35%' },
-  { src: '/hero29.jpg',                     alt: 'Forza Karate class group',           position: '50% 30%' },
-  { src: '/hero30.jpg',                     alt: 'BKF Four Nations medals',            position: '50% 25%' },
-  { src: '/hero31.jpg',                     alt: 'Forza Karate competition action',    position: '50% 25%' },
-  { src: '/hero32.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero33.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero34.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero35.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero36.jpg',                     alt: 'Forza Karate',                       position: '50% 25%' },
-  { src: '/hero37.jpg',                     alt: 'Forza Karate kata competition',      position: '50% 25%' },
+  { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 15%' },
+  { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 15%' },
+  { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 20%' },
+  { src: '/hero5.jpg',                      alt: 'Forza Karate Club competition victory', position: '50% 15%' },
+  { src: '/hero6.webp',                     alt: 'Forza Karate Club',                  position: '50% 15%' },
+  { src: '/hero7.jpg',                      alt: 'Forza Karate Club',                  position: '50% 15%' },
+  { src: '/hero18.jpg',                     alt: 'Forza Karate Club young student',    position: '50% 15%' },
+  { src: '/hero9.jpg',                      alt: 'Forza Karate Club',                  position: '50% 15%' },
+  { src: '/hero12.jpg',                     alt: 'Forza Karate Club',                  position: '50% 15%' },
+  { src: '/hero14.jpg',                     alt: 'Forza Karate Club',                  position: '50% 15%' },
+  { src: '/team/team-01.jpg',               alt: 'Forza Karate squad',                 position: '50% 15%' },
+  { src: '/team/team-02.jpg',               alt: 'Forza Karate squad',                 position: '50% 15%' },
+  { src: '/team/team-03.jpg',               alt: 'Forza Karate squad',                 position: '50% 15%' },
+  { src: '/team/team-04.jpg',               alt: 'Forza Karate squad',                 position: '50% 15%' },
+  { src: '/team/team-05.jpg',               alt: 'Forza Karate squad',                 position: '50% 15%' },
+  { src: '/team/team-group.jpg',            alt: 'Forza Karate squad group',           position: '50% 15%' },
+  { src: '/team/team-competition-01.jpg',   alt: 'Forza Karate competition',           position: '50% 15%' },
+  { src: '/hero16.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero17.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero19.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero20.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero21.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero25.jpg',                     alt: 'Forza Karate training kick',         position: '50% 15%' },
+  { src: '/hero26.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero27.jpg',                     alt: 'Forza Karate class training',        position: '50% 20%' },
+  { src: '/hero28.jpg',                     alt: 'Forza Karate class',                 position: '50% 20%' },
+  { src: '/hero29.jpg',                     alt: 'Forza Karate class group',           position: '50% 15%' },
+  { src: '/hero30.jpg',                     alt: 'BKF Four Nations medals',            position: '50% 15%' },
+  { src: '/hero31.jpg',                     alt: 'Forza Karate competition action',    position: '50% 15%' },
+  { src: '/hero32.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero33.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero34.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero35.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero36.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
+  { src: '/hero37.jpg',                     alt: 'Forza Karate kata competition',      position: '50% 15%' },
+  { src: '/hero38.jpg',                     alt: 'Forza Karate Club group',            position: '50% 15%' },
 ]
 
 export default function Hero() {
@@ -59,7 +60,7 @@ export default function Hero() {
     <section className="bg-white overflow-hidden">
 
       {/* ── MOBILE: photo block above text ── */}
-      <div className="relative h-64 sm:h-80 md:hidden overflow-hidden">
+      <div className="relative h-72 sm:h-96 md:hidden overflow-hidden">
         {photos.map((photo, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -81,7 +82,7 @@ export default function Hero() {
       </div>
 
       {/* ── DESKTOP: full-background photo behind content ── */}
-      <div className="relative min-h-[85vh] hidden md:flex items-center">
+      <div className="relative min-h-screen hidden md:flex items-center">
         {photos.map((photo, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
