@@ -91,7 +91,11 @@ export default function JoinPage() {
         heardAboutUs: g('heardAboutUs') || undefined,
         discountCode: g('discountCode') || undefined,
       })
-      setEnrolMemberId(result.memberId || null)
+      const mid = result.memberId || 0
+      setEnrolMemberId(mid || null)
+      if (mid > 0 && typeof window !== 'undefined') {
+        sessionStorage.setItem('pendingEnrolMemberId', String(mid))
+      }
       setStatus('done')
     } catch {
       setStatus('error')
@@ -170,10 +174,10 @@ export default function JoinPage() {
                 <p className={label}>Membership type {req}</p>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { value: 'trial', label: 'Free Trial Class', sub: 'No commitment' },
-                    { value: 'single', label: 'Single Membership', sub: '1 person' },
-                    { value: 'family2', label: 'Family — 2 Members', sub: 'Immediate family only' },
-                    { value: 'family3plus', label: 'Family — 3+ Members', sub: 'Immediate family only' },
+                    { value: 'trial',      label: 'Free Trial Class',      sub: 'No commitment — first class is free' },
+                    { value: 'single',     label: 'Single — £45/mo',        sub: '1 student · or £540/yr annual' },
+                    { value: 'family2',    label: 'Family (2) — £75/mo',    sub: '2 students · immediate family only' },
+                    { value: 'family3plus',label: 'Family (3+) — £100/mo',  sub: '3+ students · immediate family only' },
                   ].map((opt) => (
                     <label key={opt.value}
                       className={`flex flex-col gap-0.5 p-3.5 rounded-xl border cursor-pointer transition-all ${membershipType === opt.value ? 'border-[#dc2626] bg-red-50' : 'border-black/10 hover:border-black/20'}`}>

@@ -87,7 +87,16 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 function EnrolWizard() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const urlMemberId = Number(searchParams.get('memberId') || searchParams.get('resume') || '0')
+  const paramMemberId = Number(searchParams.get('memberId') || searchParams.get('resume') || '0')
+  // Fallback: check sessionStorage if URL param wasn't threaded through
+  const storedMemberId = typeof window !== 'undefined'
+    ? Number(sessionStorage.getItem('pendingEnrolMemberId') || '0')
+    : 0
+  const urlMemberId = paramMemberId > 0 ? paramMemberId : storedMemberId
+  // Clear sessionStorage once consumed
+  if (urlMemberId > 0 && typeof window !== 'undefined') {
+    sessionStorage.removeItem('pendingEnrolMemberId')
+  }
 
   const [step, setStep] = useState(urlMemberId > 0 ? 1 : 0)
   const [loading, setLoading] = useState(false)
