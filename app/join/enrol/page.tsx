@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { CheckCircle, ChevronRight, User, ShoppingBag, CreditCard, Zap, Tag, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -84,9 +84,12 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
-export default function EnrolPage() {
+function EnrolWizard() {
   const router = useRouter()
-  const [step, setStep] = useState(0)
+  const searchParams = useSearchParams()
+  const urlMemberId = Number(searchParams.get('memberId') || searchParams.get('resume') || '0')
+
+  const [step, setStep] = useState(urlMemberId > 0 ? 1 : 0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -121,9 +124,19 @@ export default function EnrolPage() {
   const [accessCodeError, setAccessCodeError]   = useState('')
   const [accessCodeLoading, setAccessCodeLoading] = useState(false)
 
-  // Returned from API
-  const [memberId, setMemberId]             = useState<number | null>(null)
+  // Returned from API (or pre-seeded from URL when skipping Step 0)
+  const [memberId, setMemberId]             = useState<number | null>(urlMemberId > 0 ? urlMemberId : null)
   const [proRataPence, setProRataPence]     = useState(0)
+
+  // When arriving with a memberId from /join, fetch pro-rata for the selected membership type
+  useEffect(() => {
+    if (!urlMemberId) return
+    fetch(`${HONBU_API}/enrolment/pro-rata?memberId=${urlMemberId}&membershipType=${membershipType}`)
+      .then(r => r.json())
+      .then(d => { if (d.proRataPence) setProRataPence(d.proRataPence) })
+      .catch(() => {})
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlMemberId, membershipType])
 
   const classes = dojo === 'rayleigh' ? RAYLEIGH_CLASSES : dojo === 'upminster' ? UPMINSTER_CLASSES : []
   const isMonthly = membershipType !== 'yearly'
@@ -582,5 +595,13 @@ export default function EnrolPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function EnrolPage() {
+  return (
+    <Suspense>
+      <EnrolWizard />
+    </Suspense>
   )
 }

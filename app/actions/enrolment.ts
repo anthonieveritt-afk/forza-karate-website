@@ -28,7 +28,7 @@ export interface EnrolmentData {
   discountCode?: string
 }
 
-export async function submitEnrolment(data: EnrolmentData): Promise<void> {
+export async function submitEnrolment(data: EnrolmentData): Promise<{ memberId: number }> {
   const honbuUrl = process.env.CLUB_HONBU_URL
   const honbuSecret = process.env.CLUB_HONBU_WEBHOOK_SECRET
 
@@ -64,4 +64,7 @@ export async function submitEnrolment(data: EnrolmentData): Promise<void> {
     const body = await res.text().catch(() => '')
     throw new Error(`Enrolment submission failed: ${res.status} ${body}`)
   }
+
+  const json = await res.json().catch(() => ({}))
+  return { memberId: json.memberId ?? 0 }
 }

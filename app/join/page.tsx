@@ -19,29 +19,21 @@ const upminsterClasses = [
   'Wednesday 5:45–7pm — Senior all grades (11 yrs+)',
 ]
 
-const nextSteps = [
-  {
-    icon: ShoppingBag,
-    title: 'Order your official karate suit',
-    desc: 'Blitz Karate Gi — choose your size and add to order.',
-    href: '/join/enrol',
-    cta: 'Order Gi →',
-  },
-  {
-    icon: Shield,
-    title: 'Apply for your licence & insurance',
-    desc: 'All members need an FKA licence. Takes a few minutes to complete.',
-    href: '/join/apply-licence',
-    cta: 'Apply for Licence →',
-  },
-  {
-    icon: CreditCard,
-    title: 'Set up your Direct Debit',
-    desc: 'Pay monthly via GoCardless. Safe, easy, cancel anytime.',
-    href: 'https://pay.gocardless.com/AL00041KG22CVH',
-    cta: 'Set up Direct Debit →',
-  },
-]
+const licenceStep = {
+  icon: Shield,
+  title: 'Apply for your licence & insurance',
+  desc: 'All members need an FKA licence. Takes a few minutes to complete.',
+  href: '/join/apply-licence',
+  cta: 'Apply for Licence →',
+}
+
+const ddStep = {
+  icon: CreditCard,
+  title: 'Set up your Direct Debit',
+  desc: 'Pay monthly via GoCardless. Safe, easy, cancel anytime.',
+  href: 'https://pay.gocardless.com/AL00041KG22CVH',
+  cta: 'Set up Direct Debit →',
+}
 
 const belts = ['None (complete beginner)', 'White', 'Red', 'Yellow', 'Orange', 'Green', 'Blue', 'Purple', 'Brown', 'Black']
 const heardOptions = ['Google / Search', 'Social media', 'Friend or family', 'School', 'Local leaflet / poster', 'Walked past the dojo', 'Other']
@@ -50,8 +42,21 @@ export default function JoinPage() {
   const [dojo, setDojo] = useState('')
   const [membershipType, setMembershipType] = useState('trial')
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
+  const [enrolMemberId, setEnrolMemberId] = useState<number | null>(null)
 
   const classes = dojo === 'rayleigh' ? rayleighClasses : dojo === 'upminster' ? upminsterClasses : []
+
+  const nextSteps = [
+    {
+      icon: ShoppingBag,
+      title: 'Order your official karate suit',
+      desc: 'Blitz Karate Gi — choose your size and add to order.',
+      href: enrolMemberId ? `/join/enrol?memberId=${enrolMemberId}` : '/join/enrol',
+      cta: 'Order Gi →',
+    },
+    licenceStep,
+    ddStep,
+  ]
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -59,7 +64,7 @@ export default function JoinPage() {
     const f = new FormData(e.currentTarget)
     const g = (k: string) => f.get(k) as string
     try {
-      await submitEnrolment({
+      const result = await submitEnrolment({
         firstName: g('firstName'),
         lastName: g('lastName'),
         dateOfBirth: g('dateOfBirth'),
@@ -86,6 +91,7 @@ export default function JoinPage() {
         heardAboutUs: g('heardAboutUs') || undefined,
         discountCode: g('discountCode') || undefined,
       })
+      setEnrolMemberId(result.memberId || null)
       setStatus('done')
     } catch {
       setStatus('error')
