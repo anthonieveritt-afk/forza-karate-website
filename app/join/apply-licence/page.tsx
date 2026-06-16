@@ -1,17 +1,27 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
-import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
+import { AlertCircle, CheckCircle, Loader2, BadgePoundSterling } from 'lucide-react'
 
 const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
-export default function ApplyLicencePage() {
+function calculateAge(dob: string): number | null {
+  if (!dob) return null
+  const d = new Date(dob)
+  if (isNaN(d.getTime())) return null
+  return Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25))
+}
+
+function ApplyLicenceForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const paid = searchParams.get('paid') === 'true'
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
+  const [success, setSuccess] = useState(paid)
 
   const [form, setForm] = useState({
     firstName: '',
@@ -22,6 +32,11 @@ export default function ApplyLicencePage() {
     belt: '',
     reason: 'first_time',
   })
+
+  const age = calculateAge(form.dateOfBirth)
+  const isRenewal = form.reason === 'renewal'
+  const renewalFee = age !== null ? (age < 18 ? 45 : 49) : null
+  const renewalLabel = age !== null ? (age < 18 ? 'Under 18' : 'Senior (18+)') : null
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -34,22 +49,52 @@ export default function ApplyLicencePage() {
     setError(null)
 
     try {
-      const response = await fetch(`${HONBU_API}/licence-applications`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
+      if (isRenewal) {
+        // Renewal: go through Stripe checkout
+        const origin = window.location.origin
+        const response = await fetch(`${HONBU_API}/licence-applications/stripe/checkout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...form,
+            successUrl: `${origin}/join/apply-licence?paid=true`,
+            cancelUrl: `${origin}/join/apply-licence`,
+          }),
+        })
 
-      const data = await response.json()
+        const data = await response.json()
 
-      if (response.ok) {
-        setSuccess(true)
-        setTimeout(() => {
-          router.push('/')
-        }, 3000)
+        if (response.ok && data.checkoutUrl) {
+          window.location.href = data.checkoutUrl
+          return
+        } else {
+          setError(data.error || 'Failed to start payment. Please try again.')
+        }
       } else {
-        setError(data.error || 'Failed to submit application')
+        // First time or upgrade: no payment needed
+        const response = await fetch(`${HONBU_API}/licence-applications`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: form.firstName,
+            surname: form.surname,
+            dateOfBirth: form.dateOfBirth,
+            email: form.email,
+            phone: form.phone,
+            beltLevel: form.belt,
+            applicationType: form.reason,
+          }),
+        })
+
+        const data = await response.json()
+
+        if (response.ok) {
+          setSuccess(true)
+          setTimeout(() => router.push('/'), 3000)
+        } else {
+          setError(data.error || 'Failed to submit application')
+        }
       }
     } catch (err) {
       console.error('Error submitting licence application:', err)
@@ -64,11 +109,20 @@ export default function ApplyLicencePage() {
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
           <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
-          <h1 className="text-3xl font-bold text-[#111111] mb-3">Application Submitted! 🎖️</h1>
+          <h1 className="text-3xl font-bold text-[#111111] mb-3">
+            {paid ? 'Renewal paid! 🎖️' : 'Application Submitted! 🎖️'}
+          </h1>
           <p className="text-gray-500 leading-relaxed">
-            Thank you! Your licence application has been received. We'll review it and get back to you soon.
+            {paid
+              ? "Your licence renewal payment has been received. We'll process your renewal and be in touch shortly."
+              : "Thank you! Your licence application has been received. We'll review it and get back to you soon."}
           </p>
-          <p className="text-sm text-gray-400 mt-6">Redirecting you in a moment...</p>
+          {!paid && <p className="text-sm text-gray-400 mt-6">Redirecting you in a moment...</p>}
+          {paid && (
+            <Button className="mt-8" onClick={() => router.push('/')}>
+              Back to home
+            </Button>
+          )}
         </div>
       </div>
     )
@@ -183,6 +237,31 @@ export default function ApplyLicencePage() {
             </select>
           </div>
 
+          {/* Renewal fee badge — shown when renewal is selected and DOB is entered */}
+          {isRenewal && (
+            <div className={`flex items-start gap-3 p-4 rounded-xl border ${renewalFee ? 'bg-red-50 border-[#dc2626]/20' : 'bg-gray-50 border-gray-200'}`}>
+              <BadgePoundSterling className={`h-5 w-5 mt-0.5 flex-shrink-0 ${renewalFee ? 'text-[#dc2626]' : 'text-gray-400'}`} />
+              <div>
+                {renewalFee ? (
+                  <>
+                    <p className="text-sm font-semibold text-[#111111]">
+                      Renewal fee: <span className="text-[#dc2626]">£{renewalFee}</span>
+                      <span className="text-gray-400 font-normal ml-2">({renewalLabel})</span>
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      You'll be taken to a secure Stripe payment page to complete your renewal.
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    Enter your date of birth above to see the renewal fee.
+                    <span className="block text-xs text-gray-400 mt-0.5">Under 18: £45 · Senior (18+): £49</span>
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
           {error && (
             <div className="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
               <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
@@ -198,18 +277,28 @@ export default function ApplyLicencePage() {
             {loading ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin" />
-                Submitting...
+                {isRenewal ? 'Redirecting to payment...' : 'Submitting...'}
               </>
             ) : (
-              'Submit Application'
+              isRenewal ? `Pay & Renew Licence${renewalFee ? ` — £${renewalFee}` : ''}` : 'Submit Application'
             )}
           </Button>
 
           <p className="text-xs text-gray-500 text-center">
-            Your application will be reviewed and you'll hear from us within 2–3 business days.
+            {isRenewal
+              ? 'Payment is processed securely via Stripe. Your licence will be renewed once payment is confirmed.'
+              : "Your application will be reviewed and you'll hear from us within 2\u20133 business days."}
           </p>
         </form>
       </div>
     </div>
+  )
+}
+
+export default function ApplyLicencePage() {
+  return (
+    <Suspense>
+      <ApplyLicenceForm />
+    </Suspense>
   )
 }
