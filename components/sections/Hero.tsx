@@ -26,7 +26,6 @@ const photos = [
   { src: '/team/team-group.jpg',            alt: 'Forza Karate squad group',           position: '50% 15%' },
   { src: '/team/team-competition-01.jpg',   alt: 'Forza Karate competition',           position: '50% 15%' },
   { src: '/hero16.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero17.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
   { src: '/hero19.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
   { src: '/hero20.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
   { src: '/hero21.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
