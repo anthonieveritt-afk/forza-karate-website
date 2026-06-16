@@ -10,7 +10,7 @@ import { loginMembers } from '@/app/actions/members-auth'
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirect = searchParams.get('redirect') ?? '/members/grading'
+  const redirect = searchParams.get('redirect') ?? '/members/portal'
 
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')

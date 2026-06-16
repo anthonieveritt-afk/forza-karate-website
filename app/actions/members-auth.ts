@@ -29,7 +29,7 @@ export async function loginMembers(data: {
 
     // Verified — set our own session cookie
     const cookieStore = await cookies()
-    cookieStore.set(COOKIE_NAME, '1', {
+    cookieStore.set(COOKIE_NAME, body.token ?? '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

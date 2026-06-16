@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
-import { submitGradingRegistration } from '@/app/actions/grading-registration'
 import { CheckCircle, AlertCircle } from 'lucide-react'
+
+const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
 const belts = [
   '9th Kyu - White',
@@ -17,13 +18,30 @@ const belts = [
   '1st Kyu - Brown',
 ]
 
-const upcomingGradings = [
-  'Contact club for upcoming dates',
-]
+interface GradingEvent {
+  name: string
+  registerBy: string
+  awardLabel: string
+  registerDeadlineLabel: string
+}
 
 export default function GradingRegForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [gradingEvents, setGradingEvents] = useState<GradingEvent[]>([])
+  const [eventsLoading, setEventsLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(`${HONBU_API}/public/grading-events`)
+      .then(r => r.json())
+      .then((data: GradingEvent[]) => {
+        setGradingEvents(data)
+        setEventsLoading(false)
+      })
+      .catch(() => {
+        setEventsLoading(false)
+      })
+  }, [])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -33,22 +51,33 @@ export default function GradingRegForm() {
     const form = e.currentTarget
     const data = new FormData(form)
 
-    const result = await submitGradingRegistration({
-      memberName: data.get('memberName') as string,
-      parentName: data.get('parentName') as string || undefined,
-      email: data.get('email') as string,
-      currentBelt: data.get('currentBelt') as string,
-      dojo: data.get('dojo') as string,
-      gradingDate: data.get('gradingDate') as string,
-      notes: data.get('notes') as string || undefined,
-    })
+    try {
+      const res = await fetch(`${HONBU_API}/public/grading-request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          memberName: data.get('memberName') as string,
+          parentName: (data.get('parentName') as string) || undefined,
+          email: data.get('email') as string,
+          currentBelt: data.get('currentBelt') as string,
+          dojo: data.get('dojo') as string,
+          gradingName: data.get('gradingName') as string,
+          notes: (data.get('notes') as string) || undefined,
+        }),
+      })
 
-    if (result.success) {
-      setStatus('success')
-      form.reset()
-    } else {
+      const result = await res.json()
+
+      if (res.ok && result.success) {
+        setStatus('success')
+        form.reset()
+      } else {
+        setStatus('error')
+        setErrorMsg(result.error || 'Something went wrong.')
+      }
+    } catch {
       setStatus('error')
-      setErrorMsg(result.error || 'Something went wrong.')
+      setErrorMsg('Could not submit. Please try again.')
     }
   }
 
@@ -148,17 +177,28 @@ export default function GradingRegForm() {
 
       <div>
         <label className="block text-sm font-medium text-[#111111] mb-1.5">
-          Grading date <span className="text-[#dc2626]">*</span>
+          Grading <span className="text-[#dc2626]">*</span>
         </label>
         <select
-          name="gradingDate"
+          name="gradingName"
           required
           className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
+          disabled={eventsLoading}
         >
-          <option value="">Select grading date</option>
-          {upcomingGradings.map((date) => (
-            <option key={date} value={date}>{date}</option>
-          ))}
+          {eventsLoading ? (
+            <option value="">Loading dates…</option>
+          ) : gradingEvents.length === 0 ? (
+            <option value="">No upcoming gradings scheduled</option>
+          ) : (
+            <>
+              <option value="">Select grading</option>
+              {gradingEvents.map((g) => (
+                <option key={g.name} value={g.name}>
+                  {g.name} — awards {g.awardLabel} (register by {g.registerDeadlineLabel})
+                </option>
+              ))}
+            </>
+          )}
         </select>
       </div>
 
@@ -177,7 +217,7 @@ export default function GradingRegForm() {
       <Button
         type="submit"
         size="lg"
-        disabled={status === 'loading'}
+        disabled={status === 'loading' || eventsLoading || gradingEvents.length === 0}
         className="w-full"
       >
         {status === 'loading' ? 'Submitting…' : 'Register for Grading'}
