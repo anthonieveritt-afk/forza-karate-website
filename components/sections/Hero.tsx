@@ -30,8 +30,6 @@ const photos = [
   { src: '/hero19.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
   { src: '/hero20.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
   { src: '/hero21.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero25.jpg',                     alt: 'Forza Karate training kick',         position: '50% 15%' },
-  { src: '/hero26.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
   { src: '/hero27.jpg',                     alt: 'Forza Karate class training',        position: '50% 20%' },
   { src: '/hero28.jpg',                     alt: 'Forza Karate class',                 position: '50% 20%' },
   { src: '/hero29.jpg',                     alt: 'Forza Karate class group',           position: '50% 15%' },
