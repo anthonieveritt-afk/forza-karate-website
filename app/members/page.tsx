@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { Lock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { loginMembers } from '@/app/actions/members-auth'
+// loginMembers server action replaced with direct API route for reliability
 
 function LoginForm() {
   const router = useRouter()
@@ -22,7 +22,12 @@ function LoginForm() {
     setLoading(true)
     setError('')
     try {
-      const result = await loginMembers({ email, password, licenceNumber: '' })
+      const res = await fetch('/api/members/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      const result = await res.json()
       if (result.success) {
         router.push(redirect)
       } else {
