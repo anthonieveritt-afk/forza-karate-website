@@ -21,11 +21,16 @@ function LoginForm() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const result = await loginMembers({ email, password, licenceNumber: '' })
-    if (result.success) {
-      router.push(redirect)
-    } else {
-      setError(result.error ?? 'Invalid credentials.')
+    try {
+      const result = await loginMembers({ email, password, licenceNumber: '' })
+      if (result.success) {
+        router.push(redirect)
+      } else {
+        setError(result.error ?? 'Invalid credentials.')
+        setLoading(false)
+      }
+    } catch {
+      setError('Login failed — please try again.')
       setLoading(false)
     }
   }
