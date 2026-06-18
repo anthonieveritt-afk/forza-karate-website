@@ -12,14 +12,23 @@ export async function loginMembers(data: {
   licenceNumber?: string
 }): Promise<{ success: boolean; name?: string; error?: string }> {
   try {
-    const res = await fetch(`${CLUB_HONBU_API}/portal/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: data.email,
-        password: data.password,
-      }),
-    })
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 8000)
+    let res: Response
+    try {
+      res = await fetch(`${CLUB_HONBU_API}/portal/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+        signal: controller.signal,
+        cache: 'no-store',
+      })
+    } finally {
+      clearTimeout(timeout)
+    }
 
     const body = await res.json()
 

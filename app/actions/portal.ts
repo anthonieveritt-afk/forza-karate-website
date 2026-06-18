@@ -11,13 +11,21 @@ export async function getMemberPortalData() {
   if (!token) return null
 
   try {
-    const res = await fetch(`${HONBU_API}/portal/me`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      cache: 'no-store',
-    })
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 8000)
+    let res: Response
+    try {
+      res = await fetch(`${HONBU_API}/portal/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store',
+        signal: controller.signal,
+      })
+    } finally {
+      clearTimeout(timeout)
+    }
     if (!res.ok) return null
     return await res.json()
   } catch {
