@@ -29,7 +29,7 @@ function LoginForm() {
       })
       const result = await res.json()
       if (result.success) {
-        router.push(redirect)
+        window.location.href = redirect
       } else {
         setError(result.error ?? 'Invalid credentials.')
         setLoading(false)
