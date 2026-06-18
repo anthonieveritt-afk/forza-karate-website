@@ -22,15 +22,17 @@ function LoginForm() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/members/login', {
+      const res = await fetch(`/api/members/login?redirect=${encodeURIComponent(redirect)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+        redirect: 'manual',
       })
-      const result = await res.json()
-      if (result.success) {
+      if (res.type === 'opaqueredirect' || res.status === 302 || res.status === 0) {
+        // Server set the cookie and is redirecting — follow it
         window.location.href = redirect
       } else {
+        const result = await res.json()
         setError(result.error ?? 'Invalid credentials.')
         setLoading(false)
       }
@@ -94,7 +96,7 @@ export default function MembersLoginPage() {
             </div>
             <h1 className="text-2xl font-bold text-[#111111]">Members area</h1>
             <p className="text-sm text-gray-500 mt-2">
-              Log in with your Club Honbu email and password.
+              Log in with your Forza email and password.
             </p>
           </div>
 
