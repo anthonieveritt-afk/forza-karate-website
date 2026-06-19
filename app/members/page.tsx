@@ -22,17 +22,16 @@ function LoginForm() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch(`/api/members/login?redirect=${encodeURIComponent(redirect)}`, {
+      const res = await fetch('/api/members/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-        redirect: 'manual',
       })
-      if (res.type === 'opaqueredirect' || res.status === 302 || res.status === 0) {
-        // Server set the cookie and is redirecting — follow it
+      const result = await res.json()
+      if (result.success) {
+        // Cookie is now set — do a hard nav so middleware sees it
         window.location.href = redirect
       } else {
-        const result = await res.json()
         setError(result.error ?? 'Invalid credentials.')
         setLoading(false)
       }

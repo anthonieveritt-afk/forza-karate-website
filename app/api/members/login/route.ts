@@ -33,8 +33,7 @@ export async function POST(req: NextRequest) {
     }
 
     const token = body.token ?? ''
-    const redirectTo = req.nextUrl.searchParams.get('redirect') ?? '/members/portal'
-    const res = NextResponse.redirect(new URL(redirectTo, req.url))
+    const res = NextResponse.json({ success: true, name: body.name })
     res.cookies.set(COOKIE_NAME, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
