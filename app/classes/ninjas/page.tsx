@@ -2,6 +2,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, CheckCircle } from 'lucide-react'
+import ClassTimetable from '@/components/sections/ClassTimetable'
+import FeesPanel from '@/components/sections/FeesPanel'
+import { sessionsForClass } from '@/lib/timetable'
+import { TRIAL_HREF } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Forza Ninjas — Ages 4–7',
@@ -68,26 +72,11 @@ export default function NinjasPage() {
       <section className="bg-[#fafaf9] py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-bold text-[#111111] mb-6">Class timetable</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-black/10">
-                  <th className="text-left py-3 pr-8 font-semibold text-[#111111]">Day</th>
-                  <th className="text-left py-3 pr-8 font-semibold text-[#111111]">Time</th>
-                  <th className="text-left py-3 font-semibold text-[#111111]">Location</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-500">
-                <tr className="border-b border-black/5">
-                  <td className="py-3 pr-8">Contact us</td>
-                  <td className="py-3 pr-8">—</td>
-                  <td className="py-3">Rayleigh / Upminster</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <ClassTimetable sessions={sessionsForClass('ninjas')} />
           <p className="text-xs text-gray-400 mt-4">
-            * Contact us for current timetable. Term-time only — 40 weeks per year.
+            Term time only — 40 weeks per year. See the{' '}
+            <Link href="/dojos/rayleigh" className="underline underline-offset-2 hover:text-[#dc2626]">Rayleigh</Link> and{' '}
+            <Link href="/dojos/upminster" className="underline underline-offset-2 hover:text-[#dc2626]">Upminster</Link> dojo pages for venue details.
           </p>
         </div>
       </section>
@@ -95,12 +84,7 @@ export default function NinjasPage() {
       {/* Fees */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 border-t border-black/5">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl font-bold text-[#111111] mb-4">Fees</h2>
-          <p className="text-gray-500 max-w-2xl">
-            Membership fees are charged annually, payable by 12 monthly instalments on the 1st of
-            each month via Direct Debit. One calendar month&apos;s notice required to cancel. Contact us
-            for current pricing.
-          </p>
+          <FeesPanel />
         </div>
       </section>
 
@@ -111,8 +95,8 @@ export default function NinjasPage() {
           <p className="text-gray-400 mb-8">First class is free. No kit required.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild size="lg">
-              <Link href="/trial-class">
-                Book Free Trial
+              <Link href={TRIAL_HREF}>
+                Book a free trial
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>

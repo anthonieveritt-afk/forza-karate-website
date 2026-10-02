@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import ClassCard from '@/components/sections/ClassCard'
+import FeesPanel from '@/components/sections/FeesPanel'
 
 export const metadata: Metadata = {
   title: 'Classes',
@@ -62,15 +63,10 @@ export default function ClassesPage() {
         </div>
       </section>
 
-      {/* Fees note */}
+      {/* Fees */}
       <section className="bg-[#fafaf9] py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-xl font-bold text-[#111111] mb-3">Fees</h2>
-          <p className="text-gray-500 leading-relaxed max-w-2xl">
-            Membership fees are charged annually, payable by 12 monthly instalments on the 1st of each month
-            via GoCardless Direct Debit. One calendar month&apos;s notice is required to cancel.
-            Contact us for current fee information.
-          </p>
+          <FeesPanel />
         </div>
       </section>
     </div>

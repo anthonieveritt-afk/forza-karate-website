@@ -2,18 +2,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { MapPin, Clock, ArrowRight } from 'lucide-react'
+import { sessionsForDojo } from '@/lib/timetable'
+import { TRIAL_HREF } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Rayleigh Dojo',
   description: 'Forza Karate Club Rayleigh dojo — karate classes for all ages at Rayleigh Primary School, Love Lane, Essex SS6 7DD.',
 }
 
-const timetable = [
-  { day: 'Tuesday',  time: '6:15 – 7:00pm',  desc: '4 years+ · 10 yrs all grades' },
-  { day: 'Tuesday',  time: '7:00 – 8:00pm',  desc: '11 years+ · all grades' },
-  { day: 'Friday',   time: '3:30 – 4:30pm',  desc: '4 years+ · after school club' },
-  { day: 'Saturday', time: '10:00 – 11:00am', desc: '4 years+ · all grades and ages' },
-]
+const timetable = sessionsForDojo('rayleigh')
 
 export default function RayleighPage() {
   return (
@@ -61,8 +58,8 @@ export default function RayleighPage() {
 
             <div className="mt-10">
               <Button asChild>
-                <Link href="/join">
-                  Book Free Trial at Rayleigh
+                <Link href={TRIAL_HREF}>
+                  Book a free trial at Rayleigh
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -76,8 +73,8 @@ export default function RayleighPage() {
               <h2 className="text-2xl font-bold text-[#111111]">Class timetable</h2>
             </div>
             <div className="space-y-3">
-              {timetable.map((cls, i) => (
-                <div key={i} className="flex items-start gap-4 p-4 rounded-2xl bg-[#fafaf9] border border-black/5">
+              {timetable.map((cls) => (
+                <div key={cls.id} className="flex items-start gap-4 p-4 rounded-2xl bg-[#fafaf9] border border-black/5">
                   <div className="w-20 flex-shrink-0">
                     <span className="text-xs font-bold text-[#dc2626] uppercase tracking-wide">{cls.day}</span>
                   </div>
