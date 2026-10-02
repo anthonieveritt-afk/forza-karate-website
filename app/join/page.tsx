@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { CheckCircle, ArrowRight, ShoppingBag, CreditCard, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { submitEnrolment } from '@/app/actions/enrolment'
@@ -118,7 +119,7 @@ export default function JoinPage() {
           </div>
           <h1 className="text-5xl font-bold text-[#111111] mb-4">Join Forza Karate Club</h1>
           <p className="text-xl text-gray-500 max-w-2xl">
-            Start with a free trial or enrol directly. Fill in your details below and we'll be in touch to confirm your place.
+            Start with a free trial or enrol directly. Fill in your details below and we&apos;ll be in touch to confirm your place.
           </p>
         </div>
       </section>
@@ -132,7 +133,7 @@ export default function JoinPage() {
                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
                 <h2 className="text-3xl font-bold text-[#111111] mb-2">Enrolment received!</h2>
                 <p className="text-gray-500 max-w-md mx-auto">
-                  Thank you — we'll be in touch shortly to confirm your place. In the meantime, get ahead with the steps below.
+                  Thank you — we&apos;ll be in touch shortly to confirm your place. In the meantime, get ahead with the steps below.
                 </p>
               </div>
               <h3 className="text-lg font-bold text-[#111111] mb-5">Complete your membership</h3>
@@ -153,6 +154,11 @@ export default function JoinPage() {
                   </a>
                 ))}
               </div>
+
+              <p className="mt-6 text-sm text-gray-500">
+                Please read our <Link href="/membership-terms" className="text-[#dc2626] hover:underline">membership terms</Link> (notice,
+                refunds and absences) and our <Link href="/club-rules" className="text-[#dc2626] hover:underline">club rules &amp; etiquette</Link> before your first class.
+              </p>
 
               {/* Family discount note */}
               <div className="mt-8 p-4 rounded-xl bg-[#fafaf9] border border-black/6 text-xs text-gray-500 leading-relaxed">
@@ -370,7 +376,12 @@ export default function JoinPage() {
                   {status === 'loading' ? 'Submitting…' : membershipType === 'trial' ? 'Book my free trial' : 'Submit enrolment'}
                   {status !== 'loading' && <ArrowRight className="h-4 w-4" />}
                 </Button>
-                <p className="text-xs text-gray-400 text-center mt-3">
+                <p className="text-xs text-gray-500 text-center mt-3">
+                  By enrolling you agree to our{' '}
+                  <Link href="/membership-terms" className="text-[#dc2626] hover:underline">membership terms</Link> and{' '}
+                  <Link href="/club-rules" className="text-[#dc2626] hover:underline">club rules</Link>.
+                </p>
+                <p className="text-xs text-gray-400 text-center mt-2">
                   {membershipType === 'trial'
                     ? 'No kit needed. No commitment. Your instructor will guide you.'
                     : 'We\'ll be in touch within 24 hours to confirm your enrolment and next steps.'}
