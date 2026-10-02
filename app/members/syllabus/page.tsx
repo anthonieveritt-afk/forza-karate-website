@@ -46,7 +46,7 @@ export default function MembersSyllabusPage() {
             <p className="text-gray-600 mb-6">View or download the Forza Karate Club grading syllabus. Click the button below to open the interactive syllabus — you can fill it in and save as PDF.</p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button asChild>
-                <a href="/forza-syllabus-template.html" target="_blank" rel="noopener noreferrer">Open Syllabus →</a>
+                <a href="/members/syllabus/view" target="_blank" rel="noopener noreferrer">Open Syllabus →</a>
               </Button>
               <Button asChild variant="outline">
                 <Link href="/members/grading">Register to Grade →</Link>

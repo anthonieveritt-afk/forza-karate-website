@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { MEMBERS_COOKIE, verifyMemberToken } from '@/lib/members-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +32,13 @@ async function proxyRequest(
   pathSegments: string[],
   method: string,
 ): Promise<NextResponse> {
+  // This proxy acts with the Club Honbu admin account, so only signed-in
+  // members may use it. The token is checked with Club Honbu on every call.
+  // TODO: restrict to club admins once Club Honbu exposes a role.
+  if (!(await verifyMemberToken(req.cookies.get(MEMBERS_COOKIE)?.value))) {
+    return NextResponse.json({ error: 'Not signed in.' }, { status: 401 });
+  }
+
   const galleryPath = pathSegments.join('/');
   const targetUrl = `${HONBU}/api/gallery/${galleryPath}`;
 

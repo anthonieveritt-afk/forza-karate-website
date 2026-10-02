@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { MEMBERS_COOKIE, membersCookieOptions } from '@/lib/members-auth'
 
 const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
-const COOKIE_NAME = 'forza-members-auth'
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,13 +33,9 @@ export async function POST(req: NextRequest) {
 
     const token = body.token ?? ''
     const res = NextResponse.json({ success: true, name: body.name })
-    res.cookies.set(COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: COOKIE_MAX_AGE,
-      path: '/members',
-    })
+    res.cookies.set(MEMBERS_COOKIE, token, membersCookieOptions())
+    // Clear any older cookie that was scoped to /members only
+    res.cookies.set(MEMBERS_COOKIE, '', { path: '/members', maxAge: 0 })
     return res
   } catch (err: unknown) {
     console.error('Login route error:', err)
