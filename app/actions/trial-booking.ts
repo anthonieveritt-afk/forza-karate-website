@@ -24,7 +24,7 @@ function splitName(full: string): { first: string; last: string } {
 }
 
 export async function submitTrialBooking(data: TrialBookingData): Promise<void> {
-  const honbuUrl = process.env.CLUB_HONBU_URL || 'https://club-honbu-production.up.railway.app'
+  const honbuUrl = process.env.CLUB_HONBU_URL || 'https://forza-club-honbu-production.up.railway.app'
   const honbuSecret = process.env.CLUB_HONBU_WEBHOOK_SECRET
 
   if (!honbuSecret) {
