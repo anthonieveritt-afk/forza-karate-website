@@ -18,7 +18,7 @@ export const EVENTS: ClubEvent[] = [
   // ── JANUARY ──
   { id: 'orleans-sel',  title: 'Orleans Jeunes — Training & Selections',        date: '2026-01-23', venue: 'Chigwell, Essex',                                      category: 'Coaching',   eligibility: 'Open to all squad' },
   { id: 'sc-jan',       title: 'Saturday Super Champs',                        date: '2026-01-10', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Super Champs', registrationHref: 'https://f8s.co/26cd' },
-  { id: 'para-jan',     title: 'Para Karate — Inclusive Session',               date: '2026-01-10', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Para Karate', registrationHref: 'https://formsmarts.com/form/2fhs', notes: 'Open to all with additional needs, learning difficulties & disabilities' },
+  { id: 'para-jan',     title: 'Para Karate — Inclusive Session',               date: '2026-01-10', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Para Karate', registrationHref: '/para-karate', notes: 'Open to all with additional needs, learning difficulties & disabilities' },
   { id: 'kata-jan',     title: 'Kata Coaching',                                date: '2026-01-10', time: '3:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: 'All ages', registrationHref: 'https://f8s.co/21zc' },
   { id: 'kum-u12-jan',  title: 'Kumite Coaching',                              date: '2026-01-11', time: '11:00am', venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '12 years & below' },
   { id: 'kum-s-jan',    title: 'Kumite Coaching',                              date: '2026-01-11', time: '1:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '13 years+' },
@@ -27,7 +27,7 @@ export const EVENTS: ClubEvent[] = [
   { id: 'grad-feb-dl',  title: 'February Grading — Registration Deadline',      date: '2026-02-13', venue: 'Rayleigh & Upminster',                                  category: 'Grading',    notes: 'Belts awarded 23rd–28th February', registrationHref: '/gradings/register' },
   { id: 'grad-feb-w',   title: 'February Grading — Belts Awarded',              date: '2026-02-23', dateEnd: '2026-02-28', venue: 'Rayleigh & Upminster',           category: 'Grading' },
   { id: 'sc-feb',       title: 'Saturday Super Champs',                        date: '2026-02-14', time: '2:00pm',  venue: 'Chingford',                            category: 'Super Champs', registrationHref: 'https://f8s.co/26cd' },
-  { id: 'para-feb',     title: 'Para Karate — Inclusive Session',               date: '2026-02-14', time: '2:00pm',  venue: 'Chingford',                            category: 'Para Karate', registrationHref: 'https://formsmarts.com/form/2fhs' },
+  { id: 'para-feb',     title: 'Para Karate — Inclusive Session',               date: '2026-02-14', time: '2:00pm',  venue: 'Chingford',                            category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'kata-feb',     title: 'Kata Coaching',                                date: '2026-02-14', time: '3:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
   { id: 'kum-u12-feb',  title: 'Kumite Coaching',                              date: '2026-02-15', time: '2:30pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: '12 years & below' },
   { id: 'kum-s-feb',    title: 'Kumite Coaching',                              date: '2026-02-15', time: '4:30pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: '13 years+' },
@@ -39,6 +39,7 @@ export const EVENTS: ClubEvent[] = [
   { id: 'kum-u12-mar',  title: 'Kumite Training & Selections (BKF)',           date: '2026-03-08', time: '11:00am', venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '12 years & below' },
   { id: 'kum-s-mar',    title: 'Kumite Training & Selections (BKF)',           date: '2026-03-08', time: '1:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '13 years+' },
   { id: 'sc-mar',       title: 'Saturday Super Champs',                        date: '2026-03-14', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Super Champs' },
+  { id: 'para-mar',     title: 'Para Karate — Inclusive Session',               date: '2026-03-14', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'kata-mar',     title: 'Kata Training & Selections (BKF)',             date: '2026-03-14', time: '3:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: 'All ages' },
   { id: 'orleans-pre2', title: 'Orleans Jeunes — Additional Pre-Training',     date: '2026-03-20', venue: 'Chigwell, Essex',                                      category: 'Coaching',   eligibility: 'Compulsory for selected team' },
   { id: 'grad-apr',     title: 'April Grading — Registration Deadline',        date: '2026-03-27', venue: 'Rayleigh & Upminster',                                 category: 'Grading',    notes: 'Belts awarded 13th–18th April', registrationHref: '/gradings/register' },
@@ -47,12 +48,14 @@ export const EVENTS: ClubEvent[] = [
   // ── APRIL ──
   { id: 'grad-apr-w',   title: 'April Grading — Belts Awarded',               date: '2026-04-13', dateEnd: '2026-04-18', venue: 'Rayleigh & Upminster',           category: 'Grading' },
   { id: 'sc-apr',       title: 'Saturday Super Champs',                        date: '2026-04-25', time: '2:00pm',  venue: 'Chingford',                            category: 'Super Champs' },
+  { id: 'para-apr',     title: 'Para Karate — Inclusive Session',               date: '2026-04-25', time: '2:00pm',  venue: 'Chingford',                            category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'kata-apr',     title: 'Kata Training & Selections',                   date: '2026-04-25', time: '3:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
   { id: 'kum-u12-apr',  title: 'Kumite Training & Selections',                 date: '2026-04-26', time: '2:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: '12 years & below' },
   { id: 'kum-s-apr',    title: 'Kumite Training & Selections',                 date: '2026-04-26', time: '4:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: '13 years+' },
 
   // ── MAY ──
   { id: 'sc-may',       title: 'Saturday Super Champs',                        date: '2026-05-09', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Super Champs' },
+  { id: 'para-may',     title: 'Para Karate — Inclusive Session',               date: '2026-05-09', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'kata-may',     title: 'Kata Training (BKF)',                          date: '2026-05-09', time: '3:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: 'All ages' },
   { id: 'wkf-sel',      title: 'WKF Youth Camp & U12 — Training & Selection', date: '2026-05-09', venue: 'Rayleigh, Essex',                                      category: 'Coaching',   eligibility: '11 years & below, 12yr olds welcome' },
   { id: 'jhka-6th',     title: 'JHKA 6th Open Championships',                 date: '2026-05-16', venue: 'Romford',                                               category: 'Competition', eligibility: 'Open to all FKA students incl. beginners' },
@@ -61,6 +64,7 @@ export const EVENTS: ClubEvent[] = [
 
   // ── JUNE ──
   { id: 'sc-jun',       title: 'Saturday Super Champs',                        date: '2026-06-06', time: '2:30pm',  venue: 'Chingford',                            category: 'Super Champs' },
+  { id: 'para-jun',     title: 'Para Karate — Inclusive Session',               date: '2026-06-06', time: '2:30pm',  venue: 'Chingford',                            category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'wkf-pre',      title: 'WKF Youth Camp — Pre-Training',                date: '2026-06-06', venue: 'Chingford, London',                                    category: 'Coaching',   eligibility: 'Selected squad only' },
   { id: 'kata-jun',     title: 'Kata Training (British International Open)',   date: '2026-06-06', time: '3:30pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
   { id: 'kum-u12-jun',  title: 'Kumite Training (British International Open)', date: '2026-06-07', time: '2:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: '12 years & below' },
@@ -74,6 +78,7 @@ export const EVENTS: ClubEvent[] = [
   { id: 'wkf-croatia2', title: 'WKF Youth League 2026 — Croatia',              date: '2026-07-02', dateEnd: '2026-07-05', venue: 'Porec, Croatia',                category: 'Competition', eligibility: 'Selected Elite squad only' },
   { id: 'grad-jul-dl',  title: 'July Grading — Registration Deadline',         date: '2026-07-03', venue: 'Rayleigh & Upminster',                                 category: 'Grading',    notes: 'Belts awarded 11th–17th July', registrationHref: '/gradings/register' },
   { id: 'sc-jul',       title: 'Saturday Super Champs',                        date: '2026-07-11', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Super Champs' },
+  { id: 'para-jul',     title: 'Para Karate — Inclusive Session',               date: '2026-07-11', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'kata-jul',     title: 'Kata Training (British International Open)',   date: '2026-07-11', time: '3:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: 'All ages' },
   { id: 'grad-jul-w',   title: 'July Grading — Belts Awarded',                date: '2026-07-11', dateEnd: '2026-07-17', venue: 'Rayleigh & Upminster',           category: 'Grading' },
   { id: 'kum-u12-jul',  title: 'Kumite Training (British International Open)', date: '2026-07-26', time: '11:00am', venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '12 years & below' },
@@ -81,6 +86,7 @@ export const EVENTS: ClubEvent[] = [
 
   // ── AUGUST ──
   { id: 'sc-aug',       title: 'Saturday Super Champs',                        date: '2026-08-01', time: '2:00pm',  venue: 'Chingford',                            category: 'Super Champs' },
+  { id: 'para-aug',     title: 'Para Karate — Inclusive Session',               date: '2026-08-01', time: '2:00pm',  venue: 'Chingford',                            category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'kata-aug',     title: 'Kata Training (British International Open)',   date: '2026-08-01', time: '3:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
   { id: 'kum-aug',      title: 'Kumite Training (British International Open)', date: '2026-08-02', time: '2:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
   { id: 'bkf-pre',      title: 'BKF British International Open — Pre-Training', date: '2026-08-27', dateEnd: '2026-08-28', venue: 'Sheffield',                    category: 'Coaching',   eligibility: 'Elite squad only' },
@@ -88,6 +94,7 @@ export const EVENTS: ClubEvent[] = [
 
   // ── SEPTEMBER ──
   { id: 'sc-sep',       title: 'Saturday Super Champs',                        date: '2026-09-12', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Super Champs' },
+  { id: 'para-sep',     title: 'Para Karate — Inclusive Session',               date: '2026-09-12', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'kata-sep',     title: 'Kata Training (Commonwealth)',                 date: '2026-09-12', time: '3:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: 'All ages' },
   { id: 'kum-u12-sep',  title: 'Kumite Training (Commonwealth)',               date: '2026-09-13', time: '11:00am', venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '12 years & below' },
   { id: 'kum-s-sep',    title: 'Kumite Training (Commonwealth)',               date: '2026-09-13', time: '1:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '13 years+' },
@@ -101,6 +108,7 @@ export const EVENTS: ClubEvent[] = [
   { id: 'kum-s-oct',    title: 'Kumite Training (Commonwealth)',               date: '2026-10-04', time: '4:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: '13 years+' },
   { id: 'jhka-8th',     title: 'JHKA 8th Junior Championships',               date: '2026-10-10', venue: 'Enfield',                                               category: 'Competition', eligibility: 'Open to all JHKA students incl. beginners' },
   { id: 'sc-oct',       title: 'Saturday Super Champs',                        date: '2026-10-24', time: '2:00pm',  venue: 'Chingford',                            category: 'Super Champs' },
+  { id: 'para-oct',     title: 'Para Karate — Inclusive Session',               date: '2026-10-24', time: '2:00pm',  venue: 'Chingford',                            category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'kata-oct',     title: 'Kata Training (Commonwealth)',                 date: '2026-10-24', time: '3:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
   { id: 'grad-nov-dl',  title: 'November Grading — Registration Deadline',    date: '2026-10-23', venue: 'Rayleigh & Upminster',                                  category: 'Grading',    notes: 'Belts awarded 2nd–6th November', registrationHref: '/gradings/register' },
 
@@ -110,11 +118,13 @@ export const EVENTS: ClubEvent[] = [
   { id: 'grad-nov-w',   title: 'November Grading — Belts Awarded',            date: '2026-11-02', dateEnd: '2026-11-06', venue: 'Rayleigh & Upminster',           category: 'Grading' },
   { id: 'cw',           title: 'Commonwealth Club Championships',              date: '2026-11-07', dateEnd: '2026-11-08', venue: 'Emirates Arena, Glasgow',        category: 'Competition', eligibility: 'Selected squad only' },
   { id: 'sc-nov',       title: 'Saturday Super Champs',                        date: '2026-11-14', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Super Champs' },
+  { id: 'para-nov',     title: 'Para Karate — Inclusive Session',               date: '2026-11-14', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'kata-nov',     title: 'Kata Training (End of Year)',                  date: '2026-11-14', time: '3:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: 'All ages' },
 
   // ── DECEMBER ──
   { id: 'grad-dec-dl',  title: 'December Grading — Registration Deadline',    date: '2026-12-04', venue: 'Rayleigh & Upminster',                                  category: 'Grading',    notes: 'Belts awarded 14th–18th December', registrationHref: '/gradings/register' },
   { id: 'sc-dec',       title: 'Saturday Super Champs',                        date: '2026-12-05', time: '2:00pm',  venue: 'Chingford',                            category: 'Super Champs' },
+  { id: 'para-dec',     title: 'Para Karate — Inclusive Session',               date: '2026-12-05', time: '2:00pm',  venue: 'Chingford',                            category: 'Para Karate', registrationHref: '/para-karate' },
   { id: 'kata-dec',     title: 'Kata Coaching (End of Year)',                  date: '2026-12-05', time: '3:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
   { id: 'grad-dec-w',   title: 'December Grading — Belts Awarded',            date: '2026-12-14', dateEnd: '2026-12-18', venue: 'Rayleigh & Upminster',           category: 'Grading' },
   { id: 'kum-dec',      title: 'Kumite Coaching (End of Year)',                date: '2026-12-20', time: '2:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
