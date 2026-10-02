@@ -96,7 +96,7 @@ export default function PrivacyPolicyPage() {
                 <li>Withdraw consent at any time</li>
               </ul>
               <p className="mt-3">
-                To exercise any of these rights, contact us via the <a href="/contact" className="text-[#dc2626] hover:underline">contact page</a>.
+                To exercise any of these rights, please let us know.
               </p>
             </div>
 
@@ -112,7 +112,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-xl font-bold text-[#111111] mb-3">9. Complaints</h2>
               <p>
                 If you have a concern about how we handle your data, you can contact the ICO (Information
-                Commissioner&apos;s Office) at <strong>ico.org.uk</strong> or call 0303 123 1113.
+                Commissioner&apos;s Office) at <strong>ico.org.uk</strong>.
               </p>
             </div>
 
