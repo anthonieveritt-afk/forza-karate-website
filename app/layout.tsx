@@ -7,6 +7,8 @@ import MusicPlayer from '@/components/layout/MusicPlayer'
 import { CartProvider } from '@/lib/cart-context'
 
 export const metadata: Metadata = {
+  // Used to build absolute URLs for social preview images (e.g. news posts).
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://forza-karate-website.vercel.app'),
   title: {
     default: 'Forza Karate Club — Rayleigh & Upminster',
     template: '%s | Forza Karate Club',
