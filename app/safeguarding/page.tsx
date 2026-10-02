@@ -8,15 +8,15 @@ export const metadata: Metadata = {
 }
 
 const documents = [
-  { label: 'FKC Safeguarding Policy – Children (2023)', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Children-Policy-and-Procedures.pdf' },
-  { label: 'FKC Safeguarding Policy – Adults (2023)', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Adults-Policy.pdf' },
-  { label: 'FKC Safeguarding Statement', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Statement.pdf' },
-  { label: 'FKC Safe Practice Policy', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safe-Practice-Policy-2023.pdf' },
-  { label: 'FKC Safeguarding Flowchart – Children', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/forza-karate-club-safeguarding-flow-chart.png' },
-  { label: 'FKC Safeguarding Flowchart – Adults', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/forza-karate-club-adult-reporting-flow-chart.docx' },
-  { label: 'FKC Code of Conduct – Students', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-students.pdf' },
-  { label: 'FKC Code of Conduct – Parents / Carers', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-parents-and-carers.pdf' },
-  { label: 'FKC Code of Conduct – Instructors / Coaches / Volunteers', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-Instructors-Coaches-and-Volunteers.pdf' },
+  { label: 'FKC Safeguarding Policy – Children (2023)', href: '/documents/safeguarding/forza-karate-club-safeguarding-children-policy-and-procedures.pdf' },
+  { label: 'FKC Safeguarding Policy – Adults (2023)', href: '/documents/safeguarding/forza-karate-club-safeguarding-adults-policy.pdf' },
+  { label: 'FKC Safeguarding Statement', href: '/documents/safeguarding/forza-karate-club-safeguarding-statement.pdf' },
+  { label: 'FKC Safe Practice Policy', href: '/documents/safeguarding/forza-karate-club-safe-practice-policy-2023.pdf' },
+  { label: 'FKC Safeguarding Flowchart – Children', href: '/documents/safeguarding/forza-karate-club-safeguarding-flow-chart.png' },
+  { label: 'FKC Safeguarding Flowchart – Adults', href: '/documents/safeguarding/forza-karate-club-adult-reporting-flow-chart.docx' },
+  { label: 'FKC Code of Conduct – Students', href: '/documents/safeguarding/forza-karate-club-code-of-conduct-for-students.pdf' },
+  { label: 'FKC Code of Conduct – Parents / Carers', href: '/documents/safeguarding/forza-karate-club-code-of-conduct-for-parents-and-carers.pdf' },
+  { label: 'FKC Code of Conduct – Instructors / Coaches / Volunteers', href: '/documents/safeguarding/forza-karate-club-code-of-conduct-for-instructors-coaches-and-volunteers.pdf' },
 ]
 
 const localBoards = [
@@ -149,7 +149,7 @@ export default function SafeguardingPage() {
           <div>
             <div className="flex items-center gap-2 mb-6">
               <Shield className="h-5 w-5 text-[#dc2626]" />
-              <h2 className="text-2xl font-bold text-[#111111]">Local Safeguarding Children's Board</h2>
+              <h2 className="text-2xl font-bold text-[#111111]">Local Safeguarding Children&apos;s Board</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {localBoards.map((board) => (
