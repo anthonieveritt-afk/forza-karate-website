@@ -22,6 +22,14 @@ export const metadata: Metadata = {
     locale: 'en_GB',
     type: 'website',
   },
+  // DEVELOPMENT ONLY: keep every page out of search results until launch.
+  // Flip this (and app/robots.ts + the X-Robots-Tag header in next.config.ts) when the site goes live.
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: { index: false, follow: false, noimageindex: true },
+  },
 }
 
 export default function RootLayout({
