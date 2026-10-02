@@ -16,6 +16,8 @@ export interface EventRegData {
   parentName?: string
   medicalNotes?: string
   sessionDate?: string
+  /** Answers to any extra questions (grading licence details, belt embroidery, para session details…). */
+  details?: Record<string, string>
 }
 
 export async function submitEventRegistration(data: EventRegData): Promise<void> {
@@ -32,6 +34,7 @@ export async function submitEventRegistration(data: EventRegData): Promise<void>
     parentName: data.parentName || null,
     medicalNotes: data.medicalNotes || null,
     sessionDate: data.sessionDate || null,
+    details: data.details ?? null,
     paymentStatus: 'unpaid',
   })
 }

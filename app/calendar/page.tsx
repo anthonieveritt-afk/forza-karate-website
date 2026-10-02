@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { Calendar, MapPin, Clock, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
+import { Calendar, MapPin, Clock, ExternalLink, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react'
 import { EVENTS, CATEGORY_COLOURS, formatEventDate, groupByMonth, type EventCategory } from '@/lib/events'
 
 const CATEGORIES: EventCategory[] = ['Competition', 'Coaching', 'Super Champs', 'Grading', 'Para Karate']
@@ -172,14 +172,23 @@ export default function CalendarPage() {
 
                           {/* Register link */}
                           {event.registrationHref && !isPast && !event.cancelled && (
-                            <a
-                              href={event.registrationHref}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex-shrink-0 self-start text-xs font-semibold text-[#dc2626] hover:underline flex items-center gap-1 mt-1"
-                            >
-                              Register <ExternalLink className="h-3 w-3" />
-                            </a>
+                            event.registrationHref.startsWith('/') ? (
+                              <Link
+                                href={event.registrationHref}
+                                className="flex-shrink-0 self-start text-xs font-semibold text-[#dc2626] hover:underline flex items-center gap-1 mt-1"
+                              >
+                                Register <ArrowRight className="h-3 w-3" />
+                              </Link>
+                            ) : (
+                              <a
+                                href={event.registrationHref}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-shrink-0 self-start text-xs font-semibold text-[#dc2626] hover:underline flex items-center gap-1 mt-1"
+                              >
+                                Register <ExternalLink className="h-3 w-3" />
+                              </a>
+                            )
                           )}
                         </div>
                       )

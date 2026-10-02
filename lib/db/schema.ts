@@ -67,10 +67,11 @@ export const orders = pgTable('orders', {
   createdAt: timestamp('created_at').defaultNow(),
 })
 
-// Event registrations (Super Champs, Prep Training, Championships, Invitational)
+// Event registrations (Super Champs, Prep Training, Championships, Invitational,
+// public grading registration, belt orders and Para Karate sessions)
 export const eventRegistrations = pgTable('event_registrations', {
   id: serial('id').primaryKey(),
-  event: varchar('event', { length: 100 }).notNull(), // super-champs | prep-training | championships | invitational
+  event: varchar('event', { length: 100 }).notNull(), // super-champs | prep-training | championships | invitational | grading | belt-order | para-karate
   firstName: varchar('first_name', { length: 255 }).notNull(),
   lastName: varchar('last_name', { length: 255 }).notNull(),
   email: varchar('email', { length: 255 }).notNull(),
@@ -84,6 +85,9 @@ export const eventRegistrations = pgTable('event_registrations', {
   sessionDate: varchar('session_date', { length: 100 }),
   paymentStatus: varchar('payment_status', { length: 30 }).default('unpaid'), // unpaid | paid | pending
   stripeSessionId: varchar('stripe_session_id', { length: 255 }),
+  // Extra answers for forms that need more than the standard fields (added for grading, belt order, para karate).
+  // Existing databases need: ALTER TABLE event_registrations ADD COLUMN IF NOT EXISTS details jsonb;
+  details: jsonb('details'),
   createdAt: timestamp('created_at').defaultNow(),
 })
 
