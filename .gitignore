@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 .env*.local
 .migration-cache/
+
+# python bytecode (migration scripts)
+__pycache__/
