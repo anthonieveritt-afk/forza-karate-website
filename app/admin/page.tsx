@@ -15,7 +15,7 @@ const features = [
   { icon: BarChart2, label: 'Reports',     desc: 'Insights on retention and growth' },
 ]
 
-const ADMIN_URL = process.env.NEXT_PUBLIC_FORZA_ADMIN_URL ?? 'https://club-honbu-production.up.railway.app'
+const ADMIN_URL = process.env.NEXT_PUBLIC_FORZA_ADMIN_URL ?? 'https://forza-club-honbu-production.up.railway.app'
 
 export default function AdminGatewayPage() {
   return (
