@@ -28,6 +28,16 @@
   },
   "storedBytes": 171262326
  },
+ "removedAlbums": [
+  {
+   "slug": "2014-christmas-presentation-evening",
+   "name": "2014 Christmas Presentation Evening",
+   "oldUrl": "https://forzakarate.co.uk/2014-christmas-presentation-evening/",
+   "photos": 8,
+   "removedAt": "2026-10-03",
+   "reason": "Removed at Anthoni Everitt's request"
+  }
+ ],
  "removed": [
   {
    "source": "https://forzakarate.co.uk/wp-content/uploads/2022/02/IMG_5772-scaled.jpeg",
@@ -37,6 +47,94 @@
    "dhash": "b7343474c8aac8c8",
    "formerLocations": [
     "public/gallery/archive/upminster-2013-present-day/14.webp (gallery: Upminster Dojo 2013 – present day)"
+   ],
+   "blob": null
+  },
+  {
+   "source": "https://forzakarate.co.uk/wp-content/uploads/2022/12/IMG_0574-scaled.jpg",
+   "reason": "Album '2014 Christmas Presentation Evening' removed at Anthoni Everitt's request (October 2026). Never re-import or re-upload.",
+   "removedAt": "2026-10-03",
+   "phash": "e0fc9ed8b4b1b00b",
+   "dhash": "b42486868381d1f5",
+   "formerLocations": [
+    "public/gallery/archive/2014-christmas-presentation-evening/01.webp (gallery: 2014 Christmas Presentation Evening)"
+   ],
+   "blob": null
+  },
+  {
+   "source": "https://forzakarate.co.uk/wp-content/uploads/2022/12/IMG_0576.jpg",
+   "reason": "Album '2014 Christmas Presentation Evening' removed at Anthoni Everitt's request (October 2026). Never re-import or re-upload.",
+   "removedAt": "2026-10-03",
+   "phash": "9fdeec20b584c661",
+   "dhash": "6672606c6aeaf252",
+   "formerLocations": [
+    "public/gallery/archive/2014-christmas-presentation-evening/02.webp (gallery: 2014 Christmas Presentation Evening)"
+   ],
+   "blob": null
+  },
+  {
+   "source": "https://forzakarate.co.uk/wp-content/uploads/2022/12/IMG_0577-scaled.jpg",
+   "reason": "Album '2014 Christmas Presentation Evening' removed at Anthoni Everitt's request (October 2026). Never re-import or re-upload.",
+   "removedAt": "2026-10-03",
+   "phash": "b8b0cfc9e6c84a3c",
+   "dhash": "fa3e3d9dbfb9536d",
+   "formerLocations": [
+    "public/gallery/archive/2014-christmas-presentation-evening/03.webp (gallery: 2014 Christmas Presentation Evening)"
+   ],
+   "blob": null
+  },
+  {
+   "source": "https://forzakarate.co.uk/wp-content/uploads/2022/12/IMG_0578-scaled.jpg",
+   "reason": "Album '2014 Christmas Presentation Evening' removed at Anthoni Everitt's request (October 2026). Never re-import or re-upload.",
+   "removedAt": "2026-10-03",
+   "phash": "e0e20cc1dee9d13b",
+   "dhash": "66e78b8ecccc9336",
+   "formerLocations": [
+    "public/gallery/archive/2014-christmas-presentation-evening/04.webp (gallery: 2014 Christmas Presentation Evening)"
+   ],
+   "blob": null
+  },
+  {
+   "source": "https://forzakarate.co.uk/wp-content/uploads/2022/12/IMG_0579-scaled.jpg",
+   "reason": "Album '2014 Christmas Presentation Evening' removed at Anthoni Everitt's request (October 2026). Never re-import or re-upload.",
+   "removedAt": "2026-10-03",
+   "phash": "fdc5f0e0a4876e14",
+   "dhash": "92927676b6939aa2",
+   "formerLocations": [
+    "public/gallery/archive/2014-christmas-presentation-evening/05.webp (gallery: 2014 Christmas Presentation Evening)"
+   ],
+   "blob": null
+  },
+  {
+   "source": "https://forzakarate.co.uk/wp-content/uploads/2022/12/IMG_0582-scaled.jpg",
+   "reason": "Album '2014 Christmas Presentation Evening' removed at Anthoni Everitt's request (October 2026). Never re-import or re-upload.",
+   "removedAt": "2026-10-03",
+   "phash": "9183a3938d9ecf64",
+   "dhash": "cbcff6b2ba583c3f",
+   "formerLocations": [
+    "public/gallery/archive/2014-christmas-presentation-evening/06.webp (gallery: 2014 Christmas Presentation Evening)"
+   ],
+   "blob": null
+  },
+  {
+   "source": "https://forzakarate.co.uk/wp-content/uploads/2022/12/IMG_0583.jpg",
+   "reason": "Album '2014 Christmas Presentation Evening' removed at Anthoni Everitt's request (October 2026). Never re-import or re-upload.",
+   "removedAt": "2026-10-03",
+   "phash": "d5d5e3a8c513c866",
+   "dhash": "922668eaeeb24ee6",
+   "formerLocations": [
+    "public/gallery/archive/2014-christmas-presentation-evening/07.webp (gallery: 2014 Christmas Presentation Evening)"
+   ],
+   "blob": null
+  },
+  {
+   "source": "https://forzakarate.co.uk/wp-content/uploads/2022/12/IMG_0590.jpg",
+   "reason": "Album '2014 Christmas Presentation Evening' removed at Anthoni Everitt's request (October 2026). Never re-import or re-upload.",
+   "removedAt": "2026-10-03",
+   "phash": "8d7e32c7cd102dc6",
+   "dhash": "ebebf5f0d2d2d8f2",
+   "formerLocations": [
+    "public/gallery/archive/2014-christmas-presentation-evening/08.webp (gallery: 2014 Christmas Presentation Evening)"
    ],
    "blob": null
   }

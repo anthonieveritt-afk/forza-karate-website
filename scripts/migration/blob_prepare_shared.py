@@ -5,7 +5,8 @@ CHROME = {'cropped-cropped-cropped-cropped-cropped-forzalogo2020-8.jpg', 'croppe
           '308172704_1901229570212044_8713578156505199520_n.jpg', 'Safeguarding-Code-in-MA-01.jpg'}
 ALBUM_KEYS = ['upminster-2013-present-day', 'rayleigh-primary-school-2013-present-day', 'rayleigh-scout-hall-2012-2019',
               'shoeburyness-dojo', 'basildon', '2016-forza-club-championships', '2015-club-championships-rayleigh-rps',
-              '2014-christmas-presentation-evening', 'preparation-training-2021', 'super-champs',
+              # '2014-christmas-presentation-evening' removed at the club's request (see manifest removedAlbums)
+              'preparation-training-2021', 'super-champs',
               'niahm-junner-kumite-class', 'jordan-thomas-kumite-class', 'gallery/black-belts']
 PER_ALBUM = 16  # photos per album already in the repo (public/gallery/archive), see import_gallery.py
 

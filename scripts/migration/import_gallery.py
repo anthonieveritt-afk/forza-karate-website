@@ -21,7 +21,7 @@ ALBUMS = [
   ('basildon', 'Basildon (2021 – 2023)', 'club', None),
   ('2016-forza-club-championships', '2016 Forza Club Championships', 'competition', None),
   ('2015-club-championships-rayleigh-rps', '2015 Club Championships – Rayleigh', 'competition', None),
-  ('2014-christmas-presentation-evening', '2014 Christmas Presentation Evening', 'event', None),
+  # ('2014-christmas-presentation-evening', ...) removed at the club's request, see data/blob-manifest.json removedAlbums
   ('preparation-training-2021', 'Preparation Training 2021', 'course', None),
   ('super-champs', 'Super Champs Preparation Training (2021)', 'course', 'Super Champs preparation training for 4–8 year olds.'),
   ('niahm-junner-kumite-class', 'Guest Instructor: Niamh Junner (2022)', 'course', 'Kumite class with Scottish international Niamh Junner.'),
