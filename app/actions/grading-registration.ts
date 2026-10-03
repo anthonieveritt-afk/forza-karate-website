@@ -38,7 +38,7 @@ export async function submitGradingRegistration(
     console.error('Grading registration error:', error)
     return {
       success: false,
-      error: 'Something went wrong. Please try again or contact us directly.',
+      error: 'Something went wrong. Please try again.',
     }
   }
 }

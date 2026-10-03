@@ -7,6 +7,8 @@ import MusicPlayer from '@/components/layout/MusicPlayer'
 import { CartProvider } from '@/lib/cart-context'
 
 export const metadata: Metadata = {
+  // Used to build absolute URLs for social preview images (e.g. news posts).
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://forza-karate-website.vercel.app'),
   title: {
     default: 'Forza Karate Club — Rayleigh & Upminster',
     template: '%s | Forza Karate Club',
@@ -21,6 +23,14 @@ export const metadata: Metadata = {
     siteName: 'Forza Karate Club',
     locale: 'en_GB',
     type: 'website',
+  },
+  // DEVELOPMENT ONLY: keep every page out of search results until launch.
+  // Flip this (and app/robots.ts + the X-Robots-Tag header in next.config.ts) when the site goes live.
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: { index: false, follow: false, noimageindex: true },
   },
 }
 

@@ -2,10 +2,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, CheckCircle } from 'lucide-react'
+import ClassTimetable from '@/components/sections/ClassTimetable'
+import FeesPanel from '@/components/sections/FeesPanel'
+import { sessionsForClass } from '@/lib/timetable'
+import { TRIAL_HREF } from '@/lib/site'
+import { PROGRAMME_AGES } from '@/lib/timetable'
 
 export const metadata: Metadata = {
-  title: 'Forza Kids / Juniors — Ages 8–10',
-  description: 'Structured karate training for children aged 8–10. Kata, kumite, and belt progression at Forza Karate Club.',
+  title: 'Forza Kids / Juniors',
+  description: 'Structured karate training for children up to age 10 at Rayleigh and up to 13 at Upminster. Kata, kumite, and belt progression at Forza Karate Club.',
 }
 
 const expects = [
@@ -24,7 +29,7 @@ export default function JuniorsPage() {
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
         <div className="max-w-7xl mx-auto">
           <div className="inline-flex items-center rounded-full bg-red-50 text-[#dc2626] text-xs font-semibold px-3 py-1 mb-6">
-            Ages 8–10
+            {PROGRAMME_AGES.juniors}
           </div>
           <h1 className="text-5xl sm:text-6xl font-bold text-[#111111] mb-4">Forza Kids / Juniors</h1>
           <p className="text-xl text-gray-500 max-w-2xl leading-relaxed">
@@ -40,9 +45,9 @@ export default function JuniorsPage() {
           <div>
             <h2 className="text-2xl font-bold text-[#111111] mb-4">About this class</h2>
             <p className="text-gray-500 leading-relaxed mb-6">
-              The Juniors class bridges the gap between our Ninjas program and the senior club.
-              Students aged 8–10 are ready for structured, technical training — and this class
-              delivers exactly that.
+              The Juniors class bridges the gap between our Ninjas programme and the senior club.
+              Children who are ready for structured, technical training (up to age 10 at Rayleigh
+              and up to 13 at Upminster) get exactly that here.
             </p>
             <p className="text-gray-500 leading-relaxed">
               Kata are introduced and refined. Controlled partner work (kumite) begins. Gradings
@@ -68,26 +73,11 @@ export default function JuniorsPage() {
       <section className="bg-[#fafaf9] py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-bold text-[#111111] mb-6">Class timetable</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-black/10">
-                  <th className="text-left py-3 pr-8 font-semibold text-[#111111]">Day</th>
-                  <th className="text-left py-3 pr-8 font-semibold text-[#111111]">Time</th>
-                  <th className="text-left py-3 font-semibold text-[#111111]">Location</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-500">
-                <tr className="border-b border-black/5">
-                  <td className="py-3 pr-8">Contact us</td>
-                  <td className="py-3 pr-8">—</td>
-                  <td className="py-3">Rayleigh / Upminster</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <ClassTimetable sessions={sessionsForClass('juniors')} />
           <p className="text-xs text-gray-400 mt-4">
-            * Contact us for current timetable. Term-time only — 40 weeks per year.
+            Term time only — 40 weeks per year. See the{' '}
+            <Link href="/dojos/rayleigh" className="underline underline-offset-2 hover:text-[#dc2626]">Rayleigh</Link> and{' '}
+            <Link href="/dojos/upminster" className="underline underline-offset-2 hover:text-[#dc2626]">Upminster</Link> dojo pages for venue details.
           </p>
         </div>
       </section>
@@ -95,12 +85,7 @@ export default function JuniorsPage() {
       {/* Fees */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 border-t border-black/5">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl font-bold text-[#111111] mb-4">Fees</h2>
-          <p className="text-gray-500 max-w-2xl">
-            Membership fees are charged annually, payable by 12 monthly instalments on the 1st of
-            each month via Direct Debit. One calendar month&apos;s notice required to cancel. Contact us
-            for current pricing.
-          </p>
+          <FeesPanel />
         </div>
       </section>
 
@@ -110,7 +95,7 @@ export default function JuniorsPage() {
           <h2 className="text-3xl font-bold text-white mb-4">Book a free trial</h2>
           <p className="text-gray-400 mb-8">No kit needed. No commitment. Just come and see.</p>
           <Button asChild size="lg">
-            <Link href="/trial-class">
+            <Link href={TRIAL_HREF}>
               Book Free Trial
               <ArrowRight className="h-4 w-4" />
             </Link>

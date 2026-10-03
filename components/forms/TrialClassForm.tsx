@@ -150,9 +150,9 @@ export default function TrialClassForm() {
             className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
           >
             <option value="">Select age group</option>
-            <option value="ninjas">Forza Ninjas (Ages 4–7)</option>
-            <option value="juniors">Forza Juniors (Ages 8–10)</option>
-            <option value="seniors">Forza Seniors (Ages 11+)</option>
+            <option value="ninjas">Forza Ninjas (from age 4)</option>
+            <option value="juniors">Forza Juniors (up to 10, or 13 at Upminster)</option>
+            <option value="seniors">Forza Seniors (11+, or 14+ at Upminster)</option>
             <option value="adult">Adult</option>
           </select>
         </div>

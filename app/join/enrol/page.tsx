@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { CheckCircle, ChevronRight, User, ShoppingBag, CreditCard, Zap, Tag, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { sessionsForDojo, sessionLabel } from '@/lib/timetable'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -17,19 +18,9 @@ const MEMBERSHIP_OPTIONS = [
   { key: 'monthly_family',  label: 'Family (3+) — £100/mo',   desc: '3+ students · 12 monthly payments' },
 ]
 
-const RAYLEIGH_CLASSES = [
-  'Tuesday 6:15–7pm — 4 yrs+ (all grades)',
-  'Tuesday 7–8pm — 11 yrs+ (all grades)',
-  'Friday 3:30–4:30pm — 4 yrs+ (after school)',
-  'Saturday 10–11am — 4 yrs+ (all ages)',
-]
-
-const UPMINSTER_CLASSES = [
-  'Wednesday 4–4:30pm — Beginner infants (4–6 yrs)',
-  'Wednesday 4:30–5pm — Infant all grades (4–6 yrs)',
-  'Wednesday 5–5:45pm — Junior all grades (7–10 yrs)',
-  'Wednesday 5:45–7pm — Senior all grades (11 yrs+)',
-]
+// Class options come from the shared timetable (lib/timetable.ts)
+const RAYLEIGH_CLASSES = sessionsForDojo('rayleigh').map(sessionLabel)
+const UPMINSTER_CLASSES = sessionsForDojo('upminster').map(sessionLabel)
 
 const SUIT_SIZES = ['90cm','100cm','110cm','120cm','130cm','140cm','150cm','160cm','170cm','180cm','190cm','200cm']
 const SUIT_PRICE_PENCE = 4000 // £40

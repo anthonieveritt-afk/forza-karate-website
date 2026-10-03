@@ -2,9 +2,10 @@
 
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import archiveData from '@/content/gallery/archive.json'
 
 interface Album {
-  id: number
+  id: number | string
   name: string
   category: string
   description: string | null
@@ -15,14 +16,45 @@ interface Album {
 }
 
 interface Photo {
-  id: number
-  albumId: number
+  id: number | string
+  albumId: number | string
   filename: string
   url: string
   caption: string | null
+  alt?: string
 }
 
 const API_BASE = 'https://forza-club-honbu-production.up.railway.app'
+
+// Every photo from the old WordPress gallery albums (content/gallery/archive.json, built by
+// scripts/migration/blob_apply.py). Up to 16 per album are in public/gallery/archive; the rest
+// are in the Vercel Blob store (already WebP, max 1600px, so shown unoptimised). Any photo
+// still marked `pending` loads from the old site and breaks if that hosting goes down.
+// Albums managed in /admin/gallery come from Club Honbu.
+type ArchivePhoto = { src: string; alt: string; width?: number; height?: number; pending?: boolean }
+type ArchiveAlbumData = {
+  slug: string; name: string; category: string; description: string | null
+  oldUrl: string; totalOnOldSite: number; photos: ArchivePhoto[]
+}
+const ARCHIVE = archiveData as ArchiveAlbumData[]
+
+const archiveAlbums: (Album & { local: true; photos: Photo[] })[] = ARCHIVE.map((a) => ({
+  id: `archive-${a.slug}`,
+  name: a.name,
+  category: a.category,
+  description: [a.description, a.photos.length < a.totalOnOldSite ? `A selection of ${a.photos.length} of ${a.totalOnOldSite} photos from our archive.` : null]
+    .filter(Boolean).join(' ') || null,
+  coverPhotoUrl: a.photos[0]?.src ?? null,
+  photoCount: a.photos.length,
+  active: true,
+  createdAt: '',
+  local: true,
+  photos: a.photos.map((p, i) => ({ id: `${a.slug}-${i}`, albumId: `archive-${a.slug}`, filename: p.src.split('/').pop() ?? '', url: p.src, caption: null, alt: p.alt })),
+}))
+
+function isLocal(album: Album): album is Album & { local: true; photos: Photo[] } {
+  return 'local' in album
+}
 
 const CATEGORY_LABELS: Record<string, string> = {
   club:        'Club',
@@ -43,7 +75,7 @@ const CATEGORY_COLOURS: Record<string, string> = {
 }
 
 export default function GalleryPage() {
-  const [albums, setAlbums] = useState<Album[]>([])
+  const [albums, setAlbums] = useState<Album[]>(archiveAlbums)
   const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('All')
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null)
@@ -55,14 +87,23 @@ export default function GalleryPage() {
     fetch(`${API_BASE}/api/public/gallery`)
       .then((r) => r.json())
       .then((data: Album[]) => {
-        setAlbums(Array.isArray(data) ? data : [])
+        // Hide empty albums (e.g. a new album with no uploads yet) from the public gallery.
+        const live = Array.isArray(data) ? data.filter((a) => a.photoCount > 0) : []
+        setAlbums([...live, ...archiveAlbums])
         setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch(() => {
+        setAlbums(archiveAlbums)
+        setLoading(false)
+      })
   }, [])
 
   async function openAlbum(album: Album) {
     setSelectedAlbum(album)
+    if (isLocal(album)) {
+      setAlbumPhotos(album.photos)
+      return
+    }
     setPhotosLoading(true)
     try {
       const res = await fetch(`${API_BASE}/api/public/gallery/${album.id}`)
@@ -143,7 +184,7 @@ export default function GalleryPage() {
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        unoptimized
+                        unoptimized={!album.coverPhotoUrl.startsWith('/')}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
@@ -224,11 +265,11 @@ export default function GalleryPage() {
                     >
                       <Image
                         src={photo.url}
-                        alt={photo.caption ?? photo.filename}
+                        alt={photo.caption ?? photo.alt ?? photo.filename}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 640px) 50vw, 25vw"
-                        unoptimized
+                        unoptimized={!photo.url.startsWith('/')}
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                       {photo.caption && (
@@ -265,11 +306,11 @@ export default function GalleryPage() {
           <div className="relative max-w-5xl max-h-[90vh] w-full h-full">
             <Image
               src={lightbox.url}
-              alt={lightbox.caption ?? lightbox.filename}
+              alt={lightbox.caption ?? lightbox.alt ?? lightbox.filename}
               fill
               className="object-contain"
               sizes="100vw"
-              unoptimized
+              unoptimized={!lightbox.url.startsWith('/')}
             />
           </div>
         </div>

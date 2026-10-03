@@ -2,18 +2,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { MapPin, Clock, ArrowRight } from 'lucide-react'
+import { sessionsForDojo } from '@/lib/timetable'
+import { TRIAL_HREF } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Upminster Dojo',
   description: 'Forza Karate Club Upminster dojo — karate classes for all ages at St Lawrence Church Hall, Corbets Tey Rd, Upminster RM14 2BB.',
 }
 
-const timetable = [
-  { day: 'Wednesday', time: '4:00 – 4:30pm',  desc: 'Beginner infants (4–6 yrs)' },
-  { day: 'Wednesday', time: '4:30 – 5:00pm',  desc: 'Infant all grades (4–6 yrs)' },
-  { day: 'Wednesday', time: '5:00 – 5:45pm',  desc: 'Junior all grades (7–10 yrs)' },
-  { day: 'Wednesday', time: '5:45 – 7:00pm',  desc: 'Senior all grades (11 years+)' },
-]
+const timetable = sessionsForDojo('upminster')
 
 export default function UpminsterPage() {
   return (
@@ -60,8 +57,8 @@ export default function UpminsterPage() {
 
             <div className="mt-10">
               <Button asChild>
-                <Link href="/join">
-                  Book Free Trial at Upminster
+                <Link href={TRIAL_HREF}>
+                  Book a free trial at Upminster
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -75,8 +72,8 @@ export default function UpminsterPage() {
               <h2 className="text-2xl font-bold text-[#111111]">Class timetable</h2>
             </div>
             <div className="space-y-3">
-              {timetable.map((cls, i) => (
-                <div key={i} className="flex items-start gap-4 p-4 rounded-2xl bg-[#fafaf9] border border-black/5">
+              {timetable.map((cls) => (
+                <div key={cls.id} className="flex items-start gap-4 p-4 rounded-2xl bg-[#fafaf9] border border-black/5">
                   <div className="w-24 flex-shrink-0">
                     <span className="text-xs font-bold text-[#dc2626] uppercase tracking-wide">{cls.day}</span>
                   </div>

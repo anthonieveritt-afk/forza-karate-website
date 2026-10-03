@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { Shield, Mail, Phone, FileText, Users } from 'lucide-react'
+import { Shield, FileText, Users } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Safeguarding',
@@ -8,45 +8,42 @@ export const metadata: Metadata = {
 }
 
 const documents = [
-  { label: 'FKC Safeguarding Policy – Children (2023)', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Children-Policy-and-Procedures.pdf' },
-  { label: 'FKC Safeguarding Policy – Adults (2023)', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Adults-Policy.pdf' },
-  { label: 'FKC Safeguarding Statement', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Statement.pdf' },
-  { label: 'FKC Safe Practice Policy', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safe-Practice-Policy-2023.pdf' },
-  { label: 'FKC Safeguarding Flowchart – Children', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/forza-karate-club-safeguarding-flow-chart.png' },
-  { label: 'FKC Safeguarding Flowchart – Adults', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/forza-karate-club-adult-reporting-flow-chart.docx' },
-  { label: 'FKC Code of Conduct – Students', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-students.pdf' },
-  { label: 'FKC Code of Conduct – Parents / Carers', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-parents-and-carers.pdf' },
-  { label: 'FKC Code of Conduct – Instructors / Coaches / Volunteers', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-Instructors-Coaches-and-Volunteers.pdf' },
+  { label: 'FKC Safeguarding Policy – Children (2023)', href: '/documents/safeguarding/forza-karate-club-safeguarding-children-policy-and-procedures.pdf' },
+  { label: 'FKC Safeguarding Policy – Adults (2023)', href: '/documents/safeguarding/forza-karate-club-safeguarding-adults-policy.pdf' },
+  { label: 'FKC Safeguarding Statement', href: '/documents/safeguarding/forza-karate-club-safeguarding-statement.pdf' },
+  { label: 'FKC Safe Practice Policy', href: '/documents/safeguarding/forza-karate-club-safe-practice-policy-2023.pdf' },
+  { label: 'FKC Safeguarding Flowchart – Children', href: '/documents/safeguarding/forza-karate-club-safeguarding-flow-chart.png' },
+  { label: 'FKC Safeguarding Flowchart – Adults', href: '/documents/safeguarding/forza-karate-club-adult-reporting-flow-chart.docx' },
+  { label: 'FKC Code of Conduct – Students', href: '/documents/safeguarding/forza-karate-club-code-of-conduct-for-students.pdf' },
+  { label: 'FKC Code of Conduct – Parents / Carers', href: '/documents/safeguarding/forza-karate-club-code-of-conduct-for-parents-and-carers.pdf' },
+  { label: 'FKC Code of Conduct – Instructors / Coaches / Volunteers', href: '/documents/safeguarding/forza-karate-club-code-of-conduct-for-instructors-coaches-and-volunteers.pdf' },
 ]
 
+// Local safeguarding services by area. Their contact details are in the
+// FKC safeguarding policies listed above (the site itself shows no phone
+// numbers or email addresses).
 const localBoards = [
   {
     area: 'Havering Safeguarding',
-    contacts: [
-      'Monday to Friday (9am–5pm): 01708 433222',
-      'Out of hours / weekends: 01708 433999',
-    ],
+    services: ['Havering Safeguarding — Monday to Friday (9am–5pm), plus an out of hours / weekends service'],
   },
   {
     area: 'Rochford Safeguarding',
-    contacts: [
-      'Essex County Council Adult Social Care: 0345 603 7630',
-      'Out of office hours: 0345 606 1212',
-      "RDC's Safeguarding Officer: 01702 546 366",
+    services: [
+      'Essex County Council Adult Social Care (including out of office hours)',
+      "Rochford District Council (RDC) Safeguarding Officer",
     ],
   },
   {
     area: 'Basildon Safeguarding',
-    contacts: [
-      'Essex County Council Children and Families Hub: 0345 603 7627',
-    ],
+    services: ['Essex County Council Children and Families Hub'],
     links: [{ label: 'Essex Effective Support', href: 'https://www.essexeffectivesupport.org.uk/' }],
   },
   {
     area: 'Southend Safeguarding',
-    contacts: [
-      'MASH — Mon–Thu 9am–5.30pm, Fri 9am–4.30pm: 01702 215007',
-      'Emergency Duty Team (out of hours, 365 days): 0345 606 1212',
+    services: [
+      'MASH — Mon–Thu 9am–5.30pm, Fri 9am–4.30pm',
+      'Emergency Duty Team (out of hours, 365 days)',
     ],
   },
 ]
@@ -110,13 +107,7 @@ export default function SafeguardingPage() {
             </div>
             <div className="bg-[#fafaf9] rounded-2xl border border-black/5 p-6">
               <p className="text-xs font-semibold text-[#dc2626] uppercase tracking-wider mb-3">Lead Safeguarding Officer</p>
-              <a
-                href="mailto:scott.nicholls@forzakarate.co.uk"
-                className="flex items-center gap-2 text-sm text-[#111111] hover:text-[#dc2626] transition-colors font-medium"
-              >
-                <Mail className="h-4 w-4 text-[#dc2626]" />
-                scott.nicholls@forzakarate.co.uk
-              </a>
+              <p className="text-sm text-[#111111] font-medium">Scott Nicholls — Club Welfare Officer / Designated Safeguarding Lead</p>
               <p className="text-sm text-gray-500 mt-4 leading-relaxed">
                 If you have any concerns at all in regards to the welfare or safeguarding of any child please contact the designated Safeguarding Team or the Chief Instructor and they will guide you.
               </p>
@@ -149,16 +140,19 @@ export default function SafeguardingPage() {
           <div>
             <div className="flex items-center gap-2 mb-6">
               <Shield className="h-5 w-5 text-[#dc2626]" />
-              <h2 className="text-2xl font-bold text-[#111111]">Local Safeguarding Children's Board</h2>
+              <h2 className="text-2xl font-bold text-[#111111]">Local Safeguarding Children&apos;s Board</h2>
             </div>
+            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+              Contact details for each local service are listed in the FKC safeguarding policies above.
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {localBoards.map((board) => (
                 <div key={board.area} className="bg-[#fafaf9] rounded-2xl border border-black/5 p-5">
                   <p className="text-sm font-semibold text-[#111111] mb-3">{board.area}</p>
                   <ul className="space-y-1.5">
-                    {board.contacts.map((c, i) => (
+                    {board.services.map((c, i) => (
                       <li key={i} className="flex items-start gap-2 text-xs text-gray-500">
-                        <Phone className="h-3 w-3 text-[#dc2626] mt-0.5 flex-shrink-0" />
+                        <Shield className="h-3 w-3 text-[#dc2626] mt-0.5 flex-shrink-0" />
                         {c}
                       </li>
                     ))}

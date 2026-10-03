@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useState } from 'react'
 import { ShoppingBag, ShoppingCart } from 'lucide-react'
 import { useCart } from '@/lib/cart-context'
@@ -189,6 +190,10 @@ export default function ShopPage() {
             <p className="text-xl text-gray-500 max-w-2xl">
               Official Forza Karate kit, uniforms, and equipment.
             </p>
+            <p className="text-sm text-gray-500 mt-4">
+              Need an embroidered belt?{' '}
+              <Link href="/belt-order" className="text-[#dc2626] font-medium hover:underline">Order a personalised belt</Link>
+            </p>
           </div>
           {/* Cart button */}
           <button
@@ -310,7 +315,7 @@ export default function ShopPage() {
                             : 'bg-black/5 text-gray-400 cursor-not-allowed'
                         }`}
                       >
-                        {product.priceOnRequest ? 'Contact us' : isAdded ? '✓ Added' : size ? 'Add to Cart' : 'Pick size'}
+                        {product.priceOnRequest ? 'Not available online' : isAdded ? '✓ Added' : size ? 'Add to Cart' : 'Pick size'}
                       </button>
                     </div>
                   </div>

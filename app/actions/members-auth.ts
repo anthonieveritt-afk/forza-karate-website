@@ -1,10 +1,9 @@
 'use server'
 
 import { cookies } from 'next/headers'
+import { MEMBERS_COOKIE as COOKIE_NAME, membersCookieOptions } from '@/lib/members-auth'
 
 const CLUB_HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
-const COOKIE_NAME    = 'forza-members-auth'
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
 
 export async function loginMembers(data: {
   email: string
@@ -38,13 +37,9 @@ export async function loginMembers(data: {
 
     // Verified — set our own session cookie
     const cookieStore = await cookies()
-    cookieStore.set(COOKIE_NAME, body.token ?? '', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: COOKIE_MAX_AGE,
-      path: '/members',
-    })
+    cookieStore.set(COOKIE_NAME, body.token ?? '', membersCookieOptions())
+    // Clear any older cookie that was scoped to /members only
+    cookieStore.set(COOKIE_NAME, '', { path: '/members', maxAge: 0 })
 
     return { success: true, name: body.name }
   } catch {
@@ -54,5 +49,7 @@ export async function loginMembers(data: {
 
 export async function logoutMembers() {
   const cookieStore = await cookies()
-  cookieStore.delete(COOKIE_NAME)
+  // Remove both the current site-wide cookie and any older /members-scoped one
+  cookieStore.set(COOKIE_NAME, '', { path: '/', maxAge: 0 })
+  cookieStore.set(COOKIE_NAME, '', { path: '/members', maxAge: 0 })
 }

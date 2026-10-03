@@ -1,5 +1,13 @@
 import Link from 'next/link'
-import { Globe, Share2, Play } from 'lucide-react'
+import { SOCIAL_LINKS } from '@/lib/site'
+import { FacebookIcon, InstagramIcon, XIcon, YouTubeIcon } from '@/components/ui/SocialIcons'
+
+const socials = [
+  { href: SOCIAL_LINKS.facebook,  label: 'Facebook',  Icon: FacebookIcon },
+  { href: SOCIAL_LINKS.instagram, label: 'Instagram', Icon: InstagramIcon },
+  { href: SOCIAL_LINKS.x,         label: 'X (Twitter)', Icon: XIcon },
+  { href: SOCIAL_LINKS.youtube,   label: 'YouTube',   Icon: YouTubeIcon },
+]
 
 export default function Footer() {
   return (
@@ -16,27 +24,18 @@ export default function Footer() {
               Developing champions on and off the mat. FKA affiliated. Established with purpose.
             </p>
             <div className="flex gap-3 mt-5">
-              <a
-                href="#"
-                aria-label="Instagram"
-                className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:border-[#dc2626] hover:text-white transition-colors"
-              >
-                <Globe className="h-4 w-4" />
-              </a>
-              <a
-                href="#"
-                aria-label="Facebook"
-                className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:border-[#dc2626] hover:text-white transition-colors"
-              >
-                <Share2 className="h-4 w-4" />
-              </a>
-              <a
-                href="#"
-                aria-label="YouTube"
-                className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:border-[#dc2626] hover:text-white transition-colors"
-              >
-                <Play className="h-4 w-4" />
-              </a>
+              {socials.map(({ href, label, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Forza Karate Club on ${label}`}
+                  className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:border-[#dc2626] hover:text-white transition-colors"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
             </div>
           </div>
 
@@ -50,6 +49,7 @@ export default function Footer() {
               <li><Link href="/classes/seniors" className="hover:text-white transition-colors">Forza Club</Link></li>
               <li><Link href="/gradings" className="hover:text-white transition-colors">Gradings</Link></li>
               <li><Link href="/calendar" className="hover:text-white transition-colors">Calendar</Link></li>
+              <li><Link href="/para-karate" className="hover:text-white transition-colors">Para Karate</Link></li>
             </ul>
           </div>
 
@@ -61,6 +61,7 @@ export default function Footer() {
               <li><Link href="/team" className="hover:text-white transition-colors">Team Forza</Link></li>
               <li><Link href="/instructors" className="hover:text-white transition-colors">Instructors</Link></li>
               <li><Link href="/hall-of-fame" className="hover:text-white transition-colors">Hall of Fame</Link></li>
+              <li><Link href="/news" className="hover:text-white transition-colors">News</Link></li>
               <li><Link href="/gallery" className="hover:text-white transition-colors">Gallery</Link></li>
               <li><Link href="/shop" className="hover:text-white transition-colors">Shop</Link></li>
               <li><Link href="/join" className="hover:text-white transition-colors">Join Today</Link></li>
@@ -75,7 +76,8 @@ export default function Footer() {
               <li><Link href="/dojos/upminster" className="hover:text-white transition-colors">Upminster Dojo</Link></li>
               <li><Link href="/safeguarding" className="hover:text-white transition-colors">Safeguarding</Link></li>
               <li><Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+              <li><Link href="/club-rules" className="hover:text-white transition-colors">Club Rules &amp; Etiquette</Link></li>
+              <li><Link href="/membership-terms" className="hover:text-white transition-colors">Membership Terms</Link></li>
             </ul>
           </div>
         </div>

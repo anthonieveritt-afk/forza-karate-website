@@ -1,23 +1,15 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { CheckCircle, ArrowRight, ShoppingBag, CreditCard, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { submitEnrolment } from '@/app/actions/enrolment'
+import { sessionsForDojo, sessionLabel } from '@/lib/timetable'
 
-const rayleighClasses = [
-  'Tuesday 6:15–7pm — 4 yrs+ (all grades)',
-  'Tuesday 7–8pm — 11 yrs+ (all grades)',
-  'Friday 3:30–4:30pm — 4 yrs+ (after school)',
-  'Saturday 10–11am — 4 yrs+ (all ages)',
-]
-
-const upminsterClasses = [
-  'Wednesday 4–4:30pm — Beginner infants (4–6 yrs)',
-  'Wednesday 4:30–5pm — Infant all grades (4–6 yrs)',
-  'Wednesday 5–5:45pm — Junior all grades (7–10 yrs)',
-  'Wednesday 5:45–7pm — Senior all grades (11 yrs+)',
-]
+// Class options come from the shared timetable (lib/timetable.ts)
+const rayleighClasses = sessionsForDojo('rayleigh').map(sessionLabel)
+const upminsterClasses = sessionsForDojo('upminster').map(sessionLabel)
 
 const licenceStep = {
   icon: Shield,
@@ -118,7 +110,7 @@ export default function JoinPage() {
           </div>
           <h1 className="text-5xl font-bold text-[#111111] mb-4">Join Forza Karate Club</h1>
           <p className="text-xl text-gray-500 max-w-2xl">
-            Start with a free trial or enrol directly. Fill in your details below and we'll be in touch to confirm your place.
+            Start with a free trial or enrol directly. Fill in your details below and we&apos;ll be in touch to confirm your place.
           </p>
         </div>
       </section>
@@ -132,7 +124,7 @@ export default function JoinPage() {
                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
                 <h2 className="text-3xl font-bold text-[#111111] mb-2">Enrolment received!</h2>
                 <p className="text-gray-500 max-w-md mx-auto">
-                  Thank you — we'll be in touch shortly to confirm your place. In the meantime, get ahead with the steps below.
+                  Thank you — we&apos;ll be in touch shortly to confirm your place. In the meantime, get ahead with the steps below.
                 </p>
               </div>
               <h3 className="text-lg font-bold text-[#111111] mb-5">Complete your membership</h3>
@@ -154,6 +146,11 @@ export default function JoinPage() {
                 ))}
               </div>
 
+              <p className="mt-6 text-sm text-gray-500">
+                Please read our <Link href="/membership-terms" className="text-[#dc2626] hover:underline">membership terms</Link> (notice,
+                refunds and absences) and our <Link href="/club-rules" className="text-[#dc2626] hover:underline">club rules &amp; etiquette</Link> before your first class.
+              </p>
+
               {/* Family discount note */}
               <div className="mt-8 p-4 rounded-xl bg-[#fafaf9] border border-black/6 text-xs text-gray-500 leading-relaxed">
                 <strong className="text-[#111111]">Family discount</strong> — available for immediate family (parent + child/children) registering together. Extended family members (cousins, aunts, uncles, grandparents) are not eligible.
@@ -165,7 +162,7 @@ export default function JoinPage() {
 
               {status === 'error' && (
                 <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm text-center">
-                  Something went wrong — please try again or email us at info@forzakarate.co.uk
+                  Something went wrong. Please try again.
                 </div>
               )}
 
@@ -370,7 +367,12 @@ export default function JoinPage() {
                   {status === 'loading' ? 'Submitting…' : membershipType === 'trial' ? 'Book my free trial' : 'Submit enrolment'}
                   {status !== 'loading' && <ArrowRight className="h-4 w-4" />}
                 </Button>
-                <p className="text-xs text-gray-400 text-center mt-3">
+                <p className="text-xs text-gray-500 text-center mt-3">
+                  By enrolling you agree to our{' '}
+                  <Link href="/membership-terms" className="text-[#dc2626] hover:underline">membership terms</Link> and{' '}
+                  <Link href="/club-rules" className="text-[#dc2626] hover:underline">club rules</Link>.
+                </p>
+                <p className="text-xs text-gray-400 text-center mt-2">
                   {membershipType === 'trial'
                     ? 'No kit needed. No commitment. Your instructor will guide you.'
                     : 'We\'ll be in touch within 24 hours to confirm your enrolment and next steps.'}

@@ -1,16 +1,18 @@
 import type { Metadata } from 'next'
 import ClassCard from '@/components/sections/ClassCard'
+import FeesPanel from '@/components/sections/FeesPanel'
+import { PROGRAMME_AGES } from '@/lib/timetable'
 
 export const metadata: Metadata = {
   title: 'Classes',
-  description: 'Karate classes for all ages at Forza Karate Club. Forza Ninjas (4–7), Forza Juniors (8–10), and Forza Club (11+).',
+  description: 'Karate classes for all ages at Forza Karate Club, from age 4 to adults: Forza Ninjas, Forza Kids / Juniors and Forza Club, at Rayleigh and Upminster.',
 }
 
 const classes = [
   {
     title: 'Forza Ninjas',
     subtitle: 'Our youngest karatekas',
-    ageRange: 'Ages 4–7',
+    ageRange: PROGRAMME_AGES.ninjas,
     description:
       'Play-based karate that builds coordination, confidence, and listening skills through fun drills, games, and structured movement. Perfect introduction to martial arts.',
     href: '/classes/ninjas',
@@ -18,15 +20,15 @@ const classes = [
   {
     title: 'Forza Kids / Juniors',
     subtitle: 'Building real technique',
-    ageRange: 'Ages 8–10',
+    ageRange: PROGRAMME_AGES.juniors,
     description:
       'Structured kata, kumite, and belt progression. Students develop discipline, focus, and technical skill in a supportive but demanding environment.',
     href: '/classes/juniors',
   },
   {
     title: 'Forza Club',
-    subtitle: '11 years and up, including adults',
-    ageRange: 'Ages 11+',
+    subtitle: 'Older students and adults',
+    ageRange: PROGRAMME_AGES.seniors,
     description:
       'Technical, competitive, serious training. Traditional Wado Ryu alongside WKF sport karate — for students who want to go further.',
     href: '/classes/seniors',
@@ -62,15 +64,10 @@ export default function ClassesPage() {
         </div>
       </section>
 
-      {/* Fees note */}
+      {/* Fees */}
       <section className="bg-[#fafaf9] py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-xl font-bold text-[#111111] mb-3">Fees</h2>
-          <p className="text-gray-500 leading-relaxed max-w-2xl">
-            Membership fees are charged annually, payable by 12 monthly instalments on the 1st of each month
-            via GoCardless Direct Debit. One calendar month&apos;s notice is required to cancel.
-            Contact us for current fee information.
-          </p>
+          <FeesPanel />
         </div>
       </section>
     </div>

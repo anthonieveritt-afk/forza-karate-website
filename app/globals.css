@@ -44,3 +44,37 @@ body {
 .animate-ticker:hover {
   animation-play-state: paused;
 }
+
+/* ─── Imported news articles (app/news/[slug]) ─────────────────────────────── */
+.news-content {
+  color: #4b5563;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.news-content > * + * { margin-top: 1.1em; }
+.news-content h2, .news-content h3, .news-content h4 {
+  color: #111111;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 1.8em;
+}
+.news-content h2 { font-size: 1.5rem; }
+.news-content h3 { font-size: 1.25rem; }
+.news-content h4 { font-size: 1.1rem; }
+.news-content strong { color: #111111; font-weight: 600; }
+.news-content a { color: #dc2626; text-decoration: underline; text-underline-offset: 3px; word-break: break-word; }
+.news-content a:hover { color: #b91c1c; }
+.news-content ul, .news-content ol { padding-left: 1.4em; }
+.news-content ul { list-style: disc; }
+.news-content ol { list-style: decimal; }
+.news-content li + li { margin-top: 0.35em; }
+.news-content blockquote {
+  border-left: 3px solid #dc2626;
+  padding-left: 1em;
+  color: #111111;
+  font-style: italic;
+}
+.news-content hr { border: 0; border-top: 1px solid rgb(0 0 0 / 0.08); }
+.news-content table { width: 100%; font-size: 0.875rem; border-collapse: collapse; display: block; overflow-x: auto; }
+.news-content th, .news-content td { border-bottom: 1px solid rgb(0 0 0 / 0.08); padding: 0.5em 0.75em 0.5em 0; text-align: left; vertical-align: top; }
+.news-content iframe { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; border-radius: 1rem; }

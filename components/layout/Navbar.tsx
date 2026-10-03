@@ -11,6 +11,7 @@ const navLinks = [
   { href: '/dojos',    label: 'Dojos' },
   { href: '/gradings', label: 'Gradings' },
   { href: '/team',     label: 'Team' },
+  { href: '/news',     label: 'News' },
   { href: '/gallery',  label: 'Gallery' },
   { href: '/shop',     label: 'Shop' },
 ]
@@ -18,6 +19,7 @@ const navLinks = [
 const membersCoreLinks = [
   { href: '/members',         label: '🔐 Members Login' },
   { href: '/members/grading', label: 'Register to Grade' },
+  { href: '/belt-order',      label: 'Belt Order Form' },
   { href: '/members/syllabus', label: 'Syllabus' },
   { href: '/members/licence',  label: 'Renew your licence' },
 ]
@@ -27,6 +29,7 @@ const eventLinks = [
   { href: '/register/prep-training',  label: 'Register for Preparation Training' },
   { href: '/register/championships',  label: 'Register for Club Championships' },
   { href: '/register/invitational',   label: 'Register for Invitational Cup' },
+  { href: '/para-karate',             label: 'Register for Para Karate' },
 ]
 
 export default function Navbar() {
@@ -43,7 +46,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-7">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-7">
             {navLinks.map(link => (
               <Link key={link.href} href={link.href} className="text-sm font-medium text-gray-600 hover:text-[#111111] transition-colors">
                 {link.label}
@@ -69,7 +72,7 @@ export default function Navbar() {
                   <button className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors">
                     Events <ChevronRight className="h-3.5 w-3.5" />
                   </button>
-                  <div className="absolute left-full top-0 ml-1 w-64 bg-white border border-black/8 rounded-xl shadow-lg overflow-hidden opacity-0 invisible group-hover/events:opacity-100 group-hover/events:visible transition-all duration-150">
+                  <div className="absolute right-full top-0 mr-1 w-64 bg-white border border-black/8 rounded-xl shadow-lg overflow-hidden opacity-0 invisible group-hover/events:opacity-100 group-hover/events:visible transition-all duration-150">
                     {eventLinks.map(link => (
                       <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors">
                         {link.label}
@@ -84,7 +87,7 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden md:block">
-            <Button asChild size="sm"><Link href="/trial-class">Book Free Trial</Link></Button>
+            <Button asChild size="sm"><Link href="/trial-class">Book a free trial</Link></Button>
           </div>
 
           {/* Mobile toggle */}
@@ -133,7 +136,7 @@ export default function Navbar() {
 
             <div className="pt-2">
               <Button asChild size="sm" className="w-full">
-                <Link href="/trial-class" onClick={() => setOpen(false)}>Book Free Trial</Link>
+                <Link href="/trial-class" onClick={() => setOpen(false)}>Book a free trial</Link>
               </Button>
             </div>
           </div>

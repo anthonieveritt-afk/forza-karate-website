@@ -2,10 +2,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, CheckCircle } from 'lucide-react'
+import ClassTimetable from '@/components/sections/ClassTimetable'
+import FeesPanel from '@/components/sections/FeesPanel'
+import { sessionsForClass } from '@/lib/timetable'
+import { TRIAL_HREF } from '@/lib/site'
+import { PROGRAMME_AGES } from '@/lib/timetable'
 
 export const metadata: Metadata = {
-  title: 'Forza Club — Ages 11+',
-  description: 'Technical and competitive karate training for ages 11 and up, including adults. Traditional Wado Ryu and WKF sport karate at Forza Karate Club.',
+  title: 'Forza Club — Ages 11+ and Adults',
+  description: 'Technical and competitive karate training for ages 11+ at Rayleigh and 14+ at Upminster, including adults. Traditional Wado Ryu and WKF sport karate at Forza Karate Club.',
 }
 
 const expects = [
@@ -24,7 +29,7 @@ export default function SeniorsPage() {
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
         <div className="max-w-7xl mx-auto">
           <div className="inline-flex items-center rounded-full bg-red-50 text-[#dc2626] text-xs font-semibold px-3 py-1 mb-6">
-            Ages 11+ · Adults welcome
+            {PROGRAMME_AGES.seniors} · Adults welcome
           </div>
           <h1 className="text-5xl sm:text-6xl font-bold text-[#111111] mb-4">Forza Club</h1>
           <p className="text-xl text-gray-500 max-w-2xl leading-relaxed">
@@ -40,8 +45,8 @@ export default function SeniorsPage() {
           <div>
             <h2 className="text-2xl font-bold text-[#111111] mb-4">About this class</h2>
             <p className="text-gray-500 leading-relaxed mb-6">
-              Forza Club is the senior tier of our training programme. Students aged 11 and above
-              — including adults starting from scratch or coming with prior experience — train
+              Forza Club is the senior tier of our training programme. Students aged 11 and above at
+              Rayleigh and 14 and above at Upminster — including adults starting from scratch or coming with prior experience — train
               together in a focused, demanding environment.
             </p>
             <p className="text-gray-500 leading-relaxed mb-6">
@@ -73,26 +78,11 @@ export default function SeniorsPage() {
       <section className="bg-[#fafaf9] py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-bold text-[#111111] mb-6">Class timetable</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-black/10">
-                  <th className="text-left py-3 pr-8 font-semibold text-[#111111]">Day</th>
-                  <th className="text-left py-3 pr-8 font-semibold text-[#111111]">Time</th>
-                  <th className="text-left py-3 font-semibold text-[#111111]">Location</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-500">
-                <tr className="border-b border-black/5">
-                  <td className="py-3 pr-8">Contact us</td>
-                  <td className="py-3 pr-8">—</td>
-                  <td className="py-3">Rayleigh / Upminster</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <ClassTimetable sessions={sessionsForClass('seniors')} />
           <p className="text-xs text-gray-400 mt-4">
-            * Contact us for current timetable. Term-time only — 40 weeks per year.
+            Term time only — 40 weeks per year. See the{' '}
+            <Link href="/dojos/rayleigh" className="underline underline-offset-2 hover:text-[#dc2626]">Rayleigh</Link> and{' '}
+            <Link href="/dojos/upminster" className="underline underline-offset-2 hover:text-[#dc2626]">Upminster</Link> dojo pages for venue details.
           </p>
         </div>
       </section>
@@ -100,12 +90,7 @@ export default function SeniorsPage() {
       {/* Fees */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 border-t border-black/5">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl font-bold text-[#111111] mb-4">Fees</h2>
-          <p className="text-gray-500 max-w-2xl">
-            Membership fees are charged annually, payable by 12 monthly instalments on the 1st of
-            each month via Direct Debit. One calendar month&apos;s notice required to cancel. Contact us
-            for current pricing.
-          </p>
+          <FeesPanel />
         </div>
       </section>
 
@@ -116,8 +101,8 @@ export default function SeniorsPage() {
           <p className="text-gray-400 mb-8">First class free. Adults and seniors welcome.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild size="lg">
-              <Link href="/trial-class">
-                Book Free Trial
+              <Link href={TRIAL_HREF}>
+                Book a free trial
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
