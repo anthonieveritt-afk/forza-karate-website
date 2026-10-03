@@ -28,6 +28,19 @@
   },
   "storedBytes": 171262326
  },
+ "removed": [
+  {
+   "source": "https://forzakarate.co.uk/wp-content/uploads/2022/02/IMG_5772-scaled.jpeg",
+   "reason": "Removed at Anthoni Everitt's request (October 2026). Never re-import or re-upload.",
+   "removedAt": "2026-10-03",
+   "phash": "d4bcaac1838bbbe0",
+   "dhash": "b7343474c8aac8c8",
+   "formerLocations": [
+    "public/gallery/archive/upminster-2013-present-day/14.webp (gallery: Upminster Dojo 2013 – present day)"
+   ],
+   "blob": null
+  }
+ ],
  "items": [
   {
    "kind": "gallery",

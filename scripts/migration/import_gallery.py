@@ -6,6 +6,8 @@ import json, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from concurrent.futures import ThreadPoolExecutor
 from news_helpers import fetch, to_webp
+from blob_prepare_shared import removed_sources, base
+REMOVED = removed_sources(REPO)  # photos removed at the club's request: never re-import
 
 OUT = f'{REPO}/public/gallery/archive'
 PER_ALBUM = int(os.environ.get('PER_ALBUM', '16'))
@@ -41,6 +43,8 @@ for key, name, cat, desc in ALBUMS:
     os.makedirs(f'{OUT}/{slug}', exist_ok=True)
     photos = []
     for n, i in enumerate(chosen, 1):
+        if base(i['src']) in REMOVED:
+            continue
         dest = f'{OUT}/{slug}/{n:02d}.webp'
         photos.append({'src': f'/gallery/archive/{slug}/{n:02d}.webp', 'alt': i['caption'] or f'{name} – photo {n}', '_url': i['src'], '_dest': dest})
     albums_out.append({'slug': slug, 'name': name, 'category': cat, 'description': desc,

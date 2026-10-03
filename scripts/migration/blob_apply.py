@@ -12,7 +12,9 @@ Usage: MIGRATION_WORKDIR=/workspace/forza-migrate python3 scripts/migration/blob
 import json, os, re, sys, html
 sys.path.insert(0, os.path.dirname(__file__))
 from news_helpers import WORK, REPO
-from blob_prepare_shared import CHROME, ALBUM_KEYS, PER_ALBUM, pick, base
+from blob_prepare_shared import CHROME, ALBUM_KEYS, PER_ALBUM, pick, base, removed_sources
+
+REMOVED = removed_sources(REPO)  # photos removed at the club's request
 
 manifest = json.load(open(f'{REPO}/data/blob-manifest.json'))
 by_source = {i['source']: i for i in manifest['items']}
@@ -32,6 +34,8 @@ for key in ALBUM_KEYS:
     repo_photos = {p['src']: p for p in album['photos'] if p['src'].startswith('/')}
     photos = []
     for n, u in enumerate(imgs, 1):
+        if base(u) in REMOVED:
+            continue
         num = len(photos) + 1
         alt = f"{album['name']} – photo {num}"
         if u in local:
@@ -47,13 +51,14 @@ for key in ALBUM_KEYS:
                 entry.update(width=it['width'], height=it['height'])
             photos.append(entry)
     album['photos'] = photos
-    album['totalOnOldSite'] = len(imgs)
+    album['totalOnOldSite'] = len(photos)  # excludes photos removed at the club's request
 json.dump(archive, open(f'{REPO}/content/gallery/archive.json', 'w'), ensure_ascii=False, indent=1)
 
 # News
 posts = json.load(open(f'{REPO}/content/news/posts.json'))
 n_blob = n_pending = 0
 for p in posts:
+    p['bodyPhotos'] = [ph for ph in p.get('bodyPhotos', []) if base(ph['src']) not in REMOVED]
     for ph in p.get('bodyPhotos', []):
         it = by_base.get(base(ph['src']))
         if it:

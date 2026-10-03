@@ -15,6 +15,9 @@ import json, re, sys, html
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).parent))
+from blob_prepare_shared import removed_sources  # noqa: E402
+REMOVED = removed_sources(str(REPO))
 WP_POSTS = Path(sys.argv[1] if len(sys.argv) > 1 else '/workspace/forza-migrate/wp/posts.json')
 OUT = REPO / 'content/news/posts.json'
 
@@ -53,7 +56,7 @@ for post in posts:
     for t in imgs:
         src = attr(t, 'src')
         b = base(src)
-        if b in skip or b in seen:
+        if b in skip or b in seen or b in REMOVED:
             continue
         seen.add(b)
         cands = []

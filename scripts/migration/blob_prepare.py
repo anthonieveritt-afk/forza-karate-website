@@ -18,7 +18,9 @@ MAX_PREPARE = int(sys.argv[1]) if len(sys.argv) > 1 else 1900
 OUT_DIR = f'{WORK}/blob-out'
 MANIFEST = f'{REPO}/data/blob-manifest.json'
 
-from blob_prepare_shared import CHROME, ALBUM_KEYS, PER_ALBUM, pick, base
+from blob_prepare_shared import CHROME, ALBUM_KEYS, PER_ALBUM, pick, base, removed_sources
+
+REMOVED = removed_sources(REPO)  # photos removed at the club's request: never re-upload
 
 albums = json.load(open(f'{WORK}/gal/albums.json'))
 posts = sorted(json.load(open(f'{REPO}/content/news/posts.json')), key=lambda p: p['date'], reverse=True)
@@ -33,7 +35,7 @@ for key in ALBUM_KEYS:
     imgs = [i['src'] for i in albums[key]['imgs'] if i['src'].split('/')[-1] not in CHROME]
     local = set(imgs if key == 'gallery/black-belts' else pick(imgs, PER_ALBUM))
     for n, u in enumerate(imgs, 1):
-        if u in local:
+        if u in local or base(u) in REMOVED:
             continue
         order.append({'kind': 'gallery', 'album': slug, 'index': n, 'source': u,
                       'pathname': f'gallery/{slug}/{n:03d}.webp'})
@@ -43,7 +45,7 @@ seen = {base(o['source']) for o in order}
 for p in posts:
     for n, ph in enumerate(p.get('bodyPhotos', []), 1):
         b = base(ph['src'])
-        if b in seen:
+        if b in seen or b in REMOVED:
             continue
         seen.add(b)
         order.append({'kind': 'news', 'post': p['slug'], 'index': n, 'source': ph['src'],
@@ -56,6 +58,8 @@ for o in order:
         items[o['source']].update({k: v for k, v in o.items() if items[o['source']].get('status') != 'uploaded'})
 
 queue = [items[o['source']] for o in order]
+# keep uploaded items even if no longer queued, so their URLs stay on record
+queue += [i for s, i in items.items() if i.get('status') == 'uploaded' and i not in queue]
 todo = [i for i in queue if i['status'] != 'uploaded'][:MAX_PREPARE]
 
 def work(it):

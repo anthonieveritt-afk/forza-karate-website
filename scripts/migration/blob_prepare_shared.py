@@ -16,3 +16,13 @@ def pick(lst, n):
 
 def base(u):
     return re.sub(r'-\d+x\d+(?=\.\w+$)', '', html.unescape(u).split('?')[0]).replace('-scaled.', '.')
+
+
+def removed_sources(repo):
+    """Original URLs of photos removed at the club's request (data/blob-manifest.json "removed").
+    Every migration script must skip these so they are never re-imported or re-uploaded."""
+    import json, os
+    p = os.path.join(repo, 'data', 'blob-manifest.json')
+    if not os.path.exists(p):
+        return set()
+    return {base(r['source']) for r in json.load(open(p)).get('removed', [])}

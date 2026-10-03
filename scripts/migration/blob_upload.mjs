@@ -61,7 +61,9 @@ function save() {
 // Prepared files live in $MIGRATION_WORKDIR/blob-out/<pathname> (see blob_prepare.py).
 const WORK = process.env.MIGRATION_WORKDIR ?? `${REPO}/.migration-cache`
 for (const i of manifest.items) i.localFile ??= `${WORK}/blob-out/${i.pathname}`
-const queue = manifest.items.filter((i) => i.status !== 'uploaded' && existsSync(i.localFile))
+// Never upload photos removed at the club's request (manifest "removed").
+const removed = new Set((manifest.removed ?? []).map((r) => r.source))
+const queue = manifest.items.filter((i) => i.status !== 'uploaded' && !removed.has(i.source) && existsSync(i.localFile))
 let runPuts = 0
 let stop = null
 
