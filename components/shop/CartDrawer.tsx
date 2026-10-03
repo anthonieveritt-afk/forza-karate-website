@@ -5,6 +5,12 @@ import { useCart } from '@/lib/cart-context'
 import { X, Minus, Plus, ShoppingBag, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 
+// Baskets saved before productKey was stored only have an id of "<productKey>-<size>".
+function productKeyFromId(id: string, size: string): string {
+  const suffix = `-${size}`
+  return id.endsWith(suffix) ? id.slice(0, -suffix.length) : id
+}
+
 interface Props {
   open: boolean
   onClose: () => void
@@ -22,13 +28,20 @@ export default function CartDrawer({ open, onClose }: Props) {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items }),
+        // Send only what was chosen. The server looks up every price itself.
+        body: JSON.stringify({
+          items: items.map(i => ({
+            productKey: i.productKey ?? productKeyFromId(i.id, i.size),
+            size: i.size,
+            quantity: i.quantity,
+          })),
+        }),
       })
       const data = await res.json()
       if (data.url) {
         window.location.href = data.url
       } else {
-        setError('Something went wrong. Please try again.')
+        setError(data.error || 'Something went wrong. Please try again.')
         setLoading(false)
       }
     } catch {

@@ -4,9 +4,10 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 export interface CartItem {
   id: string          // e.g. "smai-shin-red-M"
+  productKey?: string // catalogue key, e.g. "smai-shin-red" (missing on baskets saved before this field existed)
   name: string
   size: string
-  price: number       // pence
+  price: number       // pence, for display only: checkout re-prices on the server
   priceLabel: string  // e.g. "£65.00"
   img: string
   quantity: number
