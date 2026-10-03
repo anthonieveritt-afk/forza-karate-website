@@ -26,6 +26,12 @@ const nextConfig: NextConfig = {
       { source: '/contact', destination: '/trial-class', permanent: false },
       // The syllabus used to be a public file; it now lives behind the members login.
       { source: '/forza-syllabus-template.html', destination: '/members/syllabus', permanent: false },
+      // The old /shop became the online store. Temporary until launch; make permanent then.
+      { source: '/shop', destination: '/store', permanent: false },
+      { source: '/shop/success', destination: '/store/success', permanent: false },
+      { source: '/shop/:path*', destination: '/store', permanent: false },
+      // Personalised belts are now ordered (and paid for) in the store.
+      { source: '/belt-order', destination: '/store/personalised-belt', permanent: false },
     ]
   },
 };

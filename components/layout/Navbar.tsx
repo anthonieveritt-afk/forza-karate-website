@@ -13,13 +13,13 @@ const navLinks = [
   { href: '/team',     label: 'Team' },
   { href: '/news',     label: 'News' },
   { href: '/gallery',  label: 'Gallery' },
-  { href: '/shop',     label: 'Shop' },
+  { href: '/store',    label: 'Store' },
 ]
 
 const membersCoreLinks = [
   { href: '/members',         label: '🔐 Members Login' },
   { href: '/members/grading', label: 'Register to Grade' },
-  { href: '/belt-order',      label: 'Belt Order Form' },
+  { href: '/store/personalised-belt', label: 'Belt Order Form' },
   { href: '/members/syllabus', label: 'Syllabus' },
   { href: '/members/licence',  label: 'Renew your licence' },
 ]
