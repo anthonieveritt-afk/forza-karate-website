@@ -26,9 +26,12 @@ interface Photo {
 
 const API_BASE = 'https://forza-club-honbu-production.up.railway.app'
 
-// Photos imported from the old WordPress gallery (a representative selection per album),
-// stored in public/gallery/archive. Albums managed in /admin/gallery come from Club Honbu.
-type ArchivePhoto = { src: string; alt: string; width: number; height: number }
+// Every photo from the old WordPress gallery albums (content/gallery/archive.json, built by
+// scripts/migration/blob_apply.py). Up to 16 per album are in public/gallery/archive; the rest
+// are in the Vercel Blob store (already WebP, max 1600px, so shown unoptimised). Any photo
+// still marked `pending` loads from the old site and breaks if that hosting goes down.
+// Albums managed in /admin/gallery come from Club Honbu.
+type ArchivePhoto = { src: string; alt: string; width?: number; height?: number; pending?: boolean }
 type ArchiveAlbumData = {
   slug: string; name: string; category: string; description: string | null
   oldUrl: string; totalOnOldSite: number; photos: ArchivePhoto[]
