@@ -6,10 +6,11 @@ import ClassTimetable from '@/components/sections/ClassTimetable'
 import FeesPanel from '@/components/sections/FeesPanel'
 import { sessionsForClass } from '@/lib/timetable'
 import { TRIAL_HREF } from '@/lib/site'
+import { PROGRAMME_AGES } from '@/lib/timetable'
 
 export const metadata: Metadata = {
-  title: 'Forza Ninjas — Ages 4–7',
-  description: 'Play-based karate for children aged 4–7. Building coordination, confidence, and listening skills through fun structured training at Forza Karate Club.',
+  title: 'Forza Ninjas — From Age 4',
+  description: 'Play-based karate for our youngest students, from age 4. Building coordination, confidence, and listening skills through fun structured training at Forza Karate Club.',
 }
 
 const expects = [
@@ -28,7 +29,7 @@ export default function NinjasPage() {
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
         <div className="max-w-7xl mx-auto">
           <div className="inline-flex items-center rounded-full bg-red-50 text-[#dc2626] text-xs font-semibold px-3 py-1 mb-6">
-            Ages 4–7
+            {PROGRAMME_AGES.ninjas}
           </div>
           <h1 className="text-5xl sm:text-6xl font-bold text-[#111111] mb-4">Forza Ninjas</h1>
           <p className="text-xl text-gray-500 max-w-2xl leading-relaxed">
@@ -44,7 +45,7 @@ export default function NinjasPage() {
           <div>
             <h2 className="text-2xl font-bold text-[#111111] mb-4">What to expect</h2>
             <p className="text-gray-500 leading-relaxed mb-6">
-              Forza Ninjas classes are designed around the development stage of 4–7 year olds.
+              Forza Ninjas classes are designed around the development stage of our youngest students, from age 4.
               Everything is taught through movement, play, and games. We build focus, coordination,
               and listening skills — the foundation everything else is built on.
             </p>

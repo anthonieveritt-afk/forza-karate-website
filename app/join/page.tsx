@@ -5,20 +5,11 @@ import Link from 'next/link'
 import { CheckCircle, ArrowRight, ShoppingBag, CreditCard, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { submitEnrolment } from '@/app/actions/enrolment'
+import { sessionsForDojo, sessionLabel } from '@/lib/timetable'
 
-const rayleighClasses = [
-  'Tuesday 6:15–7pm — 4 yrs+ (all grades)',
-  'Tuesday 7–8pm — 11 yrs+ (all grades)',
-  'Friday 3:30–4:30pm — 4 yrs+ (after school)',
-  'Saturday 10–11am — 4 yrs+ (all ages)',
-]
-
-const upminsterClasses = [
-  'Wednesday 4–4:30pm — Beginner infants (4–6 yrs)',
-  'Wednesday 4:30–5pm — Infant all grades (4–6 yrs)',
-  'Wednesday 5–5:45pm — Junior all grades (7–10 yrs)',
-  'Wednesday 5:45–7pm — Senior all grades (11 yrs+)',
-]
+// Class options come from the shared timetable (lib/timetable.ts)
+const rayleighClasses = sessionsForDojo('rayleigh').map(sessionLabel)
+const upminsterClasses = sessionsForDojo('upminster').map(sessionLabel)
 
 const licenceStep = {
   icon: Shield,

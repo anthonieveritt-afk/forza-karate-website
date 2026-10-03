@@ -41,7 +41,7 @@ const instructors = [
   },
   {
     name: 'Claire Buss',
-    grade: '1st Kyu',
+    grade: '2nd Kyu',
     role: 'Assistant Instructor & Para Head Coach',
     dojo: 'Rayleigh & Upminster',
     photo: '/instructors/claire-buss.jpg',

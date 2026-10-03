@@ -7,6 +7,7 @@ import ClassCard from '@/components/sections/ClassCard'
 import BeltJourney from '@/components/sections/BeltJourney'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, Shield, Heart, Zap, Users } from 'lucide-react'
+import { PROGRAMME_AGES } from '@/lib/timetable'
 
 export const metadata: Metadata = {
   title: 'Forza Karate Club — Rayleigh & Upminster',
@@ -17,7 +18,7 @@ const classes = [
   {
     title: 'Forza Ninjas',
     subtitle: 'Our youngest karatekas',
-    ageRange: 'Ages 4–7',
+    ageRange: PROGRAMME_AGES.ninjas,
     description:
       'Play-based karate that builds coordination, confidence, and listening skills through fun drills, games, and structured movement.',
     href: '/classes/ninjas',
@@ -25,15 +26,15 @@ const classes = [
   {
     title: 'Forza Kids / Juniors',
     subtitle: 'Building real technique',
-    ageRange: 'Ages 8–10',
+    ageRange: PROGRAMME_AGES.juniors,
     description:
       'Structured kata, kumite, and belt progression. Students develop discipline, focus, and technical skill in a supportive environment.',
     href: '/classes/juniors',
   },
   {
     title: 'Forza Club',
-    subtitle: '11 years and up, including adults',
-    ageRange: 'Ages 11+',
+    subtitle: 'Older students and adults',
+    ageRange: PROGRAMME_AGES.seniors,
     description:
       'Technical, competitive, serious training. Traditional Wado Ryu alongside WKF sport karate — for those who want to go further.',
     href: '/classes/seniors',

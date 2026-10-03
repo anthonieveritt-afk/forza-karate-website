@@ -6,10 +6,11 @@ import ClassTimetable from '@/components/sections/ClassTimetable'
 import FeesPanel from '@/components/sections/FeesPanel'
 import { sessionsForClass } from '@/lib/timetable'
 import { TRIAL_HREF } from '@/lib/site'
+import { PROGRAMME_AGES } from '@/lib/timetable'
 
 export const metadata: Metadata = {
-  title: 'Forza Kids / Juniors — Ages 8–10',
-  description: 'Structured karate training for children aged 8–10. Kata, kumite, and belt progression at Forza Karate Club.',
+  title: 'Forza Kids / Juniors',
+  description: 'Structured karate training for children up to age 10 at Rayleigh and up to 13 at Upminster. Kata, kumite, and belt progression at Forza Karate Club.',
 }
 
 const expects = [
@@ -28,7 +29,7 @@ export default function JuniorsPage() {
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
         <div className="max-w-7xl mx-auto">
           <div className="inline-flex items-center rounded-full bg-red-50 text-[#dc2626] text-xs font-semibold px-3 py-1 mb-6">
-            Ages 8–10
+            {PROGRAMME_AGES.juniors}
           </div>
           <h1 className="text-5xl sm:text-6xl font-bold text-[#111111] mb-4">Forza Kids / Juniors</h1>
           <p className="text-xl text-gray-500 max-w-2xl leading-relaxed">
@@ -44,9 +45,9 @@ export default function JuniorsPage() {
           <div>
             <h2 className="text-2xl font-bold text-[#111111] mb-4">About this class</h2>
             <p className="text-gray-500 leading-relaxed mb-6">
-              The Juniors class bridges the gap between our Ninjas program and the senior club.
-              Students aged 8–10 are ready for structured, technical training — and this class
-              delivers exactly that.
+              The Juniors class bridges the gap between our Ninjas programme and the senior club.
+              Children who are ready for structured, technical training (up to age 10 at Rayleigh
+              and up to 13 at Upminster) get exactly that here.
             </p>
             <p className="text-gray-500 leading-relaxed">
               Kata are introduced and refined. Controlled partner work (kumite) begins. Gradings

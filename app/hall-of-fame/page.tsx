@@ -4,7 +4,7 @@ import { Star, Medal, Trophy } from 'lucide-react'
 
 // International honours, from the old site's "England Karate – Hall of fame" page
 // (https://forzakarate.co.uk/hall-of-fame/) and Kobe's achievements page.
-// Grades follow the new site where the two sites differ (Jade 4th Dan, Kobe 2nd Dan).
+// Grades as confirmed by Anthoni Everitt: Jade 4th Dan, Kobe 2nd Dan.
 const honours = [
   {
     name: 'Jade Honeywood',
