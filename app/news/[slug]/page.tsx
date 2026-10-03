@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import TrialCta from '@/components/sections/TrialCta'
 import { formatNewsDate, getAdjacent, getAllPosts, getPost } from '@/lib/news'
+import MorePhotos from '@/components/news/MorePhotos'
 
 export const dynamicParams = false
 
@@ -89,6 +90,8 @@ export default async function NewsPostPage({ params }: { params: Promise<{ slug:
                 ))}
               </div>
             )}
+
+            <MorePhotos photos={post.bodyPhotos ?? []} title={post.title} />
           </div>
         </div>
       </article>
