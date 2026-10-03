@@ -95,7 +95,7 @@ export default function GradingRegisterPage() {
               <p>Gradings are conducted by the Club Chief Instructor only.</p>
               <p>Students at purple belt (4th Kyu) and above must be registered for FKA kata and kumite squad training to be eligible to grade.</p>
               <p>You need a valid licence to grade. <Link href="/join/apply-licence" className="text-[#dc2626] hover:underline">Apply for or renew your licence</Link>.</p>
-              <p>Passed? <Link href="/belt-order" className="text-[#dc2626] hover:underline">Pre-order your personalised belt</Link>.</p>
+              <p>Passed? <Link href="/store/personalised-belt" className="text-[#dc2626] hover:underline">Pre-order your personalised belt</Link>.</p>
             </div>
           </aside>
         </div>

@@ -151,7 +151,7 @@ export default function GradingsPage() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link href="/belt-order">Order a personalised belt</Link>
+              <Link href="/store/personalised-belt">Order a personalised belt</Link>
             </Button>
           </div>
           <p className="text-sm text-gray-400 mt-6">

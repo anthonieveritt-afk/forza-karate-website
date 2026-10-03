@@ -57,7 +57,7 @@ export default function ClubRulesPage() {
           <Section title="Karate uniform">
             <ul className="space-y-3">
               <Rule>Only the official Forza Karate Club uniform (gi) may be worn in our lessons.</Rule>
-              <Rule>Beginners may train in a t-shirt and tracksuit bottoms or shorts for up to 4 weeks. After that, the uniform must be bought through our <Link href="/shop" className="text-[#dc2626] hover:underline">club shop</Link>.</Rule>
+              <Rule>Beginners may train in a t-shirt and tracksuit bottoms or shorts for up to 4 weeks. After that, the uniform must be bought through our <Link href="/store" className="text-[#dc2626] hover:underline">club store</Link>.</Rule>
               <Rule>If you have trained in karate before and have moved to Forza, you will need to buy our uniform by your 2nd week of training.</Rule>
             </ul>
           </Section>
@@ -65,7 +65,7 @@ export default function ClubRulesPage() {
           <Section title="Karate equipment">
             <ul className="space-y-3">
               <Rule>From yellow belt upwards you must have hand mitts and shin and instep pads.</Rule>
-              <Rule>We recommend buying them through the <Link href="/shop" className="text-[#dc2626] hover:underline">club shop</Link> so you have the correct type used by Forza Karate Club.</Rule>
+              <Rule>We recommend buying them through the <Link href="/store" className="text-[#dc2626] hover:underline">club store</Link> so you have the correct type used by Forza Karate Club.</Rule>
             </ul>
           </Section>
 

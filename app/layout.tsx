@@ -4,7 +4,6 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import LogoTicker from '@/components/layout/LogoTicker'
 import MusicPlayer from '@/components/layout/MusicPlayer'
-import { CartProvider } from '@/lib/cart-context'
 
 export const metadata: Metadata = {
   // Used to build absolute URLs for social preview images (e.g. news posts).
@@ -42,13 +41,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
-        <CartProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <LogoTicker />
-          <Footer />
-          <MusicPlayer />
-        </CartProvider>
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <LogoTicker />
+        <Footer />
+        <MusicPlayer />
       </body>
     </html>
   )
