@@ -20,6 +20,7 @@ const membersCoreLinks = [
   { href: '/members/grading', label: 'Register to Grade' },
   { href: '/members/syllabus', label: 'Syllabus' },
   { href: '/members/licence',  label: 'Renew your licence' },
+  { href: '/admin',            label: 'Club Management' },
 ]
 
 const eventLinks = [

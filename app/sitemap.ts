@@ -1,0 +1,38 @@
+import type { MetadataRoute } from 'next'
+
+const BASE = (process.env.NEXT_PUBLIC_SITE_URL || 'https://forzakarate.co.uk').replace(/\/$/, '')
+
+const routes = [
+  '/',
+  '/classes',
+  '/classes/ninjas',
+  '/classes/juniors',
+  '/classes/seniors',
+  '/dojos',
+  '/dojos/rayleigh',
+  '/dojos/upminster',
+  '/gradings',
+  '/team',
+  '/gallery',
+  '/shop',
+  '/join',
+  '/trial-class',
+  '/calendar',
+  '/news',
+  '/instructors',
+  '/hall-of-fame',
+  '/safeguarding',
+  '/privacy-policy',
+  '/contact',
+  '/why-karate',
+]
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const now = new Date()
+  return routes.map((path) => ({
+    url: `${BASE}${path}`,
+    lastModified: now,
+    changeFrequency: path === '/' ? 'weekly' : 'monthly',
+    priority: path === '/' ? 1 : 0.7,
+  }))
+}

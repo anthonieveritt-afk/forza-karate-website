@@ -8,15 +8,15 @@ export const metadata: Metadata = {
 }
 
 const documents = [
-  { label: 'FKC Safeguarding Policy – Children (2023)', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Children-Policy-and-Procedures.pdf' },
-  { label: 'FKC Safeguarding Policy – Adults (2023)', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Adults-Policy.pdf' },
-  { label: 'FKC Safeguarding Statement', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Statement.pdf' },
-  { label: 'FKC Safe Practice Policy', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Safe-Practice-Policy-2023.pdf' },
-  { label: 'FKC Safeguarding Flowchart – Children', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/forza-karate-club-safeguarding-flow-chart.png' },
-  { label: 'FKC Safeguarding Flowchart – Adults', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/forza-karate-club-adult-reporting-flow-chart.docx' },
-  { label: 'FKC Code of Conduct – Students', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-students.pdf' },
-  { label: 'FKC Code of Conduct – Parents / Carers', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-parents-and-carers.pdf' },
-  { label: 'FKC Code of Conduct – Instructors / Coaches / Volunteers', href: 'https://forzakarate.co.uk/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-Instructors-Coaches-and-Volunteers.pdf' },
+  { label: 'FKC Safeguarding Policy – Children (2023)', href: '/safeguarding/children-policy.pdf' },
+  { label: 'FKC Safeguarding Policy – Adults (2023)', href: '/safeguarding/adults-policy.pdf' },
+  { label: 'FKC Safeguarding Statement', href: '/safeguarding/statement.pdf' },
+  { label: 'FKC Safe Practice Policy', href: '/safeguarding/safe-practice-policy.pdf' },
+  { label: 'FKC Safeguarding Flowchart – Children', href: '/safeguarding/children-flowchart.png' },
+  { label: 'FKC Safeguarding Flowchart – Adults', href: '/safeguarding/adults-flowchart.docx' },
+  { label: 'FKC Code of Conduct – Students', href: '/safeguarding/code-of-conduct-students.pdf' },
+  { label: 'FKC Code of Conduct – Parents / Carers', href: '/safeguarding/code-of-conduct-parents.pdf' },
+  { label: 'FKC Code of Conduct – Instructors / Coaches / Volunteers', href: '/safeguarding/code-of-conduct-instructors.pdf' },
 ]
 
 const localBoards = [
@@ -40,7 +40,7 @@ const localBoards = [
     contacts: [
       'Essex County Council Children and Families Hub: 0345 603 7627',
     ],
-    links: [{ label: 'Essex Effective Support', href: 'https://www.essexeffectivesupport.org.uk/' }],
+    links: [{ label: 'Essex Effective Support (ESCB)', href: 'https://www.escb.co.uk/working-with-children/concerns-about-the-welfare-of-a-child/early-help-and-effective-support/' }],
   },
   {
     area: 'Southend Safeguarding',

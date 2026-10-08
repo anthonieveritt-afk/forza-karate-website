@@ -1,16 +1,27 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { Timer, ChevronDown, ChevronUp, History } from 'lucide-react'
 import { GRADINGS } from '@/lib/gradings'
 
+function subscribe(onStoreChange: () => void) {
+  const id = setInterval(onStoreChange, 1000)
+  return () => clearInterval(id)
+}
+function getClientNow() {
+  return Date.now()
+}
+function getServerNow() {
+  return 0 // stable server snapshot — client-only UI uses useMounted first
+}
+function useMounted() {
+  return useSyncExternalStore(() => () => {}, () => true, () => false)
+}
 function useNow() {
-  const [now, setNow] = useState(() => new Date())
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000)
-    return () => clearInterval(id)
-  }, [])
-  return now
+  const mounted = useMounted()
+  const tick = useSyncExternalStore(subscribe, getClientNow, getServerNow)
+  if (!mounted) return null
+  return new Date(tick)
 }
 
 function getCountdown(target: Date, now: Date) {
@@ -99,6 +110,23 @@ function GradingCard({ grading, isNext, now }: {
 export default function GradingCountdown() {
   const now      = useNow()
   const [showHistory, setShowHistory] = useState(false)
+
+  if (!now) {
+    return (
+      <div className="bg-[#fafaf9] rounded-2xl border border-black/8 p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+            <Timer className="w-5 h-5 text-[#dc2626]" />
+          </div>
+          <div>
+            <h3 className="font-bold text-[#111111]">Grading Calendar 2026</h3>
+            <p className="text-xs text-gray-400 mt-0.5">Live countdown to registration deadlines</p>
+          </div>
+        </div>
+        <div className="h-24 rounded-xl bg-black/5 animate-pulse" aria-hidden />
+      </div>
+    )
+  }
 
   const upcoming = GRADINGS.filter(g => g.registerBy > now)
   const past     = GRADINGS.filter(g => g.registerBy <= now)

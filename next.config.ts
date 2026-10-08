@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
+import { legacyRedirects } from "./redirects";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['despite-gig-guidelines-explains.trycloudflare.com'],
+  async redirects() {
+    return legacyRedirects;
+  },
 };
 
 export default nextConfig;

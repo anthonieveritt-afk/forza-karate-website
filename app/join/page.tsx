@@ -165,7 +165,7 @@ export default function JoinPage() {
 
               {status === 'error' && (
                 <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm text-center">
-                  Something went wrong — please try again or email us at info@forzakarate.co.uk
+                  Something went wrong — please try again or email us at hello@forzakarate.co.uk
                 </div>
               )}
 
