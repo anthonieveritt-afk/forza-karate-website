@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
 import { getMemberPortalData } from '@/app/actions/portal'
 import { logoutMembers } from '@/app/actions/members-auth'
+import { BeltJourney } from '@/components/members/BeltJourney'
 
 function beltBadgeClass(belt: string | null): string {
   if (!belt) return 'bg-gray-100 text-gray-600'
@@ -103,33 +104,7 @@ export default async function MembersPortalPage() {
               <div className="w-6 h-0.5 bg-[#dc2626]" />
               <h2 className="text-lg font-bold text-[#111111]">Belt journey</h2>
             </div>
-            {gradings.length === 0 ? (
-              <p className="text-sm text-gray-400">No gradings recorded yet.</p>
-            ) : (
-              <div className="space-y-3">
-                {gradings.map((g: { id: number; gradingDate: string; fromBelt: string | null; toBelt: string | null; result: string | null; examiner: string | null }) => (
-                  <div key={g.id} className="flex items-center gap-3 flex-wrap">
-                    <span className="text-sm text-gray-400 w-28 shrink-0">{formatDate(g.gradingDate)}</span>
-                    {g.fromBelt && (
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${beltBadgeClass(g.fromBelt)}`}>
-                        {g.fromBelt}
-                      </span>
-                    )}
-                    {g.fromBelt && g.toBelt && <span className="text-gray-300 text-xs">→</span>}
-                    {g.toBelt && (
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${beltBadgeClass(g.toBelt)}`}>
-                        {g.toBelt}
-                      </span>
-                    )}
-                    {g.result && (
-                      <span className={`text-xs font-medium ${g.result.toLowerCase() === 'pass' ? 'text-green-600' : 'text-red-500'}`}>
-                        {g.result}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+            <BeltJourney gradings={gradings} currentBelt={profile.currentBelt} />
           </div>
 
           {/* Stats row */}
