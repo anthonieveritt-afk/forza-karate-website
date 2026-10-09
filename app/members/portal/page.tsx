@@ -104,7 +104,7 @@ export default async function MembersPortalPage() {
               <div className="w-6 h-0.5 bg-[#dc2626]" />
               <h2 className="text-lg font-bold text-[#111111]">Belt journey</h2>
             </div>
-            <BeltJourney gradings={gradings} currentBelt={profile.currentBelt} />
+            <BeltJourney gradings={gradings} currentBelt={profile.currentBelt} studentName={`${profile.firstName} ${profile.surname}`.trim()} />
           </div>
 
           {/* Stats row */}

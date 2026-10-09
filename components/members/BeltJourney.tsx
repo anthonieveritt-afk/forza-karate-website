@@ -1,3 +1,14 @@
+import { CertificateButtons } from './CertificateButtons'
+
+/** 1st/2nd Class and Pass all count as passes. */
+export function isPassResult(result: string | null | undefined): boolean {
+  if (!result) return false
+  const r = result.toLowerCase()
+  if (/fail|refer|defer|not pass|unsuccess/.test(r)) return false
+  return /pass|class|merit|distinction/.test(r)
+}
+
+
 export type Grading = {
   id: number
   gradingDate: string
@@ -95,7 +106,7 @@ function ClassBadge({ result }: { result: string | null }) {
 
 type Step = { g: Grading; from: string | null; to: string; first: boolean }
 
-function StepCard({ step, isCurrent }: { step: Step; isCurrent: boolean }) {
+function StepCard({ step, isCurrent, studentName }: { step: Step; isCurrent: boolean; studentName?: string }) {
   const { g, from, to, first } = step
   return (
     <li className="relative pl-8">
@@ -122,12 +133,15 @@ function StepCard({ step, isCurrent }: { step: Step; isCurrent: boolean }) {
             <span className="sr-only">Graded </span>from {from}
           </p>
         )}
+        {studentName && isPassResult(g.result) && (
+          <CertificateButtons studentName={studentName} toBelt={g.toBelt ?? to} gradingDate={g.gradingDate.slice(0, 10)} />
+        )}
       </div>
     </li>
   )
 }
 
-export function BeltJourney({ gradings, currentBelt }: { gradings: Grading[]; currentBelt?: string | null }) {
+export function BeltJourney({ gradings, currentBelt, studentName }: { gradings: Grading[]; currentBelt?: string | null; studentName?: string }) {
   const sorted = [...gradings]
     .filter((g) => g.toBelt)
     .sort((a, b) => a.gradingDate.localeCompare(b.gradingDate) || a.id - b.id)
@@ -180,7 +194,7 @@ export function BeltJourney({ gradings, currentBelt }: { gradings: Grading[]; cu
             </h3>
             <ol className="relative space-y-3 before:absolute before:left-[12px] before:top-2 before:bottom-2 before:w-px before:bg-gray-200">
               {sec.items.map((s) => (
-                <StepCard key={s.g.id} step={s} isCurrent={s === latest} />
+                <StepCard key={s.g.id} step={s} isCurrent={s === latest} studentName={studentName} />
               ))}
             </ol>
           </section>
