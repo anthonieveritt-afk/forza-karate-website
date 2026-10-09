@@ -44,3 +44,17 @@ body {
 .animate-ticker:hover {
   animation-play-state: paused;
 }
+
+/* Imported news story bodies */
+.news-body { color: #4b5563; line-height: 1.75; overflow-wrap: anywhere; }
+.news-body > * + * { margin-top: 1rem; }
+.news-body h2, .news-body h3, .news-body h4 { color: #111111; font-weight: 700; margin-top: 2rem; }
+.news-body h2 { font-size: 1.5rem; } .news-body h3 { font-size: 1.25rem; }
+.news-body a { color: #dc2626; text-decoration: underline; text-underline-offset: 2px; }
+.news-body strong { color: #111111; }
+.news-body ul { list-style: disc; padding-left: 1.25rem; } .news-body ol { list-style: decimal; padding-left: 1.25rem; }
+.news-body img { border-radius: 0.75rem; max-width: 100%; height: auto; display: inline-block; margin: 0.25rem 0; }
+.news-body iframe { width: 100%; aspect-ratio: 16/9; border-radius: 0.75rem; }
+.news-body table { width: 100%; border-collapse: collapse; font-size: 0.875rem; display: block; overflow-x: auto; }
+.news-body td, .news-body th { border: 1px solid rgba(0,0,0,.08); padding: .4rem .6rem; }
+.news-body blockquote { border-left: 3px solid #dc2626; padding-left: 1rem; font-style: italic; }

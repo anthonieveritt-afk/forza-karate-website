@@ -8,7 +8,7 @@ import { submitEnrolment } from '@/app/actions/enrolment'
 const rayleighClasses = [
   'Tuesday 6:15–7pm — 4 yrs+ (all grades)',
   'Tuesday 7–8pm — 11 yrs+ (all grades)',
-  'Friday 3:30–4:30pm — 4 yrs+ (after school)',
+  'Friday 3:40–4:40pm — after-school club (Rayleigh Primary School pupils only)',
   'Saturday 10–11am — 4 yrs+ (all ages)',
 ]
 
@@ -175,9 +175,9 @@ export default function JoinPage() {
                 <div className="grid grid-cols-2 gap-3">
                   {[
                     { value: 'trial',      label: 'Free Trial Class',      sub: 'No commitment — first class is free' },
-                    { value: 'single',     label: 'Single — £45/mo',        sub: '1 student · or £540/yr annual' },
-                    { value: 'family2',    label: 'Family (2) — £75/mo',    sub: '2 students · immediate family only' },
-                    { value: 'family3plus',label: 'Family (3+) — £100/mo',  sub: '3+ students · immediate family only' },
+                    { value: 'single',     label: 'Single — £50/mo',        sub: '1 student · 12 monthly payments' },
+                    { value: 'family2',    label: 'Siblings — £80/mo',      sub: '2 students · immediate family only' },
+                    { value: 'family3plus',label: 'Family — £120/mo',       sub: 'Immediate family only' },
                   ].map((opt) => (
                     <label key={opt.value}
                       className={`flex flex-col gap-0.5 p-3.5 rounded-xl border cursor-pointer transition-all ${membershipType === opt.value ? 'border-[#dc2626] bg-red-50' : 'border-black/10 hover:border-black/20'}`}>

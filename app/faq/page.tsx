@@ -20,14 +20,14 @@ const faqs: { group: string; items: Faq[] }[] = [
       {
         q: 'When and where are classes at Rayleigh?',
         text:
-          'Rayleigh Dojo, Rayleigh Primary School, Love Lane, SS6 7DD. Tuesday 6.15–7pm, ages 4–10, all grades. Tuesday 7–8pm, ages 11 and up, all grades. Friday 3.30–4.30pm, ages 4 and up (after-school club). Saturday 10–11am, ages 4 and up, all grades.',
+          'Rayleigh Dojo, Rayleigh Primary School, Love Lane, SS6 7DD. Tuesday 6.15–7pm, ages 4–10, all grades. Tuesday 7–8pm, ages 11 and up, all grades. Friday 3.40–4.40pm, after-school club for Rayleigh Primary School pupils only (not open to the public). Saturday 10–11am, ages 4 and up, all grades.',
         a: (
           <>
             <p>Rayleigh Dojo, Rayleigh Primary School, Love Lane, SS6 7DD.</p>
             <ul className="list-disc pl-5 mt-2 space-y-1">
               <li>Tuesday 6.15–7pm: ages 4–10, all grades</li>
               <li>Tuesday 7–8pm: ages 11 and up, all grades</li>
-              <li>Friday 3.30–4.30pm: ages 4 and up (after-school club)</li>
+              <li>Friday 3.40–4.40pm: after-school club for Rayleigh Primary School pupils only (not open to the public)</li>
               <li>Saturday 10–11am: ages 4 and up, all grades</li>
             </ul>
             <p className="mt-2"><Link href="/dojos/rayleigh" className={link}>More about Rayleigh Dojo</Link></p>

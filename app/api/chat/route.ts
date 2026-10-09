@@ -44,6 +44,7 @@ BELT SYSTEM & GRADING:
 PARENTS WATCHING:
 - Parents are welcome to watch classes
 - Exception: the Friday after-school class at Rayleigh (3:40–4:40pm) — parents are not permitted to watch during this session
+- The Friday 3:40–4:40pm Rayleigh class is an after-school club for Rayleigh Primary School pupils only — it is not open to the public, so do not offer it to other enquirers
 
 TRAINING WITH OTHER CLUBS:
 - Students may not train with other karate clubs whilst being a member of Forza Karate Club
