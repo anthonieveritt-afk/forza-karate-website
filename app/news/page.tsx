@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { allPosts, allCategories, formatDate } from '@/lib/news'
 
 export const metadata: Metadata = {
@@ -12,6 +13,9 @@ const PER_PAGE = 12
 
 export default async function NewsPage({ searchParams }: { searchParams: Promise<{ category?: string; page?: string }> }) {
   const sp = await searchParams
+  // Old duplicate WordPress category merged into 'preparation-training'.
+  const ALIASES: Record<string, string> = { 'preparation-training-2': 'preparation-training' }
+  if (sp.category && ALIASES[sp.category]) redirect(`/news?category=${ALIASES[sp.category]}${sp.page ? `&page=${sp.page}` : ''}`)
   const cats = allCategories()
   const active = cats.find((c) => c.slug === sp.category)
   const list = active ? allPosts.filter((p) => p.categories.some((c) => c.slug === active.slug)) : allPosts
@@ -28,6 +32,20 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
   const chip = (on: boolean) =>
     `px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${on ? 'bg-[#111111] text-white border-[#111111]' : 'bg-white text-gray-600 border-black/12 hover:border-black/25'}`
 
+  const item = (on: boolean) => (on ? 'text-[#111111] font-medium' : 'hover:text-[#111111]')
+  const catList = (
+    <ul className="space-y-1.5">
+      <li><Link href="/news" className={item(!active)} aria-current={!active ? 'page' : undefined}>All <span className="text-gray-400">({allPosts.length})</span></Link></li>
+      {cats.filter((c) => c.count >= 3).map((c) => (
+        <li key={c.slug}>
+          <Link href={href(1, c.slug)} className={item(active?.slug === c.slug)} aria-current={active?.slug === c.slug ? 'page' : undefined}>
+            {c.name} <span className="text-gray-400">({c.count})</span>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  )
+
   return (
     <div className="bg-white">
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
@@ -41,20 +59,14 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
         </div>
       </section>
 
-      <section className="py-8 px-4 sm:px-6 lg:px-8 border-b border-black/5">
-        <nav aria-label="Filter news by category" className="max-w-7xl mx-auto flex gap-2 flex-wrap">
-          <Link href="/news" className={chip(!active)} aria-current={!active ? 'page' : undefined}>All</Link>
-          {cats.filter((c) => c.count >= 3).map((c) => (
-            <Link key={c.slug} href={href(1, c.slug)} className={chip(active?.slug === c.slug)} aria-current={active?.slug === c.slug ? 'page' : undefined}>
-              {c.name} <span className="opacity-60">({c.count})</span>
-            </Link>
-          ))}
-        </nav>
-      </section>
-
       <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="max-w-7xl mx-auto grid gap-10 lg:grid-cols-[minmax(0,1fr)_200px]">
+          <details className="lg:hidden text-sm text-gray-500 border-b border-black/5 pb-3 -mt-6">
+            <summary className="cursor-pointer select-none">Categories{active ? `: ${active.name}` : ''}</summary>
+            <div className="mt-3">{catList}</div>
+          </details>
+          <div className="min-w-0">
+          <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
             {shown.map((p) => (
               <article key={p.slug} className="group rounded-2xl border border-black/5 overflow-hidden bg-white hover:shadow-md transition-shadow">
                 <Link href={`/news/${p.slug}`} className="block">
@@ -81,6 +93,11 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
               {page < pages && <Link href={href(page + 1)} className={chip(false)}>Older →</Link>}
             </nav>
           )}
+          </div>
+          <aside aria-label="News categories" className="hidden lg:block text-sm text-gray-500">
+            <h2 className="text-xs uppercase tracking-wider text-gray-400 mb-3">Categories</h2>
+            {catList}
+          </aside>
         </div>
       </section>
     </div>

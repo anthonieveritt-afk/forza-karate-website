@@ -21,7 +21,6 @@ const membersCoreLinks = [
   { href: '/members/grading', label: 'Register to Grade' },
   // Syllabus hidden for now (Anthoni, Oct 2026) — re-add: { href: '/members/syllabus', label: 'Syllabus' },
   { href: '/members/licence',  label: 'Renew your licence' },
-  { href: '/admin',            label: 'Club Management' },
 ]
 
 const eventLinks = [
