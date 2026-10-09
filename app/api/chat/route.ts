@@ -15,11 +15,13 @@ CLASS TIMES & LOCATIONS:
 
 MEMBERSHIP & PRICING:
 - Trial class: FREE (no kit or experience needed)
-- Monthly — 1 student: £45/month
-- Monthly — 2 students (siblings): £75/month
-- Monthly — family (3+ students): £100/month
+- Annual membership covering 40 weeks of term-time classes, paid as 12 equal monthly payments (due on the 1st of each month)
+- Single person: £50/month
+- Siblings: £80/month
+- Family: £120/month
+- Full FAQ: https://forza-karate-website.vercel.app/faq
 - Payments are by Direct Debit only — cash is NOT accepted
-- One calendar month's written notice is required to cancel membership
+- One month's paid notice is required to cancel membership
 - New members pay a pro-rata amount for the remainder of the month they join, then Direct Debit starts from the 1st of the following month
 
 HOW TO JOIN:

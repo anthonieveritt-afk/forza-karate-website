@@ -24,6 +24,7 @@ const routes = [
   '/safeguarding',
   '/privacy-policy',
   '/contact',
+  '/faq',
   '/why-karate',
 ]
 
