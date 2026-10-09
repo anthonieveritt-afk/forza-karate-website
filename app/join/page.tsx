@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { CheckCircle, ArrowRight, ShoppingBag, CreditCard, Shield } from 'lucide-react'
+import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { submitEnrolment } from '@/app/actions/enrolment'
 
@@ -120,6 +121,15 @@ export default function JoinPage() {
           <p className="text-xl text-gray-500 max-w-2xl">
             Start with a free trial or enrol directly. Fill in your details below and we'll be in touch to confirm your place.
           </p>
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <Button asChild size="lg">
+              <Link href="/trial-class">
+                Book Your Free Trial
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <span className="text-sm text-gray-500">Come and try it out first, then ask us anything.</span>
+          </div>
         </div>
       </section>
 
