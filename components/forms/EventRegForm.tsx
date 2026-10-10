@@ -124,7 +124,7 @@ export default function EventRegForm({ event, eventLabel, sessions, showAgeGroup
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-[#111111] mb-1.5">Date of birth</label>
-          <input name="dateOfBirth" type="date" className={input} />
+          <input name="dateOfBirth" type="date" min="1900-01-01" max="2100-12-31" className={input} />
         </div>
         <div>
           <label className="block text-sm font-medium text-[#111111] mb-1.5">Dojo</label>

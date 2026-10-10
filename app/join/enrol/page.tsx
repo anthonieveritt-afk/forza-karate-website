@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { CheckCircle, ChevronRight, User, ShoppingBag, CreditCard, Zap, Tag, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { DateInput } from '@/components/DateInput'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -302,7 +303,7 @@ function EnrolWizard() {
             </div>
 
             <Field label="Date of birth">
-              <input type="date" className={inputClass} value={dob} min="1900-01-01" max={new Date().toISOString().split('T')[0]} onChange={e => { setDob(e.target.value); const age = new Date().getFullYear() - new Date(e.target.value).getFullYear(); setIsMinor(age < 18) }} required />
+              <DateInput className={inputClass} value={dob} min="1900-01-01" max={new Date().toISOString().split('T')[0]} onChange={e => { setDob(e.target.value); const age = new Date().getFullYear() - new Date(e.target.value).getFullYear(); setIsMinor(age < 18) }} required />
             </Field>
 
             <Field label="Email">

@@ -1,3 +1,5 @@
+import { LicenceEditor } from './LicenceEditor'
+
 function parseDate(d: string | null | undefined): Date | null {
   if (!d) return null
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d)
@@ -62,6 +64,7 @@ export function LicenceCard({
           No licence on record yet. If you think this is wrong, please speak to your instructor or{' '}
           <a href={renewHref} className="text-[#dc2626] font-medium hover:underline">get in touch</a>.
         </p>
+        <LicenceEditor licenceNumber={licenceNumber} licenceStartDate={licenceStartDate} licenceExpiryDate={licenceExpiryDate} />
       </div>
     )
   }
@@ -137,6 +140,7 @@ export function LicenceCard({
           )}
         </div>
       </div>
+      <LicenceEditor licenceNumber={licenceNumber} licenceStartDate={licenceStartDate} licenceExpiryDate={licenceExpiryDate} />
     </div>
   )
 }

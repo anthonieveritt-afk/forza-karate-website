@@ -134,6 +134,8 @@ export default function TrialClassForm() {
           <input
             name="dateOfBirth"
             type="date"
+            min="1900-01-01"
+            max="2100-12-31"
             className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
           />
         </div>
