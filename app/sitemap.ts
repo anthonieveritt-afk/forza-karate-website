@@ -27,6 +27,7 @@ const routes = [
   '/contact',
   '/faq',
   '/why-karate',
+  '/dojo-dash',
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
