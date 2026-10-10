@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     template: '%s | Forza Karate Club',
   },
   description:
-    'Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster. Book a free trial class today.',
+    'Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster. Come and try it out — book a £10 trial class today.',
   keywords: ['karate', 'martial arts', 'Rayleigh', 'Upminster', 'Essex', 'FKA', 'Wado Ryu', 'children karate', 'kids martial arts'],
   openGraph: {
     title: 'Forza Karate Club',

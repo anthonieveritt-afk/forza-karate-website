@@ -11,7 +11,7 @@ import { allPosts, formatDate } from '@/lib/news'
 
 export const metadata: Metadata = {
   title: 'Forza Karate Club — Rayleigh & Upminster',
-  description: 'Traditional Wado Ryu karate for all ages across Essex. Book your free trial class today at Rayleigh or Upminster.',
+  description: 'Traditional Wado Ryu karate for all ages across Essex. Come and try it out — book a £10 trial class at Rayleigh or Upminster.',
 }
 
 const classes = [
@@ -180,14 +180,14 @@ export default function HomePage() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="w-16 h-0.5 bg-[#dc2626] mx-auto mb-8" />
           <h2 className="text-4xl sm:text-5xl font-bold text-[#111111] mb-4 leading-tight">
-            First class is free.<br />Register for a free trial class today!
+            Come and try it out.<br />Book a £10 trial class today!
           </h2>
           <p className="text-gray-500 mb-10 text-lg">
-            Book a free trial at Rayleigh or Upminster and see if Forza is right for you.
+            Book a £10 trial class at Rayleigh or Upminster and see if Forza is right for you.
           </p>
           <Button asChild size="lg">
             <Link href="/trial-class">
-              Book Your Free Trial
+              Book Your £10 Trial
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>

@@ -1,14 +1,15 @@
 import type { Metadata } from 'next'
 import TrialClassForm from '@/components/forms/TrialClassForm'
 import { CheckCircle } from 'lucide-react'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
-  title: 'Book a Free Trial Class',
-  description: 'Book your free trial karate class at Forza Karate Club. No kit needed, no commitment. Available at Rayleigh and Upminster.',
+  title: 'Book a £10 Trial Class',
+  description: 'Come and try it out! Book a £10 trial karate class at Forza Karate Club. No kit needed, no commitment. Available at Rayleigh and Upminster.',
 }
 
 const perks = [
-  'First class completely free',
+  'Trial class just £10, paid securely online',
   'No kit or uniform needed',
   'No commitment required',
   'All ages welcome — 4 to adult',
@@ -22,13 +23,13 @@ export default function TrialClassPage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-8 h-0.5 bg-[#dc2626]" />
-            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Free Trial</span>
+            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">£10 Trial Class</span>
           </div>
           <h1 className="text-5xl sm:text-6xl font-bold text-[#111111] mb-4 leading-tight">
-            Book your<br />free trial
+            Come and<br />try it out
           </h1>
           <p className="text-xl text-gray-500 max-w-2xl">
-            Come and see what Forza is about. No kit, no commitment — just show up and train.
+            Book a £10 trial class and see what Forza is about. No kit, no commitment — come and try it out, then ask questions.
           </p>
         </div>
       </section>
@@ -57,7 +58,7 @@ export default function TrialClassPage() {
           {/* Form */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-2xl border border-black/8 p-8">
-              <TrialClassForm />
+              <Suspense><TrialClassForm /></Suspense>
             </div>
           </div>
         </div>

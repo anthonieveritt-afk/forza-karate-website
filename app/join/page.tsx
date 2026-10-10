@@ -119,12 +119,12 @@ export default function JoinPage() {
           </div>
           <h1 className="text-5xl font-bold text-[#111111] mb-4">Join Forza Karate Club</h1>
           <p className="text-xl text-gray-500 max-w-2xl">
-            Start with a free trial or enrol directly. Fill in your details below and we'll be in touch to confirm your place.
+            Start with a £10 trial class or enrol directly. Fill in your details below and we'll be in touch to confirm your place.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button asChild size="lg">
               <Link href="/trial-class">
-                Book Your Free Trial
+                Book Your £10 Trial
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
@@ -184,7 +184,7 @@ export default function JoinPage() {
                 <p className={label}>Membership type {req}</p>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { value: 'trial',      label: 'Free Trial Class',      sub: 'No commitment — first class is free' },
+                    { value: 'trial',      label: 'Trial Class',           sub: 'No commitment — £10 trial, paid on the trial page' },
                     { value: 'single',     label: 'Single — £50/mo',        sub: '1 student · 12 monthly payments' },
                     { value: 'family2',    label: 'Siblings — £80/mo',      sub: '2 students · immediate family only' },
                     { value: 'family3plus',label: 'Family — £120/mo',       sub: 'Immediate family only' },
@@ -377,7 +377,7 @@ export default function JoinPage() {
               {/* ── Submit ── */}
               <div className="pt-2">
                 <Button type="submit" size="lg" className="w-full" disabled={status === 'loading'}>
-                  {status === 'loading' ? 'Submitting…' : membershipType === 'trial' ? 'Book my free trial' : 'Submit enrolment'}
+                  {status === 'loading' ? 'Submitting…' : membershipType === 'trial' ? 'Book my trial' : 'Submit enrolment'}
                   {status !== 'loading' && <ArrowRight className="h-4 w-4" />}
                 </Button>
                 <p className="text-xs text-gray-400 text-center mt-3">

@@ -1,40 +1,33 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
-import { submitTrialBooking } from '@/app/actions/trial-booking'
 import { CheckCircle, AlertCircle } from 'lucide-react'
 
 export default function TrialClassForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
+  const cancelled = useSearchParams().get('cancelled') === '1'
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setStatus('loading')
     setErrorMsg('')
-
-    const form = e.currentTarget
-    const data = new FormData(form)
-
+    const data = Object.fromEntries(new FormData(e.currentTarget).entries())
     try {
-      await submitTrialBooking({
-        firstName: data.get('parentName') as string,
-        lastName: '',
-        email: data.get('email') as string,
-        phone: data.get('phone') as string,
-        dateOfBirth: data.get('dateOfBirth') as string || '',
-        dojo: data.get('preferredDojo') as string,
-        classTime: data.get('ageGroup') as string,
-        parentName: data.get('parentName') as string || undefined,
-        childName: data.get('childName') as string || undefined,
-        medicalNotes: [data.get('message') as string || '', data.get('age') ? `Age: ${data.get('age')}` : ''].filter(Boolean).join(' | ') || undefined,
+      const res = await fetch('/api/trial-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       })
-      setStatus('success')
-      form.reset()
-    } catch {
+      const body = (await res.json().catch(() => ({}))) as { url?: string; error?: string }
+      if (!res.ok || !body.url) throw new Error(body.error || 'Something went wrong. Please try again.')
+      window.location.href = body.url // Stripe Checkout
+    } catch (err) {
       setStatus('error')
-      setErrorMsg('Something went wrong.')
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong.')
     }
   }
 
@@ -44,7 +37,7 @@ export default function TrialClassForm() {
         <CheckCircle className="h-14 w-14 text-green-500 mb-4" />
         <h3 className="text-2xl font-bold text-[#111111] mb-2">You&apos;re booked in!</h3>
         <p className="text-gray-500 max-w-sm">
-          Thanks! We&apos;ll be in touch within 72 hours to confirm your free trial class.
+          Thanks! We&apos;ll be in touch within 72 hours to confirm your trial class.
         </p>
       </div>
     )
@@ -52,6 +45,11 @@ export default function TrialClassForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {cancelled && status !== 'error' && (
+        <div className="p-4 rounded-xl bg-amber-50 border border-amber-100 text-amber-800 text-sm">
+          Payment cancelled — you haven&apos;t been charged. Your trial isn&apos;t booked yet; try again whenever you&apos;re ready.
+        </div>
+      )}
       {status === 'error' && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm">
           <AlertCircle className="h-4 w-4 flex-shrink-0" />
@@ -176,17 +174,34 @@ export default function TrialClassForm() {
         </div>
       </div>
 
+      <div>
+        <label className="block text-sm font-medium text-[#111111] mb-1.5">
+          Anything we should know? <span className="text-gray-400 font-normal">(optional)</span>
+        </label>
+        <textarea
+          name="message"
+          rows={3}
+          maxLength={400}
+          placeholder="Medical notes, previous experience, questions…"
+          className="w-full px-4 py-3 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
+        />
+      </div>
+
       <Button
         type="submit"
         size="lg"
         disabled={status === 'loading'}
         className="w-full"
       >
-        {status === 'loading' ? 'Sending…' : 'Book My Free Trial'}
+        {status === 'loading' ? 'Taking you to payment…' : 'Book & pay £10'}
       </Button>
 
+      {status === 'error' && (
+        <p role="alert" className="text-sm text-red-700 text-center">{errorMsg}</p>
+      )}
+
       <p className="text-xs text-gray-400 text-center">
-        We&apos;ll be in touch within 72 hours. No obligation, no kit needed.
+        Secure card payment by Stripe. We&apos;ll be in touch within 72 hours to confirm your class. No obligation, no kit needed.
       </p>
     </form>
   )

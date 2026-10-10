@@ -85,7 +85,7 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden md:block">
-            <Button asChild size="sm"><Link href="/trial-class">Book Free Trial</Link></Button>
+            <Button asChild size="sm"><Link href="/trial-class">Book a Trial</Link></Button>
           </div>
 
           {/* Mobile toggle */}
@@ -134,7 +134,7 @@ export default function Navbar() {
 
             <div className="pt-2">
               <Button asChild size="sm" className="w-full">
-                <Link href="/trial-class" onClick={() => setOpen(false)}>Book Free Trial</Link>
+                <Link href="/trial-class" onClick={() => setOpen(false)}>Book a Trial</Link>
               </Button>
             </div>
           </div>
