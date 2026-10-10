@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { AlertCircle, CheckCircle, Loader2, BadgePoundSterling } from 'lucide-react'
+import { DateInput } from '@/components/DateInput'
 
 const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
@@ -164,8 +165,7 @@ function ApplyLicenceForm() {
 
           <div>
             <label className="block text-sm font-semibold text-[#111111] mb-2">Date of Birth *</label>
-            <input
-              type="date"
+            <DateInput
               name="dateOfBirth"
               value={form.dateOfBirth}
               onChange={handleChange}
