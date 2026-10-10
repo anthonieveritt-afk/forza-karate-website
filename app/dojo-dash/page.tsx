@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Dojo Dash: Kids Karate Game',
-  description: 'Dojo Dash is a free karate game for Forza kids. Play on phone, tablet or computer, then book a free trial class.',
+  description: 'Dojo Dash is a free karate game for Forza kids. Play on phone, tablet or computer, then book a £10 trial class.',
   alternates: { canonical: '/dojo-dash' },
 }
 
@@ -16,7 +16,7 @@ export default function DojoDashPage() {
           A fun karate game for Forza kids. Dodge, jump and earn your belts. Works on phones, tablets and computers.
           Parents: want the real thing?{' '}
           <Link href="/trial-class" className="font-medium text-[#dc2626] underline underline-offset-2 hover:text-[#b91c1c]">
-            Book a free trial
+            Book a £10 trial
           </Link>
           .
         </p>
@@ -34,7 +34,7 @@ export default function DojoDashPage() {
       </div>
       <div className="mx-auto max-w-5xl px-4 mt-6 text-center">
         <Link href="/trial-class" className="inline-block rounded-lg bg-[#dc2626] px-6 py-3 font-semibold text-white hover:bg-[#b91c1c]">
-          Book a free trial
+          Book a £10 trial
         </Link>
       </div>
     </main>

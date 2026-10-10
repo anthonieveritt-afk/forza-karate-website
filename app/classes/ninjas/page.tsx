@@ -108,11 +108,11 @@ export default function NinjasPage() {
       <section className="bg-[#111111] py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to try a class?</h2>
-          <p className="text-gray-400 mb-8">First class is free. No kit required.</p>
+          <p className="text-gray-400 mb-8">Come and try it out — £10 trial class. No kit required.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild size="lg">
               <Link href="/trial-class">
-                Book Free Trial
+                Book a Trial
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>

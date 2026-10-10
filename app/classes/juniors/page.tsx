@@ -107,11 +107,11 @@ export default function JuniorsPage() {
       {/* CTA */}
       <section className="bg-[#111111] py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Book a free trial</h2>
+          <h2 className="text-3xl font-bold text-white mb-4">Book a £10 trial</h2>
           <p className="text-gray-400 mb-8">No kit needed. No commitment. Just come and see.</p>
           <Button asChild size="lg">
             <Link href="/trial-class">
-              Book Free Trial
+              Book a Trial
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>

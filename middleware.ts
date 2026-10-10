@@ -16,7 +16,8 @@ export function middleware(request: NextRequest) {
   }
 
   // Protect everything under /members except the login page and public info pages
-  const publicMembersPages = ['/members/licence', '/members/syllabus']
+  // /members/videos does its own access check (portal login OR Stripe video subscriber)
+  const publicMembersPages = ['/members/licence', '/members/syllabus', '/members/videos', '/members/videos/welcome']
   if (pathname.startsWith('/members') && pathname !== '/members' && !publicMembersPages.includes(pathname)) {
     const auth = request.cookies.get(COOKIE_NAME)
     if (!auth?.value) {

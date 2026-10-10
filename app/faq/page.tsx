@@ -123,8 +123,8 @@ const faqs: { group: string; items: Faq[] }[] = [
         q: 'Can I try a class first?',
         // TODO(trial-price): the trial becomes £10, paid at booking, once Stripe checkout is live.
         // Update this answer, its `text` (used in the FAQPage JSON-LD) and the trial booking page then.
-        text: 'Your first trial class is currently free — book online.',
-        a: <p>Your first trial class is currently free — <Link href="/trial-class" className={link}>book online</Link>.</p>,
+        text: 'Your first trial class is £10 — book and pay online.',
+        a: <p>Your first trial class is £10 — <Link href="/trial-class" className={link}>book and pay online</Link>.</p>,
       },
       {
         q: 'I have another question',
@@ -179,7 +179,7 @@ export default function FaqPage() {
 
           <div className="rounded-2xl bg-[#fafaf9] p-8 text-center">
             <h2 className="text-xl font-bold text-[#111111] mb-2">Ready to start?</h2>
-            <p className="text-gray-500 mb-5">Your first trial class is currently free.</p>
+            <p className="text-gray-500 mb-5">Your first trial class is £10.</p>
             <Link href="/trial-class" className="inline-block rounded-lg bg-[#dc2626] px-6 py-3 font-semibold text-white hover:bg-[#b91c1c]">Book a trial class</Link>
           </div>
         </div>

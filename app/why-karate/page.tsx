@@ -106,10 +106,10 @@ export default function WhyKaratePage() {
       <section className="bg-[#fafaf9] py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-[#111111] mb-4">Ready to start?</h2>
-          <p className="text-gray-500 mb-8">Your first class is free. No kit, no commitment.</p>
+          <p className="text-gray-500 mb-8">Come and try it out — £10 trial class. No kit, no commitment.</p>
           <Button asChild size="lg">
             <Link href="/trial-class">
-              Book Free Trial
+              Book a Trial
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
