@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
 import { getMemberPortalData } from '@/app/actions/portal'
 import { logoutMembers } from '@/app/actions/members-auth'
+import { LicenceCard } from '@/components/members/LicenceCard'
 import { BeltJourney } from '@/components/members/BeltJourney'
 
 function beltBadgeClass(belt: string | null): string {
@@ -97,6 +98,13 @@ export default async function MembersPortalPage() {
               </div>
             </div>
           </div>
+
+          {/* Licence */}
+          <LicenceCard
+            licenceNumber={profile.licenceNumber}
+            licenceStartDate={profile.licenceStartDate}
+            licenceExpiryDate={profile.licenceExpiryDate}
+          />
 
           {/* Belt journey */}
           <div className="bg-white rounded-2xl border border-black/8 p-8 shadow-sm">
