@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const timetable = [
   { day: 'Tuesday',  time: '6:15 – 7:00pm',  desc: '4 years+ · 10 yrs all grades' },
   { day: 'Tuesday',  time: '7:00 – 8:00pm',  desc: '11 years+ · all grades' },
-  { day: 'Friday',   time: '3:30 – 4:30pm',  desc: '4 years+ · after school club' },
+  { day: 'Friday',   time: '3:40 – 4:40pm',  desc: 'After-school club · Rayleigh Primary School pupils only' },
   { day: 'Saturday', time: '10:00 – 11:00am', desc: '4 years+ · all grades and ages' },
 ]
 

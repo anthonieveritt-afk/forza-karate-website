@@ -23,7 +23,7 @@ export default function AdminGatewayPage() {
 
       {/* Top bar */}
       <div className="border-b border-white/8 px-6 py-4 flex items-center justify-between">
-        <Image src="/forza-logo.webp" alt="Forza Karate Club" width={100} height={40} className="h-9 w-auto brightness-0 invert" />
+        <Image src="/forza-logo.webp" alt="Forza Karate Club" width={100} height={40} className="h-9 w-auto object-contain" />
         <span className="text-xs text-white/30 font-medium uppercase tracking-widest">Club Management</span>
       </div>
 

@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 
+// NOTE: track-4.mp3 and background-music.mp3 are byte-identical (same MD5).
+// Tracks 1–3 are distinct. Consider dropping the duplicate or replacing track-4.
 const tracks = [
   { src: '/music/track-1.mp3', label: '80s Champion' },
   { src: '/music/track-2.mp3', label: 'Taiko Groove' },
@@ -14,6 +16,7 @@ export default function MusicPlayer() {
   const [trackIndex, setTrackIndex] = useState(0)
   const [visible, setVisible] = useState(false)
   const [showLabel, setShowLabel] = useState(false)
+  const [loaded, setLoaded] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
@@ -21,21 +24,28 @@ export default function MusicPlayer() {
     return () => clearTimeout(t)
   }, [])
 
-  // When track changes, resume playback if already playing
-  useEffect(() => {
+  const ensureSrc = useCallback((index: number) => {
     const audio = audioRef.current
     if (!audio) return
-    audio.src = tracks[trackIndex].src
-    audio.load()
-    if (playing) {
-      audio.play().catch(() => {})
-      // Flash the label briefly
-      setShowLabel(true)
-      const t = setTimeout(() => setShowLabel(false), 2000)
-      return () => clearTimeout(t)
+    const next = tracks[index].src
+    if (audio.getAttribute('src') !== next) {
+      audio.src = next
+      audio.load()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackIndex])
+    setLoaded(true)
+  }, [])
+
+  // When track changes while playing, switch source and continue
+  useEffect(() => {
+    if (!playing) return
+    const audio = audioRef.current
+    if (!audio) return
+    ensureSrc(trackIndex)
+    audio.play().catch(() => {})
+    setShowLabel(true)
+    const t = setTimeout(() => setShowLabel(false), 2000)
+    return () => clearTimeout(t)
+  }, [trackIndex, playing, ensureSrc])
 
   const togglePlay = () => {
     const audio = audioRef.current
@@ -44,6 +54,7 @@ export default function MusicPlayer() {
       audio.pause()
       setPlaying(false)
     } else {
+      ensureSrc(trackIndex)
       audio.play().then(() => {
         setPlaying(true)
         setShowLabel(true)
@@ -60,22 +71,19 @@ export default function MusicPlayer() {
     setTrackIndex(i => (i - 1 + tracks.length) % tracks.length)
   }, [])
 
-  // Auto-advance when a track ends
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
-    const onEnd = () => {
-      setTrackIndex(i => (i + 1) % tracks.length)
-    }
+    const onEnd = () => setTrackIndex(i => (i + 1) % tracks.length)
     audio.addEventListener('ended', onEnd)
     return () => audio.removeEventListener('ended', onEnd)
   }, [])
 
   return (
     <>
-      <audio ref={audioRef} src={tracks[trackIndex].src} preload="none" />
+      {/* No src until the user presses play — avoids downloading audio on every page view */}
+      <audio ref={audioRef} preload="none" />
 
-      {/* Track label tooltip */}
       <div
         className={`
           fixed bottom-[4.5rem] right-6 z-50
@@ -85,10 +93,9 @@ export default function MusicPlayer() {
           ${showLabel ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}
         `}
       >
-        {tracks[trackIndex].label}
+        {tracks[trackIndex].label}{loaded ? '' : ''}
       </div>
 
-      {/* Player controls */}
       <div
         className={`
           fixed bottom-6 right-6 z-50
@@ -97,7 +104,6 @@ export default function MusicPlayer() {
           ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
         `}
       >
-        {/* Prev */}
         <button
           onClick={prev}
           aria-label="Previous track"
@@ -109,7 +115,6 @@ export default function MusicPlayer() {
           </svg>
         </button>
 
-        {/* Play / Pause — main button */}
         <button
           onClick={togglePlay}
           aria-label={playing ? 'Pause music' : 'Play music'}
@@ -127,7 +132,6 @@ export default function MusicPlayer() {
           )}
         </button>
 
-        {/* Next */}
         <button
           onClick={next}
           aria-label="Next track"
@@ -140,7 +144,6 @@ export default function MusicPlayer() {
         </button>
       </div>
 
-      {/* Pulse ring when playing */}
       {playing && (
         <span className="fixed bottom-6 right-[3.25rem] z-40 w-12 h-12 rounded-full border border-[#dc2626]/40 animate-ping pointer-events-none" />
       )}

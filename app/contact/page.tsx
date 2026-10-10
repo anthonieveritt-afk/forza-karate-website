@@ -1,7 +1,11 @@
-import SecretaryBot from '@/components/SecretaryBot'
 import type { Metadata } from 'next'
+import ContactForm from '@/components/forms/ContactForm'
+import SecretaryBot from '@/components/SecretaryBot'
 
-export const metadata: Metadata = { title: 'Contact — Forza Karate Club' }
+export const metadata: Metadata = {
+  title: 'Contact',
+  description: 'Get in touch with Forza Karate Club in Rayleigh and Upminster, Essex.',
+}
 
 export default function ContactPage() {
   return (
@@ -15,10 +19,18 @@ export default function ContactPage() {
           </div>
           <h1 className="text-5xl font-bold text-[#111111] mb-4">Get in touch</h1>
           <p className="text-xl text-gray-500">
-            Our virtual assistant is available 24/7 to answer questions about classes, membership, locations, and more. Click the chat bubble below to get started.
+            Send us a message and we&apos;ll get back to you. You can also chat with Sempai, our
+            virtual assistant, using the bubble in the corner.
           </p>
         </div>
       </section>
+
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-xl mx-auto">
+          <ContactForm />
+        </div>
+      </section>
+
       <SecretaryBot />
     </div>
   )

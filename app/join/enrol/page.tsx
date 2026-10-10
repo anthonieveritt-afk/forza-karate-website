@@ -10,17 +10,21 @@ import { Button } from '@/components/ui/Button'
 
 const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
+// Annual fee for 40 term-time weeks, paid as 12 monthly payments on the 1st.
+// NOTE: the amount actually charged (pro-rata + GoCardless subscription) is set server-side
+// by Club Honbu's club config (membershipPrices), not by these labels. Keep them in sync.
+// TODO(annual-option): the £540 pay-upfront option is hidden until Anthoni decides its new
+// price (£600 at the new £50/month rate, or a discounted figure). Re-add it here and in Club Honbu.
 const MEMBERSHIP_OPTIONS = [
-  { key: 'yearly',          label: 'Annual — £540',          desc: '1 student · one payment · best value' },
-  { key: 'monthly_single',  label: 'Monthly — £45/mo',        desc: '1 student · 12 monthly payments' },
-  { key: 'monthly_two',     label: 'Family (2) — £75/mo',     desc: '2 students · 12 monthly payments' },
-  { key: 'monthly_family',  label: 'Family (3+) — £100/mo',   desc: '3+ students · 12 monthly payments' },
+  { key: 'monthly_single',  label: 'Single — £50/mo',         desc: '1 student · 12 monthly payments on the 1st' },
+  { key: 'monthly_two',     label: 'Siblings — £80/mo',       desc: '2 students · 12 monthly payments on the 1st' },
+  { key: 'monthly_family',  label: 'Family — £120/mo',        desc: 'Family · 12 monthly payments on the 1st' },
 ]
 
 const RAYLEIGH_CLASSES = [
   'Tuesday 6:15–7pm — 4 yrs+ (all grades)',
   'Tuesday 7–8pm — 11 yrs+ (all grades)',
-  'Friday 3:30–4:30pm — 4 yrs+ (after school)',
+  'Friday 3:40–4:40pm — after-school club (Rayleigh Primary School pupils only)',
   'Saturday 10–11am — 4 yrs+ (all ages)',
 ]
 
@@ -185,12 +189,13 @@ function EnrolWizard() {
     setAccessCodeDiscount(null)
     try {
       const membershipPrices: Record<string, number> = {
+        // TODO(annual-option): yearly price undecided (was 54000); option hidden for now
         yearly: 54000,
-        monthly_single: 4500,
-        monthly_two: 7500,
-        monthly_family: 10000,
+        monthly_single: 5000,
+        monthly_two: 8000,
+        monthly_family: 12000,
       }
-      const amountPence = membershipPrices[membershipType] ?? 4500
+      const amountPence = membershipPrices[membershipType] ?? 5000
       const res = await fetch(`${HONBU_API}/public/validate-access-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

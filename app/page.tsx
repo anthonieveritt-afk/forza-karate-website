@@ -7,6 +7,7 @@ import ClassCard from '@/components/sections/ClassCard'
 import BeltJourney from '@/components/sections/BeltJourney'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, Shield, Heart, Zap, Users } from 'lucide-react'
+import { allPosts, formatDate } from '@/lib/news'
 
 export const metadata: Metadata = {
   title: 'Forza Karate Club — Rayleigh & Upminster',
@@ -115,6 +116,38 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest news */}
+      <section className="bg-white py-20 px-4 sm:px-6 lg:px-8 border-t border-black/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-end justify-between gap-4 mb-10">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-0.5 bg-[#dc2626]" />
+                <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Latest news</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#111111]">From the dojo</h2>
+            </div>
+            <Link href="/news" className="text-sm font-medium text-[#dc2626] whitespace-nowrap">All news →</Link>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-3">
+            {allPosts.slice(0, 3).map((p) => (
+              <Link key={p.slug} href={`/news/${p.slug}`} className="group rounded-2xl border border-black/5 overflow-hidden hover:shadow-md transition-shadow">
+                <div className="aspect-[16/10] bg-[#fafaf9] overflow-hidden">
+                  {p.image && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={p.image} alt={p.imageAlt} loading="lazy" className="h-full w-full object-cover" />
+                  )}
+                </div>
+                <div className="p-5">
+                  <p className="text-xs text-gray-400 mb-2">{formatDate(p.date)}</p>
+                  <h3 className="font-bold text-[#111111] leading-snug group-hover:text-[#dc2626]">{p.title}</h3>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

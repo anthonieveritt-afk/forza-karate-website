@@ -1,0 +1,12 @@
+{
+  "_help": "Edit to fix which gallery albums appear beside news stories. 'albumKeywords': album id -> words/phrases matched against a story's title and categories (overrides the automatic keywords from the album name). 'posts': story slug -> list of album ids to show (use [] to show no album). 'posts' always wins.",
+  "albumKeywords": {
+    "1": ["bucs"],
+    "2": ["marseille"],
+    "3": ["asia cup"],
+    "4": ["england karate team", "european championships", "cyprus"],
+    "5": [],
+    "6": []
+  },
+  "posts": {}
+}

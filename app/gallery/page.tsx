@@ -55,8 +55,16 @@ export default function GalleryPage() {
     fetch(`${API_BASE}/api/public/gallery`)
       .then((r) => r.json())
       .then((data: Album[]) => {
-        setAlbums(Array.isArray(data) ? data : [])
+        const list = Array.isArray(data) ? data : []
+        setAlbums(list)
         setLoading(false)
+        // Deep links: /gallery?tag=grading filters by category; /gallery?album=2 opens an album.
+        const qs = new URLSearchParams(window.location.search)
+        const tag = qs.get('tag')?.toLowerCase().replace(/s$/, '')
+        if (tag && list.some((a) => a.category === tag)) setActiveCategory(tag)
+        const albumId = Number(qs.get('album'))
+        const al = albumId ? list.find((a) => a.id === albumId) : undefined
+        if (al) void openAlbum(al)
       })
       .catch(() => setLoading(false))
   }, [])
@@ -101,7 +109,12 @@ export default function GalleryPage() {
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setActiveCategory(cat)}
+                onClick={() => {
+                  setActiveCategory(cat)
+                  const u = new URL(window.location.href)
+                  if (cat === 'All') u.searchParams.delete('tag'); else u.searchParams.set('tag', cat)
+                  window.history.replaceState(null, '', u)
+                }}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   activeCategory === cat
                     ? 'bg-[#111111] text-white border-[#111111]'
