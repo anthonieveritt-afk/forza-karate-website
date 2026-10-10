@@ -201,7 +201,7 @@ export default function TrialClassForm() {
       )}
 
       <p className="text-xs text-gray-400 text-center">
-        Secure card payment by Stripe. We&apos;ll be in touch within 72 hours to confirm your class. No obligation, no kit needed.
+        £10 for the trial only (not taken off membership). Secure card payment by Stripe. We&apos;ll be in touch within 72 hours to confirm your class. No obligation, no kit needed.
       </p>
     </form>
   )

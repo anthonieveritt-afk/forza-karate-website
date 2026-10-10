@@ -30,6 +30,7 @@ export default async function TrialSuccessPage({ searchParams }: { searchParams:
             <h1 className="text-3xl font-bold text-[#111111] mb-3">You&apos;re booked in{who ? `, ${who.split(' ')[0]}` : ''}!</h1>
             <p className="text-gray-500 leading-relaxed mb-2">Thanks — your {amount} trial class payment went through{where ? ` for ${where}` : ''}.</p>
             <p className="text-gray-500 leading-relaxed mb-8">We&apos;ll be in touch within 72 hours to confirm your class time. Just wear something comfy — no kit needed. Come and try it out, then ask questions!</p>
+            <p className="text-gray-400 text-sm leading-relaxed mb-8">The £10 covers your trial class only. If you decide to join, membership starts the week after your trial at the full monthly rate.</p>
           </>
         ) : (
           <>

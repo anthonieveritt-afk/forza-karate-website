@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
         parentName: d.parentName, childName: d.childName, age: d.age, email: d.email, phone: d.phone,
         dateOfBirth: d.dateOfBirth, ageGroup: AGE_GROUPS[d.ageGroup], dojo: DOJOS[d.dojo], message: d.message,
       },
+      custom_text: { submit: { message: 'The £10 is for the trial class only and is not taken off membership. If you join, membership starts the week after at the full monthly rate.' } },
       success_url: `${SITE_URL}/trial-class/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/trial-class?cancelled=1`,
     })

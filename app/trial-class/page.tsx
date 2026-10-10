@@ -9,7 +9,9 @@ export const metadata: Metadata = {
 }
 
 const perks = [
-  'Trial class just £10, paid securely online',
+  'Trial class £10, paid securely online',
+  'The £10 covers the trial only — it isn’t taken off membership',
+  'If you join, membership starts the week after at the full monthly rate',
   'No kit or uniform needed',
   'No commitment required',
   'All ages welcome — 4 to adult',

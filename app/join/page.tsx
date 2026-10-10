@@ -41,7 +41,7 @@ const heardOptions = ['Google / Search', 'Social media', 'Friend or family', 'Sc
 
 export default function JoinPage() {
   const [dojo, setDojo] = useState('')
-  const [membershipType, setMembershipType] = useState('trial')
+  const [membershipType, setMembershipType] = useState('single')
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [enrolMemberId, setEnrolMemberId] = useState<number | null>(null)
 
@@ -61,6 +61,8 @@ export default function JoinPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    // Trials are paid (£10) and booked only via /trial-class, never through this form.
+    if (membershipType === 'trial') { window.location.href = '/trial-class'; return }
     setStatus('loading')
     const f = new FormData(e.currentTarget)
     const g = (k: string) => f.get(k) as string
@@ -119,7 +121,7 @@ export default function JoinPage() {
           </div>
           <h1 className="text-5xl font-bold text-[#111111] mb-4">Join Forza Karate Club</h1>
           <p className="text-xl text-gray-500 max-w-2xl">
-            Start with a £10 trial class or enrol directly. Fill in your details below and we'll be in touch to confirm your place.
+            Start with a £10 trial class (trial only — if you join, membership starts the week after at the full monthly rate), or enrol directly. Fill in your details below and we&apos;ll be in touch to confirm your place.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button asChild size="lg">
@@ -142,7 +144,7 @@ export default function JoinPage() {
                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
                 <h2 className="text-3xl font-bold text-[#111111] mb-2">Enrolment received!</h2>
                 <p className="text-gray-500 max-w-md mx-auto">
-                  Thank you — we'll be in touch shortly to confirm your place. In the meantime, get ahead with the steps below.
+                  Thank you — we&apos;ll be in touch shortly to confirm your place. In the meantime, get ahead with the steps below.
                 </p>
               </div>
               <h3 className="text-lg font-bold text-[#111111] mb-5">Complete your membership</h3>
@@ -182,9 +184,16 @@ export default function JoinPage() {
               {/* ── Membership type ── */}
               <div>
                 <p className={label}>Membership type {req}</p>
+                <Link href="/trial-class"
+                  className="flex items-center justify-between gap-3 p-3.5 mb-3 rounded-xl border border-dashed border-[#dc2626]/40 hover:border-[#dc2626] hover:bg-red-50 transition-all">
+                  <span className="flex flex-col gap-0.5">
+                    <span className="text-sm font-semibold text-[#111111]">Not sure yet? Book a £10 trial class</span>
+                    <span className="text-xs text-gray-400">Book and pay on the trial page. The £10 covers the trial only.</span>
+                  </span>
+                  <ArrowRight className="h-4 w-4 text-[#dc2626] shrink-0" />
+                </Link>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { value: 'trial',      label: 'Trial Class',           sub: 'No commitment — £10 trial, paid on the trial page' },
                     { value: 'single',     label: 'Single — £50/mo',        sub: '1 student · 12 monthly payments' },
                     { value: 'family2',    label: 'Siblings — £80/mo',      sub: '2 students · immediate family only' },
                     { value: 'family3plus',label: 'Family — £120/mo',       sub: 'Immediate family only' },
@@ -377,13 +386,11 @@ export default function JoinPage() {
               {/* ── Submit ── */}
               <div className="pt-2">
                 <Button type="submit" size="lg" className="w-full" disabled={status === 'loading'}>
-                  {status === 'loading' ? 'Submitting…' : membershipType === 'trial' ? 'Book my trial' : 'Submit enrolment'}
+                  {status === 'loading' ? 'Submitting…' : 'Submit enrolment'}
                   {status !== 'loading' && <ArrowRight className="h-4 w-4" />}
                 </Button>
                 <p className="text-xs text-gray-400 text-center mt-3">
-                  {membershipType === 'trial'
-                    ? 'No kit needed. No commitment. Your instructor will guide you.'
-                    : 'We\'ll be in touch within 24 hours to confirm your enrolment and next steps.'}
+                  We&apos;ll be in touch within 24 hours to confirm your enrolment and next steps.
                 </p>
               </div>
 
