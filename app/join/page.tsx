@@ -30,9 +30,9 @@ const licenceStep = {
 
 const ddStep = {
   icon: CreditCard,
-  title: 'Set up your Direct Debit',
-  desc: 'Pay monthly via GoCardless. Safe, easy, cancel anytime.',
-  href: 'https://pay.gocardless.com/AL00041KG22CVH',
+  title: 'Complete your membership',
+  desc: 'Membership, karate suit, FKA licence and monthly Direct Debit in one form. Safe, easy, cancel anytime.',
+  href: '/join/membership',
   cta: 'Set up Direct Debit →',
 }
 
@@ -47,17 +47,7 @@ export default function JoinPage() {
 
   const classes = dojo === 'rayleigh' ? rayleighClasses : dojo === 'upminster' ? upminsterClasses : []
 
-  const nextSteps = [
-    {
-      icon: ShoppingBag,
-      title: 'Order your official karate suit',
-      desc: 'Blitz Karate Gi — choose your size and add to order.',
-      href: enrolMemberId ? `/join/enrol?memberId=${enrolMemberId}` : '/join/enrol',
-      cta: 'Order Gi →',
-    },
-    licenceStep,
-    ddStep,
-  ]
+  const nextSteps = [ddStep]
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -130,6 +120,9 @@ export default function JoinPage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link href="/join/membership">Had your trial? Become a member</Link>
+            </Button>
             <span className="text-sm text-gray-500">Come and try it out first, then ask us anything.</span>
           </div>
         </div>
@@ -195,7 +188,7 @@ export default function JoinPage() {
                 <div className="grid grid-cols-2 gap-3">
                   {[
                     { value: 'single',     label: 'Single — £50/mo',        sub: '1 student · 12 monthly payments' },
-                    { value: 'family2',    label: 'Siblings — £80/mo',      sub: '2 students · immediate family only' },
+                    { value: 'family2',    label: 'Siblings — £90/mo',      sub: '2 students · immediate family only' },
                     { value: 'family3plus',label: 'Family — £120/mo',       sub: 'Immediate family only' },
                   ].map((opt) => (
                     <label key={opt.value}

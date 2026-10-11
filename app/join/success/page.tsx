@@ -1,27 +1,13 @@
 import Link from 'next/link'
-import { CheckCircle, ArrowRight, ShoppingBag, CreditCard, Shield } from 'lucide-react'
+import { CheckCircle, ArrowRight, CreditCard } from 'lucide-react'
 
 const nextSteps = [
   {
-    icon: ShoppingBag,
-    title: 'Order your official karate suit',
-    desc: 'Blitz Karate Gi — available in the Forza shop.',
-    href: '/join/enrol',
-    cta: 'Order Gi →',
-  },
-  {
-    icon: Shield,
-    title: 'Apply for your licence & insurance',
-    desc: 'All members need an FKA licence. Takes a few minutes to complete.',
-    href: '/join/apply-licence',
-    cta: 'Apply for Licence →',
-  },
-  {
     icon: CreditCard,
-    title: 'Set up your Direct Debit',
-    desc: 'Pay monthly via GoCardless. Safe, easy, cancel anytime.',
-    href: 'https://pay.gocardless.com/AL00041KG22CVH',
-    cta: 'Set up Direct Debit →',
+    title: 'Become a member: one simple form',
+    desc: 'Membership, karate suit, FKA licence and monthly Direct Debit, all on one page.',
+    href: '/join/membership',
+    cta: 'Complete membership →',
   },
 ]
 
@@ -35,7 +21,7 @@ export default function JoinSuccessPage() {
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-3xl font-bold text-[#111111] mb-2">Enrolment received!</h2>
             <p className="text-gray-500 max-w-md mx-auto">
-              Thank you — we'll be in touch shortly to confirm your place. In the meantime, get ahead with the steps below.
+              Thank you — we'll be in touch shortly to confirm your place. In the meantime, complete your membership below.
             </p>
           </div>
 
