@@ -21,6 +21,7 @@ export default function SecretaryBot() {
   const [input, setInput]       = useState('')
   const [loading, setLoading]   = useState(false)
   const [started, setStarted]   = useState(false)
+  const sessionIdRef = useRef<string>('')
   const bottomRef               = useRef<HTMLDivElement>(null)
 
   function renderMessage(text: string) {
@@ -65,7 +66,7 @@ export default function SecretaryBot() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: updated }),
+        body: JSON.stringify({ messages: updated, sessionId: (sessionIdRef.current ||= (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`)) }),
       })
       const data = await res.json()
       setMessages(prev => [...prev, {
@@ -173,6 +174,9 @@ export default function SecretaryBot() {
                 <Send className="h-4 w-4" />
               </button>
             </form>
+            <p className="mt-1.5 text-[10px] text-gray-400 text-center">
+              Chats are saved for 90 days to help us reply. <a href="/privacy-policy" className="underline">Privacy policy</a>
+            </p>
           </div>
         </div>
       )}
