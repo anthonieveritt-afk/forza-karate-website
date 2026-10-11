@@ -107,7 +107,7 @@ export default function MusicPlayer() {
         <button
           onClick={prev}
           aria-label="Previous track"
-          className="hidden sm:flex w-9 h-9 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
+          className="hidden sm:flex w-9 h-9 rounded-full bg-[#111111] border border-white/10 items-center justify-center hover:bg-white/10 transition-colors"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
             <polygon points="11,1 4,6 11,11" />
@@ -135,7 +135,7 @@ export default function MusicPlayer() {
         <button
           onClick={next}
           aria-label="Next track"
-          className="hidden sm:flex w-9 h-9 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
+          className="hidden sm:flex w-9 h-9 rounded-full bg-[#111111] border border-white/10 items-center justify-center hover:bg-white/10 transition-colors"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
             <polygon points="1,1 8,6 1,11" />
