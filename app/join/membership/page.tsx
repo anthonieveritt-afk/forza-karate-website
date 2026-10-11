@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Loader2, Plus, Trash2, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
-import { PLANS, pounds, membershipStart, type PlanKey } from '@/lib/gocardless/plans'
+import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, type PlanKey } from '@/lib/gocardless/plans'
 
 declare global {
   interface Window {
@@ -185,9 +185,22 @@ export default function MembershipSignup() {
 
         <section className="space-y-4">
           <h2 className="text-lg font-bold">4. Direct Debit</h2>
-          <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-1">
-            <div className="flex justify-between"><span className="text-gray-500">Monthly amount</span><strong>{pounds(PLANS[plan].price)}</strong></div>
-            <div className="flex justify-between"><span className="text-gray-500">First collection</span><strong>{trialDate ? `from ${ukDate(membershipStart(trialDate))}` : 'the week after your trial'}</strong></div>
+          <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-2">
+            {(() => {
+              const fee = PLANS[plan].price
+              if (!trialDate) return <>
+                <div className="flex justify-between"><span className="text-gray-500">Monthly fee</span><strong>{pounds(fee)} on the 1st of each month</strong></div>
+                <p className="text-xs text-gray-500">Enter your trial date to see your first payment. Your first payment covers the rest of the month you start in.</p>
+              </>
+              const start = membershipStart(trialDate)
+              const pr = proRataPence(fee, start)
+              return <>
+                <div className="flex justify-between"><span className="text-gray-500">Membership starts</span><strong>{ukDate(start)}</strong></div>
+                <div className="flex justify-between"><span className="text-gray-500">First payment ({proRataLabel(start)})</span><strong>{pounds(pr)} on or just after {ukDate(start)}</strong></div>
+                <div className="flex justify-between"><span className="text-gray-500">Then monthly</span><strong>{pounds(fee)} on the 1st, from {ukDate(firstOfNextMonth(start))}</strong></div>
+                <p className="text-xs text-gray-500">Both are collected by Direct Debit. If the bank needs a few more days to set up, the first payment comes out as soon as it can.</p>
+              </>
+            })()}
           </div>
           <p className="flex gap-2 text-xs text-gray-500"><ShieldCheck className="h-4 w-4 shrink-0 text-green-600" /> Bank details are entered in GoCardless&apos;s secure window and are protected by the Direct Debit Guarantee. Forza Karate Club never sees your account number.</p>
           {error && <p className="text-sm text-red-600">{error}</p>}

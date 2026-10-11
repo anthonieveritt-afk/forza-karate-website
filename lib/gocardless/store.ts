@@ -33,6 +33,8 @@ export type Outcome = {
   mandateId: string
   subscriptionId: string | null
   subscriptionStart: string | null
+  firstPaymentId?: string | null
+  firstPaymentDate?: string | null
   honbu: { ok: boolean; detail?: string; memberIds?: number[] }
   completedAt: string
 }

@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   try {
     const r = await processBillingRequest(billingRequestId)
     if (r.state === 'done')
-      return NextResponse.json({ state: 'done', subscriptionStart: r.outcome.subscriptionStart, recorded: r.outcome.honbu.ok })
+      return NextResponse.json({ state: 'done', subscriptionStart: r.outcome.subscriptionStart, firstPaymentDate: r.outcome.firstPaymentDate ?? null, recorded: r.outcome.honbu.ok })
     if (r.state === 'pending') return NextResponse.json({ state: 'pending', status: r.status })
     return NextResponse.json({ state: 'unknown' }, { status: 404 })
   } catch (e) {

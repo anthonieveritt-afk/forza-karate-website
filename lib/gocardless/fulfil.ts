@@ -3,7 +3,7 @@
 import 'server-only'
 import { gc, GcError } from './client'
 import { loadSignup, loadOutcome, saveOutcome, type Outcome, type Signup } from './store'
-import { PLANS, DOJOS } from './plans'
+import { PLANS, DOJOS, proRataPence, proRataLabel, firstOfNextMonth } from './plans'
 
 /**
  * Club Honbu hand-off. Contract (see club-honbu PR, POST /api/enrolment/website-signup):
@@ -14,7 +14,7 @@ import { PLANS, DOJOS } from './plans'
  *   Returns { ok: true, memberIds: number[] }  (idempotent on billingRequestId)
  * Disabled unless CLUB_HONBU_SIGNUP_URL and CLUB_HONBU_SIGNUP_SECRET are set.
  */
-async function handOffToHonbu(brId: string, s: Signup, g: { customerId: string; mandateId: string; subscriptionId: string | null }) {
+async function handOffToHonbu(brId: string, s: Signup, g: { customerId: string; mandateId: string; subscriptionId: string | null; firstPaymentId: string | null }) {
   const url = process.env.CLUB_HONBU_SIGNUP_URL?.trim()
   const secret = process.env.CLUB_HONBU_SIGNUP_SECRET?.trim()
   if (!url || !secret) return { ok: false, detail: 'Club Honbu hand-off not configured (CLUB_HONBU_SIGNUP_URL / CLUB_HONBU_SIGNUP_SECRET)' }
@@ -36,6 +36,7 @@ async function handOffToHonbu(brId: string, s: Signup, g: { customerId: string; 
         emergency: s.emergency,
         consent: s.consent,
         gocardless: g,
+        firstPaymentPence: proRataPence(PLANS[s.plan].price, s.startDate),
       }),
       cache: 'no-store',
     })
@@ -65,47 +66,68 @@ export async function processBillingRequest(brId: string): Promise<FulfilResult>
   const customerId: string = br.links.customer
   const mandateId: string = br.links.mandate_request_mandate
 
-  // Monthly subscription, first collection on the membership start date
-  // (the week after the trial), or the mandate's earliest possible charge date if later.
+  // Like the old enrolment form: a pro-rata first payment for the part-month from the
+  // membership start date, then a monthly subscription collected on the 1st.
+  // Both are taken by Direct Debit against the new mandate (no card needed).
   let subscriptionId: string | null = existing?.subscriptionId ?? null
   let subscriptionStart: string | null = existing?.subscriptionStart ?? null
-  if (!subscriptionId) {
-    const { mandates: m } = await gc(`/mandates/${mandateId}`)
-    const start = [signup.startDate, m.next_possible_charge_date].filter(Boolean).sort().pop() as string
-    const names = signup.students.map(x => `${x.firstName} ${x.surname}`).join(', ')
-    try {
-      const { subscriptions: sub } = await gc('/subscriptions', {
-        method: 'POST',
-        idempotencyKey: `sub-${brId}`,
-        body: {
-          subscriptions: {
-            amount: PLANS[signup.plan].price,
-            currency: 'GBP',
-            interval_unit: 'monthly',
-            start_date: start,
-            name: `Forza Karate membership (${PLANS[signup.plan].label})`.slice(0, 255),
-            metadata: { billing_request: brId, students: names.slice(0, 500) },
-            links: { mandate: mandateId },
-          },
-        },
-      })
-      subscriptionId = sub.id
-      subscriptionStart = sub.start_date
-    } catch (e) {
-      if (e instanceof GcError && e.status === 409) {
-        const id = (e.body as any)?.error?.errors?.[0]?.links?.conflicting_resource_id
-        if (id) {
-          const { subscriptions: sub } = await gc(`/subscriptions/${id}`)
-          subscriptionId = sub.id
-          subscriptionStart = sub.start_date
-        }
-      } else throw e
+  let firstPaymentId: string | null = existing?.firstPaymentId ?? null
+  let firstPaymentDate: string | null = existing?.firstPaymentDate ?? null
+  const fee = PLANS[signup.plan].price
+  const names = signup.students.map(x => `${x.firstName} ${x.surname}`).join(', ')
+  const { mandates: m } = await gc(`/mandates/${mandateId}`)
+  const earliest: string = m.next_possible_charge_date ?? signup.startDate
+
+  const recover = async (e: unknown, path: string) => {
+    if (e instanceof GcError && e.status === 409) {
+      const id = (e.body as any)?.error?.errors?.[0]?.links?.conflicting_resource_id
+      if (id) return (await gc(`${path}/${id}`))
     }
+    throw e
   }
 
-  const honbu = await handOffToHonbu(brId, signup, { customerId, mandateId, subscriptionId })
+  if (!firstPaymentId) {
+    const amount = proRataPence(fee, signup.startDate)
+    const charge = [signup.startDate, earliest].sort().pop() as string
+    let pay: any
+    try {
+      pay = (await gc('/payments', {
+        method: 'POST', idempotencyKey: `prorata-${brId}`,
+        body: { payments: {
+          amount, currency: 'GBP', charge_date: charge,
+          description: `Forza Karate first month (${proRataLabel(signup.startDate)})`,
+          metadata: { billing_request: brId, kind: 'pro_rata' },
+          links: { mandate: mandateId },
+        } },
+      })).payments
+    } catch (e) { pay = (await recover(e, '/payments')).payments }
+    firstPaymentId = pay.id
+    firstPaymentDate = pay.charge_date
+  }
+
+  if (!subscriptionId) {
+    // First 1st after the start date, moved on a month at a time if the mandate can't be charged by then.
+    let first = firstOfNextMonth(signup.startDate)
+    while (first < earliest) first = firstOfNextMonth(first)
+    let sub: any
+    try {
+      sub = (await gc('/subscriptions', {
+        method: 'POST', idempotencyKey: `sub-${brId}`,
+        body: { subscriptions: {
+          amount: fee, currency: 'GBP', interval_unit: 'monthly', day_of_month: 1, start_date: first,
+          name: `Forza Karate membership (${PLANS[signup.plan].label})`.slice(0, 255),
+          metadata: { billing_request: brId, students: names.slice(0, 500) },
+          links: { mandate: mandateId },
+        } },
+      })).subscriptions
+    } catch (e) { sub = (await recover(e, '/subscriptions')).subscriptions }
+    subscriptionId = sub.id
+    subscriptionStart = sub.start_date
+  }
+
+  const honbu = await handOffToHonbu(brId, signup, { customerId, mandateId, subscriptionId, firstPaymentId })
   const outcome: Outcome = {
-    billingRequestId: brId, customerId, mandateId, subscriptionId, subscriptionStart,
+    billingRequestId: brId, customerId, mandateId, subscriptionId, subscriptionStart, firstPaymentId, firstPaymentDate,
     honbu, completedAt: new Date().toISOString(),
   }
   await saveOutcome(brId, outcome)
