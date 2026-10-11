@@ -5,6 +5,7 @@ import Footer from '@/components/layout/Footer'
 import LogoTicker from '@/components/layout/LogoTicker'
 import MusicPlayer from '@/components/layout/MusicPlayer'
 import { CartProvider } from '@/lib/cart-context'
+import { Analytics } from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://forzakarate.co.uk'),
@@ -31,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en-GB">
       <body className="min-h-screen flex flex-col">
         <CartProvider>
           <Navbar />
@@ -40,6 +41,7 @@ export default function RootLayout({
           <Footer />
           <MusicPlayer />
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   )
