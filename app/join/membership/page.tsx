@@ -64,6 +64,17 @@ export default function MembershipSignup() {
 
   const autoPlan: PlanKey = students.length >= 3 ? 'monthly_family' : students.length === 2 ? 'monthly_two' : 'monthly_single'
   const plan: PlanKey = planChoice && planAllowed(planChoice, students.length) ? planChoice : autoPlan
+  // Picking a package sets the number of student slots (Single 1, Siblings 2, Family 3+).
+  function choosePlan(k: PlanKey) {
+    const want = k === 'monthly_single' ? 1 : k === 'monthly_two' ? 2 : Math.max(3, students.length)
+    if (students.length > want) {
+      const extra = students.slice(want)
+      const filled = extra.some(x => x.firstName || x.surname || x.dateOfBirth)
+      if (filled && !window.confirm(`${PLAN_LABEL[k]} is for ${want} student${want > 1 ? 's' : ''}. Remove the extra student details?`)) return
+    }
+    setStudents(s => s.length > want ? s.slice(0, want) : [...s, ...Array.from({ length: want - s.length }, blank)])
+    setPlanChoice(k)
+  }
   const setStudent = (i: number, k: keyof Student, v: string) =>
     setStudents(s => s.map((x, j) => (j === i ? { ...x, [k]: v } : x)))
 
@@ -111,7 +122,17 @@ export default function MembershipSignup() {
         </header>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-bold">1. Dojo and class</h2>
+          <h2 className="text-lg font-bold">1. Membership</h2>
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            {(Object.keys(PLANS) as PlanKey[]).map(k => (
+              <button type="button" key={k} onClick={() => choosePlan(k)} aria-pressed={plan === k}
+                className={`text-left rounded-2xl border-2 p-3 sm:p-4 transition ${plan === k ? 'border-[#dc2626] bg-red-50' : 'border-black/10 hover:border-black/25'}`}>
+                <div className="font-semibold text-sm">{PLANS[k].label}</div>
+                <div className="text-xl sm:text-2xl font-bold">{pounds(PLANS[k].price)}<span className="text-xs sm:text-sm font-normal text-gray-500">/mo</span></div>
+                <div className="text-xs text-gray-500">{PLANS[k].desc}</div>
+              </button>
+            ))}
+          </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className={lbl}>Dojo</label>
@@ -207,12 +228,12 @@ export default function MembershipSignup() {
           <h2 className="text-lg font-bold">4. Direct Debit</h2>
           <div>
             <label htmlFor="plan" className={lbl}>Membership package</label>
-            <select id="plan" className={`${input} h-12 text-base font-semibold`} value={plan} onChange={e => setPlanChoice(e.target.value as PlanKey)}>
+            <select id="plan" className={`${input} h-12 text-base font-semibold`} value={plan} onChange={e => choosePlan(e.target.value as PlanKey)}>
               {(Object.keys(PLANS) as PlanKey[]).map(k => (
-                <option key={k} value={k} disabled={!planAllowed(k, students.length)}>{PLAN_LABEL[k]} — {pounds(PLANS[k].price)}/month</option>
+                <option key={k} value={k}>{PLAN_LABEL[k]} — {pounds(PLANS[k].price)}/month</option>
               ))}
             </select>
-            <p className="text-xs text-gray-500 mt-1">Chosen for you from the number of students above ({students.length}). Add or remove students to change it.</p>
+            <p className="text-xs text-gray-500 mt-1">Matches the package at the top. Changing it adds or removes student slots ({students.length} now).</p>
           </div>
           <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-2">
             {(() => {
