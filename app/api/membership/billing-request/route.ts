@@ -1,0 +1,80 @@
+import { NextResponse } from 'next/server'
+import { gc, gcEnv, gcConfigured, GcError } from '@/lib/gocardless/client'
+import { PLANS, DOJOS, membershipStart, type PlanKey, type DojoKey } from '@/lib/gocardless/plans'
+import { saveSignup, type Signup } from '@/lib/gocardless/store'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+const s = (v: unknown, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '')
+const DATE = /^\d{4}-\d{2}-\d{2}$/
+
+export async function POST(req: Request) {
+  if (!gcConfigured()) return NextResponse.json({ error: 'Direct Debit sign-up is not available yet.' }, { status: 503 })
+  const b = await req.json().catch(() => null)
+  if (!b) return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+
+  const plan = s(b.plan) as PlanKey
+  const dojo = s(b.dojo) as DojoKey
+  if (!(plan in PLANS)) return NextResponse.json({ error: 'Please choose a membership.' }, { status: 400 })
+  if (!(dojo in DOJOS)) return NextResponse.json({ error: 'Please choose a dojo.' }, { status: 400 })
+  const trialDate = s(b.trialDate, 10)
+  if (!DATE.test(trialDate)) return NextResponse.json({ error: 'Please enter the date of the trial class.' }, { status: 400 })
+
+  const students = (Array.isArray(b.students) ? b.students : []).slice(0, 6).map((x: any) => ({
+    firstName: s(x?.firstName, 60), surname: s(x?.surname, 60), dateOfBirth: s(x?.dateOfBirth, 10),
+    belt: s(x?.belt, 40) || 'White', medical: s(x?.medical, 500),
+  })).filter((x: any) => x.firstName && x.surname)
+  if (!students.length || students.some((x: any) => !DATE.test(x.dateOfBirth)))
+    return NextResponse.json({ error: "Please enter each student's name and date of birth." }, { status: 400 })
+
+  const p = b.parent ?? {}
+  const parent = {
+    givenName: s(p.givenName, 60), familyName: s(p.familyName, 60), email: s(p.email, 120).toLowerCase(),
+    phone: s(p.phone, 30), address: s(p.address, 200), city: s(p.city, 60), postCode: s(p.postCode, 10).toUpperCase(),
+  }
+  if (!parent.givenName || !parent.familyName || !/^\S+@\S+\.\S+$/.test(parent.email) || !parent.phone || !parent.address || !parent.postCode)
+    return NextResponse.json({ error: 'Please complete the parent or guardian details.' }, { status: 400 })
+  const emergency = { name: s(b.emergency?.name, 80), phone: s(b.emergency?.phone, 30) }
+  if (!emergency.name || !emergency.phone) return NextResponse.json({ error: 'Please add an emergency contact.' }, { status: 400 })
+  if (!b.consent?.terms) return NextResponse.json({ error: 'Please accept the club terms.' }, { status: 400 })
+
+  const signup: Signup = {
+    plan, dojo, classTime: s(b.classTime, 120), trialDate, startDate: membershipStart(trialDate),
+    students, parent, emergency, consent: { photos: !!b.consent?.photos, terms: true }, createdAt: new Date().toISOString(),
+  }
+
+  try {
+    const { billing_requests: br } = await gc('/billing_requests', {
+      method: 'POST',
+      body: {
+        billing_requests: {
+          mandate_request: { scheme: 'bacs', currency: 'GBP', description: `Forza Karate membership — ${PLANS[plan].label}` },
+          metadata: { source: 'forza-website-signup', plan, dojo },
+        },
+      },
+    })
+    const origin = new URL(req.url).origin
+    const { billing_request_flows: flow } = await gc('/billing_request_flows', {
+      method: 'POST',
+      body: {
+        billing_request_flows: {
+          redirect_uri: `${origin}/join/membership/done?br=${br.id}`,
+          exit_uri: `${origin}/join/membership`,
+          lock_customer_details: false,
+          show_redirect_buttons: false,
+          prefilled_customer: {
+            given_name: parent.givenName, family_name: parent.familyName, email: parent.email,
+            address_line1: parent.address, city: parent.city, postal_code: parent.postCode, country_code: 'GB',
+          },
+          links: { billing_request: br.id },
+        },
+      },
+    })
+    await saveSignup(br.id, signup)
+    return NextResponse.json({ billingRequestId: br.id, flowId: flow.id, environment: gcEnv(), startDate: signup.startDate })
+  } catch (e) {
+    console.error('billing-request error', e instanceof GcError ? JSON.stringify(e.body).slice(0, 500) : e)
+    return NextResponse.json({ error: 'We could not start the Direct Debit set-up. Please try again.' }, { status: 502 })
+  }
+}

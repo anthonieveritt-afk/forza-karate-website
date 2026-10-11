@@ -31,8 +31,8 @@ const licenceStep = {
 const ddStep = {
   icon: CreditCard,
   title: 'Set up your Direct Debit',
-  desc: 'Pay monthly via GoCardless. Safe, easy, cancel anytime.',
-  href: 'https://pay.gocardless.com/AL00041KG22CVH',
+  desc: 'Member details and monthly Direct Debit in one form. Safe, easy, cancel anytime.',
+  href: '/join/membership',
   cta: 'Set up Direct Debit →',
 }
 
@@ -129,6 +129,9 @@ export default function JoinPage() {
                 Book Your £10 Trial
                 <ArrowRight className="h-4 w-4" />
               </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link href="/join/membership">Had your trial? Become a member</Link>
             </Button>
             <span className="text-sm text-gray-500">Come and try it out first, then ask us anything.</span>
           </div>
