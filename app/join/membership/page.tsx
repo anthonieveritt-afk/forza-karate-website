@@ -40,8 +40,8 @@ const BELTS = ['White', 'Red', 'Yellow', 'Orange', 'Green', 'Blue', 'Purple', 'B
 const input = 'w-full h-11 px-4 rounded-xl border border-black/15 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent'
 const lbl = 'block text-sm font-medium text-[#111111] mb-1.5'
 
-type Student = { firstName: string; surname: string; dateOfBirth: string; belt: string; medical: string; suitKey: string; suitSize: string; licence: LicenceType; licenceExpiry: string }
-const blank = (): Student => ({ firstName: '', surname: '', dateOfBirth: '', belt: 'White', medical: '', suitKey: '', suitSize: '', licence: 'first_time', licenceExpiry: '' })
+type Student = { firstName: string; surname: string; dateOfBirth: string; belt: string; medical: string; suitKey: string; suitSize: string; licence: LicenceType }
+const blank = (): Student => ({ firstName: '', surname: '', dateOfBirth: '', belt: 'White', medical: '', suitKey: '', suitSize: '', licence: 'first_time' })
 const SUITS = suitOptions()
 const PLAN_LABEL: Record<PlanKey, string> = { monthly_single: 'Single (1 student)', monthly_two: 'Siblings (2 students)', monthly_family: 'Family (3 or more)' }
 const suitCost = (st: Student) => (st.suitKey && st.suitSize ? SUITS.find(x => x.key === st.suitKey)?.price ?? 0 : 0)
@@ -89,7 +89,7 @@ export default function MembershipSignup() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, dojo, classTime, trialDate, parent, emergency, consent: { terms, photos },
-          students: students.map(st => ({ ...st, suit: st.suitKey ? { key: st.suitKey, size: st.suitSize } : null, licence: { type: st.licence, expiry: st.licenceExpiry } })) }),
+          students: students.map(st => ({ ...st, suit: st.suitKey ? { key: st.suitKey, size: st.suitSize } : null, licence: { type: st.licence } })) }),
       })
       const d = await res.json()
       if (!res.ok) { setError(d.error ?? 'Something went wrong.'); setBusy(false); return }
@@ -194,12 +194,7 @@ export default function MembershipSignup() {
                   <select className={input} value={st.licence} onChange={e => setStudent(i, 'licence', e.target.value)}>
                     {(Object.keys(LICENCE_TYPES) as LicenceType[]).map(k => <option key={k} value={k}>{LICENCE_TYPES[k]}</option>)}
                   </select>
-                  {st.licence === 'valid' ? (
-                    <div className="mt-2"><label className={lbl}>Current licence expiry date</label>
-                      <DateInput required className={input} value={st.licenceExpiry} onChange={e => setStudent(i, 'licenceExpiry', e.target.value)} /></div>
-                  ) : (
-                    <p className="text-xs text-gray-400 mt-1">Every member needs an FKA licence: £50 under {LICENCE_ADULT_AGE}, £55 for {LICENCE_ADULT_AGE}+.{st.dateOfBirth ? ` This student: ${pounds(licenceCost(st))}.` : ''}</p>
-                  )}</div>
+                  <p className="text-xs text-gray-400 mt-1">Every member pays for an FKA licence: £50 for {LICENCE_ADULT_AGE - 1} and under, £55 for {LICENCE_ADULT_AGE}+.{st.dateOfBirth ? ` This student: ${pounds(licenceCost(st))}.` : ''}</p></div>
               </div>
             </div>
           ))}

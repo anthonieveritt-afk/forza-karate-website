@@ -30,15 +30,11 @@ export async function POST(req: Request) {
       if (pricePence == null) bad = 'Please choose a size for each karate suit.'
       else suit = { key: s(x.suit.key, 40), size: s(x.suit.size, 20), pricePence }
     }
-    // Licence is required for every student. 'valid' only if their current licence hasn't expired.
-    const t = (s(x?.licence?.type, 20) || 'first_time') as LicenceType
-    let licence: { type: string; feePence: number; expiry?: string } | null = null
-    if (!(t in LICENCE_TYPES)) bad = 'Please choose a licence option.'
-    else if (t === 'valid') {
-      const expiry = s(x?.licence?.expiry, 10)
-      if (!DATE.test(expiry) || expiry <= new Date().toISOString().slice(0, 10)) bad = "If a licence is still valid, please enter its expiry date (it must be in the future). Otherwise choose a renewal."
-      else licence = { type: t, feePence: 0, expiry }
-    } else licence = { type: t, feePence: licenceFeePence(t, dateOfBirth) }
+    // Licence is required for every student: only first licence or renewal, always paid.
+    const t = s(x?.licence?.type, 20) as LicenceType
+    let licence: { type: string; feePence: number } | null = null
+    if (t !== 'first_time' && t !== 'renewal') bad = 'Please choose first licence or licence renewal for each student.'
+    else licence = { type: t, feePence: licenceFeePence(t, dateOfBirth) }
     return { firstName: s(x?.firstName, 60), surname: s(x?.surname, 60), dateOfBirth,
       belt: s(x?.belt, 40) || 'White', medical: s(x?.medical, 500), suit, licence }
   }).filter((x: any) => x.firstName && x.surname)

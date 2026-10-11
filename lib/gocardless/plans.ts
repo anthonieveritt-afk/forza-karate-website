@@ -76,11 +76,10 @@ export const LICENCE_ADULT_AGE = 18
 export const LICENCE_FEE_CHILD = 5000 // £50
 export const LICENCE_FEE_ADULT = 5500 // £55
 
-export type LicenceType = 'first_time' | 'renewal' | 'valid'
+export type LicenceType = 'first_time' | 'renewal'
 export const LICENCE_TYPES: Record<LicenceType, string> = {
   first_time: 'First licence (new member)',
   renewal: 'Licence renewal',
-  valid: 'Already licensed: current licence still valid',
 }
 export function ageOn(dob: string, on = new Date()): number | null {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(dob)) return null
@@ -89,8 +88,7 @@ export function ageOn(dob: string, on = new Date()): number | null {
 export function licenceFeeForAge(age: number | null): number {
   return age !== null && age < LICENCE_ADULT_AGE ? LICENCE_FEE_CHILD : LICENCE_FEE_ADULT
 }
-/** Fee in pence. 'valid' (current licence not yet expired) pays nothing; everything else pays the child/adult fee. */
-export function licenceFeePence(type: LicenceType, dob: string, on = new Date()): number {
-  if (type === 'valid') return 0
+/** Fee in pence: every student pays; child (under LICENCE_ADULT_AGE) or adult fee. */
+export function licenceFeePence(_type: LicenceType, dob: string, on = new Date()): number {
   return licenceFeeForAge(ageOn(dob, on))
 }
