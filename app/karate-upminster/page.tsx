@@ -15,9 +15,10 @@ const dojo: Dojo = {
   heading: 'Karate in Upminster',
   intro: 'Traditional Wado Ryu karate for infants from age 4, juniors, teenagers and adults every Wednesday at St Lawrence Church Hall, Upminster.',
   venue: 'Minor Hall, St Lawrence Church Hall',
-  addressLines: ['Corbets Tey Road', 'Upminster', 'RM14 2BB'],
+  addressLines: ['Corbets Tey Road', 'Upminster', 'London', 'RM14 2BB'],
   street: 'Corbets Tey Road',
   locality: 'Upminster',
+  region: 'London',
   postcode: 'RM14 2BB',
   mapQuery: 'St Lawrence Church Hall, Corbets Tey Rd, Upminster RM14 2BB',
   sessions: [
