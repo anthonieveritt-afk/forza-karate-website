@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Loader2, Plus, Trash2, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
+import { HeightGuide } from '@/components/HeightGuide'
 import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
 
 declare global {
@@ -175,6 +176,7 @@ export default function MembershipSignup() {
                   <select className={input} value={st.belt} onChange={e => setStudent(i, 'belt', e.target.value)}>{BELTS.map(b => <option key={b}>{b}</option>)}</select></div>
               </div>
               <div><label className={lbl}>Medical conditions or allergies (optional)</label><input className={input} value={st.medical} onChange={e => setStudent(i, 'medical', e.target.value)} placeholder="Leave blank if none" /></div>
+              <p className="flex items-center gap-2 text-xs font-semibold text-[#111111] bg-[#fafaf9] border-l-4 border-[#dc2626] rounded-r-lg px-3 py-2">Only official Forza Karate Club uniforms may be worn in class.</p>
               <div className="grid sm:grid-cols-2 gap-4 pt-2 border-t border-black/5">
                 <div><label className={lbl}>Karate suit (optional)</label>
                   <select className={input} value={st.suitKey} onChange={e => { setStudent(i, 'suitKey', e.target.value); setStudent(i, 'suitSize', '') }}>
@@ -184,9 +186,10 @@ export default function MembershipSignup() {
                 <div><label className={lbl}>Suit size (by height)</label>
                   <select className={input} required={!!st.suitKey} disabled={!st.suitKey} value={st.suitSize} onChange={e => setStudent(i, 'suitSize', e.target.value)}>
                     <option value="">{st.suitKey ? 'Choose a size' : '—'}</option>
-                    {(SUITS.find(x => x.key === st.suitKey)?.sizes ?? []).map(z => <option key={z}>{z}</option>)}
+                    {(SUITS.find(x => x.key === st.suitKey)?.sizes ?? []).map(z => <option key={z} value={z}>{/^\d+cm$/.test(z) ? `${z.replace('cm', '')} cm tall` : z}</option>)}
                   </select>
-                  {st.suitKey && <p className="text-xs text-gray-400 mt-1">If between sizes, go up.</p>}</div>
+                  </div>
+                {st.suitKey && <div className="sm:col-span-2 -mt-2"><HeightGuide /></div>}
                 <div className="sm:col-span-2"><label className={lbl}>FKA licence &amp; insurance (required)</label>
                   <select className={input} value={st.licence} onChange={e => setStudent(i, 'licence', e.target.value)}>
                     {(Object.keys(LICENCE_TYPES) as LicenceType[]).map(k => <option key={k} value={k}>{LICENCE_TYPES[k]}</option>)}
@@ -221,7 +224,7 @@ export default function MembershipSignup() {
             <div><label className={lbl}>Emergency contact phone</label><input required type="tel" className={input} value={emergency.phone} onChange={e => setEmergency({ ...emergency, phone: e.target.value })} /></div>
           </div>
           <label className="flex gap-3 text-sm text-gray-600"><input type="checkbox" checked={photos} onChange={e => setPhotos(e.target.checked)} className="mt-1" /> I&apos;m happy for photos of the student(s) to appear on club social media.</label>
-          <label className="flex gap-3 text-sm text-gray-600"><input required type="checkbox" checked={terms} onChange={e => setTerms(e.target.checked)} className="mt-1" /> I agree to the club rules and the <a href="/privacy-policy" className="underline" target="_blank">privacy policy</a>.</label>
+          <label className="flex gap-3 text-sm text-gray-600"><input required type="checkbox" checked={terms} onChange={e => setTerms(e.target.checked)} className="mt-1" /> I agree to the club rules (including that only official Forza Karate Club uniforms may be worn in class) and the <a href="/privacy-policy" className="underline" target="_blank">privacy policy</a>.</label>
         </section>
 
         <section className="space-y-4">
