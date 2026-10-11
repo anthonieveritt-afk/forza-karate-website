@@ -116,7 +116,7 @@ export default function Hero() {
             </p>
             <div className="grid grid-cols-2 gap-3">
               <Button asChild size="lg" className="w-full justify-center">
-                <Link href="/trial-class">Book a Free Trial</Link>
+                <Link href="/trial-class">Book a £10 Trial</Link>
               </Button>
               <Button asChild size="lg" className="w-full justify-center bg-white text-[#dc2626] hover:bg-gray-50 border-2 border-[#dc2626]">
                 <Link href="/join">Join Now</Link>
@@ -148,7 +148,7 @@ export default function Hero() {
           </p>
           <div className="grid grid-cols-2 gap-3">
             <Button asChild size="lg" className="w-full justify-center">
-              <Link href="/trial-class">Book a Free Trial</Link>
+              <Link href="/trial-class">Book a £10 Trial</Link>
             </Button>
             <Button asChild size="lg" className="w-full justify-center bg-white text-[#dc2626] hover:bg-gray-50 border-2 border-[#dc2626]">
               <Link href="/join">Join Now</Link>
