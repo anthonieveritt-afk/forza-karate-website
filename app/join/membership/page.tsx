@@ -226,19 +226,11 @@ export default function MembershipSignup() {
 
         <section className="space-y-4">
           <h2 className="text-lg font-bold">4. Direct Debit</h2>
-          <div>
-            <label htmlFor="plan" className={lbl}>Membership package</label>
-            <select id="plan" className={`${input} h-12 text-base font-semibold`} value={plan} onChange={e => choosePlan(e.target.value as PlanKey)}>
-              {(Object.keys(PLANS) as PlanKey[]).map(k => (
-                <option key={k} value={k}>{PLAN_LABEL[k]} — {pounds(PLANS[k].price)}/month</option>
-              ))}
-            </select>
-            <p className="text-xs text-gray-500 mt-1">Matches the package at the top. Changing it adds or removes student slots ({students.length} now).</p>
-          </div>
           <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-2">
             {(() => {
               const fee = PLANS[plan].price
               if (!trialDate) return <>
+                <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
                 <div className="flex justify-between"><span className="text-gray-500">Monthly fee</span><strong>{pounds(fee)} on the 1st of each month</strong></div>
                 <p className="text-xs text-gray-500">Enter your trial date to see your first payment. Your first payment covers the rest of the month you start in.</p>
               </>
@@ -247,6 +239,7 @@ export default function MembershipSignup() {
               const suits = students.reduce((t, x) => t + suitCost(x), 0)
               const lic = students.reduce((t, x) => t + licenceCost(x), 0)
               return <>
+                <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
                 <div className="flex justify-between"><span className="text-gray-500">Monthly fee</span><strong>{pounds(fee)} on the 1st, from {ukDate(firstOfNextMonth(start))}</strong></div>
                 <div className="flex justify-between"><span className="text-gray-500">First payment, part month ({proRataLabel(start)} from {ukDate(start)})</span><strong>{pounds(pr)}</strong></div>
                 <div className="flex justify-between"><span className="text-gray-500">Karate suits ({students.filter(x => suitCost(x)).length})</span><strong>{pounds(suits)}</strong></div>
