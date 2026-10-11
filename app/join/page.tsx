@@ -30,8 +30,8 @@ const licenceStep = {
 
 const ddStep = {
   icon: CreditCard,
-  title: 'Set up your Direct Debit',
-  desc: 'Member details and monthly Direct Debit in one form. Safe, easy, cancel anytime.',
+  title: 'Complete your membership',
+  desc: 'Membership, karate suit, FKA licence and monthly Direct Debit in one form. Safe, easy, cancel anytime.',
   href: '/join/membership',
   cta: 'Set up Direct Debit →',
 }
@@ -47,17 +47,7 @@ export default function JoinPage() {
 
   const classes = dojo === 'rayleigh' ? rayleighClasses : dojo === 'upminster' ? upminsterClasses : []
 
-  const nextSteps = [
-    {
-      icon: ShoppingBag,
-      title: 'Order your official karate suit',
-      desc: 'Blitz Karate Gi — choose your size and add to order.',
-      href: enrolMemberId ? `/join/enrol?memberId=${enrolMemberId}` : '/join/enrol',
-      cta: 'Order Gi →',
-    },
-    licenceStep,
-    ddStep,
-  ]
+  const nextSteps = [ddStep]
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()

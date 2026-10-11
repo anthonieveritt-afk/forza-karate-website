@@ -12,6 +12,8 @@ export type Student = {
   dateOfBirth: string
   belt: string
   medical?: string
+  suit?: { key: string; size: string; pricePence: number } | null
+  licence?: { type: string; feePence: number } | null
 }
 
 export type Signup = {
@@ -24,6 +26,7 @@ export type Signup = {
   parent: { givenName: string; familyName: string; email: string; phone: string; address: string; city: string; postCode: string }
   emergency: { name: string; phone: string }
   consent: { photos: boolean; terms: boolean }
+  extrasPence: number
   createdAt: string
 }
 
@@ -35,6 +38,7 @@ export type Outcome = {
   subscriptionStart: string | null
   firstPaymentId?: string | null
   firstPaymentDate?: string | null
+  extrasPaymentId?: string | null
   honbu: { ok: boolean; detail?: string; memberIds?: number[] }
   completedAt: string
 }

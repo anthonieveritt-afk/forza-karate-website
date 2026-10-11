@@ -14,7 +14,7 @@ import { PLANS, DOJOS, proRataPence, proRataLabel, firstOfNextMonth } from './pl
  *   Returns { ok: true, memberIds: number[] }  (idempotent on billingRequestId)
  * Disabled unless CLUB_HONBU_SIGNUP_URL and CLUB_HONBU_SIGNUP_SECRET are set.
  */
-async function handOffToHonbu(brId: string, s: Signup, g: { customerId: string; mandateId: string; subscriptionId: string | null; firstPaymentId: string | null }) {
+async function handOffToHonbu(brId: string, s: Signup, g: { customerId: string; mandateId: string; subscriptionId: string | null; firstPaymentId: string | null; extrasPaymentId: string | null }) {
   const url = process.env.CLUB_HONBU_SIGNUP_URL?.trim()
   const secret = process.env.CLUB_HONBU_SIGNUP_SECRET?.trim()
   if (!url || !secret) return { ok: false, detail: 'Club Honbu hand-off not configured (CLUB_HONBU_SIGNUP_URL / CLUB_HONBU_SIGNUP_SECRET)' }
@@ -37,6 +37,7 @@ async function handOffToHonbu(brId: string, s: Signup, g: { customerId: string; 
         consent: s.consent,
         gocardless: g,
         firstPaymentPence: proRataPence(PLANS[s.plan].price, s.startDate),
+        extrasPence: s.extrasPence,
       }),
       cache: 'no-store',
     })
@@ -105,6 +106,27 @@ export async function processBillingRequest(brId: string): Promise<FulfilResult>
     firstPaymentDate = pay.charge_date
   }
 
+  let extrasPaymentId: string | null = existing?.extrasPaymentId ?? null
+  if (!extrasPaymentId && signup.extrasPence > 0) {
+    const items = signup.students.flatMap(x => [
+      x.suit ? `${x.firstName} suit ${x.suit.size}` : '',
+      x.licence && x.licence.feePence ? `${x.firstName} licence` : '',
+    ]).filter(Boolean).join(', ')
+    let pay: any
+    try {
+      pay = (await gc('/payments', {
+        method: 'POST', idempotencyKey: `extras-${brId}`,
+        body: { payments: {
+          amount: signup.extrasPence, currency: 'GBP', charge_date: earliest,
+          description: 'Forza Karate kit and licence',
+          metadata: { billing_request: brId, kind: 'kit_licence', items: items.slice(0, 500) },
+          links: { mandate: mandateId },
+        } },
+      })).payments
+    } catch (e) { pay = (await recover(e, '/payments')).payments }
+    extrasPaymentId = pay.id
+  }
+
   if (!subscriptionId) {
     // First 1st after the start date, moved on a month at a time if the mandate can't be charged by then.
     let first = firstOfNextMonth(signup.startDate)
@@ -125,9 +147,9 @@ export async function processBillingRequest(brId: string): Promise<FulfilResult>
     subscriptionStart = sub.start_date
   }
 
-  const honbu = await handOffToHonbu(brId, signup, { customerId, mandateId, subscriptionId, firstPaymentId })
+  const honbu = await handOffToHonbu(brId, signup, { customerId, mandateId, subscriptionId, firstPaymentId, extrasPaymentId })
   const outcome: Outcome = {
-    billingRequestId: brId, customerId, mandateId, subscriptionId, subscriptionStart, firstPaymentId, firstPaymentDate,
+    billingRequestId: brId, customerId, mandateId, subscriptionId, subscriptionStart, firstPaymentId, firstPaymentDate, extrasPaymentId,
     honbu, completedAt: new Date().toISOString(),
   }
   await saveOutcome(brId, outcome)

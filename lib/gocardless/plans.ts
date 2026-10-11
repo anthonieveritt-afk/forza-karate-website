@@ -1,3 +1,4 @@
+import { getUnitPrice, getProduct } from '@/lib/shop/catalogue'
 // Monthly membership tiers. Must match Club Honbu club_config membershipPrices
 // (monthly_single / monthly_two / monthly_family). The annual upfront option is
 // deliberately left out until its price is confirmed.
@@ -49,4 +50,28 @@ export function firstOfNextMonth(date: string): string {
   const d = new Date(date.slice(0, 7) + '-01T12:00:00Z')
   d.setUTCMonth(d.getUTCMonth() + 1)
   return d.toISOString().slice(0, 10)
+}
+
+// ─── One-off extras taken in the same Direct Debit flow ─────────────────────
+
+export const SUIT_KEYS = ['forza-gi-student', 'blitz-gi'] as const
+export type SuitKey = typeof SUIT_KEYS[number]
+export function suitOptions() {
+  return SUIT_KEYS.map(k => ({ key: k, name: getProduct(k)!.name, sizes: getProduct(k)!.sizes, price: getUnitPrice(k, getProduct(k)!.sizes[0]) ?? 0 }))
+}
+export function suitPrice(key: string, size: string): number | null {
+  return (SUIT_KEYS as readonly string[]).includes(key) ? getUnitPrice(key, size) : null
+}
+
+export type LicenceType = 'first_time' | 'renewal' | 'upgrade'
+export const LICENCE_TYPES: Record<LicenceType, string> = {
+  first_time: 'First licence (new member)',
+  renewal: 'Licence renewal',
+  upgrade: 'Grading certificate / belt upgrade',
+}
+/** Same rules as /join/apply-licence: renewals £45 under 18, £49 for 18+; other types are not charged online. */
+export function licenceFeePence(type: LicenceType, dob: string, on = new Date()): number {
+  if (type !== 'renewal' || !dob) return 0
+  const age = Math.floor((on.getTime() - new Date(dob + 'T12:00:00Z').getTime()) / (365.25 * 864e5))
+  return age < 18 ? 4500 : 4900
 }

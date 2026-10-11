@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { gc, gcEnv, gcConfigured, GcError } from '@/lib/gocardless/client'
-import { PLANS, DOJOS, membershipStart, type PlanKey, type DojoKey } from '@/lib/gocardless/plans'
+import { PLANS, DOJOS, membershipStart, suitPrice, licenceFeePence, LICENCE_TYPES, type PlanKey, type DojoKey, type LicenceType } from '@/lib/gocardless/plans'
 import { saveSignup, type Signup } from '@/lib/gocardless/store'
 
 export const runtime = 'nodejs'
@@ -21,10 +21,25 @@ export async function POST(req: Request) {
   const trialDate = s(b.trialDate, 10)
   if (!DATE.test(trialDate)) return NextResponse.json({ error: 'Please enter the date of the trial class.' }, { status: 400 })
 
-  const students = (Array.isArray(b.students) ? b.students : []).slice(0, 6).map((x: any) => ({
-    firstName: s(x?.firstName, 60), surname: s(x?.surname, 60), dateOfBirth: s(x?.dateOfBirth, 10),
-    belt: s(x?.belt, 40) || 'White', medical: s(x?.medical, 500),
-  })).filter((x: any) => x.firstName && x.surname)
+  let bad = ''
+  const students = (Array.isArray(b.students) ? b.students : []).slice(0, 6).map((x: any) => {
+    const dateOfBirth = s(x?.dateOfBirth, 10)
+    let suit = null
+    if (x?.suit?.key) {
+      const pricePence = suitPrice(s(x.suit.key, 40), s(x.suit.size, 20))
+      if (pricePence == null) bad = 'Please choose a size for each karate suit.'
+      else suit = { key: s(x.suit.key, 40), size: s(x.suit.size, 20), pricePence }
+    }
+    let licence = null
+    if (x?.licence?.type) {
+      const t = s(x.licence.type, 20) as LicenceType
+      if (!(t in LICENCE_TYPES)) bad = 'Please choose a licence type.'
+      else licence = { type: t, feePence: licenceFeePence(t, dateOfBirth) }
+    }
+    return { firstName: s(x?.firstName, 60), surname: s(x?.surname, 60), dateOfBirth,
+      belt: s(x?.belt, 40) || 'White', medical: s(x?.medical, 500), suit, licence }
+  }).filter((x: any) => x.firstName && x.surname)
+  if (bad) return NextResponse.json({ error: bad }, { status: 400 })
   if (!students.length || students.some((x: any) => !DATE.test(x.dateOfBirth)))
     return NextResponse.json({ error: "Please enter each student's name and date of birth." }, { status: 400 })
 
@@ -41,7 +56,9 @@ export async function POST(req: Request) {
 
   const signup: Signup = {
     plan, dojo, classTime: s(b.classTime, 120), trialDate, startDate: membershipStart(trialDate),
-    students, parent, emergency, consent: { photos: !!b.consent?.photos, terms: true }, createdAt: new Date().toISOString(),
+    students, parent, emergency, consent: { photos: !!b.consent?.photos, terms: true },
+    extrasPence: students.reduce((t: number, x: any) => t + (x.suit?.pricePence ?? 0) + (x.licence?.feePence ?? 0), 0),
+    createdAt: new Date().toISOString(),
   }
 
   try {
@@ -72,7 +89,7 @@ export async function POST(req: Request) {
       },
     })
     await saveSignup(br.id, signup)
-    return NextResponse.json({ billingRequestId: br.id, flowId: flow.id, environment: gcEnv(), startDate: signup.startDate })
+    return NextResponse.json({ billingRequestId: br.id, flowId: flow.id, environment: gcEnv(), startDate: signup.startDate, extrasPence: signup.extrasPence })
   } catch (e) {
     console.error('billing-request error', e instanceof GcError ? JSON.stringify(e.body).slice(0, 500) : e)
     return NextResponse.json({ error: 'We could not start the Direct Debit set-up. Please try again.' }, { status: 502 })

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Loader2, Plus, Trash2, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
-import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, type PlanKey } from '@/lib/gocardless/plans'
+import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, licenceFeePence, LICENCE_TYPES, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
 
 declare global {
   interface Window {
@@ -39,8 +39,11 @@ const BELTS = ['White', 'Red', 'Yellow', 'Orange', 'Green', 'Blue', 'Purple', 'B
 const input = 'w-full h-11 px-4 rounded-xl border border-black/15 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent'
 const lbl = 'block text-sm font-medium text-[#111111] mb-1.5'
 
-type Student = { firstName: string; surname: string; dateOfBirth: string; belt: string; medical: string }
-const blank = (): Student => ({ firstName: '', surname: '', dateOfBirth: '', belt: 'White', medical: '' })
+type Student = { firstName: string; surname: string; dateOfBirth: string; belt: string; medical: string; suitKey: string; suitSize: string; licence: '' | LicenceType }
+const blank = (): Student => ({ firstName: '', surname: '', dateOfBirth: '', belt: 'White', medical: '', suitKey: '', suitSize: '', licence: 'first_time' })
+const SUITS = suitOptions()
+const suitCost = (st: Student) => (st.suitKey && st.suitSize ? SUITS.find(x => x.key === st.suitKey)?.price ?? 0 : 0)
+const licenceCost = (st: Student) => (st.licence ? licenceFeePence(st.licence, st.dateOfBirth) : 0)
 const ukDate = (iso: string) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
 export default function MembershipSignup() {
@@ -70,7 +73,8 @@ export default function MembershipSignup() {
       const res = await fetch('/api/membership/billing-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, dojo, classTime, trialDate, students, parent, emergency, consent: { terms, photos } }),
+        body: JSON.stringify({ plan, dojo, classTime, trialDate, parent, emergency, consent: { terms, photos },
+          students: students.map(st => ({ ...st, suit: st.suitKey ? { key: st.suitKey, size: st.suitSize } : null, licence: st.licence ? { type: st.licence } : null })) }),
       })
       const d = await res.json()
       if (!res.ok) { setError(d.error ?? 'Something went wrong.'); setBusy(false); return }
@@ -98,7 +102,7 @@ export default function MembershipSignup() {
           <p className="text-xs font-semibold uppercase tracking-widest text-[#dc2626] mb-2">Forza Karate Club</p>
           <h1 className="text-3xl font-bold text-[#111111]">Become a member</h1>
           <p className="text-gray-500 mt-2 text-sm leading-relaxed">
-            Enjoyed your trial class? Fill in the details below, then set up your monthly Direct Debit in the secure
+            Enjoyed your trial class? Everything is on this one page: membership, karate suit, FKA licence and your monthly Direct Debit, set up in the secure
             GoCardless window, all without leaving this page. Membership starts the week after your trial.
           </p>
         </header>
@@ -157,6 +161,25 @@ export default function MembershipSignup() {
                   <select className={input} value={st.belt} onChange={e => setStudent(i, 'belt', e.target.value)}>{BELTS.map(b => <option key={b}>{b}</option>)}</select></div>
               </div>
               <div><label className={lbl}>Medical conditions or allergies (optional)</label><input className={input} value={st.medical} onChange={e => setStudent(i, 'medical', e.target.value)} placeholder="Leave blank if none" /></div>
+              <div className="grid sm:grid-cols-2 gap-4 pt-2 border-t border-black/5">
+                <div><label className={lbl}>Karate suit (optional)</label>
+                  <select className={input} value={st.suitKey} onChange={e => { setStudent(i, 'suitKey', e.target.value); setStudent(i, 'suitSize', '') }}>
+                    <option value="">No suit needed</option>
+                    {SUITS.map(x => <option key={x.key} value={x.key}>{x.name} ({pounds(x.price)})</option>)}
+                  </select></div>
+                <div><label className={lbl}>Suit size (by height)</label>
+                  <select className={input} required={!!st.suitKey} disabled={!st.suitKey} value={st.suitSize} onChange={e => setStudent(i, 'suitSize', e.target.value)}>
+                    <option value="">{st.suitKey ? 'Choose a size' : '—'}</option>
+                    {(SUITS.find(x => x.key === st.suitKey)?.sizes ?? []).map(z => <option key={z}>{z}</option>)}
+                  </select>
+                  {st.suitKey && <p className="text-xs text-gray-400 mt-1">If between sizes, go up.</p>}</div>
+                <div className="sm:col-span-2"><label className={lbl}>FKA licence &amp; insurance</label>
+                  <select className={input} value={st.licence} onChange={e => setStudent(i, 'licence', e.target.value)}>
+                    {(Object.keys(LICENCE_TYPES) as LicenceType[]).map(k => <option key={k} value={k}>{LICENCE_TYPES[k]}</option>)}
+                    <option value="">Already licensed, nothing needed</option>
+                  </select>
+                  <p className="text-xs text-gray-400 mt-1">All members need an FKA licence. {st.licence === 'renewal' ? (st.dateOfBirth ? `Renewal fee ${pounds(licenceCost(st))}.` : 'Renewal is £45 under 18, £49 for 18+.') : st.licence ? 'No charge online for this application type.' : ''}</p></div>
+              </div>
             </div>
           ))}
           {students.length < 6 && (
@@ -194,11 +217,15 @@ export default function MembershipSignup() {
               </>
               const start = membershipStart(trialDate)
               const pr = proRataPence(fee, start)
+              const suits = students.reduce((t, x) => t + suitCost(x), 0)
+              const lic = students.reduce((t, x) => t + licenceCost(x), 0)
               return <>
-                <div className="flex justify-between"><span className="text-gray-500">Membership starts</span><strong>{ukDate(start)}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">First payment ({proRataLabel(start)})</span><strong>{pounds(pr)} on or just after {ukDate(start)}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">Then monthly</span><strong>{pounds(fee)} on the 1st, from {ukDate(firstOfNextMonth(start))}</strong></div>
-                <p className="text-xs text-gray-500">Both are collected by Direct Debit. If the bank needs a few more days to set up, the first payment comes out as soon as it can.</p>
+                <div className="flex justify-between"><span className="text-gray-500">Monthly fee</span><strong>{pounds(fee)} on the 1st, from {ukDate(firstOfNextMonth(start))}</strong></div>
+                <div className="flex justify-between"><span className="text-gray-500">First payment, part month ({proRataLabel(start)} from {ukDate(start)})</span><strong>{pounds(pr)}</strong></div>
+                <div className="flex justify-between"><span className="text-gray-500">Karate suits ({students.filter(x => suitCost(x)).length})</span><strong>{pounds(suits)}</strong></div>
+                <div className="flex justify-between"><span className="text-gray-500">Licence &amp; insurance</span><strong>{pounds(lic)}</strong></div>
+                <div className="flex justify-between border-t border-black/10 pt-2"><span className="font-semibold">One-off total, collected first</span><strong className="text-[#dc2626]">{pounds(pr + suits + lic)}</strong></div>
+                <p className="text-xs text-gray-500">Everything is collected by Direct Debit, no card needed. The part-month payment is taken from your start date and the suit and licence as soon as the Direct Debit is ready (usually a few working days); monthly fees then come out on the 1st.</p>
               </>
             })()}
           </div>
