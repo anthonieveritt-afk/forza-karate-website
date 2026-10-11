@@ -98,7 +98,7 @@ export default function NinjasPage() {
           <h2 className="text-2xl font-bold text-[#111111] mb-4">Fees</h2>
           <p className="text-gray-500 max-w-2xl">
             Membership is an annual fee for 40 weeks of term-time classes, paid as 12 monthly payments on the
-            1st of each month by Direct Debit: single person £50, siblings £80, family £120 a month. One
+            1st of each month by Direct Debit: single person £50, siblings £90, family £120 a month. One
             month&apos;s paid notice is required to cancel.
           </p>
         </div>

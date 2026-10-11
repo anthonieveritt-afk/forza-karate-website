@@ -13,7 +13,7 @@ export type Student = {
   belt: string
   medical?: string
   suit?: { key: string; size: string; pricePence: number } | null
-  licence?: { type: string; feePence: number } | null
+  licence?: { type: string; feePence: number; expiry?: string } | null
 }
 
 export type Signup = {

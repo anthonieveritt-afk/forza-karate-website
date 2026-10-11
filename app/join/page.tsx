@@ -188,7 +188,7 @@ export default function JoinPage() {
                 <div className="grid grid-cols-2 gap-3">
                   {[
                     { value: 'single',     label: 'Single — £50/mo',        sub: '1 student · 12 monthly payments' },
-                    { value: 'family2',    label: 'Siblings — £80/mo',      sub: '2 students · immediate family only' },
+                    { value: 'family2',    label: 'Siblings — £90/mo',      sub: '2 students · immediate family only' },
                     { value: 'family3plus',label: 'Family — £120/mo',       sub: 'Immediate family only' },
                   ].map((opt) => (
                     <label key={opt.value}

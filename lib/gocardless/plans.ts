@@ -4,7 +4,7 @@ import { getUnitPrice, getProduct } from '@/lib/shop/catalogue'
 // deliberately left out until its price is confirmed.
 export const PLANS = {
   monthly_single: { label: 'Single', price: 5000, desc: '1 student' },
-  monthly_two: { label: 'Siblings', price: 8000, desc: '2 students' },
+  monthly_two: { label: 'Siblings', price: 9000, desc: '2 students' },
   monthly_family: { label: 'Family', price: 12000, desc: 'Family (3 or more)' },
 } as const
 
@@ -63,15 +63,27 @@ export function suitPrice(key: string, size: string): number | null {
   return (SUIT_KEYS as readonly string[]).includes(key) ? getUnitPrice(key, size) : null
 }
 
-export type LicenceType = 'first_time' | 'renewal' | 'upgrade'
+// FKA licence & insurance: every student pays, first licence and renewal cost the same.
+/** Age from which the adult licence fee applies. Under this age = child. */
+export const LICENCE_ADULT_AGE = 18
+export const LICENCE_FEE_CHILD = 5000 // £50
+export const LICENCE_FEE_ADULT = 5500 // £55
+
+export type LicenceType = 'first_time' | 'renewal' | 'valid'
 export const LICENCE_TYPES: Record<LicenceType, string> = {
   first_time: 'First licence (new member)',
   renewal: 'Licence renewal',
-  upgrade: 'Grading certificate / belt upgrade',
+  valid: 'Already licensed: current licence still valid',
 }
-/** Same rules as /join/apply-licence: renewals £45 under 18, £49 for 18+; other types are not charged online. */
+export function ageOn(dob: string, on = new Date()): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dob)) return null
+  return Math.floor((on.getTime() - new Date(dob + 'T12:00:00Z').getTime()) / (365.25 * 864e5))
+}
+export function licenceFeeForAge(age: number | null): number {
+  return age !== null && age < LICENCE_ADULT_AGE ? LICENCE_FEE_CHILD : LICENCE_FEE_ADULT
+}
+/** Fee in pence. 'valid' (current licence not yet expired) pays nothing; everything else pays the child/adult fee. */
 export function licenceFeePence(type: LicenceType, dob: string, on = new Date()): number {
-  if (type !== 'renewal' || !dob) return 0
-  const age = Math.floor((on.getTime() - new Date(dob + 'T12:00:00Z').getTime()) / (365.25 * 864e5))
-  return age < 18 ? 4500 : 4900
+  if (type === 'valid') return 0
+  return licenceFeeForAge(ageOn(dob, on))
 }

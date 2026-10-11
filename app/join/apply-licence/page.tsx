@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { AlertCircle, CheckCircle, Loader2, BadgePoundSterling } from 'lucide-react'
 import { DateInput } from '@/components/DateInput'
+import { LICENCE_ADULT_AGE, licenceFeeForAge, pounds } from '@/lib/gocardless/plans'
 
 const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
@@ -35,9 +36,10 @@ function ApplyLicenceForm() {
   })
 
   const age = calculateAge(form.dateOfBirth)
-  const isRenewal = form.reason === 'renewal'
-  const renewalFee = age !== null ? (age < 18 ? 45 : 49) : null
-  const renewalLabel = age !== null ? (age < 18 ? 'Under 18' : 'Senior (18+)') : null
+  // First licence and renewal are both paid, same price; grading certificate/upgrade is not.
+  const isRenewal = form.reason === 'renewal' || form.reason === 'first_time'
+  const renewalFee = age !== null ? pounds(licenceFeeForAge(age)) : null
+  const renewalLabel = age !== null ? (age < LICENCE_ADULT_AGE ? `Under ${LICENCE_ADULT_AGE}` : `Adult (${LICENCE_ADULT_AGE}+)`) : null
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -51,7 +53,7 @@ function ApplyLicenceForm() {
 
     try {
       if (isRenewal) {
-        // Renewal: go through Stripe checkout
+        // First licence or renewal: paid, via Stripe checkout
         const origin = window.location.origin
         const response = await fetch(`${HONBU_API}/licence-applications/stripe/checkout`, {
           method: 'POST',
@@ -72,7 +74,7 @@ function ApplyLicenceForm() {
           setError(data.error || 'Failed to start payment. Please try again.')
         }
       } else {
-        // First time or upgrade: no payment needed
+        // Grading certificate / belt upgrade: no payment needed
         const response = await fetch(`${HONBU_API}/licence-applications`, {
           method: 'POST',
           credentials: 'include',
@@ -111,11 +113,11 @@ function ApplyLicenceForm() {
         <div className="max-w-md w-full text-center">
           <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
           <h1 className="text-3xl font-bold text-[#111111] mb-3">
-            {paid ? 'Renewal paid! 🎖️' : 'Application Submitted! 🎖️'}
+            {paid ? 'Licence paid! 🎖️' : 'Application Submitted! 🎖️'}
           </h1>
           <p className="text-gray-500 leading-relaxed">
             {paid
-              ? "Your licence renewal payment has been received. We'll process your renewal and be in touch shortly."
+              ? "Your licence payment has been received. We'll process your licence and be in touch shortly."
               : "Thank you! Your licence application has been received. We'll review it and get back to you soon."}
           </p>
           {!paid && <p className="text-sm text-gray-400 mt-6">Redirecting you in a moment...</p>}
@@ -245,17 +247,17 @@ function ApplyLicenceForm() {
                 {renewalFee ? (
                   <>
                     <p className="text-sm font-semibold text-[#111111]">
-                      Renewal fee: <span className="text-[#dc2626]">£{renewalFee}</span>
+                      Licence fee: <span className="text-[#dc2626]">{renewalFee}</span>
                       <span className="text-gray-400 font-normal ml-2">({renewalLabel})</span>
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      You'll be taken to a secure Stripe payment page to complete your renewal.
+                      You'll be taken to a secure Stripe payment page to pay for your licence.
                     </p>
                   </>
                 ) : (
                   <p className="text-sm text-gray-500">
-                    Enter your date of birth above to see the renewal fee.
-                    <span className="block text-xs text-gray-400 mt-0.5">Under 18: £45 · Senior (18+): £49</span>
+                    Enter your date of birth above to see the licence fee.
+                    <span className="block text-xs text-gray-400 mt-0.5">{`Under ${LICENCE_ADULT_AGE}: £50 · Adult (${LICENCE_ADULT_AGE}+): £55`}</span>
                   </p>
                 )}
               </div>
@@ -280,13 +282,13 @@ function ApplyLicenceForm() {
                 {isRenewal ? 'Redirecting to payment...' : 'Submitting...'}
               </>
             ) : (
-              isRenewal ? `Pay & Renew Licence${renewalFee ? ` — £${renewalFee}` : ''}` : 'Submit Application'
+              isRenewal ? `Pay for Licence${renewalFee ? ` — ${renewalFee}` : ''}` : 'Submit Application'
             )}
           </Button>
 
           <p className="text-xs text-gray-500 text-center">
             {isRenewal
-              ? 'Payment is processed securely via Stripe. Your licence will be renewed once payment is confirmed.'
+              ? 'Payment is processed securely via Stripe. Your licence will be processed once payment is confirmed.'
               : "Your application will be reviewed and you'll hear from us within 2\u20133 business days."}
           </p>
         </form>
