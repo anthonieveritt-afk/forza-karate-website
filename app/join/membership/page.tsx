@@ -189,7 +189,7 @@ export default function MembershipSignup() {
                     {(SUITS.find(x => x.key === st.suitKey)?.sizes ?? []).map(z => <option key={z} value={z}>{/^\d+cm$/.test(z) ? `${z.replace('cm', '')} cm tall` : z}</option>)}
                   </select>
                   </div>
-                {st.suitKey && <div className="sm:col-span-2 -mt-2"><HeightGuide /></div>}
+                <div className="sm:col-span-2 -mt-2"><HeightGuide /></div>
                 <div className="sm:col-span-2"><label className={lbl}>FKA licence &amp; insurance (required)</label>
                   <select className={input} value={st.licence} onChange={e => setStudent(i, 'licence', e.target.value)}>
                     {(Object.keys(LICENCE_TYPES) as LicenceType[]).map(k => <option key={k} value={k}>{LICENCE_TYPES[k]}</option>)}
