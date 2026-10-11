@@ -7,7 +7,7 @@ import { DEFAULT_KNOWLEDGE } from './default-knowledge'
 // use separate prefixes so testing on a preview never touches live data.
 const ENV = process.env.VERCEL_ENV === 'production' ? 'production' : 'preview'
 const ROOT = `sempai/${ENV}`
-const KNOWLEDGE_PATH = `${ROOT}/knowledge.enc`
+const KNOWLEDGE_DIR = `${ROOT}/knowledge/`
 export const RETENTION_DAYS = Number(process.env.SEMPAI_RETENTION_DAYS || 90)
 
 function key(): Buffer | null {
@@ -30,19 +30,25 @@ function dec(b64: string): string {
 }
 const enabled = () => !!process.env.BLOB_READ_WRITE_TOKEN && !!key()
 
-async function readBlob(pathname: string): Promise<string | null> {
-  const { blobs } = await list({ prefix: pathname, limit: 1 })
-  const b = blobs.find(x => x.pathname === pathname)
-  if (!b) return null
-  const res = await fetch(`${b.url}?t=${Date.now()}`, { cache: 'no-store' })
+// Every write goes to a new, never-overwritten path, so CDN caching can't serve stale data.
+async function listAll(prefix: string) {
+  const out: { pathname: string; url: string; uploadedAt: Date }[] = []
+  let cursor: string | undefined
+  do { const r = await list({ prefix, cursor, limit: 1000 }); out.push(...r.blobs); cursor = r.hasMore ? r.cursor : undefined } while (cursor)
+  return out.sort((a, b) => a.pathname.localeCompare(b.pathname))
+}
+async function readUrl(url: string): Promise<string | null> {
+  const res = await fetch(url, { cache: 'no-store' })
   return res.ok ? dec(await res.text()) : null
 }
-async function writeBlob(pathname: string, text: string) {
-  await put(pathname, enc(text), {
-    access: 'public', addRandomSuffix: false, allowOverwrite: true,
-    contentType: 'text/plain', cacheControlMaxAge: 60,
-  })
+async function readLatest(prefix: string): Promise<string | null> {
+  const all = await listAll(prefix)
+  return all.length ? readUrl(all[all.length - 1].url) : null
 }
+async function writeBlob(pathname: string, text: string) {
+  await put(pathname, enc(text), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' })
+}
+const stampName = () => new Date().toISOString().replace(/[:.]/g, '-')
 
 // ---------- Knowledge ----------
 type Knowledge = { text: string; updatedAt: string | null; updatedBy: string | null }
@@ -53,7 +59,7 @@ export async function getKnowledgeRecord(fresh = false): Promise<Knowledge> {
   let k: Knowledge = { text: DEFAULT_KNOWLEDGE, updatedAt: null, updatedBy: null }
   if (enabled()) {
     try {
-      const raw = await readBlob(KNOWLEDGE_PATH)
+      const raw = await readLatest(KNOWLEDGE_DIR)
       if (raw) { const j = JSON.parse(raw); if (j?.text?.trim()) k = j }
     } catch (e) { console.error('[sempai] knowledge read failed, using default:', String(e)) }
   }
@@ -64,23 +70,21 @@ export async function getKnowledge() { return (await getKnowledgeRecord()).text 
 
 export async function setKnowledge(text: string, updatedBy: string) {
   if (!enabled()) throw new Error('storage not configured')
-  const prev = await getKnowledgeRecord(true)
-  const stamp = new Date().toISOString()
-  // keep a backup of the previous version so a bad edit can be undone
-  if (prev.updatedAt || prev.text) await writeBlob(`${ROOT}/knowledge-history/${stamp}.enc`, JSON.stringify(prev))
-  const k = { text, updatedAt: stamp, updatedBy }
-  await writeBlob(KNOWLEDGE_PATH, JSON.stringify(k))
+  const k = { text, updatedAt: new Date().toISOString(), updatedBy }
+  await writeBlob(`${KNOWLEDGE_DIR}${stampName()}.enc`, JSON.stringify(k))
   cache = { k, at: Date.now() }
   return k
 }
+// Every saved version is kept; restore copies an old one back as the newest.
 export async function knowledgeHistory() {
-  const { blobs } = await list({ prefix: `${ROOT}/knowledge-history/` })
-  return blobs.map(b => b.pathname.split('/').pop()!.replace('.enc', '')).sort().reverse()
+  const all = await listAll(KNOWLEDGE_DIR)
+  return all.map(b => b.pathname.slice(KNOWLEDGE_DIR.length).replace('.enc', '')).reverse()
 }
-export async function restoreKnowledge(stamp: string) {
-  const raw = await readBlob(`${ROOT}/knowledge-history/${stamp}.enc`)
-  if (!raw) throw new Error('version not found')
-  return setKnowledge(JSON.parse(raw).text, `restore:${stamp}`)
+export async function restoreKnowledge(version: string) {
+  const all = await listAll(`${KNOWLEDGE_DIR}${version}`)
+  if (!all.length) throw new Error('version not found')
+  const raw = await readUrl(all[0].url)
+  return setKnowledge(JSON.parse(raw!).text, `restore:${version}`)
 }
 
 // ---------- Chat logs ----------
@@ -104,13 +108,14 @@ export async function saveChat(sessionId: unknown, messages: Msg[], failed = fal
   if (!enabled() || typeof sessionId !== 'string' || !SAFE_ID.test(sessionId)) return
   try {
     const now = new Date().toISOString()
-    const day = now.slice(0, 10)
-    const path = `${ROOT}/chats/${day}/${sessionId}.enc`
+    const dir = `${ROOT}/chats/${now.slice(0, 10)}/${sessionId}/`
+    const prev = await listAll(dir)
     let startedAt = now
-    try { const old = await readBlob(path); if (old) startedAt = JSON.parse(old).startedAt ?? now } catch {}
+    if (prev.length) { try { startedAt = JSON.parse((await readUrl(prev[0].url))!).startedAt ?? now } catch {} }
     const rec = { sessionId, startedAt, updatedAt: now, failed, lead: extractLead(messages),
       messages: messages.map(m => ({ role: m.role, content: String(m.content).slice(0, 4000) })) }
-    await writeBlob(path, JSON.stringify(rec))
+    await writeBlob(`${dir}${stampName()}.enc`, JSON.stringify(rec))
+    if (prev.length) await del(prev.map(p => p.url)) // keep only the latest snapshot of each conversation
     if (Math.random() < 0.05) purgeOldChats().catch(() => {})
   } catch (e) { console.error('[sempai] chat save failed:', String(e)) }
 }
@@ -131,13 +136,14 @@ export async function fetchChats(sinceHours: number) {
   const since = Date.now() - sinceHours * 36e5
   const days = new Set<string>()
   for (let t = since; t <= Date.now() + 864e5; t += 864e5) days.add(new Date(t).toISOString().slice(0, 10))
-  const out: unknown[] = []
+  const out: { updatedAt: string }[] = []
   for (const d of days) {
-    const { blobs } = await list({ prefix: `${ROOT}/chats/${d}/`, limit: 1000 })
-    for (const b of blobs) {
+    const latest = new Map<string, { url: string; uploadedAt: Date }>()
+    for (const b of await listAll(`${ROOT}/chats/${d}/`)) latest.set(b.pathname.split('/')[4], b) // sorted, so last wins
+    for (const b of latest.values()) {
       if (new Date(b.uploadedAt).getTime() < since) continue
-      try { const raw = await readBlob(b.pathname); if (raw) out.push(JSON.parse(raw)) } catch {}
+      try { const raw = await readUrl(b.url); if (raw) out.push(JSON.parse(raw)) } catch {}
     }
   }
-  return (out as { updatedAt: string }[]).sort((a, b) => a.updatedAt.localeCompare(b.updatedAt))
+  return out.sort((a, b) => a.updatedAt.localeCompare(b.updatedAt))
 }

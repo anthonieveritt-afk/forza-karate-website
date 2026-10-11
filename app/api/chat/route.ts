@@ -54,11 +54,6 @@ export async function POST(req: NextRequest) {
     const SYSTEM_PROMPT = await systemPrompt()
 
     const apiKey = process.env.GEMINI_API_KEY
-    if (!apiKey) {
-      console.error('[sempai] GEMINI_API_KEY missing')
-      return NextResponse.json({ reply: FALLBACK_REPLY })
-    }
-
     const history = (Array.isArray(messages) ? messages : []).slice(-MAX_HISTORY)
     const contents = history.map((m: { role: string; content: string }) => ({
       role: m.role === 'assistant' ? 'model' : 'user',
@@ -68,7 +63,8 @@ export async function POST(req: NextRequest) {
     while (contents.length && contents[0].role !== 'user') contents.shift()
     if (!contents.length) return NextResponse.json({ reply: FALLBACK_REPLY })
 
-    for (const model of MODELS) {
+    if (!apiKey) console.error('[sempai] GEMINI_API_KEY missing')
+    for (const model of apiKey ? MODELS : []) {
       const generationConfig: Record<string, unknown> = { maxOutputTokens: 800, temperature: 0.7 }
       // 2.5 models "think" by default and the thinking eats the output budget,
       // which produced truncated or empty replies. Turn thinking off.
@@ -76,7 +72,7 @@ export async function POST(req: NextRequest) {
       const body = { system_instruction: { parts: [{ text: SYSTEM_PROMPT }] }, contents, generationConfig }
       const attempts = model === MODELS[0] ? 2 : 1
       for (let i = 0; i < attempts; i++) {
-        const reply = await callGemini(model, apiKey, body)
+        const reply = await callGemini(model, apiKey!, body)
         if (reply) {
           await saveChat(sessionId, [...history, { role: 'assistant', content: reply }])
           return NextResponse.json({ reply })
