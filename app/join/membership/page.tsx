@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Loader2, Plus, Trash2, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
-import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
+import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
 
 declare global {
   interface Window {
@@ -42,13 +42,14 @@ const lbl = 'block text-sm font-medium text-[#111111] mb-1.5'
 type Student = { firstName: string; surname: string; dateOfBirth: string; belt: string; medical: string; suitKey: string; suitSize: string; licence: LicenceType; licenceExpiry: string }
 const blank = (): Student => ({ firstName: '', surname: '', dateOfBirth: '', belt: 'White', medical: '', suitKey: '', suitSize: '', licence: 'first_time', licenceExpiry: '' })
 const SUITS = suitOptions()
+const PLAN_LABEL: Record<PlanKey, string> = { monthly_single: 'Single (1 student)', monthly_two: 'Siblings (2 students)', monthly_family: 'Family (3 or more)' }
 const suitCost = (st: Student) => (st.suitKey && st.suitSize ? SUITS.find(x => x.key === st.suitKey)?.price ?? 0 : 0)
 const licenceCost = (st: Student) => licenceFeePence(st.licence, st.dateOfBirth)
 const ukDate = (iso: string) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
 export default function MembershipSignup() {
   const router = useRouter()
-  const [plan, setPlan] = useState<PlanKey>('monthly_single')
+  const [planChoice, setPlanChoice] = useState<PlanKey | null>(null)
   const [dojo, setDojo] = useState('')
   const [classTime, setClassTime] = useState('')
   const [trialDate, setTrialDate] = useState('')
@@ -61,6 +62,8 @@ export default function MembershipSignup() {
   const [error, setError] = useState('')
   const [scriptReady, setScriptReady] = useState(false)
 
+  const autoPlan: PlanKey = students.length >= 3 ? 'monthly_family' : students.length === 2 ? 'monthly_two' : 'monthly_single'
+  const plan: PlanKey = planChoice && planAllowed(planChoice, students.length) ? planChoice : autoPlan
   const setStudent = (i: number, k: keyof Student, v: string) =>
     setStudents(s => s.map((x, j) => (j === i ? { ...x, [k]: v } : x)))
 
@@ -108,17 +111,7 @@ export default function MembershipSignup() {
         </header>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-bold">1. Membership</h2>
-          <div className="grid sm:grid-cols-3 gap-3">
-            {(Object.keys(PLANS) as PlanKey[]).map(k => (
-              <label key={k} className={`cursor-pointer rounded-2xl border-2 p-4 ${plan === k ? 'border-[#dc2626] bg-red-50' : 'border-black/10'}`}>
-                <input type="radio" name="plan" className="sr-only" checked={plan === k} onChange={() => setPlan(k)} />
-                <div className="font-semibold">{PLANS[k].label}</div>
-                <div className="text-2xl font-bold">{pounds(PLANS[k].price)}<span className="text-sm font-normal text-gray-500">/month</span></div>
-                <div className="text-xs text-gray-500">{PLANS[k].desc}</div>
-              </label>
-            ))}
-          </div>
+          <h2 className="text-lg font-bold">1. Dojo and class</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className={lbl}>Dojo</label>
@@ -212,6 +205,15 @@ export default function MembershipSignup() {
 
         <section className="space-y-4">
           <h2 className="text-lg font-bold">4. Direct Debit</h2>
+          <div>
+            <label htmlFor="plan" className={lbl}>Membership package</label>
+            <select id="plan" className={`${input} h-12 text-base font-semibold`} value={plan} onChange={e => setPlanChoice(e.target.value as PlanKey)}>
+              {(Object.keys(PLANS) as PlanKey[]).map(k => (
+                <option key={k} value={k} disabled={!planAllowed(k, students.length)}>{PLAN_LABEL[k]} — {pounds(PLANS[k].price)}/month</option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">Chosen for you from the number of students above ({students.length}). Add or remove students to change it.</p>
+          </div>
           <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-2">
             {(() => {
               const fee = PLANS[plan].price

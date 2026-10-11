@@ -10,6 +10,13 @@ export const PLANS = {
 
 export type PlanKey = keyof typeof PLANS
 
+/** Single = 1 student, Siblings = exactly 2, Family = 3 or more. */
+export function planAllowed(plan: PlanKey, students: number): boolean {
+  if (plan === 'monthly_single') return students === 1
+  if (plan === 'monthly_two') return students === 2
+  return students >= 3
+}
+
 export const DOJOS = {
   rayleigh: 'Forza Karate — Rayleigh',
   upminster: 'Forza Karate — Upminster',

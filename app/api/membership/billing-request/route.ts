@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { gc, gcEnv, gcConfigured, GcError } from '@/lib/gocardless/client'
-import { PLANS, DOJOS, membershipStart, suitPrice, licenceFeePence, LICENCE_TYPES, type PlanKey, type DojoKey, type LicenceType } from '@/lib/gocardless/plans'
+import { PLANS, DOJOS, planAllowed, membershipStart, suitPrice, licenceFeePence, LICENCE_TYPES, type PlanKey, type DojoKey, type LicenceType } from '@/lib/gocardless/plans'
 import { saveSignup, type Signup } from '@/lib/gocardless/store'
 
 export const runtime = 'nodejs'
@@ -43,6 +43,8 @@ export async function POST(req: Request) {
       belt: s(x?.belt, 40) || 'White', medical: s(x?.medical, 500), suit, licence }
   }).filter((x: any) => x.firstName && x.surname)
   if (bad) return NextResponse.json({ error: bad }, { status: 400 })
+  if (students.length && !planAllowed(plan, students.length))
+    return NextResponse.json({ error: 'That package doesn\'t match the number of students: Single is 1 student, Siblings is 2, Family is 3 or more.' }, { status: 400 })
   if (!students.length || students.some((x: any) => !DATE.test(x.dateOfBirth)))
     return NextResponse.json({ error: "Please enter each student's name and date of birth." }, { status: 400 })
 
