@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { cookies } from 'next/headers'
-import { Lock, PlayCircle } from 'lucide-react'
+import { Lock } from 'lucide-react'
+import VideoTabs from '@/components/paid/VideoTabs'
 import { Button } from '@/components/ui/Button'
 import RestoreAccess from '@/components/paid/RestoreAccess'
 import { getForzaStripe } from '@/lib/paid/stripe'
@@ -56,21 +57,7 @@ export default async function VideosPage({ searchParams }: { searchParams: Promi
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold text-[#111111] mb-2">Members&apos; videos</h1>
         <p className="text-gray-500 mb-10">Practise between classes. New videos are added regularly.</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {VIDEOS.map((v) => (
-            <div key={v.id} className="rounded-2xl border border-black/8 overflow-hidden">
-              {v.youtubeId ? (
-                <iframe className="w-full aspect-video" src={`https://www.youtube-nocookie.com/embed/${v.youtubeId}?rel=0`}
-                  title={v.title} allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowFullScreen loading="lazy" />
-              ) : (
-                <div className="w-full aspect-video bg-[#111111] flex flex-col items-center justify-center text-gray-400">
-                  <PlayCircle className="h-10 w-10 mb-2" /><span className="text-xs">Video coming soon</span>
-                </div>
-              )}
-              <p className="p-4 text-sm font-medium text-[#111111]">{v.title}</p>
-            </div>
-          ))}
-        </div>
+        <VideoTabs videos={VIDEOS} />
       </div>
     </div>
   )

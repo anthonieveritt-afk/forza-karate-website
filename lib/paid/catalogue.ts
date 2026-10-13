@@ -42,13 +42,23 @@ export function getBelt(slug: string): Belt | undefined {
 
 // Members-only videos. Anthoni: add unlisted YouTube video IDs here.
 // They're embedded via youtube-nocookie.com.
-export type Video = { id: string; title: string; belt?: string; youtubeId: string | null }
+export type Video = { id: string; title: string; belt?: string; youtubeId: string | null; group?: 'syllabus' | 'more' }
+// Source: Anthoni's playlist PLtvkLumGLdp6kj8j0EXmlqGSv-2i7bLMn (performed by Sensei Scott Nicholls).
+// Checked 13 Oct 2026: adult instructor only, Forza badge, no JHKA in title/description/thumbnail.
 export const VIDEOS: Video[] = [
-  { id: 'pinan-shodan', title: 'Pinan Shodan', youtubeId: null },
-  { id: 'pinan-nidan', title: 'Pinan Nidan', youtubeId: null },
-  { id: 'pinan-sandan', title: 'Pinan Sandan', youtubeId: null },
-  { id: 'pinan-yondan', title: 'Pinan Yondan', youtubeId: null },
-  { id: 'pinan-godan', title: 'Pinan Godan', youtubeId: null },
-  { id: 'tobikomizuki-jodan', title: 'Tobikomizuki Jodan (snap punch)', youtubeId: null },
-  { id: 'tobikomizuki-gyakuzuki', title: 'Tobikomizuki Jodan + Gyakuzuki Chudan', youtubeId: null },
+  // Tab 1 — Grading syllabus
+  { id: 'pinan-shodan', title: 'Pinan Shodan', youtubeId: '1BR62O-c1aA', group: 'syllabus' },
+  { id: 'pinan-nidan', title: 'Pinan Nidan', youtubeId: '4t4F6VO4BYM', group: 'syllabus' },
+  { id: 'pinan-sandan', title: 'Pinan Sandan', youtubeId: '9Lo302OBalM', group: 'syllabus' },
+  { id: 'pinan-yondan', title: 'Pinan Yondan', youtubeId: '8spjrvwW4RA', group: 'syllabus' },
+  { id: 'pinan-godan', title: 'Pinan Godan', youtubeId: 'sMdiq_fAOWc', group: 'syllabus' },
+  { id: 'tobikomizuki-jodan', title: 'Tobikomizuki Jodan - Snap punch', youtubeId: null, group: 'syllabus' },
+  { id: 'tobikomizuki-gyakuzuki', title: 'Tobikomizuki Jodan + Gyakuzuki Chudan', youtubeId: null, group: 'syllabus' },
+  // Tab 2 — More videos (YouTube titles)
+  { id: 'ku-shanku', title: 'Ku Shanku', youtubeId: '89A_aUbBXtc', group: 'more' },
+  { id: 'jitte', title: 'Jitte', youtubeId: 'N1kUiwL57vY', group: 'more' },
+  { id: 'jion', title: 'Jion', youtubeId: '0VS1kN5vAE0', group: 'more' },
+  { id: 'bassai', title: 'Bassai', youtubeId: 'hNchY_GzxWM', group: 'more' },
+  { id: 'seishan', title: 'Seishan', youtubeId: 'T3jg7hxzS9k', group: 'more' },
+  { id: 'nai-hanchi', title: 'Nai Hanchi', youtubeId: 'bg9HU21lYuw', group: 'more' },
 ]
