@@ -3,7 +3,7 @@ import { getForzaStripe, SITE_URL, UNAVAILABLE_MSG } from '@/lib/paid/stripe'
 import { TRIAL_PRICE_PENCE } from '@/lib/paid/catalogue'
 
 const AGE_GROUPS: Record<string, string> = {
-  ninjas: 'Forza Ninjas (4–7)', juniors: 'Forza Juniors (8–10)', seniors: 'Forza Seniors (11+)', adult: 'Adult',
+  ninjas: 'Forza Ninjas (4–6)', juniors: 'Forza Juniors (7–10)', seniors: 'Forza Seniors (11+)', adult: 'Adult',
 }
 const DOJOS: Record<string, string> = { rayleigh: 'Rayleigh', upminster: 'Upminster', 'no-preference': 'No preference' }
 

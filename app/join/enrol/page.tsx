@@ -19,11 +19,11 @@ const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-
 const MEMBERSHIP_OPTIONS = [
   { key: 'monthly_single',  label: 'Single — £50/mo',         desc: '1 student · 12 monthly payments on the 1st' },
   { key: 'monthly_two',     label: 'Siblings — £90/mo',       desc: '2 students · 12 monthly payments on the 1st' },
-  { key: 'monthly_family',  label: 'Family — £120/mo',        desc: 'Family · 12 monthly payments on the 1st' },
+  { key: 'monthly_family',  label: 'Family — £120/mo',        desc: '3 or more students · 12 monthly payments on the 1st' },
 ]
 
 const RAYLEIGH_CLASSES = [
-  'Tuesday 6:15–7pm — 4 yrs+ (all grades)',
+  'Tuesday 6:15–7pm — Ages 4–10 (all grades)',
   'Tuesday 7–8pm — 11 yrs+ (all grades)',
   'Friday 3:40–4:40pm — after-school club (Rayleigh Primary School pupils only)',
   'Saturday 10–11am — 4 yrs+ (all ages)',

@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/Button'
 import { ArrowRight, CheckCircle } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Forza Ninjas — Ages 4–7',
-  description: 'Play-based karate for children aged 4–7. Building coordination, confidence, and listening skills through fun structured training at Forza Karate Club.',
+  title: 'Forza Ninjas — Ages 4–6',
+  description: 'Play-based karate for children aged 4–6. Building coordination, confidence, and listening skills through fun structured training at Forza Karate Club.',
 }
 
 const expects = [
@@ -24,7 +24,7 @@ export default function NinjasPage() {
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
         <div className="max-w-7xl mx-auto">
           <div className="inline-flex items-center rounded-full bg-red-50 text-[#dc2626] text-xs font-semibold px-3 py-1 mb-6">
-            Ages 4–7
+            Ages 4–6
           </div>
           <h1 className="text-5xl sm:text-6xl font-bold text-[#111111] mb-4">Forza Ninjas</h1>
           <p className="text-xl text-gray-500 max-w-2xl leading-relaxed">
@@ -40,7 +40,7 @@ export default function NinjasPage() {
           <div>
             <h2 className="text-2xl font-bold text-[#111111] mb-4">What to expect</h2>
             <p className="text-gray-500 leading-relaxed mb-6">
-              Forza Ninjas classes are designed around the development stage of 4–7 year olds.
+              Forza Ninjas classes are designed around the development stage of 4–6 year olds.
               Everything is taught through movement, play, and games. We build focus, coordination,
               and listening skills — the foundation everything else is built on.
             </p>
@@ -79,15 +79,30 @@ export default function NinjasPage() {
               </thead>
               <tbody className="text-gray-500">
                 <tr className="border-b border-black/5">
-                  <td className="py-3 pr-8">Contact us</td>
-                  <td className="py-3 pr-8">—</td>
-                  <td className="py-3">Rayleigh / Upminster</td>
+                  <td className="py-3 pr-8">Wednesday</td>
+                  <td className="py-3 pr-8">4:00 – 4:30pm</td>
+                  <td className="py-3">Upminster · beginner infants (4–6)</td>
+                </tr>
+                <tr className="border-b border-black/5">
+                  <td className="py-3 pr-8">Wednesday</td>
+                  <td className="py-3 pr-8">4:30 – 5:00pm</td>
+                  <td className="py-3">Upminster · infants, all grades (4–6)</td>
+                </tr>
+                <tr className="border-b border-black/5">
+                  <td className="py-3 pr-8">Tuesday</td>
+                  <td className="py-3 pr-8">6:15 – 7:00pm</td>
+                  <td className="py-3">Rayleigh · ages 4–10, all grades</td>
+                </tr>
+                <tr className="border-b border-black/5">
+                  <td className="py-3 pr-8">Saturday</td>
+                  <td className="py-3 pr-8">10:00 – 11:00am</td>
+                  <td className="py-3">Rayleigh · ages 4+, all grades</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <p className="text-xs text-gray-400 mt-4">
-            * Contact us for current timetable. Term-time only — 40 weeks per year.
+            Term-time only — 40 weeks per year. Rayleigh also runs a Friday 3:40–4:40pm after-school class for Rayleigh Primary School pupils only.
           </p>
         </div>
       </section>
@@ -98,7 +113,7 @@ export default function NinjasPage() {
           <h2 className="text-2xl font-bold text-[#111111] mb-4">Fees</h2>
           <p className="text-gray-500 max-w-2xl">
             Membership is an annual fee for 40 weeks of term-time classes, paid as 12 monthly payments on the
-            1st of each month by Direct Debit: single person £50, siblings £90, family £120 a month. One
+            1st of each month by Direct Debit: single person £50, siblings (2 children) £90, family (3 or more) £120 a month. One
             month&apos;s paid notice is required to cancel.
           </p>
         </div>

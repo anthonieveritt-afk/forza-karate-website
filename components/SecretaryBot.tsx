@@ -12,7 +12,7 @@ const SUGGESTED = [
   'What age can my child start?',
   'How much does membership cost?',
   'Where are your classes?',
-  'Can I try a free class?',
+  'Can I book a £10 trial?',
 ]
 
 export default function SecretaryBot() {

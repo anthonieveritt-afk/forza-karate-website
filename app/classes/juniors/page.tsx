@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/Button'
 import { ArrowRight, CheckCircle } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Forza Kids / Juniors — Ages 8–10',
-  description: 'Structured karate training for children aged 8–10. Kata, kumite, and belt progression at Forza Karate Club.',
+  title: 'Forza Kids / Juniors — Ages 7–10',
+  description: 'Structured karate training for children aged 7–10. Kata, kumite, and belt progression at Forza Karate Club.',
 }
 
 const expects = [
@@ -24,7 +24,7 @@ export default function JuniorsPage() {
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
         <div className="max-w-7xl mx-auto">
           <div className="inline-flex items-center rounded-full bg-red-50 text-[#dc2626] text-xs font-semibold px-3 py-1 mb-6">
-            Ages 8–10
+            Ages 7–10
           </div>
           <h1 className="text-5xl sm:text-6xl font-bold text-[#111111] mb-4">Forza Kids / Juniors</h1>
           <p className="text-xl text-gray-500 max-w-2xl leading-relaxed">
@@ -41,7 +41,7 @@ export default function JuniorsPage() {
             <h2 className="text-2xl font-bold text-[#111111] mb-4">About this class</h2>
             <p className="text-gray-500 leading-relaxed mb-6">
               The Juniors class bridges the gap between our Ninjas program and the senior club.
-              Students aged 8–10 are ready for structured, technical training — and this class
+              Students aged 7–10 are ready for structured, technical training — and this class
               delivers exactly that.
             </p>
             <p className="text-gray-500 leading-relaxed">
@@ -79,15 +79,25 @@ export default function JuniorsPage() {
               </thead>
               <tbody className="text-gray-500">
                 <tr className="border-b border-black/5">
-                  <td className="py-3 pr-8">Contact us</td>
-                  <td className="py-3 pr-8">—</td>
-                  <td className="py-3">Rayleigh / Upminster</td>
+                  <td className="py-3 pr-8">Wednesday</td>
+                  <td className="py-3 pr-8">5:00 – 5:45pm</td>
+                  <td className="py-3">Upminster · juniors, all grades (7–10)</td>
+                </tr>
+                <tr className="border-b border-black/5">
+                  <td className="py-3 pr-8">Tuesday</td>
+                  <td className="py-3 pr-8">6:15 – 7:00pm</td>
+                  <td className="py-3">Rayleigh · ages 4–10, all grades</td>
+                </tr>
+                <tr className="border-b border-black/5">
+                  <td className="py-3 pr-8">Saturday</td>
+                  <td className="py-3 pr-8">10:00 – 11:00am</td>
+                  <td className="py-3">Rayleigh · ages 4+, all grades</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <p className="text-xs text-gray-400 mt-4">
-            * Contact us for current timetable. Term-time only — 40 weeks per year.
+            Term-time only — 40 weeks per year. Rayleigh also runs a Friday 3:40–4:40pm after-school class for Rayleigh Primary School pupils only.
           </p>
         </div>
       </section>
@@ -98,7 +108,7 @@ export default function JuniorsPage() {
           <h2 className="text-2xl font-bold text-[#111111] mb-4">Fees</h2>
           <p className="text-gray-500 max-w-2xl">
             Membership is an annual fee for 40 weeks of term-time classes, paid as 12 monthly payments on the
-            1st of each month by Direct Debit: single person £50, siblings £90, family £120 a month. One
+            1st of each month by Direct Debit: single person £50, siblings (2 children) £90, family (3 or more) £120 a month. One
             month&apos;s paid notice is required to cancel.
           </p>
         </div>

@@ -23,6 +23,7 @@ export default function CalendarPage() {
 
   const filtered = useMemo(() => {
     const events = EVENTS
+      .filter(e => !e.hidden)
       .filter(e => activeCategory === 'All' || e.category === activeCategory)
       .sort((a, b) => a.date.localeCompare(b.date))
     return events
