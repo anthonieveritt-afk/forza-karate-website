@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { usePathname } from 'next/navigation'
 
 // Upbeat tracks: HoliznaCC0, CC0 1.0 (see public/music/CREDITS.md)
 const tracks = [
@@ -26,6 +27,7 @@ export default function MusicPlayer() {
   const [showLabel, setShowLabel] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const pathname = usePathname()
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 1500)
@@ -86,6 +88,9 @@ export default function MusicPlayer() {
     audio.addEventListener('ended', onEnd)
     return () => audio.removeEventListener('ended', onEnd)
   }, [])
+
+  // Hide on the game page so it doesn't cover the game's touch controls
+  if (pathname?.startsWith('/dojo-dash')) return null
 
   return (
     <>
