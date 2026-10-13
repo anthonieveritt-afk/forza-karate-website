@@ -194,7 +194,7 @@ export default function MembershipSignup() {
                   <select className={input} value={st.licence} onChange={e => setStudent(i, 'licence', e.target.value)}>
                     {(Object.keys(LICENCE_TYPES) as LicenceType[]).map(k => <option key={k} value={k}>{LICENCE_TYPES[k]}</option>)}
                   </select>
-                  <p className="text-xs text-gray-400 mt-1">Every member pays for an FKA licence: £50 for {LICENCE_ADULT_AGE - 1} and under, £55 for {LICENCE_ADULT_AGE}+.{st.dateOfBirth ? ` This student: ${pounds(licenceCost(st))}.` : ''}</p></div>
+                  <p className="text-xs text-gray-400 mt-1">All students must have a valid and up-to-date licence to train, grade, attend courses and competitions. It is the student/parent&apos;s responsibility to make sure the licence is in date at all times.{st.dateOfBirth ? ` This student: ${pounds(licenceCost(st))}.` : ''}</p></div>
               </div>
             </div>
           ))}
