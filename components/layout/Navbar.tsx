@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/team',     label: 'Team' },
   { href: '/gallery',  label: 'Gallery' },
   { href: '/shop',     label: 'Shop' },
+  { href: '/dojo-dash', label: 'Dojo Dash' },
   { href: '/faq',      label: 'FAQ' },
 ]
 
