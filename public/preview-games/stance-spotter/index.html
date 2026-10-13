@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stance Spotter – Dojo Dash mini-game (preview) – Forza Karate Club</title>
+<style>
+body{margin:0;min-height:100vh;background:linear-gradient(#ff7043,#ffca28);font-family:"Trebuchet MS",Arial,sans-serif;color:#222;display:flex;flex-direction:column;align-items:center}
+header{width:100%;background:#b71c1c;color:#fff;text-align:center;padding:10px 0 8px;box-shadow:0 3px 8px rgba(0,0,0,.3)}
+header h1{margin:0;font-size:28px;letter-spacing:1px}header div{font-size:14px;opacity:.9}
+.card{background:#fff8e1;border:5px solid #b71c1c;border-radius:18px;margin:16px;padding:16px 20px;max-width:640px;width:calc(100% - 72px);text-align:center;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.hud{display:flex;justify-content:space-between;font-weight:bold;font-size:18px;margin-bottom:6px}
+svg{width:100%;max-width:420px;height:auto;background:#fff;border:3px solid #5d4037;border-radius:12px}
+.choices{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}
+button{font:bold 18px "Trebuchet MS",Arial;padding:12px 18px;border-radius:12px;border:3px solid #000;background:#ffd600;cursor:pointer;min-width:150px}
+button:hover{transform:scale(1.04)}button.ok{background:#69f0ae}button.bad{background:#ff8a80}button.alt{background:#eee}
+.fb{min-height:52px;font-size:17px;margin-top:10px}
+.learn{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;text-align:left}
+.learn div{background:#fff;border:2px solid #5d4037;border-radius:10px;padding:8px}.learn svg{border:none}
+.note{font-size:12px;color:#7a1f1f;max-width:640px;text-align:center;margin:0 16px 16px}
+</style></head><body>
+<header><h1>🥋 Stance Spotter</h1><div>A Dojo Dash learning mini-game · Forza Karate Club</div></header>
+<div class="card" id="app"></div>
+<div class="note">PREVIEW (13 Oct 2026). Stance names and descriptions come from the club's dictated beginner syllabus (stripe 3, blue) and are still waiting for Club Operations to confirm. Placeholder drawings until Designer art arrives. No accounts and no personal data; only your best score is saved on this device.</div>
+<script>
+// Five beginner stances, wording from the dictated Forza syllabus draft (stripe 3)
+const ST=[
+ {id:'formal',n:'Formal stance',d:'Heels together, toes together.',w:0,a:0,bent:0,fist:0},
+ {id:'attention',n:'Attention stance',d:'Heels together, toes apart.',w:0,a:30,bent:0,fist:0},
+ {id:'ready',n:'Ready stance',d:'Feet apart, fists resting by your sides.',w:1,a:8,bent:0,fist:1},
+ {id:'sumo',n:'Sumo stance',d:'Squat, toes 45 degrees out, heels flat, knees bent.',w:2.2,a:45,bent:1,fist:1},
+ {id:'horse',n:'Horse riding stance',d:'Like sumo, but feet pointing forwards with the outside edges parallel.',w:2.2,a:0,bent:1,fist:1}];
+const app=document.getElementById('app');
+function foot(x,y,ang,side){// top-down footprint, toes up; side -1 left foot, 1 right foot
+ return `<g transform="translate(${x},${y}) rotate(${ang*side})"><ellipse cx="0" cy="-14" rx="13" ry="20" fill="#ffcc80" stroke="#5d4037" stroke-width="3"/><ellipse cx="${-side*1}" cy="12" rx="10" ry="13" fill="#ffcc80" stroke="#5d4037" stroke-width="3"/>${[0,1,2,3,4].map(i=>`<circle cx="${(i-2)*5.5*-side+side*0}" cy="${-38+Math.abs(i-2)*2}" r="${i==2?5:3.6}" fill="#ffcc80" stroke="#5d4037" stroke-width="2"/>`).join('')}</g>`}
+function pic(s,sz){// front view figure (top) + footprints (bottom)
+ const gap=s.w===0?0:s.w*34, cx=210, hip=150, kneeY=s.bent?218:200, footY=s.bent?262:250;
+ const lf=cx-14-gap, rf=cx+14+gap, lk=s.bent?lf-6:(lf+cx-10)/2, rk=s.bent?rf+6:(rf+cx+10)/2;
+ const hand=s.fist?`<circle cx="${cx-52}" cy="150" r="9" fill="#ffcc80" stroke="#000" stroke-width="2"/><circle cx="${cx+52}" cy="150" r="9" fill="#ffcc80" stroke="#000" stroke-width="2"/>`:`<ellipse cx="${cx-48}" cy="152" rx="6" ry="11" fill="#ffcc80" stroke="#000" stroke-width="2"/><ellipse cx="${cx+48}" cy="152" rx="6" ry="11" fill="#ffcc80" stroke="#000" stroke-width="2"/>`;
+ const dy=s.bent?20:0;
+ const fig=`<g transform="translate(0,${dy})"><circle cx="${cx}" cy="40" r="24" fill="#ffcc80" stroke="#000" stroke-width="3"/><rect x="${cx-26}" y="16" width="52" height="9" rx="4" fill="#d32f2f"/>
+ <path d="M${cx-30} 68 L${cx+30} 68 L${cx+26} ${hip} L${cx-26} ${hip} Z" fill="#fff" stroke="#000" stroke-width="3"/><rect x="${cx-28}" y="118" width="56" height="9" fill="#fff" stroke="#000" stroke-width="2"/>
+ <path d="M${cx-30} 72 L${cx-48} 140" stroke="#000" stroke-width="13" stroke-linecap="round"/><path d="M${cx-30} 72 L${cx-48} 140" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+ <path d="M${cx+30} 72 L${cx+48} 140" stroke="#000" stroke-width="13" stroke-linecap="round"/><path d="M${cx+30} 72 L${cx+48} 140" stroke="#fff" stroke-width="8" stroke-linecap="round"/>${hand}</g>
+ <path d="M${cx-12} ${hip+dy} L${lk} ${kneeY} L${lf} ${footY}" fill="none" stroke="#000" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/><path d="M${cx-12} ${hip+dy} L${lk} ${kneeY} L${lf} ${footY}" fill="none" stroke="#fff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M${cx+12} ${hip+dy} L${rk} ${kneeY} L${rf} ${footY}" fill="none" stroke="#000" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/><path d="M${cx+12} ${hip+dy} L${rk} ${kneeY} L${rf} ${footY}" fill="none" stroke="#fff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>`;
+ const fx=s.w===0?(s.a?15:14):s.w*40+20;
+ const feet=`<rect x="20" y="282" width="380" height="110" rx="10" fill="#e3f2fd"/><text x="30" y="300" font-size="13" fill="#555" font-family="Arial">Feet from above</text>${foot(cx-fx,350,s.a,-1)}${foot(cx+fx,350,s.a,1)}`;
+ return `<svg viewBox="0 0 420 400" style="max-width:${sz||420}px" role="img" aria-label="${s.n}">${fig}${feet}</svg>`}
+let q=0,score=0,streak=0,order=[],cur=null,locked=0;const N=10;
+const best=()=>+(localStorage.getItem('stanceSpotterBest')||0);
+function menu(){app.innerHTML=`<h2 style="margin:4px 0">Can you spot the stance?</h2><p>Look at the picture and pick the right stance. 10 goes. Get them all for 3 stars!</p>${pic(ST[4],260)}<div class="choices"><button id="go">▶ Play</button><button class="alt" id="lr">📖 Learn the 5 stances</button></div><p>Best score on this device: <b>${best()}/${N}</b></p>`;
+ go.onclick=start;lr.onclick=learn}
+function learn(){app.innerHTML=`<h2 style="margin:4px 0">The 5 beginner stances</h2><div class="learn">${ST.map(s=>`<div>${pic(s)}<b>${s.n}</b><br><span style="font-size:14px">${s.d}</span></div>`).join('')}</div><div class="choices"><button id="go">▶ Play</button><button class="alt" id="bk">Back</button></div>`;go.onclick=start;bk.onclick=menu}
+function start(){q=0;score=0;streak=0;order=[];while(order.length<N){const p=[0,1,2,3,4].sort(()=>Math.random()-.5);order.push(...p)}order=order.slice(0,N);next()}
+function next(){if(q>=N)return end();locked=0;cur=ST[order[q]];const others=ST.filter(s=>s!==cur).sort(()=>Math.random()-.5).slice(0,2);const ch=[cur,...others].sort(()=>Math.random()-.5);
+ app.innerHTML=`<div class="hud"><span>Go ${q+1}/${N}</span><span>⭐ ${score}</span><span>🔥 ${streak}</span></div>${pic(cur)}<div class="choices">${ch.map((s,i)=>`<button data-id="${s.id}">${i+1}. ${s.n}</button>`).join('')}</div><div class="fb" id="fb">Which stance is this?</div>`;
+ app.querySelectorAll('.choices button').forEach(b=>b.onclick=()=>answer(b))}
+function answer(b){if(locked)return;locked=1;const ok=b.dataset.id===cur.id;app.querySelectorAll('.choices button').forEach(x=>{if(x.dataset.id===cur.id)x.classList.add('ok');else if(x===b)x.classList.add('bad')});
+ if(ok){score++;streak++}else streak=0;fb.innerHTML=(ok?'<b style="color:#1b5e20">Oss! Correct!</b> ':'<b style="color:#b71c1c">Not quite.</b> That was <b>'+cur.n+'</b>. ')+cur.d;
+ setTimeout(()=>{q++;next()},ok?1300:2600)}
+function end(){const st=score===N?3:score>=7?2:score>=4?1:0;if(score>best())try{localStorage.setItem('stanceSpotterBest',score)}catch(e){}
+ app.innerHTML=`<h2>${'⭐'.repeat(st)||'🙂'} ${score}/${N}</h2><p>${st===3?'Perfect! Show Sensei your 5 stances at your next class.':st===2?'Great spotting! One more go for 3 stars?':'Good try! Have a look at the Learn page and go again.'}</p><div class="choices"><button id="go">↻ Play again</button><button class="alt" id="lr">📖 Learn</button><button class="alt" id="bk">Menu</button></div>`;go.onclick=start;lr.onclick=learn;bk.onclick=menu}
+addEventListener('keydown',e=>{const n=+e.key;if(n>=1&&n<=3){const b=app.querySelectorAll('.choices button[data-id]')[n-1];if(b)answer(b)}else if(e.key==='Enter'){const g=document.getElementById('go');if(g)g.click()}});
+menu();
+</script></body></html>
