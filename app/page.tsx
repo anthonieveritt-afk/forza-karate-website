@@ -54,25 +54,6 @@ export default function HomePage() {
       <Hero />
       <StatsBand />
 
-      {/* Featured news */}
-      <section className="bg-[#111111] py-16 px-4 sm:px-6 lg:px-8">
-        <Link href="/news/kobe-karate-world-championships-2026" className="group max-w-5xl mx-auto grid gap-8 md:grid-cols-[minmax(0,320px)_1fr] items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/news/kobe-world-championships-2026.webp" alt="Kobe in his England hoodie at the 14th Karate World Championships, Bielsko-Biała" className="w-full max-w-[320px] mx-auto aspect-[9/16] object-cover rounded-2xl border-4 border-[#dc2626]" />
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-0.5 bg-[#dc2626]" />
-              <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Club news · 13 October 2026</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 group-hover:text-[#fca5a5]">Kobe flies the flag for England at the Karate World Championships</h2>
-            <p className="text-gray-300 text-lg mb-2">Kobe has landed in Poland with the rest of the England team.</p>
-            <p className="text-gray-400 mb-6">14th Karate World Championships, Bielsko-Biała, Poland.</p>
-            <p className="text-white text-xl font-bold mb-6">Best of luck Kobe!</p>
-            <span className="inline-flex items-center gap-2 text-sm font-medium text-[#dc2626]">Read the news <ArrowRight className="h-4 w-4" /></span>
-          </div>
-        </Link>
-      </section>
-
       {/* Classes section */}
       <section className="bg-white py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
