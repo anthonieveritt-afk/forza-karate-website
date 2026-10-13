@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/Button'
 import { ArrowRight } from 'lucide-react'
 import AnimatedWord from '@/components/ui/AnimatedWord'
 
-type HeroPhoto = { src: string; alt: string; position: string; mobilePosition?: string; desktopContain?: boolean }
+type HeroPhoto = { src: string; alt: string; position: string; mobilePosition?: string; desktopPosition?: string; textLeft?: boolean }
 
 const photos: HeroPhoto[] = [
-  { src: '/news/kobe-world-championships-2026.webp', alt: 'Kobe in his England hoodie in front of the 14th Karate World Championships banner, Bielsko-Biała 2026', position: '50% 45%', mobilePosition: '50% 45%', desktopContain: true },
+  { src: '/news/kobe-world-championships-2026.webp', alt: 'Kobe in his England hoodie in front of the 14th Karate World Championships banner, Bielsko-Biała 2026', position: '50% 45%', mobilePosition: '50% 45%', desktopPosition: '50% 38%', textLeft: true },
   { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 15%' },
   { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 15%' },
   { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 20%' },
@@ -48,6 +48,7 @@ const photos: HeroPhoto[] = [
 
 export default function Hero() {
   const [current, setCurrent] = useState(0)
+  const dark = !!photos[current].textLeft
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -83,51 +84,39 @@ export default function Hero() {
 
       {/* ── DESKTOP: full-background photo behind content ── */}
       <div className="relative min-h-screen hidden md:flex items-center">
-        {photos.map((photo, i) =>
-          photo.desktopContain ? (
-            // Tall portrait: blurred fill behind, full photo shown uncropped on the left
-            <div
-              key={photo.src}
-              className="absolute inset-0 overflow-hidden bg-[#111111]"
-              style={{ opacity: i === current ? 1 : 0, transition: 'opacity 0.8s ease-in-out', zIndex: i === current ? 1 : 0 }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={photo.src} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover scale-110 blur-2xl opacity-60" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={photo.src} alt={photo.alt} className="absolute top-1/2 left-[6%] lg:left-[10%] h-[86%] w-auto -translate-y-1/2 rounded-2xl shadow-2xl" />
-            </div>
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={photo.src}
-              src={photo.src}
-              alt={photo.alt}
-              style={{
-                position: 'absolute',
-                inset: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: photo.position,
-                opacity: i === current ? 1 : 0,
-                transition: 'opacity 0.8s ease-in-out',
-                zIndex: i === current ? 1 : 0,
-              }}
-            />
-          )
-        )}
+        {photos.map((photo, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={photo.src}
+            src={photo.src}
+            alt={photo.alt}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: photo.desktopPosition ?? photo.position,
+              opacity: i === current ? 1 : 0,
+              transition: 'opacity 0.8s ease-in-out',
+              zIndex: i === current ? 1 : 0,
+            }}
+          />
+        ))}
         {/* White fade right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-white" style={{ zIndex: 2 }} />
-        <div className="relative z-10 ml-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="ml-auto max-w-lg py-24">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-white" style={{ zIndex: 2, opacity: dark ? 0 : 1, transition: 'opacity 0.8s ease-in-out' }} />
+        {/* Dark fade left (subject on right of photo) */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-transparent" style={{ zIndex: 2, opacity: dark ? 1 : 0, transition: 'opacity 0.8s ease-in-out' }} />
+        <div className={`relative z-10 w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${dark ? 'mr-auto' : 'ml-auto'}`}>
+          <div className={`max-w-lg py-24 ${dark ? 'mr-auto hero-dark' : 'ml-auto'}`}>
             <div className="flex items-center gap-2 mb-6">
               <div className="w-8 h-0.5 bg-[#dc2626]" />
               <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Forza Karate Club</span>
             </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#111111] leading-[1.05] tracking-tight mb-6">
+            <h1 className={`text-5xl sm:text-6xl lg:text-7xl font-bold ${dark ? 'text-white' : 'text-[#111111]'} leading-[1.05] tracking-tight mb-6`}>
               This is where<br />our students{' '}<AnimatedWord />
             </h1>
-            <p className="text-lg text-gray-600 leading-relaxed mb-10">
+            <p className={`text-lg leading-relaxed mb-10 ${dark ? 'text-gray-200' : 'text-gray-600'}`}>
               Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster.
               Term-time classes, real progression, and a community that lasts.
             </p>
