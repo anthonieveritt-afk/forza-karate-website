@@ -17,7 +17,7 @@ MEMBERSHIP & PRICING:
 - Trial class: £10, booked and paid online (no kit or experience needed). The £10 is for the trial only and is NOT deducted from membership. If they join, membership starts the week after the trial at the full monthly rate
 - Annual membership covering 40 weeks of term-time classes, paid as 12 equal monthly payments (due on the 1st of each month)
 - Single person: £50/month
-- Siblings: £90/month
+- Siblings: £80/month
 - Family: £120/month
 - Karate licence (first licence or renewal, required for every student): £50 for 17 and under, £55 for 18 and over
 - Full FAQ: https://forza-karate-website.vercel.app/faq
