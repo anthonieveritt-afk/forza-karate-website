@@ -30,11 +30,9 @@ export async function POST(req: Request) {
       if (pricePence == null) bad = 'Please choose a size for each karate suit.'
       else suit = { key: s(x.suit.key, 40), size: s(x.suit.size, 20), pricePence }
     }
-    // Licence is required for every student: only first licence or renewal, always paid.
-    const t = s(x?.licence?.type, 20) as LicenceType
-    let licence: { type: string; feePence: number } | null = null
-    if (t !== 'first_time' && t !== 'renewal') bad = 'Please choose first licence or licence renewal for each student.'
-    else licence = { type: t, feePence: licenceFeePence(t, dateOfBirth) }
+    // Joining students always get a first licence (paid). Any client-sent type is ignored.
+    const t: LicenceType = 'first_time'
+    const licence: { type: string; feePence: number } = { type: t, feePence: licenceFeePence(t, dateOfBirth) }
     return { firstName: s(x?.firstName, 60), surname: s(x?.surname, 60), dateOfBirth,
       belt: s(x?.belt, 40) || 'White', medical: s(x?.medical, 500), suit, licence }
   }).filter((x: any) => x.firstName && x.surname)

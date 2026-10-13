@@ -45,7 +45,7 @@ const blank = (): Student => ({ firstName: '', surname: '', dateOfBirth: '', bel
 const SUITS = suitOptions()
 const PLAN_LABEL: Record<PlanKey, string> = { monthly_single: 'Single (1 student)', monthly_two: 'Siblings (2 students)', monthly_family: 'Family (3 or more)' }
 const suitCost = (st: Student) => (st.suitKey && st.suitSize ? SUITS.find(x => x.key === st.suitKey)?.price ?? 0 : 0)
-const licenceCost = (st: Student) => licenceFeePence(st.licence, st.dateOfBirth)
+const licenceCost = (st: Student) => licenceFeePence('first_time', st.dateOfBirth)
 const ukDate = (iso: string) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
 export default function MembershipSignup() {
@@ -89,7 +89,7 @@ export default function MembershipSignup() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, dojo, classTime, trialDate, parent, emergency, consent: { terms, photos },
-          students: students.map(st => ({ ...st, suit: st.suitKey ? { key: st.suitKey, size: st.suitSize } : null, licence: { type: st.licence } })) }),
+          students: students.map(st => ({ ...st, suit: st.suitKey ? { key: st.suitKey, size: st.suitSize } : null, licence: { type: 'first_time' } })) }),
       })
       const d = await res.json()
       if (!res.ok) { setError(d.error ?? 'Something went wrong.'); setBusy(false); return }
@@ -190,11 +190,9 @@ export default function MembershipSignup() {
                   </select>
                   </div>
                 <div className="sm:col-span-2 -mt-2"><HeightGuide /></div>
-                <div className="sm:col-span-2"><label className={lbl}>FKA licence &amp; insurance (required)</label>
-                  <select className={input} value={st.licence} onChange={e => setStudent(i, 'licence', e.target.value)}>
-                    {(Object.keys(LICENCE_TYPES) as LicenceType[]).map(k => <option key={k} value={k}>{LICENCE_TYPES[k]}</option>)}
-                  </select>
-                  <p className="text-xs text-gray-400 mt-1">Every member pays for an FKA licence: £50 for {LICENCE_ADULT_AGE - 1} and under, £55 for {LICENCE_ADULT_AGE}+.{st.dateOfBirth ? ` This student: ${pounds(licenceCost(st))}.` : ''}</p></div>
+                <div className="sm:col-span-2"><div className={lbl}>FKA licence &amp; insurance (required)</div>
+                  <p className="text-sm text-gray-700 mt-1">Licence: {LICENCE_TYPES.first_time}{st.dateOfBirth ? <> · <strong>{pounds(licenceCost(st))}</strong></> : <span className="text-gray-400"> (price shows once date of birth is entered)</span>}</p>
+                  <p className="text-xs text-gray-400 mt-1">All students must have a valid and up-to-date licence to train, grade, attend courses and competitions. It is the student/parent&apos;s responsibility to make sure the licence is in date at all times.</p></div>
               </div>
             </div>
           ))}
