@@ -103,7 +103,7 @@ export default function ClassesPage() {
           <h2 className="text-xl font-bold text-[#111111] mb-3">Fees</h2>
           <p className="text-gray-500 leading-relaxed max-w-2xl">
             Membership is an annual fee for 40 weeks of term-time classes, paid as 12 monthly payments on the
-            1st of each month by GoCardless Direct Debit: single person £50, siblings £80, family £120 a month.
+            1st of each month by GoCardless Direct Debit: single person £50, siblings (2 children) £90, family (3 or more) £120 a month.
             One month&apos;s paid notice is required to cancel. See our <a href="/faq" className="text-[#dc2626] underline">FAQ</a> for more.
           </p>
         </div>

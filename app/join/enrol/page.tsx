@@ -18,8 +18,8 @@ const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-
 // price (£600 at the new £50/month rate, or a discounted figure). Re-add it here and in Club Honbu.
 const MEMBERSHIP_OPTIONS = [
   { key: 'monthly_single',  label: 'Single — £50/mo',         desc: '1 student · 12 monthly payments on the 1st' },
-  { key: 'monthly_two',     label: 'Siblings — £80/mo',       desc: '2 students · 12 monthly payments on the 1st' },
-  { key: 'monthly_family',  label: 'Family — £120/mo',        desc: 'Family · 12 monthly payments on the 1st' },
+  { key: 'monthly_two',     label: 'Siblings — £90/mo',       desc: '2 students · 12 monthly payments on the 1st' },
+  { key: 'monthly_family',  label: 'Family — £120/mo',        desc: '3 or more students · 12 monthly payments on the 1st' },
 ]
 
 const RAYLEIGH_CLASSES = [
@@ -193,7 +193,7 @@ function EnrolWizard() {
         // TODO(annual-option): yearly price undecided (was 54000); option hidden for now
         yearly: 54000,
         monthly_single: 5000,
-        monthly_two: 8000,
+        monthly_two: 9000,
         monthly_family: 12000,
       }
       const amountPence = membershipPrices[membershipType] ?? 5000

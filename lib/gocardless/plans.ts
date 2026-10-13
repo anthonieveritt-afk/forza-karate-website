@@ -4,7 +4,7 @@ import { getUnitPrice, getProduct } from '@/lib/shop/catalogue'
 // deliberately left out until its price is confirmed.
 export const PLANS = {
   monthly_single: { label: 'Single', price: 5000, desc: '1 student' },
-  monthly_two: { label: 'Siblings', price: 8000, desc: '2 students' },
+  monthly_two: { label: 'Siblings', price: 9000, desc: '2 students' },
   monthly_family: { label: 'Family', price: 12000, desc: '3 or more' },
 } as const
 

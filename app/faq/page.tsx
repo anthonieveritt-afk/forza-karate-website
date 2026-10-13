@@ -69,14 +69,14 @@ const faqs: { group: string; items: Faq[] }[] = [
       {
         q: 'How much does membership cost?',
         text:
-          'Membership is an annual fee covering 40 weeks of term-time classes, paid as 12 equal monthly payments: single person £50 a month, siblings £80 a month, family £120 a month.',
+          'Membership is an annual fee covering 40 weeks of term-time classes, paid as 12 equal monthly payments: single person £50 a month, siblings £90 a month, family £120 a month.',
         a: (
           <>
             <p>Membership is an annual fee covering 40 weeks of term-time classes, paid as 12 equal monthly payments:</p>
             <ul className="list-disc pl-5 mt-2 space-y-1">
               <li>Single person: £50 a month</li>
-              <li>Siblings: £80 a month</li>
-              <li>Family: £120 a month</li>
+              <li>Siblings (2 children): £90 a month</li>
+              <li>Family (3 or more): £120 a month</li>
             </ul>
           </>
         ),
