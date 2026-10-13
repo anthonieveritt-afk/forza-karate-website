@@ -15,7 +15,19 @@ export type NewsPost = {
 }
 
 // Imported from the old WordPress site (public REST API), newest first.
-export const allPosts: NewsPost[] = (posts as NewsPost[]).slice().sort((a, b) => b.date.localeCompare(a.date))
+// Unpublished posts (Forza-only branding): kept in posts.json, hidden from listings, sitemap and pages.
+export const HIDDEN_SLUGS = new Set([
+  'jhka-summer-course-matt-rombeaux-kumite',
+  'jhka-5th-open-championships-results',
+  'jhka-5th-invitational-open-registrations-are-now-open',
+  'jhka-summer-course-special-guest-instructor',
+  'jhka-open-collier-row',
+  'jhka-3rd-open-championships-romford',
+  '5-gold-at-the-jhka-invitational',
+  'glasgow-inter-club-training-session',
+])
+
+export const allPosts: NewsPost[] = (posts as NewsPost[]).filter((p) => !HIDDEN_SLUGS.has(p.slug)).slice().sort((a, b) => b.date.localeCompare(a.date))
 
 export function getPost(slug: string) {
   return allPosts.find((p) => p.slug === slug)

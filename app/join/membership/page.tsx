@@ -24,7 +24,7 @@ declare global {
 
 const CLASSES: Record<string, string[]> = {
   rayleigh: [
-    'Tuesday 6:15–7pm — 4 yrs+ (all grades)',
+    'Tuesday 6:15–7pm — Ages 4–10 (all grades)',
     'Tuesday 7–8pm — 11 yrs+ (all grades)',
     'Friday 3:40–4:40pm — after-school club (Rayleigh Primary School pupils only)',
     'Saturday 10–11am — 4 yrs+ (all ages)',

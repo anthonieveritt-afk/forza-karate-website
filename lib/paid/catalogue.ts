@@ -44,7 +44,11 @@ export function getBelt(slug: string): Belt | undefined {
 // They're embedded via youtube-nocookie.com.
 export type Video = { id: string; title: string; belt?: string; youtubeId: string | null }
 export const VIDEOS: Video[] = [
-  { id: 'v1', title: 'PLACEHOLDER — Warm-up routine', youtubeId: null },
-  { id: 'v2', title: 'PLACEHOLDER — White belt techniques', belt: '18-kyu', youtubeId: null },
-  { id: 'v3', title: 'PLACEHOLDER — First kata walkthrough', youtubeId: null },
+  { id: 'pinan-shodan', title: 'Pinan Shodan', youtubeId: null },
+  { id: 'pinan-nidan', title: 'Pinan Nidan', youtubeId: null },
+  { id: 'pinan-sandan', title: 'Pinan Sandan', youtubeId: null },
+  { id: 'pinan-yondan', title: 'Pinan Yondan', youtubeId: null },
+  { id: 'pinan-godan', title: 'Pinan Godan', youtubeId: null },
+  { id: 'tobikomizuki-jodan', title: 'Tobikomizuki Jodan (snap punch)', youtubeId: null },
+  { id: 'tobikomizuki-gyakuzuki', title: 'Tobikomizuki Jodan + Gyakuzuki Chudan', youtubeId: null },
 ]

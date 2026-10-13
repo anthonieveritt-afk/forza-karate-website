@@ -6,6 +6,8 @@ import { getAlbums, getAlbumPhotos, matchAlbums } from '@/lib/news-gallery'
 
 export const revalidate = 3600
 
+export const dynamicParams = false
+
 export function generateStaticParams() {
   return allPosts.map((p) => ({ slug: p.slug }))
 }

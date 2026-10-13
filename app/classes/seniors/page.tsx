@@ -84,15 +84,25 @@ export default function SeniorsPage() {
               </thead>
               <tbody className="text-gray-500">
                 <tr className="border-b border-black/5">
-                  <td className="py-3 pr-8">Contact us</td>
-                  <td className="py-3 pr-8">—</td>
-                  <td className="py-3">Rayleigh / Upminster</td>
+                  <td className="py-3 pr-8">Wednesday</td>
+                  <td className="py-3 pr-8">5:45 – 7:00pm</td>
+                  <td className="py-3">Upminster · seniors, all grades (11+)</td>
+                </tr>
+                <tr className="border-b border-black/5">
+                  <td className="py-3 pr-8">Tuesday</td>
+                  <td className="py-3 pr-8">7:00 – 8:00pm</td>
+                  <td className="py-3">Rayleigh · ages 11+, all grades</td>
+                </tr>
+                <tr className="border-b border-black/5">
+                  <td className="py-3 pr-8">Saturday</td>
+                  <td className="py-3 pr-8">10:00 – 11:00am</td>
+                  <td className="py-3">Rayleigh · ages 4+, all grades</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <p className="text-xs text-gray-400 mt-4">
-            * Contact us for current timetable. Term-time only — 40 weeks per year.
+            Term-time only — 40 weeks per year. Rayleigh also runs a Friday 3:40–4:40pm after-school class for Rayleigh Primary School pupils only.
           </p>
         </div>
       </section>

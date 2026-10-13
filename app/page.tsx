@@ -18,7 +18,7 @@ const classes = [
   {
     title: 'Forza Ninjas',
     subtitle: 'Our youngest karatekas',
-    ageRange: 'Ages 4–7',
+    ageRange: 'Ages 4–6',
     description:
       'Play-based karate that builds coordination, confidence, and listening skills through fun drills, games, and structured movement.',
     href: '/classes/ninjas',
@@ -26,7 +26,7 @@ const classes = [
   {
     title: 'Forza Kids / Juniors',
     subtitle: 'Building real technique',
-    ageRange: 'Ages 8–10',
+    ageRange: 'Ages 7–10',
     description:
       'Structured kata, kumite, and belt progression. Students develop discipline, focus, and technical skill in a supportive environment.',
     href: '/classes/juniors',

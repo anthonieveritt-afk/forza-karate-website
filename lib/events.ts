@@ -12,6 +12,7 @@ export interface ClubEvent {
   notes?: string
   registrationHref?: string
   cancelled?: boolean
+  hidden?: boolean   // unpublished: kept in data, not shown anywhere
 }
 
 export const EVENTS: ClubEvent[] = [
@@ -55,7 +56,7 @@ export const EVENTS: ClubEvent[] = [
   { id: 'sc-may',       title: 'Saturday Super Champs',                        date: '2026-05-09', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Super Champs' },
   { id: 'kata-may',     title: 'Kata Training (BKF)',                          date: '2026-05-09', time: '3:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: 'All ages' },
   { id: 'wkf-sel',      title: 'WKF Youth Camp & U12 — Training & Selection', date: '2026-05-09', venue: 'Rayleigh, Essex',                                      category: 'Coaching',   eligibility: '11 years & below, 12yr olds welcome' },
-  { id: 'jhka-6th',     title: 'JHKA 6th Open Championships',                 date: '2026-05-16', venue: 'Romford',                                               category: 'Competition', eligibility: 'Open to all FKA students incl. beginners' },
+  { id: 'jhka-6th', hidden: true,     title: 'JHKA 6th Open Championships',                 date: '2026-05-16', venue: 'Romford',                                               category: 'Competition', eligibility: 'Open to all FKA students incl. beginners' },
   { id: 'kum-u12-may',  title: 'Kumite Training',                              date: '2026-05-17', time: '11:00am', venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '12 years & below' },
   { id: 'kum-s-may',    title: 'Kumite Training',                              date: '2026-05-17', time: '1:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: '13 years+' },
 
@@ -99,7 +100,7 @@ export const EVENTS: ClubEvent[] = [
   { id: 'cwsel',        title: 'Commonwealth Club Championships — Selections', date: '2026-10-02', venue: 'Chigwell, Essex',                                      category: 'Coaching',   eligibility: 'Open to all squad' },
   { id: 'kum-u12-oct',  title: 'Kumite Training (Commonwealth)',               date: '2026-10-04', time: '2:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: '12 years & below' },
   { id: 'kum-s-oct',    title: 'Kumite Training (Commonwealth)',               date: '2026-10-04', time: '4:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: '13 years+' },
-  { id: 'jhka-8th',     title: 'JHKA 8th Junior Championships',               date: '2026-10-10', venue: 'Enfield',                                               category: 'Competition', eligibility: 'Open to all JHKA students incl. beginners' },
+  { id: 'jhka-8th', hidden: true,     title: 'JHKA 8th Junior Championships',               date: '2026-10-10', venue: 'Enfield',                                               category: 'Competition', eligibility: 'Open to all JHKA students incl. beginners' },
   { id: 'sc-oct',       title: 'Saturday Super Champs',                        date: '2026-10-24', time: '2:00pm',  venue: 'Chingford',                            category: 'Super Champs' },
   { id: 'kata-oct',     title: 'Kata Training (Commonwealth)',                 date: '2026-10-24', time: '3:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
   { id: 'grad-nov-dl',  title: 'November Grading — Registration Deadline',    date: '2026-10-23', venue: 'Rayleigh & Upminster',                                  category: 'Grading',    notes: 'Belts awarded 2nd–6th November', registrationHref: 'https://forzakarate.co.uk/grading/' },
