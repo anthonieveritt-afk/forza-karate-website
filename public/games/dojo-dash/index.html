@@ -86,7 +86,11 @@ const BADGES=[
  ['fo10','🏆','Face-off Champ','Win 10 face-offs',()=>(ST.foWins||0)>=10],
  ['kmippon','🦵','Ippon!','Score an Ippon in WKF kumite',()=>ST.kmIppon],
  ['kmclean','😇','Clean Fighter','Win a kumite with no penalties',()=>ST.kmClean],
- ['rec10','🌟','Sensei\'s Favourite','Deliver 10 friends in one run',()=>ST.rec10]];
+ ['rec10','🌟','Sensei\'s Favourite','Deliver 10 friends in one run',()=>ST.rec10],
+ ['count5','🔢','Count to Go','Count ichi to go in one stage',()=>ST.count5]];
+const NUMS=[{r:'ichi',j:'いち',k:'一'},{r:'ni',j:'に',k:'二'},{r:'san',j:'さん',k:'三'},{r:'shi',j:'し',k:'四'},{r:'go',j:'ご',k:'五'}];
+let jaVoice=null;function findJa(){try{jaVoice=speechSynthesis.getVoices().find(v=>/^ja/i.test(v.lang))||null}catch(e){}}try{findJa();speechSynthesis.onvoiceschanged=findJa}catch(e){}
+function sayJa(N){try{if(!jaVoice)return;const u=new SpeechSynthesisUtterance(N.j);u.voice=jaVoice;u.lang=jaVoice.lang;u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
 let toasts=[];
 function checkBadges(){let n=0;for(const b of BADGES)if(!ST.badges[b[0]]&&b[4]()){ST.badges[b[0]]=TODAY;toasts.push({t:220,b});n++}if(n)beep(1046,.2);saveST()}
 const A=['Ninja','Turbo','Captain','Sneaky','Mighty','Super','Kung','Ossu','Bouncy','Zippy','Cosmic','Sir'],B=['Noodle','Panda','Pickle','Sprout','Waffle','Kicker','Nugget','Dragon','Tiger','Muffin','Banana','Bean'];
@@ -169,7 +173,9 @@ function buildLevel(L,i,seed,tw){
   w.ents.push(e)}
  for(let ix=900;ix<L.len-400;ix+=900+r()*600){w.items.push({x:ix,y:GROUND-150,t:r()<.5?'belt':'kiai'})}
  for(let ix=400;ix<L.len;ix+=110+r()*90)if(onGround(ix))w.items.push({x:ix,y:GROUND-40-(r()*40|0),t:'star'});
- w.items.forEach(it=>it.got=0);
+ // Count in Japanese (Forza syllabus: numbers 1-5): five number plaques spread along the stage, in order
+ for(let k=0;k<5;k++){let nx=Math.round(L.len*(k+1)/6.2)+200;for(let t=0;t<40&&!onGround(nx);t++)nx+=40;w.items.push({x:nx,y:GROUND-52,t:'num',n:k+1})}
+ w.cnt=0;w.items.forEach(it=>it.got=0);
  for(let dx=0;dx<L.len+900;dx+=180+r()*160)w.deco.push({x:dx,k:r(),h:r()});
  w.mates=[];w.leavers=[];if(i>=2){const step=Math.max(420,1500-i*60);for(let mx=700+r()*400;mx<L.len-150;mx+=step+r()*400)if(onGround(mx))w.mates.push({x:mx,y:GROUND,got:0,hair:HAIR[r()*HAIR.length|0],ph:r()*6})}
  w.door={x:L.len+260,y:GROUND-150,w:110,h:150};
@@ -261,6 +267,7 @@ const hurt=()=>!(p.inv>0||p.belt>0);
  for(const it of world.items){if(it.got)continue;if(Math.abs(it.x-p.x)<26&&Math.abs(it.y-(p.y-p.h/2))<40){it.got=1;
   if(it.t=='star'){score+=10;ST.stars++;beep(990,.06,'square',.05)}
   if(it.t=='belt'){p.belt=420;p.laces=0;p.heavy=0;score+=200;pop(it.x,it.y-20,'BLACK BELT POWER!','#000',1);beep(523,.1);setTimeout(()=>beep(784,.2),100)}
+  if(it.t=='num'){const N=NUMS[it.n-1];if(it.n===world.cnt+1)world.cnt++;score+=50*it.n;ST.nums=(ST.nums||0)+1;pop(it.x,it.y-34,it.n+' = '+N.r.toUpperCase()+'!','#ffd600',1);beep(440+it.n*110,.12,'triangle',.07);sayJa(N);if(world.cnt===5){score+=500;ST.count5=1;pop(it.x,it.y-70,'ICHI NI SAN SHI GO! +500','#69f0ae',1);setTimeout(()=>beep(1175,.25,'triangle',.07),200)}}
   if(it.t=='kiai'){p.kiai=480;score+=200;pop(it.x,it.y-20,'MEGA KIAI KICK!','#ff1744',1);beep(600,.1);setTimeout(()=>beep(900,.2),100)}
   burst(it.x,it.y,'#ffd600',8)}}
  p.trail.push({x:p.x,y:p.y,f:p.face,on:p.on});if(p.trail.length>600)p.trail.shift();
@@ -611,6 +618,7 @@ function drawWorld(){
  if(mode!=='career'||stageIdx==LEVELS.length-1){txt('FORZA KARATE',d.x+d.w/2,d.y-26,22,'#fff');txt('🥋 DOJO 🥋',d.x+d.w/2,d.y-4,16,'#ffd600')}else{txt('NEXT ➜',d.x+d.w/2,d.y-20,22,'#fff')}
  for(const it of world.items){if(it.got)continue;const bob=Math.sin(frame*.1+it.x)*4;
   if(it.t=='star')txt('⭐',it.x,it.y+bob,22);
+  else if(it.t=='num'){const N=NUMS[it.n-1],y=it.y+bob;rr(it.x-29,y-30,58,54,8,'#5d4037');rr(it.x-25,y-26,50,46,6,'#fff8e1');txt(N.k,it.x,y-2,22,'#b71c1c','center','#fff8e1');txt(it.n+' '+N.r,it.x,y+15,11,'#000','center','#fff8e1')}
   else if(it.t=='belt'){rr(it.x-22,it.y+bob-6,44,12,4,'#111');rr(it.x-6,it.y+bob-10,12,20,3,'#111');txt('BELT',it.x,it.y+bob-16,12,'#ffd600')}
   else{g.fillStyle='#ff1744';g.beginPath();g.arc(it.x,it.y+bob,16,0,7);g.fill();txt('気',it.x,it.y+bob+7,18,'#fff');txt('KIAI',it.x,it.y+bob-20,12,'#ffd600')}}
  for(const e of world.ents)if(e.alive&&Math.abs(e.x-cam-W/2)<W)drawEnt(e);
@@ -625,7 +633,7 @@ function drawWorld(){
  g.restore();
 }
 function fmt(f){const s=f/60;return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')}
-function hud(){rr(10,10,W-20,44,12,'rgba(0,0,0,.45)');txt('⭐ '+score,24,42,22,'#ffd600','left');txt('⏱ '+fmt(totalTime),220,42,22,'#fff','left');txt('❤️'.repeat(Math.max(0,lives)),330,42,18,'#fff','left');
+function hud(){rr(10,10,W-20,44,12,'rgba(0,0,0,.45)');if(world&&world.cnt!=null){rr(W-272,58,262,24,8,'rgba(0,0,0,.4)');NUMS.forEach((N,i)=>txt(N.r,W-260+i*50,76,15,i<world.cnt?'#ffd600':'rgba(255,255,255,.35)','left',i<world.cnt?'#000':'rgba(0,0,0,.3)'))}txt('⭐ '+score,24,42,22,'#ffd600','left');txt('⏱ '+fmt(totalTime),220,42,22,'#fff','left');txt('❤️'.repeat(Math.max(0,lives)),330,42,18,'#fff','left');
  txt(mode==='daily'?'Daily':mode==='mastery'?'Mastery '+mlvl:lv.name.split(':')[0],W/2-10,42,20,'#80deea');rr(W/2+46,20,58,28,6,'rgba(255,255,255,.75)');beltIcon(W/2+50,26,GRADES[grade]);txt(short(GRADES[grade]),W/2+108,42,14,'#fff','left');
  const prog=Math.min(1,P.x/world.door.x);rr(W-260,24,220,16,8,'#333');rr(W-260,24,220*prog,16,8,'#66bb6a');txt('🥋',W-34,40,18);txt('🏫',W-272,40,16);
  let fx=[];if(P.belt)fx.push('🥋 BELT '+Math.ceil(P.belt/60)+'s');if(P.kiai)fx.push('💥 KIAI '+(P.kiai>1e6?'∞':Math.ceil(P.kiai/60)+'s'));if(P.heavy)fx.push('🎒 Heavy bag (X)');if(P.laces)fx.push('👟 Laces! (X)');if(P.slow)fx.push('🐌 Slowed');if(curTw)fx.unshift(TWIST.ico+' '+TWIST.nm+(curTw==='speed'?' – '+Math.max(0,45-Math.floor(levelTime/60))+'s left':''));fx.unshift(WEEK.ico+' '+WEEK.nm);const nfol=CH[0].length+CH[1].length;if(world.mates.length||nfol||runDelivered)fx.unshift('👫 Friends following: '+nfol+' · delivered: '+runDelivered);if(TWO)fx.unshift('👥 Team: P1 ←→↑ L/X · P2 A D W F');
@@ -673,7 +681,7 @@ function draw(){
   beltIcon(W/2-125,240,G,5);
   drawKid(W/2,430,{anim:frame*.15,on:1,face:1,kick:frame%60<15?12:0,inv:0,belt:0,laces:0,heavy:0,slow:0,stun:0,trip:0,g:grade});
   txt('Stage bonus: +'+msg.bonus+'   Lives: +'+lives*100+(msg.fr?'   Friends: +'+msg.fr:'')+'   Score: '+score,W/2,475,20,'#fff');if(msg.nf)txt('👫 New member'+(msg.nf>1?'s':'')+'! x'+msg.nf+' joined Forza Karate Club',W/2,452,20,'#69f0ae');
-  txt(M?'Next: Mastery Level '+mlvl+' – even harder!':fin?'':'Next: '+LEVELS[stageIdx+1].name,W/2,505,18,'#ffcc80');if(msg.t<200&&frame%60<40)txt('Tap / SPACE to continue',W/2,532,16,'#fff')}
+  if(world&&world.cnt!=null)txt(world.cnt===5?'🔢 You counted ichi, ni, san, shi, go! +500':'🔢 Counted in Japanese: '+(world.cnt?NUMS.slice(0,world.cnt).map(n=>n.r).join(', '):'none yet')+' – find all 5 next time!',W/2,114,15,world.cnt===5?'#69f0ae':'#ffcc80');txt(M?'Next: Mastery Level '+mlvl+' – even harder!':fin?'':'Next: '+LEVELS[stageIdx+1].name,W/2,505,18,'#ffcc80');if(msg.t<200&&frame%60<40)txt('Tap / SPACE to continue',W/2,532,16,'#fff')}
  if(state==='over'||state==='win'||state==='dailydone'){g.fillStyle='rgba(0,0,0,.55)';g.fillRect(0,0,W,H);txt(state==='dailydone'?'📅 Daily Challenge done! 🔥 Streak '+ST.streak:state==='win'?'🥋 BLACK BELT! OSS! 🥋':mode==='mastery'?'Mastery run over – level '+mlvl:mode==='daily'?'Daily Challenge failed – try again!':'Late for karate! ('+short(GRADES[bestGrade])+')',W/2,70,46,state==='win'?'#ffd600':'#ff5252');
   txt('Score: '+score+'   Time: '+fmt(totalTime),W/2,108,24,'#fff');board(125);if(frame%60<40)txt('Press SPACE / ENTER or tap for the menu',W/2,H-20,24,'#fff')}
  drawToasts();
