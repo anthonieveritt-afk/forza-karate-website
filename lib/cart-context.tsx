@@ -1,5 +1,6 @@
 'use client'
 
+import { REMOVED_PRODUCT_KEYS } from '@/lib/shop/catalogue'
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 
 export interface CartItem {
@@ -32,7 +33,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem('forza_cart')
-      if (saved) setItems(JSON.parse(saved))
+      if (saved) {
+        const parsed: CartItem[] = JSON.parse(saved)
+        // Drop products no longer sold (e.g. the old £35 and WKF gis)
+        setItems(Array.isArray(parsed) ? parsed.filter(i => !REMOVED_PRODUCT_KEYS.some(k => i.productKey === k || (!i.productKey && i.id?.startsWith(k + '-')))) : [])
+      }
     } catch {}
   }, [])
 

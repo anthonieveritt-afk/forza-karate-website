@@ -38,7 +38,7 @@ AGE:
 WHAT TO WEAR / BRING:
 - For the trial: come in a comfortable tracksuit — no kit needed
 - When you join, you will be asked to purchase the official Forza Karate Club karate suit. We do not accept any other karate suits.
-- Two official suits can be ordered through the club: the Forza Karate Gi for £35 and the Blitz Karate Gi for £40
+- There is one official suit, ordered through the club: the Official Forza Karate Club Gi for £40, sized by height. The club does not sell WKF-approved competition gis.
 
 BELT SYSTEM & GRADING:
 - Full belt progression route: https://forza-karate-website.vercel.app/gradings
