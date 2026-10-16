@@ -300,7 +300,31 @@ export const legacyRedirects: Redirect[] = [
   // → / (4)
   ...to("/", "/flyers", "/game", "/karate-game", "/welcome"),
 
-  // → http://frontierkarateassociation.co.uk/ (1)
-  ...to("http://frontierkarateassociation.co.uk/", "/frontier-karate-association"),
+  // Fixed: source/destination were swapped, which left this old post 404ing.
+  ...to("/news", "/frontier-karate-association"),
+
+  // SEO audit 17 Oct 2026: old posts with no imported news page → /news
+  ...to("/news", "/glasgow-inter-club-training-session", "/5-gold-at-the-jhka-invitational", "/jhka-3rd-open-championships-romford", "/jhka-open-collier-row", "/jhka-5th-invitational-open-registrations-are-now-open", "/jhka-5th-open-championships-results"),
+
+  // Old WordPress shop/account pages → /shop
+  ...to("/shop", "/tds-checkout", "/tds-my-account", "/tds-login-register"),
+
+  // WordPress archives, feeds, authors, post formats → /news
+  ...to("/news", "/category/:path*", "/tag/:path*", "/author/:path*", "/type/:path*", "/feed", "/comments/feed", "/:slug/feed", "/wp-sitemap.xml", "/wp-sitemap-:rest.xml"),
+
+  // Old WordPress attachment pages linked from imported news posts → the post
+  ...to("/news/forza-students-grade-up", "/forza-students-grade-up/:img"),
+  ...to("/news/5th-place-at-marseille-karate-open-for-yuan", "/5th-place-at-marseille-karate-open-for-yuan/:img"),
+
+  // Old WordPress PDFs → same documents on the new site
+  ...to("/safeguarding/code-of-conduct-instructors.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-Instructors-Coaches-and-Volunteers.pdf"),
+  ...to("/safeguarding/code-of-conduct-parents.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-parents-and-carers.pdf"),
+  ...to("/safeguarding/code-of-conduct-students.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-students.pdf"),
+  ...to("/safeguarding/safe-practice-policy.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Safe-Practice-Policy-2023.pdf"),
+  ...to("/safeguarding/adults-policy.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Adults-Policy.pdf"),
+  ...to("/safeguarding/children-policy.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Children-Policy-and-Procedures.pdf"),
+  ...to("/safeguarding/statement.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Statement.pdf"),
+  // Any other old upload → home page section that replaced it
+  ...to("/safeguarding", "/wp-content/uploads/:path*.pdf"),
 
 ]
