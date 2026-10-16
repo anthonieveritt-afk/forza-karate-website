@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Shield, ExternalLink, CreditCard, ArrowRight } from 'lucide-react'
-import Navbar from '@/components/layout/Navbar'
 
 export const metadata: Metadata = {
   title: 'Renew Your Licence — Members',
@@ -27,7 +26,6 @@ const steps = [
 export default function MembersLicencePage() {
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
 
       <main className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">

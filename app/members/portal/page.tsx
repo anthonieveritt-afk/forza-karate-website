@@ -1,11 +1,8 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Button } from '@/components/ui/Button'
 import { getMemberPortalData } from '@/app/actions/portal'
-import { logoutMembers } from '@/app/actions/members-auth'
 import { LicenceCard } from '@/components/members/LicenceCard'
 import { BeltJourney } from '@/components/members/BeltJourney'
+import { MemberAvatar } from '@/components/members/MemberAvatar'
 
 function beltBadgeClass(belt: string | null): string {
   if (!belt) return 'bg-gray-100 text-gray-600'
@@ -47,22 +44,6 @@ export default async function MembersPortalPage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9]">
-      {/* Header */}
-      <header className="bg-white border-b border-black/8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto h-16 flex items-center justify-between">
-          <Link href="/">
-            <Image src="/forza-logo.webp" alt="Forza Karate Club" width={120} height={48} className="h-10 w-auto" />
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/members/grading" className="text-sm text-[#dc2626] hover:underline font-medium">Grading</Link>
-            <span className="text-gray-300">|</span>
-            <span className="text-sm text-gray-500">Members area</span>
-            <form action={logoutMembers}>
-              <Button type="submit" variant="outline" size="sm">Log out</Button>
-            </form>
-          </div>
-        </div>
-      </header>
 
       <main className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto space-y-8">
@@ -70,7 +51,9 @@ export default async function MembersPortalPage() {
           {/* Profile card */}
           <div className="bg-white rounded-2xl border border-black/8 p-8 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
+              <div className="flex items-center gap-4">
+                <MemberAvatar firstName={profile.firstName} surname={profile.surname} photoUrl={profile.photoUrl} />
+                <div>
                 <h1 className="text-2xl font-bold text-[#111111]">
                   {profile.firstName} {profile.surname}
                 </h1>
@@ -83,6 +66,7 @@ export default async function MembersPortalPage() {
                   {profile.clubName && (
                     <span className="text-sm text-gray-500">{profile.clubName}</span>
                   )}
+                </div>
                 </div>
               </div>
               <div className="text-sm text-gray-500 space-y-1 sm:text-right">
