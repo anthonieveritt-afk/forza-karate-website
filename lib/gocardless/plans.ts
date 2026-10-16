@@ -61,7 +61,7 @@ export function firstOfNextMonth(date: string): string {
 
 // ─── One-off extras taken in the same Direct Debit flow ─────────────────────
 
-export const SUIT_KEYS = ['forza-gi-student', 'blitz-gi'] as const
+export const SUIT_KEYS = ['blitz-gi'] as const
 export type SuitKey = typeof SUIT_KEYS[number]
 export function suitOptions() {
   return SUIT_KEYS.map(k => ({ key: k, name: getProduct(k)!.name, sizes: getProduct(k)!.sizes, price: getUnitPrice(k, getProduct(k)!.sizes[0]) ?? 0 }))

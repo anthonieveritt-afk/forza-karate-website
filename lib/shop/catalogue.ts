@@ -12,19 +12,12 @@ export const PRICES: Record<string, number> = {
   'mouthguards':                  500,
   'smai-mitts':                  4500,
   'forza-tshirt':                2000,
-  'forza-gi-student':            3500,
   'blitz-shin-blue':             4500,
   'blitz-gi':                    4000,
-  'sport-kumite-gi':            13600,  // WKF Kumite Gi — all sizes same price
 }
 
 // Per-size prices (overrides PRICES when a size is selected)
-export const SIZE_PRICES: Record<string, Record<string, number>> = {
-  'sport-kumite-red-blue': {
-    '120cm': 13500, '130cm': 13500, '140cm': 13500, '150cm': 13500,
-    '160cm': 15600, '170cm': 15600, '180cm': 15600, '190cm': 15600, '200cm': 15600,
-  },
-}
+export const SIZE_PRICES: Record<string, Record<string, number>> = {}
 // ────────────────────────────────────────────────────────────────────────────
 
 export type Product = {
@@ -82,14 +75,6 @@ export const products: Product[] = [
     img: '/shop/forza-tshirt.jpg',
   },
   {
-    key: 'forza-gi-student',
-    name: 'Forza Karate Student Gi',
-    category: 'Clothing',
-    sizes: ['100cm', '110cm', '120cm', '130cm', '140cm', '150cm', '160cm', '170cm', '180cm', '190cm', '200cm', '210cm'],
-    img: '/shop/forza-gi-student.jpg',
-    desc: 'Sized by height. If between sizes, go up.',
-  },
-  {
     key: 'blitz-shin-blue',
     name: 'Blitz Shin & Instep Guards',
     category: 'Equipment',
@@ -105,40 +90,17 @@ export const products: Product[] = [
     img: '/shop/blitz-gi.jpg',
     desc: 'Sized by height. If between sizes, go up.',
   },
-  {
-    key: 'sport-kumite-gi',
-    name: 'WKF Approved Sport Kumite Gi',
-    category: 'Clothing',
-    sizes: ['170cm', '180cm', '190cm', '200cm'],
-    img: '/shop/blitz-gi.jpg',
-    badge: 'WKF Approved',
-    desc: 'Sized by height. If between sizes, go up.',
-  },
-  {
-    key: 'sport-kumite-gi-embroidered',
-    name: 'WKF Approved Sport Kumite Gi — Embroidered Shoulders',
-    category: 'Clothing',
-    sizes: ['170cm', '180cm', '190cm', '200cm'],
-    img: '/shop/blitz-gi.jpg',
-    badge: 'WKF Approved',
-    desc: 'Embroidered shoulders. Sized by height.',
-    priceOnRequest: true,
-  },
-  {
-    key: 'sport-kumite-red-blue',
-    name: 'WKF Approved Sport Kumite Gi — Red or Blue',
-    category: 'Clothing',
-    sizes: ['120cm', '130cm', '140cm', '150cm', '160cm', '170cm', '180cm', '190cm', '200cm'],
-    img: '/shop/blitz-gi.jpg',
-    badge: 'WKF Approved',
-    desc: 'Red or blue. Sized by height. Price varies by size.',
-  },
 ]
 
 /**
  * Server-trusted unit price in pence for a product and size, or null if the
  * product, the size or the price is unknown, or the item isn't sold online.
  */
+// Removed 17 Oct 2026 (only the official £40 club gi is sold now): forza-gi-student,
+// sport-kumite-gi, sport-kumite-gi-embroidered, sport-kumite-red-blue. Old baskets
+// holding these keys are pruned in lib/cart-context.tsx and refused by checkout.
+export const REMOVED_PRODUCT_KEYS = ['forza-gi-student', 'sport-kumite-gi', 'sport-kumite-gi-embroidered', 'sport-kumite-red-blue']
+
 export function getUnitPrice(productKey: string, size: string): number | null {
   const product = products.find(p => p.key === productKey)
   if (!product || product.priceOnRequest) return null
