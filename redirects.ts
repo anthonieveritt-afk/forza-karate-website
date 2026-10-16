@@ -92,7 +92,6 @@ export const legacyRedirects: Redirect[] = [
   { source: "/2025-english-kyu-grade-karate-championships-sheffield", destination: "/news/2025-english-kyu-grade-karate-championships-sheffield", permanent: true },
   { source: "/357-2", destination: "/news/357-2", permanent: true },
   { source: "/4-forza-students-at-2023-bkf-championships-motherwell", destination: "/news/4-forza-students-at-2023-bkf-championships-motherwell", permanent: true },
-  { source: "/5-gold-at-the-jhka-invitational", destination: "/news/5-gold-at-the-jhka-invitational", permanent: true },
   { source: "/5813-2", destination: "/news/5813-2", permanent: true },
   { source: "/5th-place-at-marseille-karate-open-for-yuan", destination: "/news/5th-place-at-marseille-karate-open-for-yuan", permanent: true },
   { source: "/6374-2", destination: "/news/6374-2", permanent: true },
@@ -158,7 +157,6 @@ export const legacyRedirects: Redirect[] = [
   { source: "/general-kyu-grading-december", destination: "/news/general-kyu-grading-december", permanent: true },
   { source: "/get-ready-for-the-next-sport-karate-coaching-session", destination: "/news/get-ready-for-the-next-sport-karate-coaching-session", permanent: true },
   { source: "/girl-power-for-upminster", destination: "/news/girl-power-for-upminster", permanent: true },
-  { source: "/glasgow-inter-club-training-session", destination: "/news/glasgow-inter-club-training-session", permanent: true },
   { source: "/go-quintin-silver-medal-at-the-commonwealth-karate-club-championships", destination: "/news/go-quintin-silver-medal-at-the-commonwealth-karate-club-championships", permanent: true },
   { source: "/good-luck-kobe", destination: "/news/good-luck-kobe", permanent: true },
   { source: "/grading-news-for-4-6-years-class", destination: "/news/grading-news-for-4-6-years-class", permanent: true },
@@ -184,10 +182,6 @@ export const legacyRedirects: Redirect[] = [
   { source: "/jade-honeywood-receives-pauline-bindra-award-for-leadership-and-commercial-acumen-at-tukka-2024", destination: "/news/jade-honeywood-receives-pauline-bindra-award-for-leadership-and-commercial-acumen-at-tukka-2024", permanent: true },
   { source: "/january-prep-training", destination: "/news/january-prep-training", permanent: true },
   { source: "/january-super-champs-training", destination: "/news/january-super-champs-training", permanent: true },
-  { source: "/jhka-3rd-open-championships-romford", destination: "/news/jhka-3rd-open-championships-romford", permanent: true },
-  { source: "/jhka-5th-invitational-open-registrations-are-now-open", destination: "/news/jhka-5th-invitational-open-registrations-are-now-open", permanent: true },
-  { source: "/jhka-5th-open-championships-results", destination: "/news/jhka-5th-open-championships-results", permanent: true },
-  { source: "/jhka-open-collier-row", destination: "/news/jhka-open-collier-row", permanent: true },
   { source: "/jordan-thomas-kumite-class", destination: "/news/jordan-thomas-kumite-class", permanent: true },
   { source: "/july-grading-success", destination: "/news/july-grading-success", permanent: true },
   { source: "/july-preparation-training", destination: "/news/july-preparation-training", permanent: true },
@@ -300,7 +294,31 @@ export const legacyRedirects: Redirect[] = [
   // → / (4)
   ...to("/", "/flyers", "/game", "/karate-game", "/welcome"),
 
-  // → http://frontierkarateassociation.co.uk/ (1)
-  ...to("http://frontierkarateassociation.co.uk/", "/frontier-karate-association"),
+  // Fixed: source/destination were swapped, which left this old post 404ing.
+  ...to("/news", "/frontier-karate-association"),
+
+  // SEO audit 17 Oct 2026: old posts with no imported news page → /news
+  ...to("/news", "/glasgow-inter-club-training-session", "/5-gold-at-the-jhka-invitational", "/jhka-3rd-open-championships-romford", "/jhka-open-collier-row", "/jhka-5th-invitational-open-registrations-are-now-open", "/jhka-5th-open-championships-results"),
+
+  // Old WordPress shop/account pages → /shop
+  ...to("/shop", "/tds-checkout", "/tds-my-account", "/tds-login-register"),
+
+  // WordPress archives, feeds, authors, post formats → /news
+  ...to("/news", "/category/:path*", "/tag/:path*", "/author/:path*", "/type/:path*", "/feed", "/comments/feed", "/:slug/feed", "/wp-sitemap.xml", "/wp-sitemap-:rest.xml"),
+
+  // Old WordPress attachment pages linked from imported news posts → the post
+  ...to("/news/forza-students-grade-up", "/forza-students-grade-up/:img"),
+  ...to("/news/5th-place-at-marseille-karate-open-for-yuan", "/5th-place-at-marseille-karate-open-for-yuan/:img"),
+
+  // Old WordPress PDFs → same documents on the new site
+  ...to("/safeguarding/code-of-conduct-instructors.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-Instructors-Coaches-and-Volunteers.pdf"),
+  ...to("/safeguarding/code-of-conduct-parents.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-parents-and-carers.pdf"),
+  ...to("/safeguarding/code-of-conduct-students.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Code-of-conduct-for-students.pdf"),
+  ...to("/safeguarding/safe-practice-policy.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Safe-Practice-Policy-2023.pdf"),
+  ...to("/safeguarding/adults-policy.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Adults-Policy.pdf"),
+  ...to("/safeguarding/children-policy.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Children-Policy-and-Procedures.pdf"),
+  ...to("/safeguarding/statement.pdf", "/wp-content/uploads/2023/09/Forza-Karate-Club-Safeguarding-Statement.pdf"),
+  // Any other old upload → home page section that replaced it
+  ...to("/safeguarding", "/wp-content/uploads/:path*.pdf"),
 
 ]

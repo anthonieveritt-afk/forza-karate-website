@@ -18,11 +18,34 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Forza Karate Club',
     description: 'This is where champions begin. Traditional karate across Essex.',
-    url: 'https://www.forzakarate.co.uk',
     siteName: 'Forza Karate Club',
     locale: 'en_GB',
     type: 'website',
   },
+}
+
+const SITE = (process.env.NEXT_PUBLIC_SITE_URL || 'https://forzakarate.co.uk').replace(/\/$/, '')
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SportsOrganization',
+  name: 'Forza Karate Club',
+  url: SITE,
+  logo: `${SITE}/forza-logo.webp`,
+  sport: 'Karate',
+  location: [
+    {
+      '@type': 'SportsActivityLocation',
+      name: 'Forza Karate Club — Rayleigh Dojo',
+      url: `${SITE}/dojos/rayleigh`,
+      address: { '@type': 'PostalAddress', streetAddress: 'Rayleigh Primary School, Love Lane', addressLocality: 'Rayleigh', addressRegion: 'Essex', postalCode: 'SS6 7DD', addressCountry: 'GB' },
+    },
+    {
+      '@type': 'SportsActivityLocation',
+      name: 'Forza Karate Club — Upminster Dojo',
+      url: `${SITE}/dojos/upminster`,
+      address: { '@type': 'PostalAddress', streetAddress: 'St Lawrence Church Hall, Corbets Tey Road', addressLocality: 'Upminster', postalCode: 'RM14 2BB', addressCountry: 'GB' },
+    },
+  ],
 }
 
 export default function RootLayout({
@@ -33,6 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
         <CartProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
