@@ -80,11 +80,12 @@ export function UkDateOfBirthInput({ value, onChange, legend = 'Date of birth', 
   const [touched, setTouched] = useState(false)
   const refs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)]
   const lastEmitted = useRef<string>(value ?? '')
+  const partsRef = useRef<[string, string, string]>(splitIso(value))
 
   // Copy an external value in (e.g. form reset) unless it's the one we just emitted.
   useEffect(() => {
     const v = value ?? ''
-    if (v !== lastEmitted.current) { lastEmitted.current = v; setParts(splitIso(v)) }
+    if (v !== lastEmitted.current) { lastEmitted.current = v; partsRef.current = splitIso(v); setParts(partsRef.current) }
   }, [value])
 
   const { iso, error } = validateUkDob(parts[0], parts[1], parts[2], new Date(), minAge, maxAge)
@@ -98,8 +99,6 @@ export function UkDateOfBirthInput({ value, onChange, legend = 'Date of birth', 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, touched, complete])
 
-  const partsRef = useRef(parts)
-  partsRef.current = parts
   const update = (next: [string, string, string]) => {
     partsRef.current = next
     setParts(next)
