@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
-import { logoutMembers } from '@/app/actions/members-auth'
 import { Button } from '@/components/ui/Button'
 
 export const metadata: Metadata = {
@@ -12,24 +10,6 @@ export const metadata: Metadata = {
 export default function MembersSyllabusPage() {
   return (
     <div className="min-h-screen bg-[#fafaf9]">
-      {/* Members header */}
-      <header className="bg-white border-b border-black/8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto h-16 flex items-center justify-between">
-          <Link href="/">
-            <Image src="/forza-logo.webp" alt="Forza Karate Club" width={120} height={48} className="h-10 w-auto" />
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/members/grading" className="text-sm text-[#dc2626] hover:underline font-medium">
-              Register to Grade
-            </Link>
-            <span className="text-gray-300">|</span>
-            <span className="text-sm text-gray-500">Members area</span>
-            <form action={logoutMembers}>
-              <Button type="submit" variant="outline" size="sm">Log out</Button>
-            </form>
-          </div>
-        </div>
-      </header>
 
       <main className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">

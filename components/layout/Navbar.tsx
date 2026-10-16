@@ -2,9 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { Menu, X, ChevronDown, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { isMembersLoggedIn, logoutMembers } from '@/app/actions/members-auth'
 
 const navLinks = [
   { href: '/classes',  label: 'Classes' },
@@ -17,8 +19,10 @@ const navLinks = [
   { href: '/faq',      label: 'FAQ' },
 ]
 
+const membersLoginLink    = { href: '/members',        label: '🔐 Members Login' }
+const membersDashboardLink = { href: '/members/portal', label: 'Members area' }
+
 const membersCoreLinks = [
-  { href: '/members',         label: '🔐 Members Login' },
   { href: '/members/grading', label: 'Register to Grade' },
   // Syllabus hidden for now (Anthoni, Oct 2026) — re-add: { href: '/members/syllabus', label: 'Syllabus' },
   { href: '/members/licence',  label: 'Renew your licence' },
@@ -34,6 +38,17 @@ const eventLinks = [
 export default function Navbar() {
   const [open, setOpen]         = useState(false)
   const [eventsOpen, setEventsOpen] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false)
+  const pathname = usePathname()
+
+  // Re-check the members session on navigation (cookie is httpOnly, so ask the server)
+  useEffect(() => {
+    let live = true
+    isMembersLoggedIn().then(v => { if (live) setLoggedIn(v) }).catch(() => {})
+    return () => { live = false }
+  }, [pathname])
+
+  const membersLinks = [loggedIn ? membersDashboardLink : membersLoginLink, ...membersCoreLinks]
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-black/8">
@@ -60,11 +75,18 @@ export default function Navbar() {
               <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-black/8 rounded-xl shadow-lg overflow-visible opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
 
                 {/* Core links */}
-                {membersCoreLinks.map(link => (
-                  <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors">
+                {membersLinks.map(link => (
+                  <Link key={link.href} href={link.href} className={`block px-4 py-2.5 text-sm hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors ${pathname === link.href ? 'text-[#dc2626] font-medium' : 'text-gray-600'}`}>
                     {link.label}
                   </Link>
                 ))}
+                {loggedIn && (
+                  <form action={logoutMembers}>
+                    <button type="submit" className="w-full text-left px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors">
+                      Log out
+                    </button>
+                  </form>
+                )}
 
                 {/* Events sub-menu */}
                 <div className="relative group/events border-t border-black/5">
@@ -108,11 +130,18 @@ export default function Navbar() {
 
             <div className="pt-1 border-t border-black/5">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider py-2">Members</p>
-              {membersCoreLinks.map(link => (
-                <Link key={link.href} href={link.href} className="block text-sm font-medium text-gray-600 hover:text-[#dc2626] py-1.5 transition-colors" onClick={() => setOpen(false)}>
+              {membersLinks.map(link => (
+                <Link key={link.href} href={link.href} className={`block text-sm font-medium hover:text-[#dc2626] py-1.5 transition-colors ${pathname === link.href ? 'text-[#dc2626]' : 'text-gray-600'}`} onClick={() => setOpen(false)}>
                   {link.label}
                 </Link>
               ))}
+              {loggedIn && (
+                <form action={logoutMembers}>
+                  <button type="submit" className="block text-sm font-medium text-gray-600 hover:text-[#dc2626] py-1.5 transition-colors" onClick={() => setOpen(false)}>
+                    Log out
+                  </button>
+                </form>
+              )}
 
               {/* Events accordion on mobile */}
               <button

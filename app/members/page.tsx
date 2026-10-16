@@ -2,7 +2,6 @@
 
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import Image from 'next/image'
 import { Lock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 // loginMembers server action replaced with direct API route for reliability
@@ -84,9 +83,6 @@ export default function MembersLoginPage() {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <div className="flex justify-center mb-8">
-          <Image src="/forza-logo.webp" alt="Forza Karate Club" width={140} height={56} className="h-14 w-auto" />
-        </div>
 
         <div className="bg-white rounded-2xl border border-black/8 p-8 shadow-sm">
           <div className="text-center mb-8">

@@ -1,6 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 const CLUB_HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 const COOKIE_NAME    = 'forza-members-auth'
@@ -55,4 +56,11 @@ export async function loginMembers(data: {
 export async function logoutMembers() {
   const cookieStore = await cookies()
   cookieStore.delete(COOKIE_NAME)
+  redirect('/members')
+}
+
+/** Lightweight check for the site nav: is a members session cookie present? */
+export async function isMembersLoggedIn(): Promise<boolean> {
+  const cookieStore = await cookies()
+  return Boolean(cookieStore.get(COOKIE_NAME)?.value)
 }
