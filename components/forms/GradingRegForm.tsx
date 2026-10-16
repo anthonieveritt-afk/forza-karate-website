@@ -6,10 +6,9 @@ import { CheckCircle, AlertCircle } from 'lucide-react'
 
 const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
-// 18 kyu grades, matching Club Honbu's belt list (artifacts/karate-club/src/lib/utils.ts)
+// Gradable kyu grades (17th to 1st; 18th White is the starting belt, not a grading), matching Club Honbu's belt list (artifacts/karate-club/src/lib/utils.ts)
 // and the public /gradings belt chart. Values are what Club Honbu stores as currentBelt.
 const belts = [
-  '18th Kyu – White Belt',
   '17th Kyu – White Belt / Red Stripe',
   '16th Kyu – White Belt / Yellow Stripe',
   '15th Kyu – Red Belt',
