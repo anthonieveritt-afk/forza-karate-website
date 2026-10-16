@@ -88,7 +88,7 @@ export const products: Product[] = [
     category: 'Clothing',
     sizes: ['100cm', '110cm', '120cm', '130cm', '140cm', '150cm', '160cm', '170cm', '180cm', '190cm', '200cm', '210cm'],
     img: '/shop/blitz-gi.jpg',
-    desc: 'Sized by height. If between sizes, go up.',
+    desc: 'White belt included. Sized by height. If between sizes, go up.',
   },
 ]
 
