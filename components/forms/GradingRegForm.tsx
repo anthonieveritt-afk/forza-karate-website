@@ -6,7 +6,7 @@ import { CheckCircle, AlertCircle } from 'lucide-react'
 
 const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
-// Gradable kyu grades (17th to 1st; 18th White is the starting belt, not a grading), matching Club Honbu's belt list (artifacts/karate-club/src/lib/utils.ts)
+// Grades a student can grade FOR (17th to 1st Kyu). White Belt is not a grade; it comes with the gi.
 // and the public /gradings belt chart. Values are what Club Honbu stores as currentBelt.
 const belts = [
   '17th Kyu – White Belt / Red Stripe',
@@ -155,14 +155,14 @@ export default function GradingRegForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
           <label className="block text-sm font-medium text-[#111111] mb-1.5">
-            Current belt <span className="text-[#dc2626]">*</span>
+            Grading for <span className="text-[#dc2626]">*</span>
           </label>
           <select
             name="currentBelt"
             required
             className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
           >
-            <option value="">Select current belt</option>
+            <option value="">Select the grade being taken</option>
             {belts.map((belt) => (
               <option key={belt} value={belt}>{belt}</option>
             ))}
