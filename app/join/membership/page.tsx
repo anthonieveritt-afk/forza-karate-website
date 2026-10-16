@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Loader2, Plus, Trash2, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
+import { UkDateOfBirthInput } from '@/components/UkDateOfBirthInput'
 import { HeightGuide } from '@/components/HeightGuide'
 import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
 
@@ -171,7 +172,7 @@ export default function MembershipSignup() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div><label className={lbl}>First name</label><input required className={input} value={st.firstName} onChange={e => setStudent(i, 'firstName', e.target.value)} /></div>
                 <div><label className={lbl}>Surname</label><input required className={input} value={st.surname} onChange={e => setStudent(i, 'surname', e.target.value)} /></div>
-                <div><label className={lbl}>Date of birth</label><DateInput required className={input} value={st.dateOfBirth} onChange={e => setStudent(i, 'dateOfBirth', e.target.value)} /></div>
+                <div><UkDateOfBirthInput required legend="Date of birth" value={st.dateOfBirth} onChange={v => setStudent(i, 'dateOfBirth', v)} /></div>
                 <div><label className={lbl}>Current belt</label>
                   <select className={input} value={st.belt} onChange={e => setStudent(i, 'belt', e.target.value)}>{BELTS.map(b => <option key={b}>{b}</option>)}</select></div>
               </div>
