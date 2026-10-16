@@ -430,7 +430,7 @@ function EnrolWizard() {
               <p className={labelClass}>Karate suit</p>
               <div className="mb-3 p-3 rounded-xl bg-[#fafaf9] border border-black/8">
                 <p className="text-sm font-semibold text-[#111111]">Official Forza Karate Club Gi — £40</p>
-                <p className="text-xs text-gray-500 mt-0.5">Our basic club suit package. Includes jacket and trousers.</p>
+                <p className="text-xs text-gray-500 mt-0.5">Our basic club suit package. Includes jacket and trousers. White belt included.</p>
               </div>
               <div className="flex gap-2 mb-3">
                 <button
@@ -568,7 +568,7 @@ function EnrolWizard() {
             <div className="p-4 rounded-xl bg-[#fafaf9] border border-black/8 space-y-2 text-sm">
               {wantSuit && suitSize && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Official Forza Karate Club Gi ({suitSize})</span>
+                  <span className="text-gray-500">Official Forza Karate Club Gi, white belt included ({suitSize})</span>
                   <span className="font-semibold text-[#111111]">£40.00</span>
                 </div>
               )}
