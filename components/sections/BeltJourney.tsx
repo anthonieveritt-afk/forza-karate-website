@@ -1,7 +1,6 @@
 import BeltIcon from '@/components/ui/BeltIcon'
 
 const belts = [
-  { kyu: '18th Kyu', name: 'White Belt',                 bg: '#ffffff', border: '#d1d5db', stripe: null },
   { kyu: '17th Kyu', name: 'White Belt / Red Stripe',    bg: '#ffffff', border: '#d1d5db', stripe: '#ef4444' },
   { kyu: '16th Kyu', name: 'White Belt / Yellow Stripe', bg: '#ffffff', border: '#d1d5db', stripe: '#facc15' },
   { kyu: '15th Kyu', name: 'Red Belt',                   bg: '#ef4444', border: '#dc2626', stripe: null },

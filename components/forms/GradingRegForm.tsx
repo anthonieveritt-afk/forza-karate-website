@@ -3,19 +3,30 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
 import { CheckCircle, AlertCircle } from 'lucide-react'
+import { gradingFee, GRADING_VENUES } from '@/lib/gradings'
 
 const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
+// Grades a student can grade FOR (17th to 1st Kyu). White Belt is not a grade; it comes with the gi.
+// and the public /gradings belt chart. Values are what Club Honbu stores as currentBelt.
 const belts = [
-  '9th Kyu - White',
-  '8th Kyu - Orange',
-  '7th Kyu - Red',
-  '6th Kyu - Yellow',
-  '5th Kyu - Green',
-  '4th Kyu - Blue',
-  '3rd Kyu - Purple',
-  '2nd Kyu - Brown',
-  '1st Kyu - Brown',
+  '17th Kyu – White Belt / Red Stripe',
+  '16th Kyu – White Belt / Yellow Stripe',
+  '15th Kyu – Red Belt',
+  '14th Kyu – Red Belt / White Stripe',
+  '13th Kyu – Yellow Belt',
+  '12th Kyu – Yellow Belt / White Stripe',
+  '11th Kyu – Orange Belt',
+  '10th Kyu – Orange Belt / White Stripe',
+  '9th Kyu – Green Belt',
+  '8th Kyu – Green Belt / White Stripe',
+  '7th Kyu – Blue Belt',
+  '6th Kyu – Blue Belt / White Stripe',
+  '5th Kyu – Purple Belt',
+  '4th Kyu – Purple Belt / White Stripe',
+  '3rd Kyu – Brown Belt',
+  '2nd Kyu – Brown Belt / White Stripe',
+  '1st Kyu – Brown Belt / Two Stripe',
 ]
 
 interface GradingEvent {
@@ -30,6 +41,8 @@ export default function GradingRegForm() {
   const [errorMsg, setErrorMsg] = useState('')
   const [gradingEvents, setGradingEvents] = useState<GradingEvent[]>([])
   const [eventsLoading, setEventsLoading] = useState(true)
+  const [grade, setGrade] = useState('')
+  const selectedFee = grade ? gradingFee(grade) : null
 
   useEffect(() => {
     fetch(`${HONBU_API}/public/grading-events`)
@@ -50,6 +63,13 @@ export default function GradingRegForm() {
 
     const form = e.currentTarget
     const data = new FormData(form)
+    const belt = data.get('currentBelt') as string
+    const fee = gradingFee(belt)
+    const venue = data.get('venue') as string
+    const dojo = GRADING_VENUES.find(v => v.value === venue)?.dojo ?? ''
+    const userNotes = (data.get('notes') as string) || ''
+    // Fee and venue are also written into notes so they reach the instructor email even if the API ignores the extra fields.
+    const notes = [`Venue: ${venue}`, fee != null ? `Grading fee: £${fee}` : '', userNotes].filter(Boolean).join('\n')
 
     try {
       const res = await fetch(`${HONBU_API}/public/grading-request`, {
@@ -59,10 +79,12 @@ export default function GradingRegForm() {
           memberName: data.get('memberName') as string,
           parentName: (data.get('parentName') as string) || undefined,
           email: data.get('email') as string,
-          currentBelt: data.get('currentBelt') as string,
-          dojo: data.get('dojo') as string,
+          currentBelt: belt,
+          dojo,
+          venue,
+          gradingFee: fee,
           gradingName: data.get('gradingName') as string,
-          notes: (data.get('notes') as string) || undefined,
+          notes,
         }),
       })
 
@@ -71,6 +93,7 @@ export default function GradingRegForm() {
       if (res.ok && result.success) {
         setStatus('success')
         form.reset()
+        setGrade('')
       } else {
         setStatus('error')
         setErrorMsg(result.error || 'Something went wrong.')
@@ -145,32 +168,38 @@ export default function GradingRegForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
           <label className="block text-sm font-medium text-[#111111] mb-1.5">
-            Current belt <span className="text-[#dc2626]">*</span>
+            Grading for <span className="text-[#dc2626]">*</span>
           </label>
           <select
             name="currentBelt"
             required
+            value={grade}
+            onChange={(e) => setGrade(e.target.value)}
             className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
           >
-            <option value="">Select current belt</option>
+            <option value="">Select the grade being taken</option>
             {belts.map((belt) => (
-              <option key={belt} value={belt}>{belt}</option>
+              <option key={belt} value={belt}>{belt} (£{gradingFee(belt)})</option>
             ))}
           </select>
+          {selectedFee != null && (
+            <p className="mt-1.5 text-sm font-medium text-[#111111]" data-testid="grading-fee">Grading fee: £{selectedFee}</p>
+          )}
         </div>
 
         <div>
           <label className="block text-sm font-medium text-[#111111] mb-1.5">
-            Your dojo <span className="text-[#dc2626]">*</span>
+            Venue <span className="text-[#dc2626]">*</span>
           </label>
           <select
-            name="dojo"
+            name="venue"
             required
             className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
           >
-            <option value="">Select dojo</option>
-            <option value="rayleigh">Rayleigh</option>
-            <option value="upminster">Upminster</option>
+            <option value="">Select venue</option>
+            {GRADING_VENUES.map((v) => (
+              <option key={v.value} value={v.value}>{v.value}</option>
+            ))}
           </select>
         </div>
       </div>

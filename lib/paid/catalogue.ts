@@ -15,7 +15,6 @@ export function gbp(pence: number): string {
 // Belt order as shown in the Belt Progression section (components/sections/BeltJourney.tsx).
 export type Belt = { slug: string; grade: string; name: string; colour: string }
 export const BELTS: Belt[] = [
-  { slug: '18-kyu', grade: '18th Kyu', name: 'White Belt', colour: '#ffffff' },
   { slug: '17-kyu', grade: '17th Kyu', name: 'White Belt / Red Stripe', colour: '#ffffff' },
   { slug: '16-kyu', grade: '16th Kyu', name: 'White Belt / Yellow Stripe', colour: '#ffffff' },
   { slug: '15-kyu', grade: '15th Kyu', name: 'Red Belt', colour: '#ef4444' },
