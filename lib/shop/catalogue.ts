@@ -84,7 +84,7 @@ export const products: Product[] = [
   },
   {
     key: 'blitz-gi',
-    name: 'Blitz Karate Gi',
+    name: 'Official Forza Karate Club Gi',
     category: 'Clothing',
     sizes: ['100cm', '110cm', '120cm', '130cm', '140cm', '150cm', '160cm', '170cm', '180cm', '190cm', '200cm', '210cm'],
     img: '/shop/blitz-gi.jpg',
