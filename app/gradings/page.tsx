@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button'
 import { ArrowRight, Lock } from 'lucide-react'
 import BeltIcon from '@/components/ui/BeltIcon'
 import GradingCountdown from '@/components/sections/GradingCountdown'
+import { GRADING_FEE_BANDS } from '@/lib/gradings'
 
 export const metadata: Metadata = {
   title: 'Gradings',
@@ -83,6 +84,18 @@ export default function GradingsPage() {
                 are held separately and require FKA approval.
               </p>
             </div>
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-[#111111] mb-4">Grading fees</h2>
+              <table className="w-full text-sm border border-black/5 rounded-2xl overflow-hidden">
+                <thead className="bg-[#fafaf9]"><tr><th className="text-left p-3 font-semibold text-[#111111]">Grade</th><th className="text-right p-3 font-semibold text-[#111111]">Fee</th></tr></thead>
+                <tbody>
+                  {GRADING_FEE_BANDS.map((b) => (
+                    <tr key={b.label} className="border-t border-black/5"><td className="p-3 text-gray-600">{b.label}</td><td className="p-3 text-right font-medium text-[#111111]">£{b.fee}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="mt-2 text-xs text-gray-400">Fees are paid to your club, not online. Black belt probation and Dan gradings need FKA approval.</p>
             </div>
             <GradingCountdown />
           </div>
