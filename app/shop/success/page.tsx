@@ -1,8 +1,24 @@
 import Link from 'next/link'
-import { CheckCircle, Shield, CreditCard, ArrowRight } from 'lucide-react'
+import { CheckCircle, AlertCircle, Shield, CreditCard, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
+import Stripe from 'stripe'
 
-export const metadata: Metadata = { title: 'Order Confirmed — Forza Karate Shop' }
+export const metadata: Metadata = { title: 'Your Order — Forza Karate Shop', robots: { index: false } }
+export const dynamic = 'force-dynamic'
+
+// The shop uses STRIPE_SECRET_KEY (see /api/checkout). Only show "confirmed" for a paid session from this site.
+async function paidOrder(sessionId: string | undefined): Promise<{ paid: boolean; email?: string; amount?: string }> {
+  const key = process.env.STRIPE_SECRET_KEY?.trim()
+  if (!key || !sessionId || !/^cs_(test|live)_[A-Za-z0-9]+$/.test(sessionId)) return { paid: false }
+  try {
+    const stripe = new Stripe(key, { apiVersion: '2026-04-22.dahlia' })
+    const s = await stripe.checkout.sessions.retrieve(sessionId)
+    const paid = s.payment_status === 'paid' && s.metadata?.source === 'forza-karate-website'
+    return { paid, email: s.customer_details?.email ?? undefined, amount: s.amount_total != null ? `£${(s.amount_total / 100).toFixed(2)}` : undefined }
+  } catch {
+    return { paid: false }
+  }
+}
 
 const nextSteps = [
   {
@@ -19,13 +35,30 @@ const nextSteps = [
     step: 'Step 3',
     title: 'Set up your Direct Debit',
     desc: 'Pay monthly via GoCardless. Safe, easy, cancel anytime.',
-    href: 'https://pay.gocardless.com/AL00041KG22CVH',
+    href: '/join/membership',
     cta: 'Set up Direct Debit →',
     primary: false,
   },
 ]
 
-export default function SuccessPage() {
+export default async function SuccessPage({ searchParams }: { searchParams: Promise<{ session_id?: string }> }) {
+  const { session_id } = await searchParams
+  const order = await paidOrder(session_id)
+  if (!order.paid) {
+    return (
+      <div className="bg-white min-h-screen px-4 py-20">
+        <div className="max-w-lg mx-auto text-center">
+          <AlertCircle className="h-14 w-14 text-amber-500 mx-auto mb-6" />
+          <h1 className="text-3xl font-bold text-[#111111] mb-3">We couldn&apos;t confirm your payment</h1>
+          <p className="text-gray-500 leading-relaxed mb-8">If you were charged, don&apos;t worry: we&apos;ll still have your order. Otherwise please try again from the shop or get in touch.</p>
+          <div className="flex gap-4 justify-center text-sm">
+            <Link href="/shop" className="text-[#dc2626] font-medium">Back to the shop</Link>
+            <Link href="/contact" className="text-gray-500">Contact us</Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="bg-white min-h-screen px-4 py-20">
       <div className="max-w-lg mx-auto">
@@ -34,7 +67,7 @@ export default function SuccessPage() {
           <CheckCircle className="h-14 w-14 text-green-500 mx-auto mb-6" />
           <h1 className="text-3xl font-bold text-[#111111] mb-3">Order confirmed!</h1>
           <p className="text-gray-500 leading-relaxed">
-            Thanks for your order. You&apos;ll receive a confirmation email shortly.
+            Thanks for your order{order.amount ? ` — your ${order.amount} payment went through` : ''}.
             We&apos;ll be in touch when your kit is ready to collect at class.
           </p>
         </div>

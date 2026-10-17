@@ -4,6 +4,7 @@ import { getForzaStripe } from '@/lib/paid/stripe'
 import { postTrialToHonbu } from '@/lib/paid/honbu-trial'
 import { emailConfigured, envAddresses, esc, sendEmail } from '@/lib/email'
 import { gbp } from '@/lib/paid/catalogue'
+import { claimOnce, releaseOnce } from '@/lib/paid/once'
 
 // Stripe → POST /api/stripe/webhook, event: checkout.session.completed
 // Signing secret: FORZA_STRIPE_WEBHOOK_SECRET (whsec_…)
@@ -33,7 +34,9 @@ async function handleTrial(s: Stripe.Checkout.Session) {
     parentName: m.parentName || '', childName: m.childName, age: m.age, email: m.email || s.customer_details?.email || '',
     phone: m.phone || '', dateOfBirth: m.dateOfBirth, dojo: m.dojo || '', ageGroup: m.ageGroup || '', message: m.message,
   }, paid)
-  if (!honbu.ok) console.error('[stripe-webhook] Club Honbu trial post failed:', honbu)
+  // Club Honbu is the record of the booking. If it can't be reached, fail so Stripe retries
+  // (the once-marker is released, so the retry runs in full; Club Honbu skips duplicate trials).
+  if (!honbu.ok) throw new Error(`Club Honbu trial post failed: ${honbu.status ?? ''} ${honbu.detail ?? ''}`)
 
   // Confirmation to the customer (Stripe also sends its own receipt if enabled in the dashboard).
   const to = m.email || s.customer_details?.email
@@ -84,13 +87,27 @@ export async function POST(req: NextRequest) {
     const s = event.data.object as Stripe.Checkout.Session
     const kind = s.metadata?.kind
     if (s.payment_status !== 'paid' && kind !== 'video') return NextResponse.json({ received: true, skipped: 'unpaid' })
-    if (kind === 'trial') await handleTrial(s)
-    else if (kind === 'guide') {
-      await notifyClub(`Grading guide sold: ${s.metadata?.guides}`, [
-        `${gbp(s.amount_total ?? 0)} — ${s.metadata?.guides} — ${s.customer_details?.email || ''}`, `Stripe session: ${s.id}`,
-      ])
-    } else if (kind === 'video') {
-      await notifyClub('New video membership', [`${s.customer_details?.email || ''} subscribed.`, `Stripe session: ${s.id}`])
+    if (kind !== 'trial' && kind !== 'guide' && kind !== 'video') return NextResponse.json({ received: true, skipped: 'not ours' })
+
+    // Idempotency: one checkout session = one set of emails, however often Stripe delivers it.
+    const onceKey = `checkout-${s.id}`
+    const claim = await claimOnce(onceKey)
+    if (claim === 'duplicate') return NextResponse.json({ received: true, duplicate: true })
+    if (claim === 'unavailable') console.warn('[stripe-webhook] once-marker unavailable; processing without duplicate protection', s.id)
+
+    try {
+      if (kind === 'trial') await handleTrial(s)
+      else if (kind === 'guide') {
+        await notifyClub(`Grading guide sold: ${s.metadata?.guides}`, [
+          `${gbp(s.amount_total ?? 0)} — ${s.metadata?.guides} — ${s.customer_details?.email || ''}`, `Stripe session: ${s.id}`,
+        ])
+      } else if (kind === 'video') {
+        await notifyClub('New video membership', [`${s.customer_details?.email || ''} subscribed.`, `Stripe session: ${s.id}`])
+      }
+    } catch (err) {
+      console.error('[stripe-webhook] processing failed, asking Stripe to retry:', err instanceof Error ? err.message : err)
+      if (claim === 'claimed') await releaseOnce(onceKey)
+      return NextResponse.json({ error: 'Processing failed' }, { status: 500 })
     }
   }
   return NextResponse.json({ received: true })
