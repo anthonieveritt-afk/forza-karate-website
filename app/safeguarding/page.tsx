@@ -80,7 +80,7 @@ export default function SafeguardingPage() {
               </p>
               <p>
                 Forza Karate Club are affiliated to the English Karate National Governing Body (EKNGB) via our association{' '}
-                <a href="http://frontierkarateassociation.co.uk/" target="_blank" rel="noopener noreferrer" className="text-[#dc2626] hover:underline font-medium">
+                <a href="https://frontierkarateassociation.co.uk/" target="_blank" rel="noopener noreferrer" className="text-[#dc2626] hover:underline font-medium">
                   Frontier Karate Association
                 </a>.
               </p>
