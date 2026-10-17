@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { checkMemberSession, MEMBERS_COOKIE } from '@/lib/members/session'
 
-const COOKIE_NAME = 'forza-members-auth'
-
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Defence in depth: gallery-proxy must never act for anonymous callers.
@@ -19,11 +18,17 @@ export function middleware(request: NextRequest) {
   // /members/videos does its own access check (portal login OR Stripe video subscriber)
   const publicMembersPages = ['/members/licence', '/members/syllabus', '/members/videos', '/members/videos/welcome']
   if (pathname.startsWith('/members') && pathname !== '/members' && !publicMembersPages.includes(pathname)) {
-    const auth = request.cookies.get(COOKIE_NAME)
-    if (!auth?.value) {
+    // The cookie must be a genuine, unexpired Club Honbu portal session, not just present.
+    const token = request.cookies.get(MEMBERS_COOKIE)?.value
+    const check = await checkMemberSession(token)
+    if (check !== 'valid') {
       const loginUrl = new URL('/members', request.url)
       loginUrl.searchParams.set('redirect', pathname)
-      return NextResponse.redirect(loginUrl)
+      if (check === 'unavailable') loginUrl.searchParams.set('error', 'unavailable')
+      const res = NextResponse.redirect(loginUrl)
+      // A forged or expired cookie is removed so the login page starts clean.
+      if (token && check === 'invalid') res.cookies.set(MEMBERS_COOKIE, '', { path: '/members', maxAge: 0 })
+      return res
     }
   }
 
