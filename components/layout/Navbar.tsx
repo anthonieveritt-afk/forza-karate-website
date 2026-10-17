@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { Menu, X, ChevronDown, ChevronRight } from 'lucide-react'
+import { Menu, X, ChevronDown, ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 const navLinks = [
@@ -69,9 +69,9 @@ export default function Navbar() {
                 {/* Events sub-menu */}
                 <div className="relative group/events border-t border-black/5">
                   <button className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors">
-                    Events <ChevronRight className="h-3.5 w-3.5" />
+                    <span className="flex items-center gap-1"><ChevronLeft className="h-3.5 w-3.5" />Events</span>
                   </button>
-                  <div className="absolute left-full top-0 ml-1 w-64 bg-white border border-black/8 rounded-xl shadow-lg overflow-hidden opacity-0 invisible group-hover/events:opacity-100 group-hover/events:visible transition-all duration-150">
+                  <div className="absolute right-full top-0 mr-1 w-64 bg-white border border-black/8 rounded-xl shadow-lg overflow-hidden opacity-0 invisible group-hover/events:opacity-100 group-hover/events:visible transition-all duration-150">
                     {eventLinks.map(link => (
                       <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors">
                         {link.label}
