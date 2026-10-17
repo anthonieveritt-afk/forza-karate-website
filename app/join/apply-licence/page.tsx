@@ -19,11 +19,42 @@ function calculateAge(dob: string): number | null {
 function ApplyLicenceForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const paid = searchParams.get('paid') === 'true'
+  const returnedFromPayment = searchParams.get('paid') === 'true'
+  const sessionId = searchParams.get('session_id')
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(paid)
+  const [success, setSuccess] = useState(returnedFromPayment)
+  // Only say "paid" once Club Honbu has confirmed the Stripe session is paid.
+  type PayCheck = 'checking' | 'paid' | 'unpaid' | 'pending'
+  const [payCheck, setPayCheck] = useState<PayCheck>('checking')
+  const paid = returnedFromPayment && payCheck === 'paid'
+
+  useEffect(() => {
+    if (!returnedFromPayment) return
+    if (!sessionId || !/^cs_(test|live)_[A-Za-z0-9]+$/.test(sessionId)) { setPayCheck('unpaid'); return }
+    let cancelled = false
+    ;(async () => {
+      for (let attempt = 0; attempt < 3 && !cancelled; attempt++) {
+        try {
+          const r = await fetch(`${HONBU_API}/licence-applications/stripe/verify?session_id=${encodeURIComponent(sessionId)}`)
+          if (r.status === 404 || r.status === 400) {
+            const d = await r.json().catch(() => ({}))
+            // 404 without a JSON body = verify endpoint not deployed yet; don't claim either way.
+            if (!cancelled) setPayCheck(d && 'paid' in d ? 'unpaid' : 'pending')
+            return
+          }
+          if (r.ok) {
+            const d = await r.json()
+            if (d.paid) { if (!cancelled) setPayCheck('paid'); return }
+          }
+        } catch { /* retry */ }
+        await new Promise(res => setTimeout(res, 2000))
+      }
+      if (!cancelled) setPayCheck('pending')
+    })()
+    return () => { cancelled = true }
+  }, [returnedFromPayment, sessionId])
 
   const [form, setForm] = useState({
     firstName: '',
@@ -60,7 +91,7 @@ function ApplyLicenceForm() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             ...form,
-            successUrl: `${origin}/join/apply-licence?paid=true`,
+            successUrl: `${origin}/join/apply-licence?paid=true&session_id={CHECKOUT_SESSION_ID}`,
             cancelUrl: `${origin}/join/apply-licence`,
           }),
         })
@@ -105,6 +136,39 @@ function ApplyLicenceForm() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (success && returnedFromPayment && payCheck !== 'paid') {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
+        <div className="max-w-md w-full text-center">
+          {payCheck === 'checking' ? (
+            <>
+              <Loader2 className="h-12 w-12 text-gray-400 mx-auto mb-6 animate-spin" />
+              <h1 className="text-2xl font-bold text-[#111111] mb-3">Checking your payment…</h1>
+            </>
+          ) : payCheck === 'unpaid' ? (
+            <>
+              <AlertCircle className="h-14 w-14 text-amber-500 mx-auto mb-6" />
+              <h1 className="text-2xl font-bold text-[#111111] mb-3">We couldn&apos;t confirm your payment</h1>
+              <p className="text-gray-500 leading-relaxed">
+                If you completed payment, please contact us and we&apos;ll check it for you. Please don&apos;t pay again before we&apos;ve checked.
+              </p>
+              <Button className="mt-8" onClick={() => router.push('/join/apply-licence')}>Back to the licence form</Button>
+            </>
+          ) : (
+            <>
+              <CheckCircle className="h-14 w-14 text-gray-400 mx-auto mb-6" />
+              <h1 className="text-2xl font-bold text-[#111111] mb-3">Thanks, we&apos;re confirming your payment</h1>
+              <p className="text-gray-500 leading-relaxed">
+                Stripe has sent you back to us. We&apos;ll confirm your licence once the payment is checked. Please don&apos;t pay again.
+              </p>
+              <Button className="mt-8" onClick={() => router.push('/')}>Back to home</Button>
+            </>
+          )}
+        </div>
+      </div>
+    )
   }
 
   if (success) {
