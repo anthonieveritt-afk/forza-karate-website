@@ -119,6 +119,7 @@ export default function PrivacyPolicyPage() {
                 <li>The nickname you choose (up to 12 characters)</li>
                 <li>Your score, your time, the belt you reached and the game mode (for example the daily challenge)</li>
                 <li>The date the score was saved</li>
+                <li>A scrambled code that lets the device that saved the score remove it again (see &quot;Removing a score&quot; below)</li>
               </ul>
               <p className="mb-3">
                 That is all. We do not ask for or store your real name, email address, age, school, location,
@@ -153,15 +154,36 @@ export default function PrivacyPolicyPage() {
               </p>
               <p className="font-semibold text-[#111111] mb-1">Saving on your own device</p>
               <p className="mb-3">
-                The game also saves your scores, badges and progress in your browser on your own device. This stays
-                on your device, we cannot see it, and you can remove it by clearing your browser&apos;s site data.
+                The game also saves your scores, badges and progress in your browser on your own device, together
+                with a private removal code for each score you put on the shared leaderboard. This stays on your
+                device, we cannot see it, and you can remove it by clearing your browser&apos;s site data.
               </p>
-              <p className="font-semibold text-[#111111] mb-1">Removing an entry</p>
+              <p className="font-semibold text-[#111111] mb-1">Removing a score</p>
+              <p className="mb-3">You can have a leaderboard score removed in two ways:</p>
+              <ul className="list-disc pl-5 space-y-1 mb-3">
+                <li>
+                  <strong>Straight away, in the game:</strong> on the device that saved the score, tap{' '}
+                  <strong>🗑 My scores</strong> and then <strong>Remove my score</strong>. It is deleted at once. This works
+                  because the game keeps a private removal code on that device. We only keep a scrambled version of the
+                  code, so nobody else can use it.
+                </li>
+                <li>
+                  <strong>Using our form:</strong> if you saved the score on another device or have cleared your browser,
+                  use the{' '}
+                  <a href="/games/dojo-dash/remove" className="text-[#dc2626] hover:underline">request removal form</a>.
+                  It only asks for the nickname, the game mode and roughly when the score was saved, plus an optional
+                  tick if you are a parent or carer asking for a child. It does not ask for your name or contact details.
+                </li>
+              </ul>
+              <p className="mb-3">
+                We process form requests within 2 working days, and always within one month. We remove every matching
+                score and keep a short record of what we removed and when (the nickname, game mode, score and date),
+                which is deleted after 12 months.
+              </p>
               <p>
-                If you would like a leaderboard entry removed, email{' '}
+                You can still email{' '}
                 <a href="mailto:sensei.everitt@forzakarate.co.uk" className="text-[#dc2626] hover:underline">sensei.everitt@forzakarate.co.uk</a>{' '}
-                with the nickname, roughly when the score was saved and which mode it was in. A parent or carer can
-                ask for this on a child&apos;s behalf. We will remove it as soon as we can, and within one month at the latest.
+                if you prefer, or if the form is not working. A parent or carer can ask on a child&apos;s behalf.
               </p>
             </div>
 
