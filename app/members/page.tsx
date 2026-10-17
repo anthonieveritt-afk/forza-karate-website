@@ -5,12 +5,15 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { Lock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { safeMembersRedirect } from '@/lib/members/session'
 // loginMembers server action replaced with direct API route for reliability
 
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirect = searchParams.get('redirect') ?? '/members/portal'
+  // Only ever send people back into the members area (blocks open redirects and javascript: URLs).
+  const redirect = safeMembersRedirect(searchParams.get('redirect'))
+  const unavailable = searchParams.get('error') === 'unavailable'
 
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
@@ -45,6 +48,11 @@ function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {unavailable && !error && (
+        <div className="p-3 rounded-xl bg-amber-50 border border-amber-100 text-amber-800 text-sm text-center">
+          We couldn&apos;t reach the club system to check your login. Please try again in a minute.
+        </div>
+      )}
       {error && (
         <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm text-center">
           {error}
