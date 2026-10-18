@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getForzaStripe, SITE_URL, UNAVAILABLE_MSG } from '@/lib/paid/stripe'
 import { TRIAL_PRICE_PENCE } from '@/lib/paid/catalogue'
+import { dobError } from '@/lib/dob'
 
 const AGE_GROUPS: Record<string, string> = {
   ninjas: 'Forza Ninjas (4–6)', juniors: 'Forza Juniors (7–10)', seniors: 'Forza Seniors (11+)', adult: 'Adult',
@@ -27,6 +28,8 @@ export async function POST(req: NextRequest) {
   if (!d.parentName || !d.phone || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)) {
     return NextResponse.json({ error: 'Please fill in your name, a valid email and your phone number.' }, { status: 400 })
   }
+  const dobErr = d.dateOfBirth ? dobError(d.dateOfBirth) : 'Please enter a date of birth (DD/MM/YYYY).'
+  if (dobErr) return NextResponse.json({ error: dobErr }, { status: 400 })
   if (!AGE_GROUPS[d.ageGroup] || !DOJOS[d.dojo]) {
     return NextResponse.json({ error: 'Please choose an age group and a dojo.' }, { status: 400 })
   }
