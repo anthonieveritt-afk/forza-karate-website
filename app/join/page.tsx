@@ -31,9 +31,9 @@ const licenceStep = {
 const ddStep = {
   icon: CreditCard,
   title: 'Complete your membership',
-  desc: 'Membership, karate suit, FKA licence and monthly Direct Debit in one form. Safe, easy, cancel anytime.',
+  desc: 'One form: pay today by card for the licence & insurance, karate suit and first month, then your monthly fee by Direct Debit on the 1st.',
   href: '/join/membership',
-  cta: 'Set up Direct Debit →',
+  cta: 'Complete membership →',
 }
 
 const belts = ['None (complete beginner)', 'White', 'Red', 'Yellow', 'Orange', 'Green', 'Blue', 'Purple', 'Brown', 'Black']

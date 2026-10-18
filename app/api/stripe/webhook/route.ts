@@ -5,6 +5,8 @@ import { postTrialToHonbu } from '@/lib/paid/honbu-trial'
 import { emailConfigured, envAddresses, esc, sendEmail } from '@/lib/email'
 import { gbp } from '@/lib/paid/catalogue'
 import { claimOnce, releaseOnce } from '@/lib/paid/once'
+import { cardFromSession } from '@/lib/membership/checkout'
+import { recordCardPayment } from '@/lib/membership/flow'
 
 // Stripe → POST /api/stripe/webhook, event: checkout.session.completed
 // Signing secret: FORZA_STRIPE_WEBHOOK_SECRET (whsec_…)
@@ -87,7 +89,7 @@ export async function POST(req: NextRequest) {
     const s = event.data.object as Stripe.Checkout.Session
     const kind = s.metadata?.kind
     if (s.payment_status !== 'paid' && kind !== 'video') return NextResponse.json({ received: true, skipped: 'unpaid' })
-    if (kind !== 'trial' && kind !== 'guide' && kind !== 'video') return NextResponse.json({ received: true, skipped: 'not ours' })
+    if (kind !== 'trial' && kind !== 'guide' && kind !== 'video' && kind !== 'membership') return NextResponse.json({ received: true, skipped: 'not ours' })
 
     // Idempotency: one checkout session = one set of emails, however often Stripe delivers it.
     const onceKey = `checkout-${s.id}`
@@ -97,7 +99,17 @@ export async function POST(req: NextRequest) {
 
     try {
       if (kind === 'trial') await handleTrial(s)
-      else if (kind === 'guide') {
+      else if (kind === 'membership') {
+        // Join form card payment (gi + licence + first month). Records it against the sign-up and,
+        // if training is £0, completes the sign-up; otherwise tells the club the DD is pending.
+        const signupId = s.metadata?.signupId ?? ''
+        const card = cardFromSession(s, signupId)
+        const r = card ? await recordCardPayment(signupId, card) : null
+        if (!r) {
+          console.error('[stripe-webhook] membership payment for unknown sign-up', signupId, s.id)
+          await notifyClub('⚠ Membership card payment with no matching sign-up', [`${gbp(s.amount_total ?? 0)} from ${s.customer_details?.email || ''}`, `Sign-up: ${signupId}`, `Stripe session: ${s.id}`])
+        }
+      } else if (kind === 'guide') {
         await notifyClub(`Grading guide sold: ${s.metadata?.guides}`, [
           `${gbp(s.amount_total ?? 0)} — ${s.metadata?.guides} — ${s.customer_details?.email || ''}`, `Stripe session: ${s.id}`,
         ])

@@ -95,8 +95,8 @@ const faqs: { group: string; items: Faq[] }[] = [
       },
       {
         q: 'When is payment due?',
-        text: 'Payment is due on the 1st of each month.',
-        a: <p>Payment is due on the 1st of each month.</p>,
+        text: 'When you join, you pay by card for the licence and insurance, the karate suit and your first month. From then on, your monthly fee is collected by Direct Debit on the 1st of each month.',
+        a: <p>When you join, you pay by card for the licence and insurance, the karate suit and your first month. From then on, your monthly fee is collected by Direct Debit on the 1st of each month.</p>,
       },
       {
         q: 'How do I cancel?',

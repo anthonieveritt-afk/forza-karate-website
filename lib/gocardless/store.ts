@@ -5,6 +5,7 @@ import 'server-only'
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from 'crypto'
 import { put, list } from '@vercel/blob'
 import type { PlanKey, DojoKey } from './plans'
+import type { AppliedDiscount } from './discounts'
 
 export type Student = {
   firstName: string
@@ -17,6 +18,14 @@ export type Student = {
 }
 
 export type Signup = {
+  /** New model (Oct 2026): card at sign-up for gi + licence + first month, then Direct Debit monthly. */
+  signupId?: string
+  model?: 'card-then-dd'
+  /** Total charged by card at sign-up (gi + licence + first month after any code). */
+  upfrontPence?: number
+  /** First monthly Direct Debit date (the 1st after the start date), or null when training is £0. */
+  directDebitStart?: string | null
+  stripeSessionId?: string
   plan: PlanKey
   dojo: DojoKey
   classTime: string
@@ -27,6 +36,14 @@ export type Signup = {
   emergency: { name: string; phone: string }
   consent: { photos: boolean; terms: boolean }
   extrasPence: number
+  /** Training fees after any discount code. Missing on sign-ups saved before codes existed (= full PLANS price). */
+  monthlyFeePence?: number
+  firstPaymentPence?: number
+  /** First-month weekly band (from the start date; chosen on the form and checked by the server). */
+  firstMonth?: { band: string; label: string; short: string; percent: number; monthlyFullPence: number; bandedPence: number; pence: number }
+  discount?: AppliedDiscount | null
+  /** Approval-gated tester code: everything £0, held until Anthoni approves (lib/membership/tester.ts). */
+  tester?: boolean
   createdAt: string
 }
 
@@ -40,6 +57,8 @@ export type Outcome = {
   firstPaymentDate?: string | null
   extrasPaymentId?: string | null
   honbu: { ok: boolean; detail?: string; memberIds?: number[] }
+  /** Confirmation emails (member + club), sent once. */
+  emails?: { member: boolean; club: boolean }
   completedAt: string
 }
 
@@ -49,14 +68,14 @@ function key(): Buffer {
   return createHash('sha256').update(k).digest()
 }
 
-function enc(obj: unknown): string {
+export function enc(obj: unknown): string {
   const iv = randomBytes(12)
   const c = createCipheriv('aes-256-gcm', key(), iv)
   const data = Buffer.concat([c.update(JSON.stringify(obj), 'utf8'), c.final()])
   return Buffer.concat([iv, c.getAuthTag(), data]).toString('base64')
 }
 
-function dec<T>(b64: string): T {
+export function dec<T>(b64: string): T {
   const buf = Buffer.from(b64, 'base64')
   const d = createDecipheriv('aes-256-gcm', key(), buf.subarray(0, 12))
   d.setAuthTag(buf.subarray(12, 28))
@@ -74,13 +93,41 @@ async function save(name: string, obj: unknown) {
 }
 
 async function load<T>(name: string): Promise<T | null> {
-  const { blobs } = await list({ prefix: `${PREFIX}/${name}` })
+  // Blob's random suffix may go before the "extension" (id-abc123.signup) or after it, so list by
+  // the id and match both shapes.
+  const dot = name.lastIndexOf('.')
+  const id = name.slice(0, dot), ext = name.slice(dot + 1)
+  const re = new RegExp(`^${PREFIX}/${id}(?:-[A-Za-z0-9]+)?\\.${ext}(?:-[A-Za-z0-9]+)?$`)
+  const blobs = (await list({ prefix: `${PREFIX}/${id}` })).blobs.filter((b) => re.test(b.pathname))
   if (!blobs.length) return null
   const latest = blobs.sort((a, b) => +new Date(b.uploadedAt) - +new Date(a.uploadedAt))[0]
   const res = await fetch(latest.url, { cache: 'no-store' })
   if (!res.ok) return null
   return dec<T>(await res.text())
 }
+
+/** Card payment (Stripe Checkout) for a sign-up, recorded by the webhook or the success page. */
+export type CardPayment = {
+  signupId: string
+  sessionId: string
+  paymentIntentId: string | null
+  amountPence: number
+  livemode: boolean
+  paidAt: string
+}
+/** Progress record for a card-then-DD sign-up (what has been sent to Club Honbu / emailed). */
+export type SignupProgress = {
+  signupId: string
+  card?: CardPayment
+  billingRequestId?: string
+  honbu?: { stage: 'card_paid_awaiting_direct_debit' | 'complete'; ok: boolean; detail?: string; memberIds?: number[] }
+  emails?: { cardClub?: boolean; member?: boolean; club?: boolean }
+  updatedAt: string
+}
+export const saveSignupById = (id: string, s: Signup) => save(`${id}.signup`, s)
+export const loadSignupById = (id: string) => load<Signup>(`${id}.signup`)
+export const saveProgress = (id: string, p: SignupProgress) => save(`${id}.progress`, p)
+export const loadProgress = (id: string) => load<SignupProgress>(`${id}.progress`)
 
 export const saveSignup = (brId: string, s: Signup) => save(`${brId}.signup`, s)
 export const loadSignup = (brId: string) => load<Signup>(`${brId}.signup`)
