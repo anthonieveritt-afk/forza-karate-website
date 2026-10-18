@@ -11,7 +11,7 @@ export const honbuSignupUrl = () => process.env.CLUB_HONBU_SIGNUP_URL?.trim() ||
 export const honbuEventsUrl = () => process.env.CLUB_HONBU_EVENTS_URL?.trim() || `${honbuBase()}/api/website/event-registrations`
 
 type Reg = {
-  id: number; event: string; firstName: string; lastName: string; email: string; phone: string
+  id: number; sourceId?: string; event: string; firstName: string; lastName: string; email: string; phone: string
   dateOfBirth?: string | null; dojo?: string | null; currentBelt?: string | null; ageGroup?: string | null; parentName?: string | null
   medicalNotes?: string | null; sessionDate?: string | null; paymentStatus?: string | null; stripeSessionId?: string | null; createdAt?: Date | string | null
 }
@@ -24,7 +24,7 @@ export async function sendEventRegistrations(rows: Reg[]): Promise<{ ok: boolean
     const res = await fetch(honbuEventsUrl(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Website-Signup-Secret': secret },
-      body: JSON.stringify({ registrations: rows.map((r) => ({ ...r, sourceId: String(r.id), createdAt: r.createdAt ? new Date(r.createdAt).toISOString() : undefined })) }),
+      body: JSON.stringify({ registrations: rows.map((r) => ({ ...r, sourceId: r.sourceId ?? String(r.id), createdAt: r.createdAt ? new Date(r.createdAt).toISOString() : undefined })) }),
       cache: 'no-store',
     })
     const j = await res.json().catch(() => ({}))

@@ -31,7 +31,12 @@ export async function POST(req: Request) {
   const out: Record<string, unknown> = {}
 
   if (url.searchParams.get('events') === '1') {
-    const rows = await db.select().from(eventRegistrations).orderBy(asc(eventRegistrations.id))
+    let rows: (typeof eventRegistrations.$inferSelect)[] = []
+    try {
+      rows = await db.select().from(eventRegistrations).orderBy(asc(eventRegistrations.id))
+    } catch (e) {
+      out.eventsError = `website database: ${(e as Error).message.slice(0, 160)}`
+    }
     let inserted = 0, errors = 0, failedBatches = 0
     for (let i = 0; i < rows.length; i += 200) {
       const r = await sendEventRegistrations(rows.slice(i, i + 200))
