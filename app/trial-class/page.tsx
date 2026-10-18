@@ -37,9 +37,9 @@ export default function TrialClassPage() {
       </section>
 
       <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-16">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-14">
           {/* Perks */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-4">
             <h2 className="text-xl font-bold text-[#111111] mb-6">What to expect</h2>
             <ul className="space-y-4 mb-10">
               {perks.map((perk) => (
@@ -58,8 +58,8 @@ export default function TrialClassPage() {
           </div>
 
           {/* Form */}
-          <div className="lg:col-span-3">
-            <div className="bg-white rounded-2xl border border-black/8 p-8">
+          <div className="lg:col-span-8 min-w-0">
+            <div className="bg-white rounded-2xl border border-black/8 p-5 sm:p-8">
               <Suspense><TrialClassForm /></Suspense>
             </div>
           </div>
