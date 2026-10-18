@@ -179,6 +179,7 @@ export default function MembershipSignup() {
               <p className="flex items-center gap-2 text-xs font-semibold text-[#111111] bg-[#fafaf9] border-l-4 border-[#dc2626] rounded-r-lg px-3 py-2">Only official Forza Karate Club uniforms may be worn in class.</p>
               <div className="grid sm:grid-cols-2 gap-4 pt-2 border-t border-black/5">
                 <div><label className={lbl}>Karate suit</label>
+                  <p className="text-xs text-gray-500 -mt-0.5 mb-1.5">All members need an official Forza Karate suit (£40)</p>
                   <select className={input} value={st.suitKey} onChange={e => { setStudent(i, 'suitKey', e.target.value); setStudent(i, 'suitSize', '') }}>
                     <option value="">I already have one</option>
                     {SUITS.map(x => <option key={x.key} value={x.key}>{x.name} ({pounds(x.price)})</option>)}
