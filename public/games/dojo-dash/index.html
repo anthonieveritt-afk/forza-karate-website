@@ -2550,7 +2550,7 @@ function gsEnd(){ST.gi=1;saveST();GS=null;startFaceoff(1,false)}
 function gsUpdate(){GS.t++;if(anyPressed&&GS.t>15){GS.t=GS_LEN}if(GS.t===GS_HAND){beep(880,.15,'sine');setTimeout(()=>beep(1047,.3,'sine'),150)}
  if(GS.t>=GS_HAND-10&&GS.t<GS_LEN-30&&GS.t%2==0)for(let k=0;k<4;k++)GS.conf.push({x:Math.random()*W,y:-10,vx:(Math.random()-.5)*2,vy:2+Math.random()*3,r:Math.random()*6,c:['#d32f2f','#ffd600','#fff','#1e88e5','#43a047'][(k+GS.t)%5],a:Math.random()*6});
  for(const c of GS.conf){c.x+=c.vx;c.y+=c.vy;c.a+=.2}GS.conf=GS.conf.filter(c=>c.y<H+20);if(GS.t>=GS_LEN)gsEnd()}
-function gsDraw(){const t=GS.t,gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#5d1010');gr.addColorStop(1,'#b71c1c');g.fillStyle=gr;g.fillRect(0,0,W,H);
+function gsDraw(){const t=GS.t,gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,FZ.redDeep);gr.addColorStop(1,FZ.redDark);g.fillStyle=gr;g.fillRect(0,0,W,H);
  g.fillStyle='#c8a165';g.fillRect(0,400,W,H-400);g.strokeStyle='#a5814a';g.lineWidth=2;for(let x=0;x<W;x+=60){g.beginPath();g.moveTo(x,400);g.lineTo(x-40,H);g.stroke()}
  rr(W/2-210,30,420,58,12,'rgba(0,0,0,.45)');txt('🥋 FORZA KARATE CLUB 🥋',W/2,70,30,'#ffd600');
  const bow=t>40&&t<110?Math.sin((t-40)/70*Math.PI)*.55:0;
