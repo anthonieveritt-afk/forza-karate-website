@@ -25,7 +25,7 @@ export default function DojoDashPage() {
         <iframe
           src="/games/dojo-dash/index.html"
           title="Dojo Dash karate game"
-          className="block w-full border-0 bg-black h-[min(calc(56.25vw+140px),calc(100dvh-64px))] md:h-[min(85vh,900px)] md:min-h-[480px]"
+          className="block w-full border-0 bg-[#111111] h-[min(calc(56.25vw+140px),calc(100dvh-64px))] md:h-[min(85vh,900px)] md:min-h-[480px]"
           style={{ touchAction: 'manipulation' }}
           allow="fullscreen; autoplay"
           allowFullScreen
