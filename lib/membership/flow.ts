@@ -46,6 +46,7 @@ export async function honbuHandOff(s: Signup, stage: Stage, card: CardPayment | 
     // Kept for the existing contract fields:
     gocardless: gcIds ? { customerId: gcIds.customerId, mandateId: gcIds.mandateId, subscriptionId: gcIds.subscriptionId, firstPaymentId: null, extrasPaymentId: null } : null,
     firstMonth: s.firstMonth ?? null,
+    trial: s.trial ?? null,
     firstPaymentPence: s.firstPaymentPence ?? 0, extrasPence: s.extrasPence, upfrontPence: s.upfrontPence ?? up.totalPence,
   }
   try {
