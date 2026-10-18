@@ -27,7 +27,7 @@ export const SIGNUP_ID = /^SU[0-9A-F]{24}$/
  * Everything paid by card today, one line per item (pence, server prices only). Students are
  * "Student 1", "Student 2"... so no names go to Stripe.
  */
-export function upfrontItems(signup: Pick<Signup, 'students' | 'firstPaymentPence' | 'plan' | 'discount' | 'firstMonth'>) {
+export function upfrontItems(signup: Pick<Signup, 'students' | 'firstPaymentPence' | 'plan' | 'discount' | 'firstMonth' | 'tester'>) {
   const items: { label: string; kind: 'suit' | 'licence' | 'first_month'; pricePence: number }[] = []
   signup.students.forEach((x, i) => {
     if (x.suit) items.push({ label: `Official Forza Karate Club Gi - Student ${i + 1} (${x.suit.size})`, kind: 'suit', pricePence: x.suit.pricePence })
@@ -36,6 +36,12 @@ export function upfrontItems(signup: Pick<Signup, 'students' | 'firstPaymentPenc
   const first = signup.firstPaymentPence ?? 0
   const fm = signup.firstMonth
   if (first > 0) items.push({ label: `First month of training (joining ${fm ? `${fm.short}, ${fm.percent}%` : 'full month'}) - ${PLANS[signup.plan].label} package${signup.discount ? ` (code ${signup.discount.code}, ${signup.discount.percent}% off)` : ''}`, kind: 'first_month', pricePence: first })
+  // Approval-gated tester code: the same items are provided (gi, licence & insurance, first month),
+  // all at £0. Nothing is charged by card or Direct Debit.
+  if (signup.tester) {
+    if (!items.some((i) => i.kind === 'first_month')) items.push({ label: `First month of training - ${PLANS[signup.plan].label} package`, kind: 'first_month', pricePence: 0 })
+    return { items: items.map((i) => ({ ...i, label: `${i.label} (tester code, £0)`, pricePence: 0 })), totalPence: 0 }
+  }
   return { items, totalPence: items.reduce((t, i) => t + i.pricePence, 0) }
 }
 

@@ -15,6 +15,8 @@ import { emailConfigured, envAddresses, esc, sendEmail } from '@/lib/email'
 import { claimOnce, releaseOnce } from '@/lib/paid/once'
 import { upfrontItems } from './signup'
 
+export const TESTER_PAYMENT_REFERENCE = 'TESTER-APPROVED'
+
 type GcIds = { billingRequestId: string; customerId: string; mandateId: string; subscriptionId: string | null; subscriptionStart: string | null }
 type Stage = 'card_paid_awaiting_direct_debit' | 'complete'
 
@@ -33,6 +35,8 @@ export async function honbuHandOff(s: Signup, stage: Stage, card: CardPayment | 
   const up = upfrontItems(s)
   const payload = {
     model: 'card-then-dd', stage, signupId: s.signupId,
+    // Approval-gated tester code (approved by Anthoni): everything £0, no Stripe, no GoCardless.
+    tester: !!s.tester, paymentReference: s.tester ? TESTER_PAYMENT_REFERENCE : (card?.paymentIntentId ?? card?.sessionId ?? null),
     billingRequestId: gcIds?.billingRequestId ?? null,
     plan: s.plan, monthlyFeePence: s.monthlyFeePence ?? PLANS[s.plan].price, fullMonthlyFeePence: PLANS[s.plan].price,
     dojo: s.dojo, clubName: DOJOS[s.dojo], classTime: s.classTime, trialDate: s.trialDate, startDate: s.startDate,
@@ -40,7 +44,7 @@ export async function honbuHandOff(s: Signup, stage: Stage, card: CardPayment | 
     students: s.students, parent: s.parent, emergency: s.emergency, consent: s.consent,
     discount: s.discount ?? null, notes: s.discount?.note,
     payments: {
-      card: card ? { provider: 'stripe', sessionId: card.sessionId, paymentIntentId: card.paymentIntentId, amountPence: card.amountPence, paidAt: card.paidAt, livemode: card.livemode, items: up.items } : null,
+      card: card ? { provider: s.tester ? 'tester' : 'stripe', sessionId: card.sessionId, paymentIntentId: card.paymentIntentId, amountPence: card.amountPence, paidAt: card.paidAt, livemode: card.livemode, items: up.items } : null,
       directDebit: gcIds ? { provider: 'gocardless', customerId: gcIds.customerId, mandateId: gcIds.mandateId, subscriptionId: gcIds.subscriptionId, startDate: gcIds.subscriptionStart, monthlyPence: s.monthlyFeePence } : null,
     },
     // Kept for the existing contract fields:
@@ -67,14 +71,16 @@ export function summaryLines(s: Signup, card: CardPayment | undefined, ddStart: 
     `Dojo: ${DOJOS[s.dojo]}${s.classTime ? `, ${s.classTime}` : ''}`,
     `Membership starts: ${ukDate(s.startDate)}`,
     ...(s.firstMonth ? [`First month: joining ${s.firstMonth.short}, ${s.firstMonth.percent}% of ${pounds(s.firstMonth.monthlyFullPence)} = ${pounds(s.firstMonth.bandedPence)}${s.discount ? `, ${pounds(s.firstMonth.pence)} after code ${s.discount.code}` : ''}`] : []),
-    ...(s.discount ? [`Discount code: ${s.discount.code} (${s.discount.percent}% off training fees only)`] : []),
+    ...(s.tester ? ['Code: club tester code (100% off everything, approved by the club)'] : s.discount ? [`Discount code: ${s.discount.code} (${s.discount.percent}% off training fees only)`] : []),
     '',
-    `Paid today by card: ${pounds(card?.amountPence ?? up.totalPence)}${card ? '' : ' (not confirmed yet)'}`,
+    s.tester
+      ? 'Paid today: £0.00 (club tester code, approved by the club; nothing charged)'
+      : `Paid today by card: ${pounds(card?.amountPence ?? up.totalPence)}${card ? '' : ' (not confirmed yet)'}`,
     ...up.items.map((i) => `  - ${i.label}: ${pounds(i.pricePence)}`),
     '',
     fee > 0
       ? `Monthly training fee: ${pounds(fee)} by Direct Debit on the 1st of each month${ddStart ? `, from ${ukDate(ddStart)}` : ''}${s.discount ? ` (was ${pounds(s.discount.monthlyFullPence)})` : ''}${ddDone ? '' : ' - Direct Debit NOT set up yet'}`
-      : `Monthly training fee: £0 with code ${s.discount?.code ?? ''}, so there is no Direct Debit.`,
+      : `Monthly training fee: £0 with ${s.tester ? 'the club tester code' : `code ${s.discount?.code ?? ''}`}, so there is no Direct Debit.`,
   ]
 }
 
@@ -86,17 +92,17 @@ async function once(key: string, send: () => Promise<boolean>): Promise<boolean>
   return ok
 }
 
-async function memberEmail(s: Signup, lines: string[]) {
+export async function memberEmail(s: Signup, lines: string[]) {
   if (!emailConfigured() || !s.parent.email) return false
   const names = s.students.map((x) => x.firstName).join(', ')
   const text = [`Hi ${s.parent.givenName},`, '', `Thank you for joining Forza Karate Club. Here is the summary of your membership for ${names}:`, '', ...lines, '',
-    'Stripe emails a receipt for the card payment, and GoCardless emails to confirm any Direct Debit. Questions? Just reply to this email.', '', 'Oss!', 'Forza Karate Club'].join('\n')
+    s.tester ? 'Nothing has been charged. Questions? Just reply to this email.' : 'Stripe emails a receipt for the card payment, and GoCardless emails to confirm any Direct Debit. Questions? Just reply to this email.', '', 'Oss!', 'Forza Karate Club'].join('\n')
   const r = await sendEmail({ to: s.parent.email, subject: 'Welcome to Forza Karate Club: your membership summary', text, html: `<p>${text.split('\n').map(esc).join('<br/>')}</p>`, replyTo: 'hello@forzakarate.co.uk' })
   if (!r.ok) console.error('[membership] member email failed', r)
   return r.ok
 }
 
-async function clubEmail(s: Signup, subject: string, intro: string, lines: string[]) {
+export async function clubEmail(s: Signup, subject: string, intro: string, lines: string[]) {
   const to = envAddresses('CONTACT_TO_EMAIL')
   if (!emailConfigured() || !to.length) return false
   const text = [intro, '', `Sign-up: ${s.signupId}`, `Parent/guardian: ${s.parent.givenName} ${s.parent.familyName}, ${s.parent.email}, ${s.parent.phone}`,

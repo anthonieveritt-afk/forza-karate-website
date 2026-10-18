@@ -1,31 +1,30 @@
 // Checks one discount code for the become-a-member form. Returns only that code's name and
-// percentage, never the list. The billing-request route re-checks the code and recomputes
-// every amount itself; this endpoint is just for the "Apply" button.
+// percentage, never the list. The sign-up route re-checks the code and recomputes every amount
+// itself; this endpoint is just for the "Apply" button.
+// The approval-gated tester code (lib/membership/tester.ts) is recognised here too, but its value is
+// never echoed back: the response just says it's the tester code and needs approval.
 import { NextResponse } from 'next/server'
 import { findDiscount, normaliseCode } from '@/lib/gocardless/discounts'
+import { codeAttemptLimited, isTesterCode, testerAvailable, RATE_LIMITED_MESSAGE, TESTER_ACCEPTED_MESSAGE, TESTER_LABEL } from '@/lib/membership/tester'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// Light per-instance rate limit to slow down guessing (20 checks / 10 min per client).
-const hits = new Map<string, number[]>()
-function limited(req: Request): boolean {
-  const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim() || req.headers.get('x-real-ip') || 'local'
-  const now = Date.now()
-  const recent = (hits.get(ip) || []).filter((t) => now - t < 10 * 60_000)
-  recent.push(now)
-  if (hits.size > 5000) hits.clear()
-  hits.set(ip, recent)
-  return recent.length > 20
-}
+const NOT_VALID = "Sorry, that discount code isn't valid."
 
 export async function POST(req: Request) {
   const headers = { 'Cache-Control': 'no-store' }
-  if (limited(req)) return NextResponse.json({ valid: false, error: 'Too many tries. Please wait a few minutes.' }, { status: 429, headers })
+  // 10 code attempts per 10 minutes per client (shared with the sign-up submit), so codes can't be guessed.
+  if (await codeAttemptLimited(req)) return NextResponse.json({ valid: false, error: RATE_LIMITED_MESSAGE }, { status: 429, headers })
   const b = await req.json().catch(() => null)
-  const code = normaliseCode(b?.code)
+  const raw = typeof b?.code === 'string' ? b.code : ''
+  const code = normaliseCode(raw)
   if (!code) return NextResponse.json({ valid: false, error: 'Please enter a discount code.' }, { status: 400, headers })
+  if (isTesterCode(raw)) {
+    if (!testerAvailable()) return NextResponse.json({ valid: false, error: NOT_VALID }, { status: 400, headers })
+    return NextResponse.json({ valid: true, tester: true, code: TESTER_LABEL, percent: 100, label: 'Club tester code', message: TESTER_ACCEPTED_MESSAGE }, { headers })
+  }
   const d = findDiscount(code)
-  if (!d) return NextResponse.json({ valid: false, error: "Sorry, that discount code isn't valid." }, { status: 400, headers })
+  if (!d) return NextResponse.json({ valid: false, error: NOT_VALID }, { status: 400, headers })
   return NextResponse.json({ valid: true, code: d.code, percent: d.percent, label: d.label }, { headers })
 }

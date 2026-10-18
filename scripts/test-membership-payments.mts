@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- offline test with hand-rolled mocks of untyped HTTP payloads */
 // Offline tests for the join form: discount codes + card-at-sign-up / Direct Debit split.
 // Everything external is mocked: Stripe (local HTTP mock via STRIPE_API_HOST), Vercel Blob
 // (VERCEL_BLOB_API_URL -> local mock), GoCardless, Resend and Club Honbu (fetch interceptor).
@@ -68,7 +69,27 @@ Object.assign(process.env, {
   RESEND_API_KEY: 're_FAKE', RESEND_FROM: 'Forza Karate <test@example.test>', CONTACT_TO_EMAIL: 'club@example.test',
   CLUB_HONBU_SIGNUP_URL: 'https://honbu.mock/api/enrolment/website-signup', CLUB_HONBU_SIGNUP_SECRET: 'FAKE',
   NEXT_PUBLIC_SITE_URL: 'https://preview.example.test',
+  KV_REST_API_URL: 'https://kv.mock', KV_REST_API_TOKEN: 'FAKE_kv',
+  FORZA_APPROVAL_SECRET: 'FAKE_approval_secret',
 })
+// Fake tester code for these tests only (the real one is never in the repo).
+const FAKE_TESTER = 'Fake!Tester-Code9'
+
+// ── Upstash mock (REST /pipeline): SET [EX n] [NX], GET, DEL, INCR, EXPIRE [NX] ─────────
+const kvStore = new Map<string, string>()
+const kvCmds: (string | number)[][] = []
+function kvRun(c: (string | number)[]): unknown {
+  const [op, k, ...rest] = c.map(String) as string[]
+  switch (op.toUpperCase()) {
+    case 'SET': { const nx = rest.slice(1).map((x) => x.toUpperCase()).includes('NX'); if (nx && kvStore.has(k)) return null; kvStore.set(k, rest[0]); return 'OK' }
+    case 'GET': return kvStore.get(k) ?? null
+    case 'DEL': return kvStore.delete(k) ? 1 : 0
+    case 'INCR': { const n = Number(kvStore.get(k) ?? 0) + 1; kvStore.set(k, String(n)); return n }
+    case 'EXPIRE': return 1
+    default: throw new Error('kv mock: unhandled ' + op)
+  }
+}
+let failEmail = false
 
 // ── fetch interceptor: GoCardless, Resend, Club Honbu; blocks everything else ──────
 const gcCalls: { method: string; path: string; body: any }[] = []
@@ -92,7 +113,12 @@ globalThis.fetch = (async (input: any, init: any = {}) => {
     if (method === 'POST' && url.pathname === '/payments') return ok({ payments: { id: 'PM1', charge_date: body.payments.charge_date } }, 201)
     return ok({ error: 'mock gc unhandled' }, 404)
   }
-  if (url.hostname === 'api.resend.com') { emails.push(body); return ok({ id: 'em_' + emails.length }) }
+  if (url.hostname === 'api.resend.com') { if (failEmail) return ok({ message: 'mock failure' }, 500); emails.push(body); return ok({ id: 'em_' + emails.length }) }
+  if (url.hostname === 'kv.mock') {
+    assert.equal(init.headers?.Authorization, 'Bearer FAKE_kv')
+    const cmds = body as (string | number)[][]; kvCmds.push(...cmds)
+    return ok(cmds.map((c) => ({ result: kvRun(c) })))
+  }
   if (url.hostname === 'honbu.mock') { honbu.push(body); return ok({ ok: true, memberIds: [1] }) }
   throw new Error(`BLOCKED outbound request in test: ${url.origin}`)
 }) as typeof fetch
@@ -324,6 +350,176 @@ await t('gi still required; no Stripe session when invalid', async () => {
   assert.equal(r.status, 400); assert.equal(stripeCreates.length, before)
 })
 await t('billing-request rejects bad signupId (400)', async () => { assert.equal((await post(brRoute.POST, { signupId: 'x' })).status, 400) })
+
+console.log('Approval-gated tester code (FORZA_TESTER_CODE)')
+const tester = await import('../lib/membership/tester')
+const approvalRoute = await import('../app/api/membership/tester-approval/route')
+const sameIp = (ip: string) => ({ 'x-forwarded-for': ip })
+// Capture logs during the tester tests: no children's names or code value may be logged.
+const logged: string[] = []
+const origLog = console.log, origErr = console.error
+const capture = (orig: typeof console.log) => (...a: unknown[]) => { logged.push(a.map(String).join(' ')); orig(...a) }
+console.log = capture(origLog); console.error = capture(origErr)
+
+await t('code unset -> it does not exist (discount box and sign-up both say "isn\'t valid")', async () => {
+  delete process.env.FORZA_TESTER_CODE
+  assert.equal(tester.isTesterCode(FAKE_TESTER), false)
+  const r = await post(discountRoute.POST, { code: FAKE_TESTER }); assert.equal(r.status, 400); assert.match((await r.json()).error, /isn't valid/)
+  const n = stripeCreates.length, e = emails.length
+  const s2 = await post(signupRoute.POST, form('monthly_single', [child(1)], FAKE_TESTER)); assert.equal(s2.status, 400)
+  assert.equal(stripeCreates.length, n); assert.equal(emails.length, e)
+  process.env.FORZA_TESTER_CODE = `  ${FAKE_TESTER}\n` // trimmed when read
+})
+await t('exact match only: trimmed, case-sensitive, no partials', () => {
+  assert.equal(tester.isTesterCode(FAKE_TESTER), true); assert.equal(tester.isTesterCode(`  ${FAKE_TESTER} `), true)
+  for (const c of [FAKE_TESTER.toUpperCase(), FAKE_TESTER.toLowerCase(), FAKE_TESTER.slice(0, -1), FAKE_TESTER + 'x', '', 'FAMILY100', null, 42]) assert.equal(tester.isTesterCode(c), false, String(c))
+})
+await t('discount box: "Code accepted – needs approval", 100%, code value never echoed', async () => {
+  const r = await post(discountRoute.POST, { code: ` ${FAKE_TESTER} ` }); const txt = await r.text(); const d = JSON.parse(txt)
+  assert.equal(r.status, 200); assert.equal(d.valid, true); assert.equal(d.tester, true); assert.equal(d.percent, 100); assert.equal(d.code, 'TESTER')
+  assert.equal(d.message, "Code accepted – this sign-up needs approval before it's confirmed")
+  assert.ok(!txt.includes(FAKE_TESTER) && !txt.toLowerCase().includes(FAKE_TESTER.toLowerCase()))
+  const w = await post(discountRoute.POST, { code: FAKE_TESTER.toLowerCase() }); assert.equal(w.status, 400); assert.match((await w.json()).error, /isn't valid/)
+})
+await t('rate limit: 10 code attempts / 10 min per IP (then even the right code gets 429); other IPs unaffected', async () => {
+  const ip = sameIp('203.0.113.7')
+  for (let i = 0; i < 10; i++) assert.equal((await post(discountRoute.POST, { code: `WRONG${i}X` }, ip)).status, 400)
+  const r = await post(discountRoute.POST, { code: FAKE_TESTER }, ip); assert.equal(r.status, 429); assert.match((await r.json()).error, /Too many/)
+  const s2 = await post(signupRoute.POST, form('monthly_single', [child(1)], FAKE_TESTER), ip); assert.equal(s2.status, 429, 'sign-up submit shares the limit')
+  assert.equal((await post(discountRoute.POST, { code: FAKE_TESTER }, sameIp('203.0.113.8'))).status, 200)
+  assert.ok(kvCmds.some((c) => c[0] === 'INCR' && String(c[1]).startsWith('fz:code-rl:') && !String(c[1]).includes('203.0.113')), 'IP hashed in the key')
+})
+await t('a sign-up with no code is not counted', async () => {
+  const before = kvCmds.filter((c) => c[0] === 'INCR').length
+  await post(signupRoute.POST, form('monthly_single', [child(1)], ''))
+  assert.equal(kvCmds.filter((c) => c[0] === 'INCR').length, before)
+})
+await t('tester code with an invalid form -> 400, nothing saved, no email', async () => {
+  const e = emails.length, recs = () => [...kvStore.keys()].filter((x) => x.startsWith('fz:tester:')).length, k = recs()
+  const r = await post(signupRoute.POST, form('monthly_single', [{ ...child(1), suit: null }], FAKE_TESTER)); assert.equal(r.status, 400)
+  assert.equal(emails.length, e); assert.equal(recs(), k)
+})
+
+let approveUrl = '', rejectUrl = '', testerId = ''
+await t('submit: PENDING in Upstash (encrypted), £0, NO Stripe, NO GoCardless, NO Club Honbu; Anthoni emailed at both addresses', async () => {
+  const nS = stripeCreates.length, nG = gcCalls.length, nH = honbu.length, nE = emails.length
+  const body = form('monthly_two', [child(1), adult], FAKE_TESTER, '2026-10-25', '1-7')
+  const r = await post(signupRoute.POST, { ...body, upfrontPence: 99999, monthlyFeePence: 5 }); const d = await r.json()
+  assert.equal(r.status, 200, JSON.stringify(d)); assert.equal(d.pending, true); assert.equal(d.message, 'Thanks, your sign-up is waiting for approval by the club.')
+  assert.equal(d.upfrontPence, 0); assert.equal(d.monthlyFeePence, 0); assert.equal(d.url, undefined)
+  assert.equal(stripeCreates.length, nS); assert.equal(gcCalls.length, nG); assert.equal(honbu.length, nH)
+  assert.equal(emails.length - nE, 1)
+  const mail = emails.at(-1)
+  assert.deepEqual(mail.to, ['sensei.everitt@forzakarate.co.uk', 'anthonieveritt@gmail.com'])
+  assert.match(mail.subject, /Approval needed: tester code sign-up \(Tester\)/)
+  for (const x of ['Pat Tester', 'pat@example.test', 'Siblings', '1 November 2026', 'Kid1 Test', 'Adult Test']) assert.ok(mail.text.includes(x), x)
+  assert.ok(!JSON.stringify(mail).includes(FAKE_TESTER), 'code value not in the email')
+  approveUrl = mail.text.match(/https:\/\/preview\.example\.test\/api\/membership\/tester-approval\?[^\s]*a=approve[^\s]*/)![0]
+  rejectUrl = mail.text.match(/https:\/\/preview\.example\.test\/api\/membership\/tester-approval\?[^\s]*a=reject[^\s]*/)![0]
+  testerId = new URL(approveUrl).searchParams.get('id')!
+  assert.match(testerId, /^TS[0-9A-F]{32}$/)
+  const raw = kvStore.get(`fz:tester:${testerId}`)!; assert.ok(raw)
+  for (const x of ['Kid1', 'Pat', 'pat@example.test', FAKE_TESTER]) assert.ok(!raw.includes(x), `stored encrypted (${x})`)
+  const rec = await tester.loadRecord(testerId); assert.equal(rec!.status, 'pending')
+  assert.equal(rec!.signup.upfrontPence, 0); assert.equal(rec!.signup.monthlyFeePence, 0); assert.equal(rec!.signup.firstPaymentPence, 0); assert.equal(rec!.signup.directDebitStart, null)
+  assert.equal(rec!.signup.discount!.code, 'TESTER'); assert.equal(rec!.signup.tester, true)
+  const exp = Number(new URL(approveUrl).searchParams.get('exp')); const days = (exp - Date.now()) / 86400_000
+  assert.ok(days > 13.99 && days <= 14, 'links expire after 14 days')
+})
+const linkReq = (u: string, method = 'GET', override: Record<string, string> = {}) => {
+  const url = new URL(u); for (const [k, v] of Object.entries(override)) url.searchParams.set(k, v)
+  if (method === 'GET') return approvalRoute.GET(new Request(url.href) as any)
+  return approvalRoute.POST(new Request(url.origin + url.pathname, { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: url.searchParams.toString() }) as any)
+}
+await t('opening the link (GET, as an email scanner would) only shows a confirm page; nothing is decided', async () => {
+  const nH = honbu.length, nE = emails.length
+  const r = await linkReq(approveUrl); const html = await r.text()
+  assert.equal(r.status, 200); assert.match(html, /Approve this tester sign-up\?/); assert.match(html, /<form method="post">/); assert.match(html, /noindex/)
+  assert.equal(r.headers.get('x-robots-tag'), 'noindex, nofollow')
+  assert.equal(honbu.length, nH); assert.equal(emails.length, nE); assert.equal((await tester.loadRecord(testerId))!.status, 'pending')
+})
+await t('tampered, swapped or expired links are refused', async () => {
+  const sig = new URL(approveUrl).searchParams.get('sig')!
+  assert.equal((await linkReq(approveUrl, 'POST', { sig: sig.slice(0, -2) + (sig.endsWith('AA') ? 'BB' : 'AA') })).status, 400)
+  assert.equal((await linkReq(rejectUrl, 'POST', { a: 'approve' })).status, 400, 'reject signature cannot approve')
+  assert.equal((await linkReq(approveUrl, 'POST', { id: 'TS' + '0'.repeat(32) })).status, 400)
+  assert.equal((await linkReq(approveUrl, 'POST', { exp: String(Date.now() + 30 * 86400_000) })).status, 400, 'cannot extend expiry')
+  const past = Date.now() - 1000
+  assert.equal((await linkReq(approveUrl, 'POST', { exp: String(past), sig: tester.sign(testerId, 'approve', past) })).status, 410)
+  assert.equal(tester.verify(testerId, 'approve', Date.now() + 1000, tester.sign(testerId, 'approve', Date.now() + 1000), Date.now() + 15 * 86400_000), 'expired')
+  assert.equal((await tester.loadRecord(testerId))!.status, 'pending')
+})
+await t('approve: Club Honbu hand-off like a paid sign-up, tester / £0 / TESTER-APPROVED; member gets the normal confirmation', async () => {
+  const nH = honbu.length, nE = emails.length
+  const r = await linkReq(approveUrl, 'POST'); const html = await r.text()
+  assert.equal(r.status, 200, html); assert.match(html, /Sign-up approved/)
+  assert.equal(honbu.length - nH, 1)
+  const h = honbu.at(-1)
+  assert.equal(h.model, 'card-then-dd'); assert.equal(h.stage, 'complete'); assert.equal(h.signupId, testerId)
+  assert.equal(h.tester, true); assert.equal(h.paymentReference, 'TESTER-APPROVED')
+  assert.equal(h.payments.card.provider, 'tester'); assert.equal(h.payments.card.amountPence, 0); assert.equal(h.payments.card.sessionId, 'TESTER-APPROVED')
+  assert.ok(h.payments.card.items.length >= 5 && h.payments.card.items.every((i: any) => i.pricePence === 0), 'gi, licences, first month all £0')
+  assert.deepEqual(h.payments.card.items.map((i: any) => i.kind), ['suit', 'licence', 'suit', 'licence', 'first_month'])
+  assert.equal(h.payments.directDebit, null); assert.equal(h.gocardless, null); assert.equal(h.monthlyFeePence, 0); assert.equal(h.upfrontPence, 0); assert.equal(h.firstPaymentPence, 0)
+  assert.equal(h.discount.code, 'TESTER'); assert.match(h.notes, /TESTER-APPROVED/); assert.equal(h.students.length, 2); assert.equal(h.parent.email, 'pat@example.test')
+  assert.ok(!JSON.stringify(h).includes(FAKE_TESTER))
+  const member = emails.slice(nE).find((e) => e.to === 'pat@example.test')
+  assert.ok(member, 'member confirmation'); assert.match(member.subject, /Welcome to Forza Karate Club/); assert.match(member.text, /Paid today: £0\.00/); assert.match(member.text, /no Direct Debit/); assert.ok(!/Stripe emails a receipt/.test(member.text))
+  assert.ok(emails.slice(nE).some((e) => /tester code, approved/.test(e.subject)), 'club email')
+  assert.equal(gcCalls.filter((c) => JSON.stringify(c).includes(testerId)).length, 0)
+  const rec = await tester.loadRecord(testerId); assert.equal(rec!.status, 'approved'); assert.equal(rec!.honbu!.ok, true)
+})
+await t('links are one-time: approve again = no-op; reject after approve = 409', async () => {
+  const nH = honbu.length, nE = emails.length
+  const again = await linkReq(approveUrl, 'POST'); assert.equal(again.status, 200); assert.match(await again.text(), /already approved/)
+  assert.equal((await linkReq(rejectUrl, 'POST')).status, 409)
+  assert.match(await (await linkReq(rejectUrl)).text(), /Already approved/)
+  assert.equal(honbu.length, nH); assert.equal(emails.length, nE)
+})
+await t('reject: no hand-off, polite email to the member, approve afterwards refused', async () => {
+  const r0 = await post(signupRoute.POST, form('monthly_single', [child(4)], FAKE_TESTER)); assert.equal(r0.status, 200)
+  const mail = emails.at(-1)
+  const rej = mail.text.match(/https:\/\/\S*a=reject\S*/)![0], app = mail.text.match(/https:\/\/\S*a=approve\S*/)![0]
+  const id = new URL(rej).searchParams.get('id')!
+  const nH = honbu.length, nE = emails.length
+  const r = await linkReq(rej, 'POST'); assert.equal(r.status, 200); assert.match(await r.text(), /Sign-up rejected/)
+  assert.equal(honbu.length, nH)
+  assert.equal(emails.length - nE, 1); assert.equal(emails.at(-1).to, 'pat@example.test'); assert.match(emails.at(-1).text, /couldn't be applied/)
+  assert.equal((await tester.loadRecord(id))!.status, 'rejected')
+  assert.equal((await linkReq(app, 'POST')).status, 409); assert.equal(honbu.length, nH)
+})
+await t('Club Honbu down on approve: approved but flagged; the same link retries the hand-off once it is back', async () => {
+  await post(signupRoute.POST, form('monthly_single', [child(5)], FAKE_TESTER))
+  const app = emails.at(-1).text.match(/https:\/\/\S*a=approve\S*/)![0]
+  const saved = process.env.CLUB_HONBU_SIGNUP_URL; delete process.env.CLUB_HONBU_SIGNUP_URL
+  const r = await linkReq(app, 'POST'); assert.equal(r.status, 502); assert.match(await r.text(), /couldn't be sent to Club Honbu/)
+  process.env.CLUB_HONBU_SIGNUP_URL = saved
+  const members = () => emails.filter((e) => e.to === 'pat@example.test' && /Welcome/.test(e.subject)).length
+  const m0 = members(), nH = honbu.length
+  assert.match(await (await linkReq(app)).text(), /Approve this tester sign-up\?/, 'confirm page offered again for the retry')
+  const r2 = await linkReq(app, 'POST'); assert.equal(r2.status, 200); assert.equal(honbu.length - nH, 1); assert.equal(honbu.at(-1).paymentReference, 'TESTER-APPROVED')
+  assert.equal(members(), m0, 'member confirmation not sent twice')
+})
+await t('approval email fails -> 502, pending record removed (nothing left un-approvable)', async () => {
+  const before = [...kvStore.keys()].filter((k) => /^fz:tester:TS[0-9A-F]{32}$/.test(k)).length
+  failEmail = true
+  const r = await post(signupRoute.POST, form('monthly_single', [child(6)], FAKE_TESTER)); failEmail = false
+  assert.equal(r.status, 502)
+  assert.equal([...kvStore.keys()].filter((k) => /^fz:tester:TS[0-9A-F]{32}$/.test(k)).length, before)
+})
+await t('Upstash not configured -> the code is treated as not valid (never a free paid-path sign-up)', async () => {
+  const u = process.env.KV_REST_API_URL; delete process.env.KV_REST_API_URL
+  const n = stripeCreates.length
+  assert.equal((await post(discountRoute.POST, { code: FAKE_TESTER })).status, 400)
+  assert.equal((await post(signupRoute.POST, form('monthly_single', [child(1)], FAKE_TESTER))).status, 400)
+  assert.equal(stripeCreates.length, n)
+  process.env.KV_REST_API_URL = u
+})
+await t('logs never contain the code value or children\'s names', () => {
+  const all = logged.join('\n')
+  for (const x of [FAKE_TESTER, 'Kid1', 'Kid4', 'Kid5', 'Kid6', 'Adult Test']) assert.ok(!all.includes(x), x)
+})
+console.log = origLog; console.error = origErr
 
 server.close()
 console.log(`\n${passed} passed`)
