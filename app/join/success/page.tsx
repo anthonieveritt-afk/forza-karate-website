@@ -5,7 +5,7 @@ const nextSteps = [
   {
     icon: CreditCard,
     title: 'Become a member: one simple form',
-    desc: 'Membership, karate suit, FKA licence and monthly Direct Debit, all on one page.',
+    desc: 'One page: pay today by card for the licence & insurance, karate suit and first month; then your monthly fee by Direct Debit on the 1st.',
     href: '/join/membership',
     cta: 'Complete membership →',
   },

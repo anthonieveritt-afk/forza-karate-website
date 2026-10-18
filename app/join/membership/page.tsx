@@ -1,26 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import Script from 'next/script'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Loader2, Plus, Trash2, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
 import { HeightGuide } from '@/components/HeightGuide'
-import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, REQUIRED_SUIT_KEY, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
-
-declare global {
-  interface Window {
-    GoCardlessDropin?: {
-      create: (o: {
-        billingRequestFlowID: string
-        environment: 'live' | 'sandbox'
-        onSuccess: (br: { id: string }) => void
-        onExit: (error: unknown, metadata: unknown) => void
-      }) => { open: () => void; exit: () => void }
-    }
-  }
-}
+import { PLANS, pounds, applyDiscount, membershipStart, firstOfNextMonth, suitOptions, REQUIRED_SUIT_KEY, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
 
 const CLASSES: Record<string, string[]> = {
   rayleigh: [
@@ -50,8 +36,13 @@ const suitCost = (_st: Student) => GI.price // always added, one gi per student
 const licenceCost = (st: Student) => licenceFeePence('first_time', st.dateOfBirth)
 const ukDate = (iso: string) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
+/** Shown when Stripe Checkout sends someone back with ?cancelled=1. */
+function CancelledNotice() {
+  if (!useSearchParams().get('cancelled')) return null
+  return <p className="text-sm text-amber-700">Card payment cancelled, nothing was charged. You can try again below.</p>
+}
+
 export default function MembershipSignup() {
-  const router = useRouter()
   const [planChoice, setPlanChoice] = useState<PlanKey | null>(null)
   const [dojo, setDojo] = useState('')
   const [classTime, setClassTime] = useState('')
@@ -63,7 +54,26 @@ export default function MembershipSignup() {
   const [photos, setPhotos] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  const [scriptReady, setScriptReady] = useState(false)
+  // Optional discount code (training fees only). The server re-checks it and recomputes all amounts.
+  const [codeInput, setCodeInput] = useState('')
+  const [applied, setApplied] = useState<{ code: string; percent: number; label: string } | null>(null)
+  const [codeMsg, setCodeMsg] = useState<{ ok: boolean; text: string } | null>(null)
+  const [codeBusy, setCodeBusy] = useState(false)
+  async function applyCode() {
+    const code = codeInput.trim()
+    if (!code) { setApplied(null); setCodeMsg({ ok: false, text: 'Please enter a discount code.' }); return }
+    setCodeBusy(true)
+    try {
+      const r = await fetch('/api/membership/discount-code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) })
+      const d = await r.json().catch(() => ({}))
+      if (r.ok && d.valid) {
+        setApplied({ code: d.code, percent: d.percent, label: d.label }); setCodeInput(d.code)
+        setCodeMsg({ ok: true, text: `Code ${d.code} applied: ${d.percent}% off your training fees${d.percent === 100 ? ' (no monthly fee)' : ''}. The gi and licence are still charged in full.` })
+      } else { setApplied(null); setCodeMsg({ ok: false, text: d.error ?? "Sorry, that discount code isn't valid." }) }
+    } catch { setCodeMsg({ ok: false, text: 'Could not check the code. Please try again.' }) }
+    finally { setCodeBusy(false) }
+  }
+  const pct = applied?.percent ?? 0
 
   const autoPlan: PlanKey = students.length >= 3 ? 'monthly_family' : students.length === 2 ? 'monthly_two' : 'monthly_single'
   const plan: PlanKey = planChoice && planAllowed(planChoice, students.length) ? planChoice : autoPlan
@@ -85,27 +95,19 @@ export default function MembershipSignup() {
     e.preventDefault()
     setError('')
     if (students.some(st => !GI.sizes.includes(st.suitSize))) { setError('Please choose a suit size (by height) for each student. Every new member needs an Official Forza Karate Club Gi (£40).'); return }
-    if (!window.GoCardlessDropin) { setError('The secure Direct Debit form is still loading. Please try again in a moment.'); return }
     setBusy(true)
     try {
-      const res = await fetch('/api/membership/billing-request', {
+      // Step 1: card payment (gi + licence + first month) in Stripe's secure checkout.
+      // The monthly Direct Debit is set up straight after, on the page Stripe returns to.
+      const res = await fetch('/api/membership/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, dojo, classTime, trialDate, parent, emergency, consent: { terms, photos },
+        body: JSON.stringify({ plan, dojo, classTime, trialDate, parent, emergency, consent: { terms, photos }, discountCode: applied?.code ?? codeInput.trim(),
           students: students.map(st => ({ ...st, suit: { key: REQUIRED_SUIT_KEY, size: st.suitSize }, licence: { type: 'first_time' } })) }),
       })
       const d = await res.json()
-      if (!res.ok) { setError(d.error ?? 'Something went wrong.'); setBusy(false); return }
-      const brId: string = d.billingRequestId
-      window.GoCardlessDropin.create({
-        billingRequestFlowID: d.flowId,
-        environment: d.environment,
-        onSuccess: () => router.push(`/join/membership/done?br=${brId}`),
-        onExit: () => {
-          fetch('/api/membership/cancel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ billingRequestId: brId }) }).catch(() => {})
-          setBusy(false)
-        },
-      }).open()
+      if (!res.ok || !d.url) { setError(d.error ?? 'Something went wrong.'); setBusy(false); return }
+      window.location.assign(d.url)
     } catch {
       setError('Could not connect. Please try again.')
       setBusy(false)
@@ -114,14 +116,13 @@ export default function MembershipSignup() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9] pt-28 pb-20 px-4">
-      <Script src="https://pay.gocardless.com/billing/static/dropin/v2/initialise.js" onReady={() => setScriptReady(true)} />
       <form onSubmit={submit} className="max-w-2xl mx-auto bg-white rounded-3xl border border-black/8 p-6 sm:p-10 space-y-10">
         <header>
           <p className="text-xs font-semibold uppercase tracking-widest text-[#dc2626] mb-2">Forza Karate Club</p>
           <h1 className="text-3xl font-bold text-[#111111]">Become a member</h1>
           <p className="text-gray-500 mt-2 text-sm leading-relaxed">
-            Enjoyed your trial class? Everything is on this one page: membership, karate suit, FKA licence and your monthly Direct Debit, set up in the secure
-            GoCardless window, all without leaving this page. Membership starts the week after your trial.
+            Enjoyed your trial class? Fill in this page, then pay today by card for the licence and insurance, the karate suit and your first month.
+            From then on, your monthly fee is collected by Direct Debit on the 1st, set up in the secure GoCardless window straight after. Membership starts the week after your trial.
           </p>
         </header>
 
@@ -224,37 +225,50 @@ export default function MembershipSignup() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-bold">4. Direct Debit</h2>
+          <h2 className="text-lg font-bold">4. Payment</h2>
+          <div>
+            <label className={lbl} htmlFor="discount-code">Discount code <span className="font-normal text-gray-400">(optional)</span></label>
+            <div className="flex gap-2">
+              <input id="discount-code" className={`${input} uppercase`} value={codeInput} autoComplete="off" spellCheck={false} maxLength={40} placeholder="Enter code"
+                onChange={e => { setCodeInput(e.target.value); if (applied) setApplied(null); setCodeMsg(null) }}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); applyCode() } }} />
+              <Button type="button" variant="outline" className="h-11 shrink-0" disabled={codeBusy} onClick={applyCode}>{codeBusy ? 'Checking…' : applied ? 'Applied ✓' : 'Apply'}</Button>
+            </div>
+            {codeMsg && <p role="status" className={`text-xs mt-1.5 ${codeMsg.ok ? 'text-green-700' : 'text-red-600'}`}>{codeMsg.text}</p>}
+            <p className="text-xs text-gray-400 mt-1">Codes take money off training fees only, not the gi or the licence. One code per sign-up.</p>
+          </div>
           <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-2">
             {(() => {
-              const fee = PLANS[plan].price
-              if (!trialDate) return <>
-                <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">Monthly fee</span><strong>{pounds(fee)} on the 1st of each month</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">Official Forza Karate Club Gi × {students.length}</span><strong>{pounds(GI.price * students.length)}</strong></div>
-                <p className="text-xs text-gray-500">Enter your trial date to see your first payment. Your first payment covers the rest of the month you start in.</p>
-              </>
-              const start = membershipStart(trialDate)
-              const pr = proRataPence(fee, start)
+              const fullFee = PLANS[plan].price
+              const fee = applyDiscount(fullFee, pct)
+              const discountLine = applied && <div className="flex justify-between text-green-700"><span>Discount {applied.code} ({applied.percent}% off training fees)</span><strong>−{pounds(fullFee - fee)} a month</strong></div>
               const suits = students.reduce((t, x) => t + suitCost(x), 0)
               const lic = students.reduce((t, x) => t + licenceCost(x), 0)
+              const start = trialDate ? membershipStart(trialDate) : ''
+              const ddFrom = start ? firstOfNextMonth(start) : ''
+              const fromLabel = ddFrom ? ukDate(ddFrom).replace(/ \d{4}$/, '') : ''
               return <>
-                <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">Monthly fee</span><strong>{pounds(fee)} on the 1st, from {ukDate(firstOfNextMonth(start))}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">First payment, part month ({proRataLabel(start)} from {ukDate(start)})</span><strong>{pounds(pr)}</strong></div>
+                <p className="font-semibold">Pay today by card</p>
                 <div className="flex justify-between"><span className="text-gray-500">Official Forza Karate Club Gi × {students.length}</span><strong>{pounds(suits)}</strong></div>
                 <div className="flex justify-between"><span className="text-gray-500">Licence &amp; insurance</span><strong>{pounds(lic)}</strong></div>
-                <div className="flex justify-between border-t border-black/10 pt-2"><span className="font-semibold">One-off total, collected first</span><strong className="text-[#dc2626]">{pounds(pr + suits + lic)}</strong></div>
-                <p className="text-xs text-gray-500">Everything is collected by Direct Debit, no card needed. The part-month payment is taken from your start date and the suit and licence as soon as the Direct Debit is ready (usually a few working days); monthly fees then come out on the 1st.</p>
+                <div className="flex justify-between gap-3"><span className="text-gray-500">First month of training ({PLAN_LABEL[plan]}{start ? `, from ${ukDate(start)}` : ''}){applied && <span className="text-green-700">, code {applied.code}</span>}</span>
+                  <strong className="whitespace-nowrap">{applied && <s className="text-gray-400 font-normal mr-1">{pounds(fullFee)}</s>}{pounds(fee)}</strong></div>
+                <div className="flex justify-between border-t border-black/10 pt-2"><span className="font-semibold">Pay today</span><strong className="text-[#dc2626]">{pounds(suits + lic + fee)}</strong></div>
+                <div className="flex justify-between pt-2"><span className="font-semibold">{fee > 0 ? `Monthly${fromLabel ? ` from 1 ${fromLabel.replace(/^1 /, '')}` : ''}, by Direct Debit` : 'Monthly'}</span>
+                  {fee > 0 ? <strong>{applied && <s className="text-gray-400 font-normal mr-1">{pounds(fullFee)}</s>}{pounds(fee)}</strong> : <strong>£0, no Direct Debit</strong>}</div>
+                {discountLine}
+                <p className="text-xs text-gray-500">{fee > 0
+                  ? <>Pay today by card: licence and insurance, suit and first month. From then on, your monthly fee is collected by Direct Debit on the 1st{ddFrom ? `, starting ${ukDate(ddFrom)}` : ''}.{!trialDate && ' Enter your trial date to see the dates.'}</>
+                  : <>Pay today by card: licence and insurance and suit. With your code your training fees are £0, so there is no monthly Direct Debit.</>}</p>
               </>
             })()}
           </div>
-          <p className="flex gap-2 text-xs text-gray-500"><ShieldCheck className="h-4 w-4 shrink-0 text-green-600" /> Bank details are entered in GoCardless&apos;s secure window and are protected by the Direct Debit Guarantee. Forza Karate Club never sees your account number.</p>
+          <p className="flex gap-2 text-xs text-gray-500"><ShieldCheck className="h-4 w-4 shrink-0 text-green-600" /> Card details are entered on Stripe&apos;s secure checkout and bank details in GoCardless&apos;s secure window (protected by the Direct Debit Guarantee). Forza Karate Club never sees your card or account number.</p>
+          <Suspense><CancelledNotice /></Suspense>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <Button type="submit" size="lg" className="w-full" disabled={busy}>
-            {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opening secure form…</> : 'Continue to set up Direct Debit'}
+            {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opening secure checkout…</> : 'Continue to pay by card'}
           </Button>
-          {!scriptReady && <p className="text-xs text-gray-400 text-center">Loading secure payment form…</p>}
         </section>
       </form>
     </div>

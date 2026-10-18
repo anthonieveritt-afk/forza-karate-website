@@ -47,6 +47,15 @@ export function proRataPence(monthlyPence: number, startDate: string): number {
   return Math.round(monthlyPence * 0.25)
 }
 
+/**
+ * Percentage off a training-fee amount (never below £0, whole pence, rounded in the member's favour).
+ * Used for discount codes; the code list itself lives server-side in lib/gocardless/discounts.ts.
+ */
+export function applyDiscount(pence: number, percent: number): number {
+  const p = Math.min(100, Math.max(0, percent))
+  return Math.max(0, pence - Math.ceil((pence * p) / 100 - 1e-9))
+}
+
 export function proRataLabel(startDate: string): string {
   const day = Number(startDate.slice(8, 10))
   return day <= 7 ? 'full month' : day <= 14 ? '75% of a month' : day <= 21 ? '50% of a month' : '25% of a month'
@@ -59,7 +68,7 @@ export function firstOfNextMonth(date: string): string {
   return d.toISOString().slice(0, 10)
 }
 
-// ─── One-off extras taken in the same Direct Debit flow ─────────────────────
+// ─── One-off extras (gi + licence), paid by card at sign-up ─────────────────
 
 export const SUIT_KEYS = ['blitz-gi'] as const
 export type SuitKey = typeof SUIT_KEYS[number]

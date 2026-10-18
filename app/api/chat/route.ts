@@ -24,9 +24,9 @@ MEMBERSHIP & PRICING:
 - Family (3 or more): £120/month
 - Karate licence (first licence or renewal, required for every student): £50 for 17 and under, £55 for 18 and over
 - Full FAQ: https://forza-karate-website.vercel.app/faq
-- Payments are by Direct Debit only — cash is NOT accepted
+- Joining: the licence & insurance, the £40 Official Forza Karate Club Gi and the first month's training fee are paid by card online at sign-up. After that the monthly fee is collected by Direct Debit (GoCardless) on the 1st. Cash is NOT accepted
 - One month's paid notice is required to cancel membership
-- New members pay a pro-rata amount for the remainder of the month they join, then Direct Debit starts from the 1st of the following month
+- New members pay their first month in full by card when they join; the monthly Direct Debit then starts on the 1st of the following month
 
 HOW TO JOIN:
 - Book a £10 trial class: https://forza-karate-website.vercel.app/trial-class

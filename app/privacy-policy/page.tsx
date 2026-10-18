@@ -49,7 +49,7 @@ export default function PrivacyPolicyPage() {
               <p className="mb-3">We use your data to:</p>
               <ul className="list-disc pl-5 space-y-1">
                 <li>Manage your membership and class bookings</li>
-                <li>Process membership payments via Direct Debit</li>
+                <li>Process membership payments (card payment when joining, then monthly Direct Debit)</li>
                 <li>Communicate about classes, gradings, and club events</li>
                 <li>Maintain safety records (DBS, first aid, safeguarding)</li>
                 <li>Comply with legal obligations</li>

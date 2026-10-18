@@ -33,10 +33,10 @@ const nextSteps = [
   {
     icon: CreditCard,
     step: 'Step 3',
-    title: 'Set up your Direct Debit',
-    desc: 'Pay monthly via GoCardless. Safe, easy, cancel anytime.',
+    title: 'Complete your membership',
+    desc: 'Pay today by card (licence, suit and first month), then your monthly fee by Direct Debit on the 1st.',
     href: '/join/membership',
-    cta: 'Set up Direct Debit →',
+    cta: 'Complete membership →',
     primary: false,
   },
 ]
