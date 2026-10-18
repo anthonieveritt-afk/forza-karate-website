@@ -6,7 +6,7 @@ import { Loader2, Plus, Trash2, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
 import { HeightGuide } from '@/components/HeightGuide'
-import { PLANS, pounds, applyDiscount, membershipStart, firstOfNextMonth, suitOptions, REQUIRED_SUIT_KEY, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
+import { PLANS, pounds, applyDiscount, membershipStart, firstOfNextMonth, FIRST_MONTH_BANDS, bandForDate, bandAmountPence, suitOptions, REQUIRED_SUIT_KEY, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
 
 const CLASSES: Record<string, string[]> = {
   rayleigh: [
@@ -47,6 +47,8 @@ export default function MembershipSignup() {
   const [dojo, setDojo] = useState('')
   const [classTime, setClassTime] = useState('')
   const [trialDate, setTrialDate] = useState('')
+  // First month's payment (weekly band). Pre-selected from the start date; the server re-checks it.
+  const [bandChoice, setBandChoice] = useState('')
   const [students, setStudents] = useState<Student[]>([blank()])
   const [parent, setParent] = useState({ givenName: '', familyName: '', email: '', phone: '', address: '', city: '', postCode: '' })
   const [emergency, setEmergency] = useState({ name: '', phone: '' })
@@ -91,10 +93,18 @@ export default function MembershipSignup() {
   const setStudent = (i: number, k: keyof Student, v: string) =>
     setStudents(s => s.map((x, j) => (j === i ? { ...x, [k]: v } : x)))
 
+  const startDate = trialDate ? membershipStart(trialDate) : ''
+  const dateBand = startDate ? bandForDate(startDate) : null
+  const bandKey = bandChoice || dateBand?.key || ''
+  const band = FIRST_MONTH_BANDS.find(b => b.key === bandKey) ?? null
+  const bandMismatch = !!(band && dateBand && band.key !== dateBand.key)
+
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     if (students.some(st => !GI.sizes.includes(st.suitSize))) { setError('Please choose a suit size (by height) for each student. Every new member needs an Official Forza Karate Club Gi (£40).'); return }
+    if (!band) { setError("Please choose the first month's payment."); return }
+    if (bandMismatch && dateBand) { setError(`Your membership starts on ${ukDate(startDate)}, so please choose "${dateBand.label}" for the first month's payment.`); return }
     setBusy(true)
     try {
       // Step 1: card payment (gi + licence + first month) in Stripe's secure checkout.
@@ -102,7 +112,7 @@ export default function MembershipSignup() {
       const res = await fetch('/api/membership/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, dojo, classTime, trialDate, parent, emergency, consent: { terms, photos }, discountCode: applied?.code ?? codeInput.trim(),
+        body: JSON.stringify({ plan, dojo, classTime, trialDate, parent, emergency, consent: { terms, photos }, discountCode: applied?.code ?? codeInput.trim(), firstMonthBand: bandKey,
           students: students.map(st => ({ ...st, suit: { key: REQUIRED_SUIT_KEY, size: st.suitSize }, licence: { type: 'first_time' } })) }),
       })
       const d = await res.json()
@@ -156,7 +166,7 @@ export default function MembershipSignup() {
             </div>
             <div>
               <label className={lbl}>Date of trial class</label>
-              <DateInput required className={input} value={trialDate} onChange={e => setTrialDate(e.target.value)} />
+              <DateInput required className={input} value={trialDate} onChange={e => { setTrialDate(e.target.value); setBandChoice('') }} />
             </div>
             <div className="flex items-end text-sm text-gray-600 pb-3">
               {trialDate ? <>Membership starts <strong className="ml-1">{ukDate(membershipStart(trialDate))}</strong></> : 'Membership starts the week after your trial.'}
@@ -227,6 +237,19 @@ export default function MembershipSignup() {
         <section className="space-y-4">
           <h2 className="text-lg font-bold">4. Payment</h2>
           <div>
+            <label className={lbl} htmlFor="first-month-band">First month&apos;s payment ({PLAN_LABEL[plan]}) <span className="text-red-600">*</span></label>
+            <select id="first-month-band" required className={input} value={bandKey} onChange={e => setBandChoice(e.target.value)}
+              aria-invalid={bandMismatch} aria-describedby="first-month-band-help">
+              <option value="" disabled>Select an option:</option>
+              {FIRST_MONTH_BANDS.map(b => <option key={b.key} value={b.key}>{b.label} ({pounds(bandAmountPence(PLANS[plan].price, b))})</option>)}
+            </select>
+            <p id="first-month-band-help" className={`text-xs mt-1 ${bandMismatch ? 'text-red-600' : 'text-gray-400'}`}>
+              {bandMismatch && dateBand
+                ? <>Your membership starts on {ukDate(startDate)}, so the first month&apos;s payment is &ldquo;{dateBand.label}&rdquo;.</>
+                : <>Based on the day of the month your membership starts{startDate ? ` (${ukDate(startDate)})` : ''}: 1st–7th full month, 8th–14th 75%, 15th–22nd 50%, 23rd onwards 25%. Your Direct Debit then starts on the 1st of the following month.</>}
+            </p>
+          </div>
+          <div>
             <label className={lbl} htmlFor="discount-code">Discount code <span className="font-normal text-gray-400">(optional)</span></label>
             <div className="flex gap-2">
               <input id="discount-code" className={`${input} uppercase`} value={codeInput} autoComplete="off" spellCheck={false} maxLength={40} placeholder="Enter code"
@@ -244,16 +267,20 @@ export default function MembershipSignup() {
               const discountLine = applied && <div className="flex justify-between text-green-700"><span>Discount {applied.code} ({applied.percent}% off training fees)</span><strong>−{pounds(fullFee - fee)} a month</strong></div>
               const suits = students.reduce((t, x) => t + suitCost(x), 0)
               const lic = students.reduce((t, x) => t + licenceCost(x), 0)
-              const start = trialDate ? membershipStart(trialDate) : ''
+              const start = startDate
+              const banded = band ? bandAmountPence(fullFee, band) : 0
+              const first = applyDiscount(banded, pct)
               const ddFrom = start ? firstOfNextMonth(start) : ''
               const fromLabel = ddFrom ? ukDate(ddFrom).replace(/ \d{4}$/, '') : ''
               return <>
                 <p className="font-semibold">Pay today by card</p>
                 <div className="flex justify-between"><span className="text-gray-500">Official Forza Karate Club Gi × {students.length}</span><strong>{pounds(suits)}</strong></div>
                 <div className="flex justify-between"><span className="text-gray-500">Licence &amp; insurance</span><strong>{pounds(lic)}</strong></div>
-                <div className="flex justify-between gap-3"><span className="text-gray-500">First month of training ({PLAN_LABEL[plan]}{start ? `, from ${ukDate(start)}` : ''}){applied && <span className="text-green-700">, code {applied.code}</span>}</span>
-                  <strong className="whitespace-nowrap">{applied && <s className="text-gray-400 font-normal mr-1">{pounds(fullFee)}</s>}{pounds(fee)}</strong></div>
-                <div className="flex justify-between border-t border-black/10 pt-2"><span className="font-semibold">Pay today</span><strong className="text-[#dc2626]">{pounds(suits + lic + fee)}</strong></div>
+                <div className="flex justify-between gap-3"><span className="text-gray-500">{band
+                    ? <>First month (joining {band.short}, {band.percent}%){applied && <span className="text-green-700">, code {applied.code}</span>}</>
+                    : <>First month (choose the first month&apos;s payment above)</>}</span>
+                  <strong className="whitespace-nowrap">{band ? <>{applied && banded !== first && <s className="text-gray-400 font-normal mr-1">{pounds(banded)}</s>}{pounds(first)}</> : '–'}</strong></div>
+                <div className="flex justify-between border-t border-black/10 pt-2"><span className="font-semibold">Pay today</span><strong className="text-[#dc2626]">{pounds(suits + lic + first)}</strong></div>
                 <div className="flex justify-between pt-2"><span className="font-semibold">{fee > 0 ? `Monthly${fromLabel ? ` from 1 ${fromLabel.replace(/^1 /, '')}` : ''}, by Direct Debit` : 'Monthly'}</span>
                   {fee > 0 ? <strong>{applied && <s className="text-gray-400 font-normal mr-1">{pounds(fullFee)}</s>}{pounds(fee)}</strong> : <strong>£0, no Direct Debit</strong>}</div>
                 {discountLine}

@@ -115,8 +115,9 @@ const post = (handler: (r: any) => Promise<Response>, body: unknown, headers: Re
 
 const child = (n: number, size = '140cm') => ({ firstName: `Kid${n}`, surname: 'Test', dateOfBirth: '2017-05-01', belt: 'White', medical: '', suitSize: size, suit: { key: 'blitz-gi', size }, licence: { type: 'first_time' } })
 const adult = { firstName: 'Adult', surname: 'Test', dateOfBirth: '1990-01-01', belt: 'White', medical: '', suit: { key: 'blitz-gi', size: '180cm' }, licence: { type: 'renewal' } }
-const form = (plan: string, students: any[], discountCode?: string) => ({
-  plan, dojo: 'rayleigh', classTime: 'Tuesday 6:15–7pm', trialDate: '2026-10-20',
+// Default trial 25 Oct -> membership starts 1 Nov (band 1st–7th, full month), DD from 1 Dec.
+const form = (plan: string, students: any[], discountCode?: string, trialDate = '2026-10-25', firstMonthBand: string | undefined = '1-7') => ({
+  plan, dojo: 'rayleigh', classTime: 'Tuesday 6:15–7pm', trialDate, ...(firstMonthBand ? { firstMonthBand } : {}),
   parent: { givenName: 'Pat', familyName: 'Tester', email: 'pat@example.test', phone: '07000000000', address: '1 Test Road', city: 'Rayleigh', postCode: 'ss6 1aa' },
   emergency: { name: 'Sam', phone: '07000000001' }, consent: { terms: true, photos: false }, students, ...(discountCode !== undefined ? { discountCode } : {}),
 })
@@ -158,17 +159,17 @@ await t('unknown code on sign-up -> 400 and NO Stripe session', async () => {
   const r = await post(signupRoute.POST, form('monthly_single', [child(1)], 'FREEBIE'))
   assert.equal(r.status, 400); assert.match((await r.json()).error, /isn't valid/); assert.equal(stripeCreates.length, before)
 })
-await t('no code: gi £40 + licence £50 + first month £50 = £140 today; monthly £50 from 1 Nov', async () => {
+await t('no code: gi £40 + licence £50 + first month £50 = £140 today; monthly £50 from 1 Dec', async () => {
   const r = await post(signupRoute.POST, form('monthly_single', [child(1)], ''))
   const d = await r.json(); assert.equal(r.status, 200, JSON.stringify(d))
   const o = stripeCreates.at(-1)!
   assert.deepEqual(items(o), [
     { name: 'Official Forza Karate Club Gi - Student 1 (140cm)', amount: 4000 },
     { name: 'FKA licence & insurance - Student 1', amount: 5000 },
-    { name: 'First month of training - Single package', amount: 5000 },
+    { name: 'First month of training (joining 1st–7th, 100%) - Single package', amount: 5000 },
   ])
   assert.equal(o.mode, 'payment'); assert.equal(o['metadata[kind]'], 'membership'); assert.equal(o['line_items[0][price_data][currency]'], 'gbp')
-  assert.equal(d.upfrontPence, 14000); assert.equal(d.monthlyFeePence, 5000); assert.equal(d.directDebitStart, '2026-11-01')
+  assert.equal(d.upfrontPence, 14000); assert.equal(d.monthlyFeePence, 5000); assert.equal(d.directDebitStart, '2026-12-01')
   assert.ok(!JSON.stringify(o).includes('Kid1'), 'no student names sent to Stripe')
   assert.match(o.success_url, /^https:\/\/preview\.example\.test\/join\/membership\/paid\?signup=SU[0-9A-F]{24}&session_id=\{CHECKOUT_SESSION_ID\}$/)
 })
@@ -186,7 +187,7 @@ await t('FORZA5 (lower case): first month £47.50 on card, monthly £47.50 DD', 
   assert.equal(r.status, 200)
   const o = stripeCreates.at(-1)!
   assert.deepEqual(items(o).map((i) => i.amount), [4000, 5000, 4750])
-  assert.equal(items(o)[2].name, 'First month of training - Single package (code FORZA5, 5% off)')
+  assert.equal(items(o)[2].name, 'First month of training (joining 1st–7th, 100%) - Single package (code FORZA5, 5% off)')
   assert.equal(o['metadata[discountCode]'], 'FORZA5'); assert.equal(o['metadata[monthlyPence]'], '4750')
   assert.equal(d.upfrontPence, 13750); assert.equal(d.monthlyFeePence, 4750)
   forzaId = d.signupId; forzaSession = [...sessions.keys()].at(-1)!
@@ -207,7 +208,7 @@ await t('Direct Debit refused (402) until the card is paid', async () => {
 })
 await t('card-status confirms the card, records it, Club Honbu stage card_paid_awaiting_direct_debit + club email', async () => {
   const c = await (await post(cardRoute.POST, { signupId: forzaId, sessionId: forzaSession })).json()
-  assert.equal(c.paid, true); assert.equal(c.needsDirectDebit, true); assert.equal(c.amountPence, 13750); assert.equal(c.directDebitStart, '2026-11-01')
+  assert.equal(c.paid, true); assert.equal(c.needsDirectDebit, true); assert.equal(c.amountPence, 13750); assert.equal(c.directDebitStart, '2026-12-01')
   const h = honbu.at(-1); assert.equal(h.stage, 'card_paid_awaiting_direct_debit'); assert.equal(h.signupId, forzaId)
   assert.equal(h.payments.card.amountPence, 13750); assert.equal(h.payments.directDebit, null); assert.equal(h.discount.code, 'FORZA5')
   assert.equal(emails.length, 1); assert.match(emails[0].subject, /Card paid, Direct Debit pending/); assert.match(emails[0].text, /FORZA5/)
@@ -223,7 +224,7 @@ await t('Stripe webhook (kind membership) for the same session: accepted, no dup
   const r2 = await webhook.POST(new Request('https://x/api/stripe/webhook', { method: 'POST', headers: { 'stripe-signature': sig }, body: ev }) as any)
   assert.equal((await r2.json()).duplicate, true)
 })
-await t('billing-request: mandate only, then subscription £47.50 from 1 Nov; NO one-off DD payments', async () => {
+await t('billing-request: mandate only, then subscription £47.50 from 1 Dec; NO one-off DD payments', async () => {
   const r = await post(brRoute.POST, { signupId: forzaId }); const d = await r.json()
   assert.equal(r.status, 200); assert.equal(d.billingRequestId, 'BRQ000TEST1'); assert.equal(d.monthlyFeePence, 4750)
   const br = gcCalls.find((c) => c.path === '/billing_requests' && c.method === 'POST')!.body.billing_requests
@@ -231,14 +232,15 @@ await t('billing-request: mandate only, then subscription £47.50 from 1 Nov; NO
   const done = await (await post(completeRoute.POST, { billingRequestId: 'BRQ000TEST1' })).json()
   assert.equal(done.state, 'done'); assert.equal(done.recorded, true)
   const subs = gcCalls.filter((c) => c.path === '/subscriptions'); assert.equal(subs.length, 1)
-  assert.equal(subs[0].body.subscriptions.amount, 4750); assert.equal(subs[0].body.subscriptions.start_date, '2026-11-01'); assert.equal(subs[0].body.subscriptions.metadata.discount, 'FORZA5')
+  assert.equal(subs[0].body.subscriptions.amount, 4750); assert.equal(subs[0].body.subscriptions.start_date, '2026-12-01'); assert.equal(subs[0].body.subscriptions.metadata.discount, 'FORZA5')
   assert.equal(gcCalls.filter((c) => c.path === '/payments').length, 0, 'no kit/licence or first-month DD payment')
   const h = honbu.at(-1); assert.equal(h.stage, 'complete'); assert.equal(h.payments.card.amountPence, 13750)
   assert.equal(h.payments.directDebit.subscriptionId, 'SB1'); assert.equal(h.payments.directDebit.monthlyPence, 4750); assert.equal(h.discount.monthlyDiscountPence, 250)
   const member = emails.find((e) => e.to?.includes?.('pat@example.test') || e.to === 'pat@example.test')
   const club = emails.filter((e) => /New member sign-up \[code FORZA5\]/.test(e.subject))
   assert.ok(member, 'member email'); assert.equal(club.length, 1)
-  for (const e of [member, club[0]]) { assert.match(e.text, /Paid today by card: £137\.50/); assert.match(e.text, /£47\.50 by Direct Debit on the 1st/); assert.match(e.text, /FORZA5/) }
+  for (const e of [member, club[0]]) { assert.match(e.text, /Paid today by card: £137\.50/); assert.match(e.text, /£47\.50 by Direct Debit on the 1st/); assert.match(e.text, /FORZA5/); assert.match(e.text, /First month: joining 1st–7th, 100% of £50 = £50, £47\.50 after code FORZA5/) }
+  assert.equal(h.firstMonth.band, '1-7'); assert.equal(h.firstMonth.bandedPence, 5000); assert.equal(h.firstMonth.pence, 4750)
   assert.match(member.text, /First month of training/)
   const n = emails.length; await post(completeRoute.POST, { billingRequestId: 'BRQ000TEST1' }); assert.equal(emails.length, n, 'idempotent')
 })
@@ -258,6 +260,61 @@ await t('family of 3 with FAMILY100: card = 3 gi + 3 licences only, no DD, no Go
   assert.equal(emails.length - eBefore, 2, 'member + club'); assert.ok(emails.slice(eBefore).every((e) => /no Direct Debit/.test(e.text)))
   const br = await post(brRoute.POST, { signupId: d.signupId }); assert.equal(br.status, 409)
   assert.equal(gcCalls.length, gcBefore, 'no mandate, no subscription')
+})
+
+console.log('First-month weekly bands (start-date boundaries x packages x codes)')
+const { parseSignupBody } = await import('../lib/membership/signup')
+const { FIRST_MONTH_BANDS } = await import('../lib/gocardless/plans')
+const minus7 = (iso: string) => { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() - 7); return d.toISOString().slice(0, 10) }
+const BOUNDARIES: [string, string, number][] = [
+  ['2026-10-01', '1-7', 100], ['2026-10-07', '1-7', 100], ['2026-10-08', '8-14', 75], ['2026-10-14', '8-14', 75],
+  ['2026-10-15', '15-22', 50], ['2026-10-22', '15-22', 50], ['2026-10-23', '23+', 25], ['2026-10-31', '23+', 25],
+]
+const PKG: [string, any[], number][] = [['monthly_single', [child(1)], 5000], ['monthly_two', [child(1), child(2)], 9000], ['monthly_family', [child(1), child(2), child(3)], 12000]]
+const CODES: [string, number][] = [['', 0], ['FORZA5', 5], ['bluelight10', 10], ['Family100', 100]]
+const bandTable: string[] = []
+await t(`${BOUNDARIES.length} start dates x ${PKG.length} packages x ${CODES.length} codes: band amount, then code, never below 0`, () => {
+  for (const [start, key, pct] of BOUNDARIES) for (const [plan, studs, fee] of PKG) for (const [code, cp] of CODES) {
+    const r = parseSignupBody(form(plan, studs, code, minus7(start), key))
+    assert.ok(r.ok, `${start} ${plan} ${code}: ${!r.ok && r.error}`)
+    if (!r.ok) continue
+    const banded = Math.floor((fee * pct) / 100)
+    const expected = Math.max(0, banded - Math.ceil((banded * cp) / 100 - 1e-9))
+    const sg = r.signup
+    assert.equal(sg.startDate, start)
+    assert.equal(sg.firstMonth?.band, key); assert.equal(sg.firstMonth?.bandedPence, banded); assert.equal(sg.firstPaymentPence, expected, `${start} ${plan} ${code}`)
+    assert.equal(sg.monthlyFeePence, Math.max(0, fee - Math.ceil((fee * cp) / 100 - 1e-9)), 'monthly DD is not banded')
+    assert.equal(sg.directDebitStart, cp === 100 ? null : '2026-11-01', 'DD from the 1st of the following month')
+    assert.equal(sg.upfrontPence, studs.length * (4000 + 5000) + expected, 'gi + licence unchanged')
+    if (!code && start.endsWith(['01', '08', '15', '23'][FIRST_MONTH_BANDS.findIndex((b) => b.key === key)])) bandTable.push(`${plan} ${key}: ${(banded / 100).toFixed(2)}`)
+  }
+})
+await t('the boundary amounts for the default fees', () => {
+  assert.deepEqual(bandTable, [
+    'monthly_single 1-7: 50.00', 'monthly_two 1-7: 90.00', 'monthly_family 1-7: 120.00',
+    'monthly_single 8-14: 37.50', 'monthly_two 8-14: 67.50', 'monthly_family 8-14: 90.00',
+    'monthly_single 15-22: 25.00', 'monthly_two 15-22: 45.00', 'monthly_family 15-22: 60.00',
+    'monthly_single 23+: 12.50', 'monthly_two 23+: 22.50', 'monthly_family 23+: 30.00',
+  ])
+})
+await t('wrong band for the start date -> 400 with the right option named; missing band -> 400', () => {
+  for (const [start, key] of [['2026-10-07', '8-14'], ['2026-10-08', '1-7'], ['2026-10-14', '15-22'], ['2026-10-15', '8-14'], ['2026-10-22', '23+'], ['2026-10-23', '15-22'], ['2026-10-31', '1-7']]) {
+    const r = parseSignupBody(form('monthly_single', [child(1)], '', minus7(start), key))
+    assert.equal(r.ok, false, `${start} ${key}`)
+    if (!r.ok) { assert.equal(r.status, 400); assert.match(r.error, /so the first month's payment is ".+ \(£[0-9.]+\)"/) }
+  }
+  const m = parseSignupBody(form('monthly_single', [child(1)], '', '2026-10-01', undefined)); assert.equal(m.ok, false)
+  const x = parseSignupBody(form('monthly_single', [child(1)], '', '2026-10-01', 'cheap')); assert.equal(x.ok, false)
+})
+await t('band in the Stripe line item, and a cheaper band is rejected before any Stripe call', async () => {
+  const r = await post(signupRoute.POST, form('monthly_two', [child(1), child(2)], 'FORZA5', minus7('2026-10-10'), '8-14'))
+  assert.equal(r.status, 200)
+  const fm = items(stripeCreates.at(-1)!).at(-1)!
+  assert.equal(fm.name, 'First month of training (joining 8th–14th, 75%) - Siblings package (code FORZA5, 5% off)')
+  assert.equal(fm.amount, 6412) // 75% of £90 = £67.50, less 5% (£3.38, rounded up for the member) = £64.12
+  const n = stripeCreates.length
+  const bad = await post(signupRoute.POST, form('monthly_two', [child(1), child(2)], '', minus7('2026-10-10'), '23+'))
+  assert.equal(bad.status, 400); assert.equal(stripeCreates.length, n)
 })
 
 console.log('Validation')

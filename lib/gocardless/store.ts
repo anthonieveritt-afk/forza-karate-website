@@ -39,6 +39,8 @@ export type Signup = {
   /** Training fees after any discount code. Missing on sign-ups saved before codes existed (= full PLANS price). */
   monthlyFeePence?: number
   firstPaymentPence?: number
+  /** First-month weekly band (from the start date; chosen on the form and checked by the server). */
+  firstMonth?: { band: string; label: string; short: string; percent: number; monthlyFullPence: number; bandedPence: number; pence: number }
   discount?: AppliedDiscount | null
   createdAt: string
 }

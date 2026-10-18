@@ -35,16 +35,34 @@ export function membershipStart(trialDate: string): string {
 }
 
 /**
- * Pro-rata first payment, same bands as the old enrolment form
- * (Club Honbu routes/enrolment.ts proRataAmount), applied to the membership start day:
- * 1st–7th full month, 8th–14th 75%, 15th–21st 50%, 22nd–end 25%.
+ * First-month weekly bands (Anthoni's old forzakarate.co.uk form), by the membership START date's
+ * day of month: 1st–7th 100%, 8th–14th 75%, 15th–22nd 50%, 23rd onwards 25% of the package's
+ * monthly training fee (Single / Siblings / Family price). Paid by card at sign-up; the Direct
+ * Debit starts on the 1st of the following month. Rounded down (in the member's favour).
  */
-export function proRataPence(monthlyPence: number, startDate: string): number {
+export const FIRST_MONTH_BANDS = [
+  { key: '1-7', label: '1st – 7th', short: '1st–7th', fromDay: 1, toDay: 7, percent: 100 },
+  { key: '8-14', label: '8th – 14th', short: '8th–14th', fromDay: 8, toDay: 14, percent: 75 },
+  { key: '15-22', label: '15th – 22nd', short: '15th–22nd', fromDay: 15, toDay: 22, percent: 50 },
+  { key: '23+', label: '23rd plus', short: '23rd onwards', fromDay: 23, toDay: 31, percent: 25 },
+] as const
+export type FirstMonthBand = (typeof FIRST_MONTH_BANDS)[number]
+export type FirstMonthBandKey = FirstMonthBand['key']
+
+export function bandForDate(startDate: string): FirstMonthBand {
   const day = Number(startDate.slice(8, 10))
-  if (day <= 7) return monthlyPence
-  if (day <= 14) return Math.round(monthlyPence * 0.75)
-  if (day <= 21) return Math.round(monthlyPence * 0.5)
-  return Math.round(monthlyPence * 0.25)
+  return FIRST_MONTH_BANDS.find((b) => day >= b.fromDay && day <= b.toDay) ?? FIRST_MONTH_BANDS[3]
+}
+export function bandByKey(key: unknown): FirstMonthBand | null {
+  return FIRST_MONTH_BANDS.find((b) => b.key === key) ?? null
+}
+export function bandAmountPence(monthlyPence: number, band: FirstMonthBand): number {
+  return Math.floor((monthlyPence * band.percent) / 100)
+}
+
+/** First-month amount for a start date (before any discount code). */
+export function proRataPence(monthlyPence: number, startDate: string): number {
+  return bandAmountPence(monthlyPence, bandForDate(startDate))
 }
 
 /**
@@ -57,8 +75,8 @@ export function applyDiscount(pence: number, percent: number): number {
 }
 
 export function proRataLabel(startDate: string): string {
-  const day = Number(startDate.slice(8, 10))
-  return day <= 7 ? 'full month' : day <= 14 ? '75% of a month' : day <= 21 ? '50% of a month' : '25% of a month'
+  const b = bandForDate(startDate)
+  return `joining ${b.short}, ${b.percent}%`
 }
 
 /** First 1st of the month strictly after the given date (YYYY-MM-DD). */

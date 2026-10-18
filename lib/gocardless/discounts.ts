@@ -7,10 +7,7 @@
 //   [{"code":"FORZA5","percent":5,"label":"Forza discount"},{"code":"BLUELIGHT10","percent":10,"label":"Blue light"}]
 // (codes: 3-24 letters/digits/-/_; percent: 1-100). An invalid override is ignored and logged.
 import 'server-only'
-import { applyDiscount, proRataPence } from './plans'
-
-/** Pending Anthoni's decision: pro-rate the first month when joining mid-month? (default: no, full month). */
-export const FIRST_MONTH_PRO_RATA = false
+import { applyDiscount, bandAmountPence, bandForDate } from './plans'
 
 export type DiscountCode = { code: string; percent: number; label: string }
 
@@ -74,18 +71,18 @@ export type AppliedDiscount = {
 /** Training fees for a sign-up, with an optional (already validated) code. */
 export function trainingFees(monthlyFullPence: number, startDate: string, d: DiscountCode | null) {
   const monthlyPence = d ? applyDiscount(monthlyFullPence, d.percent) : monthlyFullPence
-  // TODO(Anthoni): "first month paid in full" is taken literally: the card takes one FULL month of
-  // the package fee whatever the start date, and the Direct Debit starts on the following 1st.
-  // Set FIRST_MONTH_PRO_RATA = true to charge the old part-month bands (proRataPence) instead.
-  const firstPaymentFullPence = FIRST_MONTH_PRO_RATA ? proRataPence(monthlyFullPence, startDate) : monthlyFullPence
+  // First month: Anthoni's weekly band for the start date (1st–7th 100%, 8th–14th 75%, 15th–22nd 50%,
+  // 23rd+ 25% of the package fee), then the code's % off the banded amount.
+  const band = bandForDate(startDate)
+  const firstPaymentFullPence = bandAmountPence(monthlyFullPence, band)
   const firstPaymentPence = d ? applyDiscount(firstPaymentFullPence, d.percent) : firstPaymentFullPence
   const applied: AppliedDiscount | null = d
     ? {
         code: d.code, label: d.label, percent: d.percent,
         monthlyFullPence, monthlyPence, monthlyDiscountPence: monthlyFullPence - monthlyPence,
         firstPaymentFullPence, firstPaymentPence,
-        note: `Discount code ${d.code} (${d.percent}% off training fees): monthly £${(monthlyFullPence / 100).toFixed(2)} -> £${(monthlyPence / 100).toFixed(2)}, first month £${(firstPaymentFullPence / 100).toFixed(2)} -> £${(firstPaymentPence / 100).toFixed(2)}; gi and licence charged in full.`,
+        note: `Discount code ${d.code} (${d.percent}% off training fees): monthly £${(monthlyFullPence / 100).toFixed(2)} -> £${(monthlyPence / 100).toFixed(2)}, first month (joining ${band.short}, ${band.percent}%) £${(firstPaymentFullPence / 100).toFixed(2)} -> £${(firstPaymentPence / 100).toFixed(2)}; gi and licence charged in full.`,
       }
     : null
-  return { monthlyPence, firstPaymentPence, applied }
+  return { monthlyPence, firstPaymentPence, firstPaymentFullPence, band, applied }
 }

@@ -1,13 +1,14 @@
 // Validates the become-a-member form and works out every amount on the server.
 // Payment model (Anthoni, 18 Oct 2026):
 //   * Pay today by CARD (Stripe Checkout): licence & insurance + the £40 gi (per student)
-//     + the FIRST MONTH of training (after any discount code).
+//     + the FIRST MONTH of training: weekly band by start date (1st–7th 100%, 8th–14th 75%,
+//       15th–22nd 50%, 23rd+ 25% of the package fee), then any discount code.
 //   * From the following 1st of the month: the monthly training fee by GoCardless DIRECT DEBIT.
 //   * A 100% code (FAMILY100) makes training £0: the card still takes the gi and licence,
 //     and no Direct Debit mandate or subscription is set up.
 import 'server-only'
 import { randomBytes } from 'crypto'
-import { PLANS, DOJOS, planAllowed, membershipStart, requiredSuit, extrasLineItems, licenceFeePence, firstOfNextMonth, type PlanKey, type DojoKey, type LicenceType } from '@/lib/gocardless/plans'
+import { PLANS, DOJOS, planAllowed, membershipStart, requiredSuit, extrasLineItems, licenceFeePence, firstOfNextMonth, bandByKey, pounds, type PlanKey, type DojoKey, type LicenceType } from '@/lib/gocardless/plans'
 import type { Signup } from '@/lib/gocardless/store'
 import { findDiscount, normaliseCode, trainingFees } from '@/lib/gocardless/discounts'
 
@@ -26,14 +27,15 @@ export const SIGNUP_ID = /^SU[0-9A-F]{24}$/
  * Everything paid by card today, one line per item (pence, server prices only). Students are
  * "Student 1", "Student 2"... so no names go to Stripe.
  */
-export function upfrontItems(signup: Pick<Signup, 'students' | 'firstPaymentPence' | 'plan' | 'discount'>) {
+export function upfrontItems(signup: Pick<Signup, 'students' | 'firstPaymentPence' | 'plan' | 'discount' | 'firstMonth'>) {
   const items: { label: string; kind: 'suit' | 'licence' | 'first_month'; pricePence: number }[] = []
   signup.students.forEach((x, i) => {
     if (x.suit) items.push({ label: `Official Forza Karate Club Gi - Student ${i + 1} (${x.suit.size})`, kind: 'suit', pricePence: x.suit.pricePence })
     if (x.licence?.feePence) items.push({ label: `FKA licence & insurance - Student ${i + 1}`, kind: 'licence', pricePence: x.licence.feePence })
   })
   const first = signup.firstPaymentPence ?? 0
-  if (first > 0) items.push({ label: `First month of training - ${PLANS[signup.plan].label} package${signup.discount ? ` (code ${signup.discount.code}, ${signup.discount.percent}% off)` : ''}`, kind: 'first_month', pricePence: first })
+  const fm = signup.firstMonth
+  if (first > 0) items.push({ label: `First month of training (joining ${fm ? `${fm.short}, ${fm.percent}%` : 'full month'}) - ${PLANS[signup.plan].label} package${signup.discount ? ` (code ${signup.discount.code}, ${signup.discount.percent}% off)` : ''}`, kind: 'first_month', pricePence: first })
   return { items, totalPence: items.reduce((t, i) => t + i.pricePence, 0) }
 }
 
@@ -89,12 +91,21 @@ export function parseSignupBody(input: unknown): ParseResult {
   if (rawCode && !discount) return bad400("Sorry, that discount code isn't valid.")
 
 
+  // First-month band: required, and must match the start date's day of month (so nobody can pick
+  // a cheaper band). The amount always comes from the server's own calculation.
   const startDate = membershipStart(trialDate)
   const fees = trainingFees(PLANS[plan].price, startDate, discount)
+  const chosen = bandByKey(s(b.firstMonthBand, 10))
+  if (!chosen) return bad400("Please choose the first month's payment (the week your membership starts).")
+  if (chosen.key !== fees.band.key) {
+    const when = new Date(startDate + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', timeZone: 'UTC' })
+    return bad400(`Your membership starts on ${when}, so the first month's payment is "${fees.band.label} (${pounds(fees.firstPaymentFullPence)})". Please choose that option.`)
+  }
   const signup: Signup = {
     signupId: newSignupId(), model: 'card-then-dd',
     plan, dojo, classTime: s(b.classTime, 120), trialDate, startDate,
     monthlyFeePence: fees.monthlyPence, firstPaymentPence: fees.firstPaymentPence, discount: fees.applied,
+    firstMonth: { band: fees.band.key, label: fees.band.label, short: fees.band.short, percent: fees.band.percent, monthlyFullPence: PLANS[plan].price, bandedPence: fees.firstPaymentFullPence, pence: fees.firstPaymentPence },
     directDebitStart: fees.monthlyPence > 0 ? firstOfNextMonth(startDate) : null,
     students, parent, emergency, consent: { photos: !!b.consent?.photos, terms: true },
     extrasPence: extrasLineItems(students).reduce((t, item) => t + item.pricePence, 0),

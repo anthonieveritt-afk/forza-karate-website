@@ -45,6 +45,7 @@ export async function honbuHandOff(s: Signup, stage: Stage, card: CardPayment | 
     },
     // Kept for the existing contract fields:
     gocardless: gcIds ? { customerId: gcIds.customerId, mandateId: gcIds.mandateId, subscriptionId: gcIds.subscriptionId, firstPaymentId: null, extrasPaymentId: null } : null,
+    firstMonth: s.firstMonth ?? null,
     firstPaymentPence: s.firstPaymentPence ?? 0, extrasPence: s.extrasPence, upfrontPence: s.upfrontPence ?? up.totalPence,
   }
   try {
@@ -64,6 +65,7 @@ export function summaryLines(s: Signup, card: CardPayment | undefined, ddStart: 
     `Package: ${PLANS[s.plan].label} (${s.students.length} student${s.students.length > 1 ? 's' : ''})`,
     `Dojo: ${DOJOS[s.dojo]}${s.classTime ? `, ${s.classTime}` : ''}`,
     `Membership starts: ${ukDate(s.startDate)}`,
+    ...(s.firstMonth ? [`First month: joining ${s.firstMonth.short}, ${s.firstMonth.percent}% of ${pounds(s.firstMonth.monthlyFullPence)} = ${pounds(s.firstMonth.bandedPence)}${s.discount ? `, ${pounds(s.firstMonth.pence)} after code ${s.discount.code}` : ''}`] : []),
     ...(s.discount ? [`Discount code: ${s.discount.code} (${s.discount.percent}% off training fees only)`] : []),
     '',
     `Paid today by card: ${pounds(card?.amountPence ?? up.totalPence)}${card ? '' : ' (not confirmed yet)'}`,
