@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import { logoutMembers } from '@/app/actions/members-auth'
+import LogoutButton from '@/components/members/LogoutButton'
 import { Button } from '@/components/ui/Button'
 
 export const metadata: Metadata = {
@@ -24,9 +24,7 @@ export default function MembersSyllabusPage() {
             </Link>
             <span className="text-gray-300">|</span>
             <span className="text-sm text-gray-500">Members area</span>
-            <form action={logoutMembers}>
-              <Button type="submit" variant="outline" size="sm">Log out</Button>
-            </form>
+            <LogoutButton />
           </div>
         </div>
       </header>

@@ -1,9 +1,8 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from '@/components/ui/Button'
 import { getMemberPortalData } from '@/app/actions/portal'
-import { logoutMembers } from '@/app/actions/members-auth'
+import LogoutButton from '@/components/members/LogoutButton'
 import { LicenceCard } from '@/components/members/LicenceCard'
 import { BeltJourney } from '@/components/members/BeltJourney'
 
@@ -57,9 +56,7 @@ export default async function MembersPortalPage() {
             <Link href="/members/grading" className="text-sm text-[#dc2626] hover:underline font-medium">Grading</Link>
             <span className="text-gray-300">|</span>
             <span className="text-sm text-gray-500">Members area</span>
-            <form action={logoutMembers}>
-              <Button type="submit" variant="outline" size="sm">Log out</Button>
-            </form>
+            <LogoutButton />
           </div>
         </div>
       </header>

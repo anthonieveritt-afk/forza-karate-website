@@ -14,6 +14,7 @@ function LoginForm() {
   // Only ever send people back into the members area (blocks open redirects and javascript: URLs).
   const redirect = safeMembersRedirect(searchParams.get('redirect'))
   const unavailable = searchParams.get('error') === 'unavailable'
+  const loggedOut = searchParams.get('loggedOut') === '1'
 
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
@@ -48,6 +49,11 @@ function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {loggedOut && !unavailable && !error && (
+        <div className="p-3 rounded-xl bg-green-50 border border-green-100 text-green-800 text-sm text-center">
+          You&apos;ve been logged out.
+        </div>
+      )}
       {unavailable && !error && (
         <div className="p-3 rounded-xl bg-amber-50 border border-amber-100 text-amber-800 text-sm text-center">
           We couldn&apos;t reach the club system to check your login. Please try again in a minute.

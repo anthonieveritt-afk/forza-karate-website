@@ -1,6 +1,8 @@
 'use server'
 
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { MEMBERS_COOKIE_PATH, expiredMembersCookieOptions, forgetMemberSession } from '@/lib/members/session'
 
 const CLUB_HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 const COOKIE_NAME    = 'forza-members-auth'
@@ -52,7 +54,15 @@ export async function loginMembers(data: {
   }
 }
 
+/**
+ * Server-action logout (kept for any caller that still uses it; the members pages post to
+ * /api/members/logout instead). Expires the cookie on the same path it was set on (/members),
+ * then redirects to the login page.
+ */
 export async function logoutMembers() {
   const cookieStore = await cookies()
-  cookieStore.delete(COOKIE_NAME)
+  forgetMemberSession(cookieStore.get(COOKIE_NAME)?.value)
+  // Next keeps one pending cookie per name, so only the real (/members) path can be expired here.
+  cookieStore.set(COOKIE_NAME, '', expiredMembersCookieOptions(MEMBERS_COOKIE_PATH))
+  redirect('/members?loggedOut=1')
 }

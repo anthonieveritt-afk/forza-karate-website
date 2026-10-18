@@ -30,6 +30,10 @@ export async function middleware(request: NextRequest) {
       if (token && check === 'invalid') res.cookies.set(MEMBERS_COOKIE, '', { path: '/members', maxAge: 0 })
       return res
     }
+    // Logged-in members pages must never be served from a browser/back-button cache after logout.
+    const res = NextResponse.next()
+    res.headers.set('Cache-Control', 'private, no-store, max-age=0')
+    return res
   }
 
   return NextResponse.next()
