@@ -1,8 +1,6 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
-import Image from 'next/image'
 import { getMemberPortalData } from '@/app/actions/portal'
-import LogoutButton from '@/components/members/LogoutButton'
+import MembersArea from '@/components/members/MembersArea'
 import { LicenceCard } from '@/components/members/LicenceCard'
 import { BeltJourney } from '@/components/members/BeltJourney'
 
@@ -38,6 +36,9 @@ function formatDate(dateStr: string | null): string {
   }
 }
 
+// Members only (gated in middleware): render per request, never from a static/shared cache.
+export const dynamic = 'force-dynamic'
+
 export default async function MembersPortalPage() {
   const data = await getMemberPortalData()
   if (!data) redirect('/members')
@@ -46,23 +47,8 @@ export default async function MembersPortalPage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9]">
-      {/* Header */}
-      <header className="bg-white border-b border-black/8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto h-16 flex items-center justify-between">
-          <Link href="/">
-            <Image src="/forza-logo.webp" alt="Forza Karate Club" width={120} height={48} className="h-10 w-auto" />
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/members/grading" className="text-sm text-[#dc2626] hover:underline font-medium">Grading</Link>
-            <span className="text-gray-300">|</span>
-            <span className="text-sm text-gray-500">Members area</span>
-            <LogoutButton />
-          </div>
-        </div>
-      </header>
-
-      <main className="py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto space-y-8">
+      <MembersArea>
+        <div className="space-y-8">
 
           {/* Profile card */}
           <div className="bg-white rounded-2xl border border-black/8 p-8 shadow-sm">
@@ -160,7 +146,7 @@ export default async function MembersPortalPage() {
           )}
 
         </div>
-      </main>
+      </MembersArea>
     </div>
   )
 }

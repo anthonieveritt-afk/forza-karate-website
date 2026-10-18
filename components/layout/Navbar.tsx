@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { Menu, X, ChevronDown, ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { membersCoreLinks, membersEventLinks as eventLinks, externalProps } from '@/lib/members/links'
 
 const navLinks = [
   { href: '/classes',  label: 'Classes' },
@@ -17,19 +18,6 @@ const navLinks = [
   { href: '/faq',      label: 'FAQ' },
 ]
 
-const membersCoreLinks = [
-  { href: '/members',         label: '🔐 Members Login' },
-  { href: '/members/grading', label: 'Register to Grade' },
-  // Syllabus hidden for now (Anthoni, Oct 2026) — re-add: { href: '/members/syllabus', label: 'Syllabus' },
-  { href: '/members/licence',  label: 'Renew your licence' },
-]
-
-const eventLinks = [
-  { href: '/register/super-champs',   label: 'Register for Super Champs' },
-  { href: '/register/prep-training',  label: 'Register for Preparation Training' },
-  { href: '/register/championships',  label: 'Register for Club Championships' },
-  { href: '/register/invitational',   label: 'Register for Invitational Cup' },
-]
 
 export default function Navbar() {
   const [open, setOpen]         = useState(false)
@@ -61,8 +49,8 @@ export default function Navbar() {
 
                 {/* Core links */}
                 {membersCoreLinks.map(link => (
-                  <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors">
-                    {link.label}
+                  <Link key={link.href} href={link.href} {...externalProps(link)} className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors">
+                    {link.label}{link.external && <span aria-hidden> ↗</span>}
                   </Link>
                 ))}
 
@@ -73,8 +61,8 @@ export default function Navbar() {
                   </button>
                   <div className="absolute right-full top-0 mr-1 w-64 bg-white border border-black/8 rounded-xl shadow-lg overflow-hidden opacity-0 invisible group-hover/events:opacity-100 group-hover/events:visible transition-all duration-150">
                     {eventLinks.map(link => (
-                      <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors">
-                        {link.label}
+                      <Link key={link.href} href={link.href} {...externalProps(link)} className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#fafaf9] hover:text-[#dc2626] transition-colors">
+                        {link.label}{link.external && <span aria-hidden> ↗</span>}
                       </Link>
                     ))}
                   </div>
@@ -109,8 +97,8 @@ export default function Navbar() {
             <div className="pt-1 border-t border-black/5">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider py-2">Members</p>
               {membersCoreLinks.map(link => (
-                <Link key={link.href} href={link.href} className="block text-sm font-medium text-gray-600 hover:text-[#dc2626] py-1.5 transition-colors" onClick={() => setOpen(false)}>
-                  {link.label}
+                <Link key={link.href} href={link.href} {...externalProps(link)} className="block text-sm font-medium text-gray-600 hover:text-[#dc2626] py-1.5 transition-colors" onClick={() => setOpen(false)}>
+                  {link.label}{link.external && <span aria-hidden> ↗</span>}
                 </Link>
               ))}
 
@@ -125,8 +113,8 @@ export default function Navbar() {
               {eventsOpen && (
                 <div className="pl-3 border-l border-black/8 ml-1 mt-1 space-y-1">
                   {eventLinks.map(link => (
-                    <Link key={link.href} href={link.href} className="block text-sm text-gray-500 hover:text-[#dc2626] py-1 transition-colors" onClick={() => setOpen(false)}>
-                      {link.label}
+                    <Link key={link.href} href={link.href} {...externalProps(link)} className="block text-sm text-gray-500 hover:text-[#dc2626] py-1 transition-colors" onClick={() => setOpen(false)}>
+                      {link.label}{link.external && <span aria-hidden> ↗</span>}
                     </Link>
                   ))}
                 </div>

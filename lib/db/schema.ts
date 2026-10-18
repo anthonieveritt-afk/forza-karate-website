@@ -67,7 +67,7 @@ export const orders = pgTable('orders', {
   createdAt: timestamp('created_at').defaultNow(),
 })
 
-// Event registrations (Super Champs, Prep Training, Championships, Invitational)
+// Event registrations (Super Champs, Prep Training, Championships; Invitational is now on fikc.co.uk)
 export const eventRegistrations = pgTable('event_registrations', {
   id: serial('id').primaryKey(),
   event: varchar('event', { length: 100 }).notNull(), // super-champs | prep-training | championships | invitational

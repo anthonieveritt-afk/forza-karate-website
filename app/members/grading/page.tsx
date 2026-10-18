@@ -1,33 +1,22 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import Image from 'next/image'
 import GradingRegForm from '@/components/forms/GradingRegForm'
-import LogoutButton from '@/components/members/LogoutButton'
+import MembersArea from '@/components/members/MembersArea'
+import { requireMemberPage } from '@/lib/members/require'
+
+// Members only (gated in middleware): render per request, never from a static/shared cache.
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Register for Grading — Members',
   description: 'Register for your next belt grading at Forza Karate Club.',
 }
 
-export default function MembersGradingPage() {
+export default async function MembersGradingPage() {
+  await requireMemberPage('/members/grading')
   return (
     <div className="min-h-screen bg-[#fafaf9]">
-      {/* Members header */}
-      <header className="bg-white border-b border-black/8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto h-16 flex items-center justify-between">
-          <Link href="/">
-            <Image src="/forza-logo.webp" alt="Forza Karate Club" width={120} height={48} className="h-10 w-auto" />
-          </Link>
-          <div className="flex items-center gap-4">
-            {/* Syllabus hidden for now — re-add the /members/syllabus link here when it returns */}
-            <span className="text-sm text-gray-500">Members area</span>
-            <LogoutButton />
-          </div>
-        </div>
-      </header>
-
-      <main className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
+      <MembersArea>
+        <div className="max-w-3xl">
           <div className="mb-10">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-0.5 bg-[#dc2626]" />
@@ -43,7 +32,7 @@ export default function MembersGradingPage() {
             <GradingRegForm />
           </div>
         </div>
-      </main>
+      </MembersArea>
     </div>
   )
 }

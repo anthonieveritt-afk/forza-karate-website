@@ -1,5 +1,10 @@
 import type { Metadata } from 'next'
 import EventRegForm from '@/components/forms/EventRegForm'
+import MembersArea from '@/components/members/MembersArea'
+import { requireMemberPage } from '@/lib/members/require'
+
+// Members only (gated in middleware): render per request, never from a static/shared cache.
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Register for Preparation Training',
@@ -37,23 +42,25 @@ const sessions = [
   { value: '2026-12-20-chingford-kum',     label: 'Sun 20th Dec — Chingford — Kumite (all ages) 2:00pm' },
 ]
 
-export default function PrepTrainingRegPage() {
+export default async function PrepTrainingRegPage() {
+  await requireMemberPage('/members/events/prep-training')
   return (
-    <div className="bg-white min-h-screen">
-      <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
-        <div className="max-w-7xl mx-auto">
+    <div className="bg-[#fafaf9] min-h-screen">
+      <MembersArea>
+      <section className="pb-8 border-b border-black/5">
+        <div>
           <div className="flex items-center gap-2 mb-6">
             <div className="w-8 h-0.5 bg-[#dc2626]" />
             <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Events</span>
           </div>
-          <h1 className="text-5xl font-bold text-[#111111] mb-4">Preparation Training</h1>
+          <h1 className="text-4xl font-bold text-[#111111] mb-4">Preparation Training</h1>
           <p className="text-xl text-gray-500 max-w-2xl">
             Sport Karate Coaching — 2-hour focused sessions split by age group (12 &amp; below / 13+). Kata and Kumite preparation for upcoming competitions.
           </p>
         </div>
       </section>
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
+      <section className="pt-8">
+        <div className="max-w-2xl">
           <EventRegForm
             event="prep-training"
             eventLabel="Preparation Training"
@@ -62,6 +69,7 @@ export default function PrepTrainingRegPage() {
           />
         </div>
       </section>
+      </MembersArea>
     </div>
   )
 }
