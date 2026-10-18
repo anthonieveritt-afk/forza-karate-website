@@ -3,7 +3,7 @@
 import 'server-only'
 import { gc, GcError } from './client'
 import { loadSignup, loadOutcome, saveOutcome, type Outcome, type Signup } from './store'
-import { PLANS, DOJOS, proRataPence, proRataLabel, firstOfNextMonth } from './plans'
+import { PLANS, DOJOS, proRataPence, proRataLabel, firstOfNextMonth, extrasLineItems } from './plans'
 
 /**
  * Club Honbu hand-off. Contract (see club-honbu PR, POST /api/enrolment/website-signup):
@@ -108,10 +108,7 @@ export async function processBillingRequest(brId: string): Promise<FulfilResult>
 
   let extrasPaymentId: string | null = existing?.extrasPaymentId ?? null
   if (!extrasPaymentId && signup.extrasPence > 0) {
-    const items = signup.students.flatMap(x => [
-      x.suit ? `${x.firstName} suit ${x.suit.size}` : '',
-      x.licence && x.licence.feePence ? `${x.firstName} licence` : '',
-    ]).filter(Boolean).join(', ')
+    const items = extrasLineItems(signup.students).map(i => i.label).join(', ')
     let pay: any
     try {
       pay = (await gc('/payments', {

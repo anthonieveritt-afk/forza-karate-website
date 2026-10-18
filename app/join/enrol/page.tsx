@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { CheckCircle, ChevronRight, User, ShoppingBag, CreditCard, Zap, Tag, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
+import { getProduct, getUnitPrice } from '@/lib/shop/catalogue'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -36,8 +37,10 @@ const UPMINSTER_CLASSES = [
   'Wednesday 5:45–7pm — Senior all grades (11 yrs+)',
 ]
 
-const SUIT_SIZES = ['90cm','100cm','110cm','120cm','130cm','140cm','150cm','160cm','170cm','180cm','190cm','200cm']
-const SUIT_PRICE_PENCE = 4000 // £40
+// Every new member buys the Official Forza Karate Club Gi (Anthoni, 18 Oct 2026): no "I already have one".
+// Sizes and price come from the shop catalogue (100cm–210cm, £40).
+const SUIT_SIZES = getProduct('blitz-gi')!.sizes
+const SUIT_PRICE_PENCE = getUnitPrice('blitz-gi', SUIT_SIZES[0]) ?? 4000
 
 const BELTS = ['None (complete beginner)', 'White', 'Red', 'Yellow', 'Orange', 'Green', 'Blue', 'Purple', 'Brown', 'Black']
 
@@ -129,7 +132,7 @@ function EnrolWizard() {
   // Step 2 fields
   const [membershipType, setMembershipType] = useState('monthly_single')
   const [suitSize, setSuitSize]             = useState('')
-  const [wantSuit, setWantSuit]             = useState(true)
+  const wantSuit = true // the gi is compulsory for new members
 
   // Access code
   const [accessCodeInput, setAccessCodeInput]   = useState('')
@@ -432,25 +435,13 @@ function EnrolWizard() {
                 <p className="text-sm font-semibold text-[#111111]">Official Forza Karate Club Gi — £40</p>
                 <p className="text-xs text-gray-500 mt-0.5">Our basic club suit package. Includes jacket and trousers.</p>
               </div>
-              <div className="flex gap-2 mb-3">
-                <button
-                  onClick={() => setWantSuit(true)}
-                  className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition-colors ${wantSuit ? 'bg-[#111111] text-white border-[#111111]' : 'border-black/12 text-gray-600'}`}
-                >
-                  Yes, I need one
-                </button>
-                <button
-                  onClick={() => { setWantSuit(false); setSuitSize('') }}
-                  className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition-colors ${!wantSuit ? 'bg-[#111111] text-white border-[#111111]' : 'border-black/12 text-gray-600'}`}
-                >
-                  I already have one
-                </button>
-              </div>
+              <p className="text-xs text-gray-500 mb-2">All members need an official Forza Karate suit (£40). Choose a size by height:</p>
               {wantSuit && (
                 <div className="flex flex-wrap gap-1.5">
                   {SUIT_SIZES.map(s => (
                     <button
                       key={s}
+                      type="button"
                       onClick={() => setSuitSize(s)}
                       className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${suitSize === s ? 'bg-[#111111] text-white border-[#111111]' : 'border-black/12 text-gray-600 hover:border-black/30'}`}
                     >

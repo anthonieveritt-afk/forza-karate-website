@@ -70,6 +70,33 @@ export function suitPrice(key: string, size: string): number | null {
   return (SUIT_KEYS as readonly string[]).includes(key) ? getUnitPrice(key, size) : null
 }
 
+/** Every new member buys the Official Forza Karate Club Gi (Anthoni, 18 Oct 2026): there is no "I already have one". */
+export const REQUIRED_SUIT_KEY: SuitKey = 'blitz-gi'
+export type ChosenSuit = { key: SuitKey; size: string; pricePence: number }
+
+/**
+ * Server-side check of a student's suit from the sign-up form. The suit is compulsory:
+ * returns null (reject) for a missing suit, a missing/unknown size, or any other product key
+ * (e.g. an old "already have one" / "none" value). The price always comes from the catalogue.
+ */
+export function requiredSuit(raw: unknown): ChosenSuit | null {
+  if (!raw || typeof raw !== 'object') return null
+  const r = raw as { key?: unknown; size?: unknown }
+  const key = r.key == null || r.key === '' ? REQUIRED_SUIT_KEY : r.key
+  if (key !== REQUIRED_SUIT_KEY || typeof r.size !== 'string') return null
+  const size = r.size.trim()
+  const pricePence = suitPrice(key, size)
+  return pricePence == null || pricePence <= 0 ? null : { key: REQUIRED_SUIT_KEY, size, pricePence }
+}
+
+/** One-off items (suit + licence) for a sign-up, in the order they are charged. */
+export function extrasLineItems(students: { firstName: string; suit?: { size: string; pricePence: number } | null; licence?: { feePence: number } | null }[]) {
+  return students.flatMap(x => [
+    ...(x.suit ? [{ label: `${x.firstName} suit ${x.suit.size}`, kind: 'suit' as const, pricePence: x.suit.pricePence }] : []),
+    ...(x.licence && x.licence.feePence ? [{ label: `${x.firstName} licence`, kind: 'licence' as const, pricePence: x.licence.feePence }] : []),
+  ])
+}
+
 // FKA licence & insurance: every student pays, first licence and renewal cost the same.
 /** Age from which the adult licence fee applies. Under this age = child. */
 export const LICENCE_ADULT_AGE = 18
