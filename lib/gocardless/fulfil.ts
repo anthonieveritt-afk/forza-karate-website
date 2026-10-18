@@ -2,6 +2,7 @@
 // handler and from the GoCardless webhook; safe to call more than once).
 import 'server-only'
 import { gc, GcError } from './client'
+import { honbuSignupUrl, honbuSecret } from '@/lib/honbu'
 import { loadSignup, loadOutcome, saveOutcome, type Outcome, type Signup } from './store'
 import { PLANS, DOJOS, proRataPence, proRataLabel, firstOfNextMonth, extrasLineItems } from './plans'
 
@@ -12,12 +13,13 @@ import { PLANS, DOJOS, proRataPence, proRataLabel, firstOfNextMonth, extrasLineI
  *             startDate, students[], parent{}, emergency{}, consent{},
  *             gocardless: { customerId, mandateId, subscriptionId } }
  *   Returns { ok: true, memberIds: number[] }  (idempotent on billingRequestId)
- * Disabled unless CLUB_HONBU_SIGNUP_URL and CLUB_HONBU_SIGNUP_SECRET are set.
+ * URL/secret: lib/honbu.ts (CLUB_HONBU_SIGNUP_URL / CLUB_HONBU_SIGNUP_SECRET, falling back to the
+ * Club Honbu URL and the CLUB_HONBU_WEBHOOK_SECRET the trial bookings already use).
  */
-async function handOffToHonbu(brId: string, s: Signup, g: { customerId: string; mandateId: string; subscriptionId: string | null; firstPaymentId: string | null; extrasPaymentId: string | null }) {
-  const url = process.env.CLUB_HONBU_SIGNUP_URL?.trim()
-  const secret = process.env.CLUB_HONBU_SIGNUP_SECRET?.trim()
-  if (!url || !secret) return { ok: false, detail: 'Club Honbu hand-off not configured (CLUB_HONBU_SIGNUP_URL / CLUB_HONBU_SIGNUP_SECRET)' }
+export async function handOffToHonbu(brId: string, s: Signup, g: { customerId: string; mandateId: string; subscriptionId: string | null; firstPaymentId: string | null; extrasPaymentId: string | null }) {
+  const url = honbuSignupUrl()
+  const secret = honbuSecret()
+  if (!url || !secret) return { ok: false, detail: 'Club Honbu hand-off not configured (CLUB_HONBU_SIGNUP_SECRET / CLUB_HONBU_WEBHOOK_SECRET)' }
   try {
     const res = await fetch(url, {
       method: 'POST',
