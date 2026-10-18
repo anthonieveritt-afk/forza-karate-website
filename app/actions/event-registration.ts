@@ -2,6 +2,7 @@
 
 import { db } from '@/lib/db'
 import { eventRegistrations } from '@/lib/db/schema'
+import { hasMemberSession } from '@/lib/members/require'
 
 export interface EventRegData {
   event: string
@@ -19,6 +20,8 @@ export interface EventRegData {
 }
 
 export async function submitEventRegistration(data: EventRegData): Promise<void> {
+  // Event registration is members only: refuse without a valid portal session.
+  if (!(await hasMemberSession())) throw new Error('Please log in to the members area to register.')
   await db.insert(eventRegistrations).values({
     event: data.event,
     firstName: data.firstName,

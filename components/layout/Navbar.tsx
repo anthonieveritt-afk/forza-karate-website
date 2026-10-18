@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { Menu, X, ChevronDown, ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { membersCoreLinks, membersEventLinks as eventLinks } from '@/lib/members/links'
 
 const navLinks = [
   { href: '/classes',  label: 'Classes' },
@@ -17,19 +18,6 @@ const navLinks = [
   { href: '/faq',      label: 'FAQ' },
 ]
 
-const membersCoreLinks = [
-  { href: '/members',         label: '🔐 Members Login' },
-  { href: '/members/grading', label: 'Register to Grade' },
-  // Syllabus hidden for now (Anthoni, Oct 2026) — re-add: { href: '/members/syllabus', label: 'Syllabus' },
-  { href: '/members/licence',  label: 'Renew your licence' },
-]
-
-const eventLinks = [
-  { href: '/register/super-champs',   label: 'Register for Super Champs' },
-  { href: '/register/prep-training',  label: 'Register for Preparation Training' },
-  { href: '/register/championships',  label: 'Register for Club Championships' },
-  { href: '/register/invitational',   label: 'Register for Invitational Cup' },
-]
 
 export default function Navbar() {
   const [open, setOpen]         = useState(false)

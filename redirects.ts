@@ -65,14 +65,14 @@ export const legacyRedirects: Redirect[] = [
   // → /hall-of-fame (3)
   ...to("/hall-of-fame", "/achievements-kobe-yogarajah", "/brown-belts", "/honorary-black-belts"),
 
-  // → /register/super-champs (5)
-  ...to("/register/super-champs", "/saturday-super-champs-for-2025", "/saturday-superchamps", "/super-champs", "/super-champs-2", "/super-champs-return"),
+  // → /members/events/super-champs (5)
+  ...to("/members/events/super-champs", "/saturday-super-champs-for-2025", "/saturday-superchamps", "/super-champs", "/super-champs-2", "/super-champs-return"),
 
-  // → /register/prep-training (5)
-  ...to("/register/prep-training", "/2022-preparation-training", "/2024-preparation-training", "/competition-karate-prep-training-1-3", "/preparation-training-is-back", "/preparation-training-is-back-2"),
+  // → /members/events/prep-training (5)
+  ...to("/members/events/prep-training", "/2022-preparation-training", "/2024-preparation-training", "/competition-karate-prep-training-1-3", "/preparation-training-is-back", "/preparation-training-is-back-2"),
 
-  // → /register/championships (2)
-  ...to("/register/championships", "/2-person-registration", "/3-persons-registration"),
+  // → /members/events/championships (2)
+  ...to("/members/events/championships", "/2-person-registration", "/3-persons-registration"),
 
   // → /why-karate (1)
   ...to("/why-karate", "/welcome/karate-art"),

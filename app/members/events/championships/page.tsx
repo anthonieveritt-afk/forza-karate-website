@@ -1,5 +1,10 @@
 import type { Metadata } from 'next'
 import EventRegForm from '@/components/forms/EventRegForm'
+import MembersArea from '@/components/members/MembersArea'
+import { requireMemberPage } from '@/lib/members/require'
+
+// Members only (gated in middleware): render per request, never from a static/shared cache.
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Register — Forza Karate Club Championships',
@@ -15,23 +20,25 @@ const sessions = [
   { value: '2026-09-20-div1', label: 'Sun 20th Sept 2026 — Division 1 (Rayleigh Primary School)' },
 ]
 
-export default function ChampionshipsRegPage() {
+export default async function ChampionshipsRegPage() {
+  await requireMemberPage('/members/events/championships')
   return (
-    <div className="bg-white min-h-screen">
-      <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b border-black/5">
-        <div className="max-w-7xl mx-auto">
+    <div className="bg-[#fafaf9] min-h-screen">
+      <MembersArea>
+      <section className="pb-8 border-b border-black/5">
+        <div>
           <div className="flex items-center gap-2 mb-6">
             <div className="w-8 h-0.5 bg-[#dc2626]" />
             <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Events</span>
           </div>
-          <h1 className="text-5xl font-bold text-[#111111] mb-4">Forza Karate Club Championships</h1>
+          <h1 className="text-4xl font-bold text-[#111111] mb-4">Forza Karate Club Championships</h1>
           <p className="text-xl text-gray-500 max-w-2xl">
             The Forza Inter Club Karate Championships League — held at Rayleigh Primary School across three rounds in 2026.
           </p>
         </div>
       </section>
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
+      <section className="pt-8">
+        <div className="max-w-2xl">
           <EventRegForm
             event="championships"
             eventLabel="Forza Club Championships"
@@ -39,6 +46,7 @@ export default function ChampionshipsRegPage() {
           />
         </div>
       </section>
+      </MembersArea>
     </div>
   )
 }
