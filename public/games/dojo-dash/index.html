@@ -1,7 +1,9 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>Dojo Dash – Get to Karate!</title>
 <style>
-html,body{margin:0;height:100%;background:#1b1b2f;overflow:hidden;font-family:"Trebuchet MS",Arial,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none}
+/* Forza Karate site palette: keep in sync with FZ in the script below */
+:root{--fz-red:#dc2626;--fz-red-dark:#b91c1c;--fz-ink:#111111;--fz-black:#0a0a0a;--fz-paper:#fafaf9;--fz-line:#e7e5e4;--fz-muted:#57534e}
+html,body{margin:0;height:100%;background:var(--fz-ink);overflow:hidden;font-family:"Trebuchet MS",Arial,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none}
 #wrap{position:relative;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center}
 canvas{background:#87ceeb;max-width:100vw;max-height:100vh;aspect-ratio:16/9;width:100vw;image-rendering:auto}
 #touch{position:fixed;bottom:12px;left:0;right:0;display:none;justify-content:space-between;padding:0 14px;pointer-events:none}
@@ -12,13 +14,13 @@ canvas{background:#87ceeb;max-width:100vw;max-height:100vh;aspect-ratio:16/9;wid
 #touchFO{position:fixed;bottom:12px;left:0;right:0;display:none;justify-content:space-between;padding:0 12px;pointer-events:none}#touchFO>div{display:flex;gap:10px}.fb{pointer-events:auto;width:66px;height:66px;border-radius:14px;background:rgba(255,255,255,.35);border:3px solid #fff;color:#fff;font-size:26px;font-weight:bold;display:flex;align-items:center;justify-content:center;text-shadow:0 2px 3px #000}.fb.kick{width:84px;height:84px;border-radius:50%;background:rgba(255,23,68,.55)}
 .tb.on{background:rgba(255,215,0,.6)}
 #nameBox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6)}
-#nameBox .p{background:#fff8e1;border:5px solid #d32f2f;border-radius:16px;padding:20px 26px;text-align:center;max-width:90vw}
-#nameBox input{font-size:22px;padding:8px;width:240px;text-align:center;border:3px solid #333;border-radius:8px}
-#nameBox button{font-size:18px;margin:8px 4px 0;padding:8px 14px;border-radius:8px;border:none;background:#d32f2f;color:#fff;font-weight:bold;cursor:pointer}
-#nameBox button.alt{background:#555}
-#trial{position:fixed;left:50%;transform:translateX(-50%);bottom:64px;display:none;background:#d32f2f;color:#fff;font-weight:bold;font-size:18px;padding:10px 18px;border-radius:30px;text-decoration:none;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.5);z-index:5;white-space:nowrap}
-#nameBox a{color:#d32f2f;font-weight:bold}
-.note{font-size:14px;color:#a00;margin:6px 0}
+#nameBox .p{background:#fff;color:var(--fz-ink);border:4px solid var(--fz-red);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:20px 26px;text-align:center;max-width:90vw}
+#nameBox input{font-size:22px;padding:8px;width:240px;text-align:center;border:2px solid var(--fz-line);border-radius:10px;color:var(--fz-ink)}#nameBox input:focus{outline:none;border-color:var(--fz-red)}
+#nameBox button{font-size:18px;margin:8px 4px 0;padding:8px 14px;border-radius:10px;border:none;background:var(--fz-red);color:#fff;font-weight:bold;cursor:pointer}#nameBox button:hover{background:var(--fz-red-dark)}
+#nameBox button.alt{background:var(--fz-ink)}
+#trial{position:fixed;left:50%;transform:translateX(-50%);bottom:64px;display:none;background:var(--fz-red);color:#fff;font-weight:bold;font-size:18px;padding:10px 18px;border-radius:30px;text-decoration:none;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.5);z-index:5;white-space:nowrap}
+#nameBox a{color:var(--fz-red);font-weight:bold}
+.note{font-size:14px;color:var(--fz-red-dark);margin:6px 0}
 </style></head><body>
 <div id="wrap"><canvas id="c" width="960" height="540"></canvas></div>
 <a id="trial" href="https://forza-karate-website.vercel.app/trial-class" target="_top">🥋 Book a £10 trial at Forza Karate Club →</a>
@@ -27,7 +29,7 @@ canvas{background:#87ceeb;max-width:100vw;max-height:100vh;aspect-ratio:16/9;wid
 <div id="touch2"><div><div class="tb p2" data-p="1" data-k="left">◀</div><div class="tb p2" data-p="1" data-k="right">▶</div><div class="tb p2" data-p="1" data-k="kick">🥋</div><div class="tb p2" data-p="1" data-k="jump">▲</div></div><div><div class="tb" data-k="left">◀</div><div class="tb" data-k="right">▶</div><div class="tb" data-k="kick">🥋</div><div class="tb" data-k="jump">▲</div></div></div>
 <div id="touch"><div><div class="tb" data-k="left">◀</div><div class="tb" data-k="right">▶</div></div><div><div class="tb" data-k="kick">🥋</div><div class="tb" data-k="jump">▲</div></div></div>
 <div id="nameBox"><div class="p"><h2 style="margin:4px 0">🏆 Leaderboard!</h2><div id="finalScore" style="font-size:20px"></div>
-<p>Pick a ninja nickname:</p><input id="nick" maxlength="12" autocomplete="off"><br><input id="nick2" maxlength="12" autocomplete="off" placeholder="Player 2 nickname" style="display:none;margin-top:6px"><div id="nickMsg" style="display:none;color:#c62828;font-weight:bold;margin:6px 0">Please choose a different nickname</div><div class="note">⚠️ Nicknames only – no real names please! (max 12 characters)<br>Your nickname and score may show on the shared Forza leaderboard. <a href="https://forza-karate-website.vercel.app/privacy-policy#dojo-dash" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Privacy</a></div>
+<p>Pick a ninja nickname:</p><input id="nick" maxlength="12" autocomplete="off"><br><input id="nick2" maxlength="12" autocomplete="off" placeholder="Player 2 nickname" style="display:none;margin-top:6px"><div id="nickMsg" style="display:none;color:#dc2626;font-weight:bold;margin:6px 0">Please choose a different nickname</div><div class="note">⚠️ Nicknames only – no real names please! (max 12 characters)<br>Your nickname and score may show on the shared Forza leaderboard. <a href="https://forza-karate-website.vercel.app/privacy-policy#dojo-dash" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Privacy</a></div>
 <div style="font-size:14px;margin:4px 0"><a href="https://forza-karate-website.vercel.app/trial-class" target="_top">🥋 Book a £10 trial at Forza Karate Club</a></div><button class="alt" id="rnd">🎲 Random</button><button id="save">Save score</button><button class="alt" id="skip">Skip</button></div></div>
 <!-- Forza Technique Studio import (v12): loader = technique-studio/technique-loader.js, data = technique-studio/starter-techniques.json -->
 <script>/* Forza Technique Studio – game-side loader (Forza Karate Club, Dojo Dash).
@@ -2404,6 +2406,8 @@ if(typeof module!=='undefined'&&module.exports)module.exports=API;else G.ForzaTe
 </script>
 <button id="studioBtn" style="position:fixed;right:10px;top:10px;z-index:20;display:none;font:600 13px system-ui;padding:6px 10px;border-radius:8px;border:2px solid #fff;background:#263238;color:#fff;cursor:pointer">Studio techniques: OFF (T)</button>
 <script>
+// Forza Karate site palette for menu / leaderboard chrome (matches the site: red #dc2626, ink #111111, paper #fafaf9)
+const FZ={red:'#dc2626',redDark:'#b91c1c',redDeep:'#7f1d1d',redTint:'#fee2e2',ink:'#111111',paper:'#fafaf9',white:'#ffffff',line:'#e7e5e4',muted:'#57534e',faint:'#a8a29e',panel:'rgba(17,17,17,.94)',clear:'rgba(0,0,0,0)'};
 (()=>{
 const cv=document.getElementById('c'),g=cv.getContext('2d'),W=960,H=540,GROUND=470;
 // ---------- audio ----------
@@ -3182,12 +3186,12 @@ function lbList(k){const seen={},o=[];getLB(k).concat((LBAPI.cache[k]||[]).filte
 let LAST_D=0;
 function fitT(s,maxw,size){g.font='bold '+size+'px "Trebuchet MS",Arial';if(g.measureText(s).width<=maxw)return s;while(s.length>1&&g.measureText(s+'…').width>maxw)s=s.slice(0,-1);return s.trimEnd()+'…'}
 function board(y,m,cx){m=m||mode;cx=cx||W/2;const l=lbList(lbKey(m)),RH=25,x0=W/2-235,PW=470,ph=62+Math.max(2,l.length)*RH+8;g.save();g.translate(cx-W/2,0);
- rr(x0,y,PW,ph,14,'rgba(15,15,15,.82)');rr(x0,y,PW,34,14,'#d32f2f');g.fillStyle='#d32f2f';g.fillRect(x0,y+20,PW,14);
- txt(m==='team'?'👥 Top Teams':m==='daily'?'📅 Daily Top Ninjas · '+TODAY:m==='mastery'?'👑 Mastery Top Ninjas':'🏆 Top Ninjas',W/2,y+25,20,'#fff','center','#7f0000');
+ rr(x0,y,PW,ph,16,FZ.panel);rr(x0,y,PW,34,16,FZ.red);g.fillStyle=FZ.red;g.fillRect(x0,y+20,PW,14);
+ txt(m==='team'?'👥 Top Teams':m==='daily'?'📅 Daily Top Ninjas · '+TODAY:m==='mastery'?'👑 Mastery Top Ninjas':'🏆 Top Ninjas',W/2,y+25,20,'#fff','center',FZ.redDeep);
  const hy=y+51;txt('#',x0+26,hy,12,'#bbb','center');txt('NICKNAME',x0+52,hy,12,'#bbb','left');txt(m==='mastery'?'LEVEL':'BELT',x0+282,hy,12,'#bbb','center');txt('SCORE',x0+PW-16,hy,12,'#bbb','right');
  if(!l.length){txt('No scores yet!',W/2,y+86,18,'#fff');txt('Finish a run to get your name on the board 🥋',W/2,y+110,14,'#ddd');g.restore();return}
  l.forEach((r,i)=>{const ry=y+60+i*RH,yy=ry+18,me=LAST_D&&r.d===LAST_D;
-  if(me)rr(x0+6,ry,PW-12,RH-2,6,'#d32f2f');else if(i%2===0)rr(x0+6,ry,PW-12,RH-2,6,'rgba(255,255,255,.09)');
+  if(me)rr(x0+6,ry,PW-12,RH-2,6,FZ.red);else if(i%2===0)rr(x0+6,ry,PW-12,RH-2,6,'rgba(255,255,255,.09)');
   txt(i<3?['🥇','🥈','🥉'][i]:String(i+1),x0+26,yy,i<3?17:15,'#fff','center');
   txt(fitT(r.n,(m==='team'?200:190),16),x0+52,yy,16,i<3||me?'#fff':'#eee','left');
   if(m==='mastery'&&r.m)txt('M'+r.m,x0+282,yy,15,'#ffd600','center');else{const G=GRADES[r.b||0];rr(x0+263,ry+3,38,18,5,'rgba(255,255,255,.85)');beltIcon(x0+266,ry+7,G,.6)}
@@ -3196,20 +3200,21 @@ function board(y,m,cx){m=m||mode;cx=cx||W/2;const l=lbList(lbKey(m)),RH=25,x0=W/
   txt(String(r.s),x0+PW-16,yy,17,'#fff','right')});g.restore()}
 function MENU_FIX(){const [c,d,m,fo,km,tm]=MENU;MENU.splice(0,6,c,d,m,tm,fo,km);MENU.forEach((m,i)=>Object.assign(m,{x:30,y:96+i*39,w:420,h:35}))}
 const MENU=[{t:'▶ Career: 20 grades to 1st Dan',s:()=>'Best: '+short(ST.best>0?GRADES[ST.best]:ST.gi?WHITE_P:GRADES[0])},{t:'📅 Daily Challenge',s:()=>TODAY+' · '+TWIST.ico+' '+TWIST.nm},{t:'👑 Black Belt Mastery',s:()=>'Endless, ever harder · Best level '+ST.mastery},{t:'🥋 Dojo Face-off practice',s:()=>'Punch-Out style sparring · beaten: '+(ST.foWins||0)},{t:'🥊 WKF Kumite practice',s:()=>'FIKC.co.uk competition style · AO vs AKA · wins: '+(ST.kmWins||0)},{t:'👥 2-Player Team (same screen)',s:()=>isTouch?'Split touch pads: P2 left (blue), P1 right':'P1: ← → ↑ + L/X kick · P2: A D W + F kick'}];MENU_FIX();
-function drawToasts(){toasts.slice(0,3).forEach((o,i)=>{const y=150+i*70,b=o.b;g.globalAlpha=Math.min(1,o.t/30);rr(W/2-200,y,400,60,14,'rgba(255,215,0,.95)');txt(b[1],W/2-165,y+42,30);txt('Badge unlocked: '+b[2],W/2-130,y+26,18,'#000','left','#fff');txt(b[3],W/2-130,y+48,13,'#333','left','#fff');g.globalAlpha=1})}
+function drawToasts(){toasts.slice(0,3).forEach((o,i)=>{const y=150+i*70,b=o.b;g.globalAlpha=Math.min(1,o.t/30);rr(W/2-200,y,400,60,16,FZ.white);g.strokeStyle=FZ.red;g.lineWidth=3;g.stroke();rr(W/2-200,y,10,60,[16,0,0,16],FZ.red);txt(b[1],W/2-160,y+42,30,'#fff','center',FZ.clear);txt('Badge unlocked: '+b[2],W/2-130,y+26,18,FZ.ink,'left',FZ.clear);txt(b[3],W/2-130,y+48,13,FZ.muted,'left',FZ.clear);g.globalAlpha=1})}
 function kidDemo(x,y){drawKid(x,y,{anim:frame*.2,on:1,face:1,kick:frame%90<15?12:0,inv:0,belt:0,laces:0,heavy:0,slow:0,stun:0,trip:0})}
 function draw(){
  if(state==='giscene'&&GS){gsDraw();return}
- if(state==='title'||((state==='over'||state==='win')&&!world)){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#ff7043');gr.addColorStop(1,'#ffca28');g.fillStyle=gr;g.fillRect(0,0,W,H);
-  txt('DOJO DASH!',W/2,58,56,'#fff','center','#b71c1c');txt('Forza Karate Club – school\'s out, get to class!',W/2,90,20,'#fff');
-  MENU.forEach((m,i)=>{const lock=i===2&&!ST.dan;rr(m.x,m.y,m.w,m.h,12,i===sel?'#b71c1c':'rgba(0,0,0,.4)');if(i===sel){g.strokeStyle='#ffd600';g.lineWidth=3;g.stroke()}
-   txt((i+1)+'  '+m.t,m.x+14,m.y+16,15,lock?'#bbb':'#fff','left');txt(lock?'🔒 Earn 1st Dan in Career to unlock':m.s(),m.x+38,m.y+30,10,lock?'#ddd':'#ffe082','left')});
-  txt('🗓 This week ('+WEEKKEY+'): '+WEEK.ico+' '+WEEK.nm,30,340,16,'#fff','left');
-  const got=BADGES.filter(b=>ST.badges[b[0]]).length;txt('🏅 Badges '+got+'/'+BADGES.length,30,362,18,'#ffd600','left');if(ST.streak)txt('🔥 Daily streak: '+ST.streak,300,362,16,'#fff','left');
-  BADGES.forEach((b,i)=>{const bx=30+(i%10)*45,by=370+(i/10|0)*62,on=ST.badges[b[0]];rr(bx,by,42,58,10,on?'rgba(255,215,0,.85)':'rgba(0,0,0,.3)');g.globalAlpha=on?1:.3;txt(b[1],bx+21,by+30,20,'#fff');g.globalAlpha=1;txt(b[2].length>10?b[2].slice(0,9)+'…':b[2],bx+21,by+52,7,on?'#000':'#eee','center',on?'#fff8e1':'#000')});
+ if(state==='title'||((state==='over'||state==='win')&&!world)){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,FZ.white);gr.addColorStop(1,'#f5f5f4');g.fillStyle=gr;g.fillRect(0,0,W,H);
+  g.fillStyle=FZ.red;g.fillRect(0,0,W,6);g.fillStyle=FZ.ink;g.fillRect(0,H-46,W,46);
+  txt('DOJO DASH!',W/2+3,61,56,FZ.redDeep,'center',FZ.clear);txt('DOJO DASH!',W/2,58,56,FZ.red,'center',FZ.clear);txt('Forza Karate Club – school\'s out, get to class!',W/2,88,19,FZ.ink,'center',FZ.clear);
+  MENU.forEach((m,i)=>{const lock=i===2&&!ST.dan,on=i===sel;rr(m.x,m.y,m.w,m.h,12,on?FZ.red:FZ.white);if(!on){g.strokeStyle=FZ.line;g.lineWidth=2;g.stroke()}else{g.strokeStyle=FZ.redDark;g.lineWidth=2;g.stroke()}
+   txt((i+1)+'  '+m.t,m.x+14,m.y+16,15,on?'#fff':lock?FZ.faint:FZ.ink,'left',FZ.clear);txt(lock?'🔒 Earn 1st Dan in Career to unlock':m.s(),m.x+38,m.y+30,10,on?FZ.redTint:lock?FZ.faint:FZ.muted,'left',FZ.clear)});
+  txt('🗓 This week ('+WEEKKEY+'): '+WEEK.ico+' '+WEEK.nm,30,340,16,FZ.ink,'left',FZ.clear);
+  const got=BADGES.filter(b=>ST.badges[b[0]]).length;txt('🏅 Badges '+got+'/'+BADGES.length,30,362,18,FZ.red,'left',FZ.clear);if(ST.streak)txt('🔥 Daily streak: '+ST.streak,300,362,16,FZ.ink,'left',FZ.clear);
+  BADGES.forEach((b,i)=>{const bx=30+(i%10)*45,by=370+(i/10|0)*62,on=ST.badges[b[0]];rr(bx,by,42,58,10,on?FZ.redTint:FZ.white);g.strokeStyle=on?FZ.red:FZ.line;g.lineWidth=on?2:1.5;g.stroke();g.globalAlpha=on?1:.35;txt(b[1],bx+21,by+30,20,'#fff','center',FZ.clear);g.globalAlpha=1;txt(b[2].length>10?b[2].slice(0,9)+'…':b[2],bx+21,by+52,7,on?FZ.ink:FZ.muted,'center',FZ.clear)});
   board(104,['career','daily','mastery','team','career','career'][sel],718);
-  txt('←→ A D run · ↑ W Space jump · X kick · P pause · ↑↓ choose mode',W/2,H-30,14,'#fff');
-  if(frame%60<40)txt('Press 1–6, ENTER or tap a mode',W/2,H-8,18,'#fff','center','#b71c1c');drawToasts();return}
+  txt('←→ A D run · ↑ W Space jump · X kick · P pause · ↑↓ choose mode',W/2,H-27,14,'#e7e5e4','center',FZ.clear);
+  if(frame%60<40)txt('Press 1–6, ENTER or tap a mode',W/2,H-8,16,'#fff','center',FZ.clear);else txt('Press 1–6, ENTER or tap a mode',W/2,H-8,16,'#f87171','center',FZ.clear);drawToasts();return}
  if(state==='kumite'){drawKumite();if(!['fight'].includes(KM.ph))drawToasts();return}
  if(state==='faceoff'){drawFaceoff();if(!['tele','win','gap'].includes(FO.ph))drawToasts();return}
  drawBg();drawWorld();hud();
