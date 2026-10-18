@@ -1,13 +1,15 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Link from 'next/link'
 import { FileText, PlayCircle } from 'lucide-react'
 import BuyButton from '@/components/paid/BuyButton'
 import { BELTS, gbp, GUIDE_BUNDLE_PRICE_PENCE, GUIDE_PRICE_PENCE, PRICES_ARE_PLACEHOLDERS, VIDEO_MONTHLY_PENCE } from '@/lib/paid/catalogue'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: '/grading-guides',
   title: 'Grading Guides & Video Membership',
   description: 'Downloadable Forza Karate grading guides for every belt, plus a members’ video library.',
-}
+})
 
 export default function GradingGuidesPage() {
   return (

@@ -1,14 +1,16 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Image from 'next/image'
 import { Trophy } from 'lucide-react'
 import TeamBanner from '@/components/sections/TeamBanner'
 import LogoTicker from '@/components/layout/LogoTicker'
 
 
-export const metadata: Metadata = {
-  title: 'Team Forza',
-  description: 'Meet Team Forza — our competitive kata and kumite teams representing Forza Karate Club at regional and national level.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/team',
+  title: 'Team Forza – Competition Karate',
+  description: 'Meet Team Forza — our competition kata and kumite squad representing Forza Karate Club at regional, national and international events.',
+})
 
 const eliteSquad = [
   'Kobe Yogarajah',

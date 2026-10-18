@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Shield, Heart, Zap, Users, Trophy, Star, ArrowRight } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Why Karate',
-  description: 'Discover the real benefits of karate — discipline, confidence, fitness, self-defence, and community. Learn about Wado Ryu and WKF sport karate at Forza Karate Club.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/why-karate',
+  title: 'Why Karate? Benefits for Kids & Adults',
+  description: 'The real benefits of karate for kids and adults — discipline, confidence, fitness, self-defence and community. Wado Ryu and WKF sport karate in Essex.',
+})
 
 const benefits = [
   {

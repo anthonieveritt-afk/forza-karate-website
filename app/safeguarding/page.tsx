@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Image from 'next/image'
 import { Shield, Mail, Phone, FileText, Users } from 'lucide-react'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: '/safeguarding',
   title: 'Safeguarding',
-  description: 'Forza Karate Club safeguarding policy — protecting the welfare of children and young people in our care.',
-}
+  description: 'Forza Karate Club safeguarding policy and codes of conduct — protecting the welfare of children and young people in our care.',
+})
 
 const documents = [
   { label: 'FKC Safeguarding Policy – Children (2023)', href: '/safeguarding/children-policy.pdf' },

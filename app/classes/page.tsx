@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import ClassCard from '@/components/sections/ClassCard'
 
-export const metadata: Metadata = {
-  title: 'Classes',
-  description: 'Karate classes for all ages at Forza Karate Club. Forza Ninjas (4–6), Forza Juniors (7–10), and Forza Club (11+).',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/classes',
+  title: 'Karate Classes for Kids & Adults in Essex',
+  description: 'Karate classes for kids and adults in Rayleigh and Upminster, Essex: Forza Ninjas (4–6), Juniors (7–10) and Forza Club (11+). Beginners welcome.',
+})
 
 const classes = [
   {

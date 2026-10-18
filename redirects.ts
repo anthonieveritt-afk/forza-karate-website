@@ -5,7 +5,7 @@ import type { Redirect } from 'next/dist/lib/load-custom-routes'
 const to = (destination: string, ...sources: string[]): Redirect[] =>
   sources.map((source) => ({ source, destination, permanent: true }))
 
-export const legacyRedirects: Redirect[] = [
+const rawLegacyRedirects: Redirect[] = [
   // → /join (2)
   ...to("/join", "/join-today", "/join-today-2"),
 
@@ -321,4 +321,32 @@ export const legacyRedirects: Redirect[] = [
   // Any other old upload → home page section that replaced it
   ...to("/safeguarding", "/wp-content/uploads/:path*.pdf"),
 
+  // SEO audit 18 Oct 2026: WordPress date archives (/2023/05/, /2023/05/page/2/) and old news paging → /news
+  ...to("/news", "/:y(\\d{4})/:m(\\d{2}){/page/:n}?", "/:y(\\d{4}){/page/:n}?", "/news/page/:n", "/page/:n", "/2022-super-champs"),
+
+  // Old Ecwid shop product, category, cart and account pages → /shop (keeps /shop/success working)
+  ...to("/shop", "/shop/:product([^/]+-[pc]\\d+)", "/shop/cart", "/shop/account/:rest*", "/shop/checkout/:rest*", "/shop/search"),
+
+  // Other old uploads (Word docs, videos) → the page that replaced them
+  ...to("/safeguarding", "/wp-content/uploads/:path*.docx"),
+  ...to("/", "/wp-content/uploads/:path*"),
+
 ]
+
+// Every old URL is matched with or without its WordPress trailing slash, so it reaches the
+// new page in ONE 308 (next.config sets skipTrailingSlashRedirect and strips other slashes last).
+// Old news posts also match one extra segment (WordPress attachment pages like /post/img_123/).
+const optionalSlash = (source: string) =>
+  source.endsWith('{/}?') ? source : `${source}{/}?`
+
+export const withOptionalSlash = (r: Redirect): Redirect => ({ ...r, source: optionalSlash(r.source) })
+
+export const legacyRedirects: Redirect[] = rawLegacyRedirects.flatMap((r) => {
+  const isPost = typeof r.destination === 'string' && r.destination.startsWith('/news/') && !r.source.includes(':')
+  return isPost
+    ? [withOptionalSlash(r), { ...r, source: `${r.source}/:attachment{/}?` }]
+    : [withOptionalSlash(r)]
+})
+
+/** Runs last: any other URL ending in "/" gets one 308 to the same path without it. */
+export const trailingSlashRedirect: Redirect = { source: '/:path+/', destination: '/:path+', permanent: true }

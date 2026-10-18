@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, CheckCircle } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Forza Kids / Juniors — Ages 7–10',
-  description: 'Structured karate training for children aged 7–10. Kata, kumite, and belt progression at Forza Karate Club.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/classes/juniors',
+  title: 'Kids Karate Classes (Ages 7–10) in Rayleigh & Upminster',
+  description: 'Structured kids karate for ages 7–10 in Rayleigh and Upminster, Essex: kata, kumite and belt progression at Forza Karate Club. Book a £10 trial.',
+})
 
 const expects = [
   'Structured kata training (Wado Ryu)',

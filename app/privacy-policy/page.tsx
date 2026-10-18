@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: '/privacy-policy',
   title: 'Privacy Policy',
   description: 'Privacy policy for Forza Karate Club — how we collect, use, and protect your personal data.',
-}
+})
 
 export default function PrivacyPolicyPage() {
   return (

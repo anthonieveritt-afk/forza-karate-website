@@ -1,19 +1,16 @@
 import type { Metadata } from 'next'
+import { pageMeta, UPMINSTER_TIMETABLE } from '@/lib/seo'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { MapPin, Clock, ArrowRight } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Upminster Dojo',
-  description: 'Forza Karate Club Upminster dojo — karate classes for all ages at St Lawrence Church Hall, Corbets Tey Rd, Upminster RM14 2BB.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/dojos/upminster',
+  title: 'Karate Classes in Upminster – Upminster Dojo',
+  description: 'Karate classes in Upminster for ages 4 to adult, at St Lawrence Church Hall, Corbets Tey Road, RM14 2BB. Wednesday evenings. Book a £10 trial.',
+})
 
-const timetable = [
-  { day: 'Wednesday', time: '4:00 – 4:30pm',  desc: 'Beginner infants (4–6 yrs)' },
-  { day: 'Wednesday', time: '4:30 – 5:00pm',  desc: 'Infant all grades (4–6 yrs)' },
-  { day: 'Wednesday', time: '5:00 – 5:45pm',  desc: 'Junior all grades (7–10 yrs)' },
-  { day: 'Wednesday', time: '5:45 – 7:00pm',  desc: 'Senior all grades (11 years+)' },
-]
+const timetable = UPMINSTER_TIMETABLE
 
 export default function UpminsterPage() {
   return (

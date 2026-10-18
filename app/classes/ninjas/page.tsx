@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, CheckCircle } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Forza Ninjas — Ages 4–6',
-  description: 'Play-based karate for children aged 4–6. Building coordination, confidence, and listening skills through fun structured training at Forza Karate Club.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/classes/ninjas',
+  title: 'Karate for Kids Aged 4–6 in Rayleigh & Upminster',
+  description: 'Forza Ninjas: fun, play-based karate for children aged 4–6 in Rayleigh and Upminster, Essex. Builds coordination, confidence and listening skills.',
+})
 
 const expects = [
   'Fun, game-based warm-ups',

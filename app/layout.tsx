@@ -5,47 +5,24 @@ import Footer from '@/components/layout/Footer'
 import LogoTicker from '@/components/layout/LogoTicker'
 import MusicPlayer from '@/components/layout/MusicPlayer'
 import { CartProvider } from '@/lib/cart-context'
+import { SITE_URL, orgSchema } from '@/lib/seo'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://forzakarate.co.uk'),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Forza Karate Club — Rayleigh & Upminster',
+    default: 'Karate Classes in Rayleigh & Upminster, Essex | Forza Karate Club',
     template: '%s | Forza Karate Club',
   },
   description:
     'Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster. Come and try it out — book a £10 trial class today.',
-  keywords: ['karate', 'martial arts', 'Rayleigh', 'Upminster', 'Essex', 'FKA', 'Wado Ryu', 'children karate', 'kids martial arts'],
+  keywords: ['karate', 'karate classes', 'karate for kids', 'kids karate', 'martial arts', 'Rayleigh', 'Upminster', 'Essex', 'Hockley', 'Hornchurch', 'FKA', 'Wado Ryu', 'children karate', 'kids martial arts', 'adult karate'],
   openGraph: {
-    title: 'Forza Karate Club',
-    description: 'This is where champions begin. Traditional karate across Essex.',
+    title: 'Karate Classes in Rayleigh & Upminster, Essex | Forza Karate Club',
+    description: 'Karate for kids and adults in Rayleigh and Upminster, Essex. Beginners welcome from age 4. Book a £10 trial class.',
     siteName: 'Forza Karate Club',
     locale: 'en_GB',
     type: 'website',
   },
-}
-
-const SITE = (process.env.NEXT_PUBLIC_SITE_URL || 'https://forzakarate.co.uk').replace(/\/$/, '')
-const orgSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'SportsOrganization',
-  name: 'Forza Karate Club',
-  url: SITE,
-  logo: `${SITE}/forza-logo.webp`,
-  sport: 'Karate',
-  location: [
-    {
-      '@type': 'SportsActivityLocation',
-      name: 'Forza Karate Club — Rayleigh Dojo',
-      url: `${SITE}/dojos/rayleigh`,
-      address: { '@type': 'PostalAddress', streetAddress: 'Rayleigh Primary School, Love Lane', addressLocality: 'Rayleigh', addressRegion: 'Essex', postalCode: 'SS6 7DD', addressCountry: 'GB' },
-    },
-    {
-      '@type': 'SportsActivityLocation',
-      name: 'Forza Karate Club — Upminster Dojo',
-      url: `${SITE}/dojos/upminster`,
-      address: { '@type': 'PostalAddress', streetAddress: 'St Lawrence Church Hall, Corbets Tey Road', addressLocality: 'Upminster', postalCode: 'RM14 2BB', addressCountry: 'GB' },
-    },
-  ],
 }
 
 export default function RootLayout({

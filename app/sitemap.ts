@@ -1,7 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { allPosts } from '@/lib/news'
-
-const BASE = (process.env.NEXT_PUBLIC_SITE_URL || 'https://forzakarate.co.uk').replace(/\/$/, '')
+import { SITE_URL as BASE } from '@/lib/seo'
 
 const routes = [
   '/',
