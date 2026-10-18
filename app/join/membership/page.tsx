@@ -7,7 +7,7 @@ import { Loader2, Plus, Trash2, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
 import { HeightGuide } from '@/components/HeightGuide'
-import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
+import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, REQUIRED_SUIT_KEY, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
 
 declare global {
   interface Window {
@@ -41,10 +41,12 @@ const input = 'w-full h-11 px-4 rounded-xl border border-black/15 bg-white text-
 const lbl = 'block text-sm font-medium text-[#111111] mb-1.5'
 
 type Student = { firstName: string; surname: string; dateOfBirth: string; belt: string; medical: string; suitKey: string; suitSize: string; licence: LicenceType }
-const blank = (): Student => ({ firstName: '', surname: '', dateOfBirth: '', belt: 'White', medical: '', suitKey: '', suitSize: '', licence: 'first_time' })
+const blank = (): Student => ({ firstName: '', surname: '', dateOfBirth: '', belt: 'White', medical: '', suitKey: REQUIRED_SUIT_KEY, suitSize: '', licence: 'first_time' })
 const SUITS = suitOptions()
+// Every new member buys the Official Forza Karate Club Gi (£40); there is no "I already have one" option.
+const GI = SUITS.find(x => x.key === REQUIRED_SUIT_KEY)!
 const PLAN_LABEL: Record<PlanKey, string> = { monthly_single: 'Single (1 student)', monthly_two: 'Siblings (2 students)', monthly_family: 'Family (3 or more)' }
-const suitCost = (st: Student) => (st.suitKey && st.suitSize ? SUITS.find(x => x.key === st.suitKey)?.price ?? 0 : 0)
+const suitCost = (_st: Student) => GI.price // always added, one gi per student
 const licenceCost = (st: Student) => licenceFeePence('first_time', st.dateOfBirth)
 const ukDate = (iso: string) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
@@ -82,6 +84,7 @@ export default function MembershipSignup() {
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    if (students.some(st => !GI.sizes.includes(st.suitSize))) { setError('Please choose a suit size (by height) for each student. Every new member needs an Official Forza Karate Club Gi (£40).'); return }
     if (!window.GoCardlessDropin) { setError('The secure Direct Debit form is still loading. Please try again in a moment.'); return }
     setBusy(true)
     try {
@@ -89,7 +92,7 @@ export default function MembershipSignup() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, dojo, classTime, trialDate, parent, emergency, consent: { terms, photos },
-          students: students.map(st => ({ ...st, suit: st.suitKey ? { key: st.suitKey, size: st.suitSize } : null, licence: { type: 'first_time' } })) }),
+          students: students.map(st => ({ ...st, suit: { key: REQUIRED_SUIT_KEY, size: st.suitSize }, licence: { type: 'first_time' } })) }),
       })
       const d = await res.json()
       if (!res.ok) { setError(d.error ?? 'Something went wrong.'); setBusy(false); return }
@@ -180,14 +183,13 @@ export default function MembershipSignup() {
               <div className="grid sm:grid-cols-2 gap-4 pt-2 border-t border-black/5">
                 <div><label className={lbl}>Karate suit</label>
                   <p className="text-xs text-gray-500 -mt-0.5 mb-1.5">All members need an official Forza Karate suit (£40)</p>
-                  <select className={input} value={st.suitKey} onChange={e => { setStudent(i, 'suitKey', e.target.value); setStudent(i, 'suitSize', '') }}>
-                    <option value="">I already have one</option>
-                    {SUITS.map(x => <option key={x.key} value={x.key}>{x.name} ({pounds(x.price)})</option>)}
-                  </select></div>
-                <div><label className={lbl}>Suit size (by height)</label>
-                  <select className={input} required={!!st.suitKey} disabled={!st.suitKey} value={st.suitSize} onChange={e => setStudent(i, 'suitSize', e.target.value)}>
-                    <option value="">{st.suitKey ? 'Choose a size' : '—'}</option>
-                    {(SUITS.find(x => x.key === st.suitKey)?.sizes ?? []).map(z => <option key={z} value={z}>{/^\d+cm$/.test(z) ? `${z.replace('cm', '')} cm tall` : z}</option>)}
+                  <div className={`${input} flex items-center justify-between bg-[#fafaf9]`} aria-live="polite">
+                    <span>{GI.name}</span><strong>{pounds(GI.price)}</strong>
+                  </div></div>
+                <div><label className={lbl} htmlFor={`suit-size-${i}`}>Suit size (by height) <span className="text-[#dc2626]">*</span></label>
+                  <select id={`suit-size-${i}`} className={input} required value={st.suitSize} onChange={e => setStudent(i, 'suitSize', e.target.value)}>
+                    <option value="">Choose a size</option>
+                    {GI.sizes.map(z => <option key={z} value={z}>{/^\d+cm$/.test(z) ? `${z.replace('cm', '')} cm tall` : z}</option>)}
                   </select>
                   </div>
                 <div className="sm:col-span-2 -mt-2"><HeightGuide /></div>
@@ -229,6 +231,7 @@ export default function MembershipSignup() {
               if (!trialDate) return <>
                 <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
                 <div className="flex justify-between"><span className="text-gray-500">Monthly fee</span><strong>{pounds(fee)} on the 1st of each month</strong></div>
+                <div className="flex justify-between"><span className="text-gray-500">Official Forza Karate Club Gi × {students.length}</span><strong>{pounds(GI.price * students.length)}</strong></div>
                 <p className="text-xs text-gray-500">Enter your trial date to see your first payment. Your first payment covers the rest of the month you start in.</p>
               </>
               const start = membershipStart(trialDate)
@@ -239,7 +242,7 @@ export default function MembershipSignup() {
                 <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
                 <div className="flex justify-between"><span className="text-gray-500">Monthly fee</span><strong>{pounds(fee)} on the 1st, from {ukDate(firstOfNextMonth(start))}</strong></div>
                 <div className="flex justify-between"><span className="text-gray-500">First payment, part month ({proRataLabel(start)} from {ukDate(start)})</span><strong>{pounds(pr)}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">Karate suits ({students.filter(x => suitCost(x)).length})</span><strong>{pounds(suits)}</strong></div>
+                <div className="flex justify-between"><span className="text-gray-500">Official Forza Karate Club Gi × {students.length}</span><strong>{pounds(suits)}</strong></div>
                 <div className="flex justify-between"><span className="text-gray-500">Licence &amp; insurance</span><strong>{pounds(lic)}</strong></div>
                 <div className="flex justify-between border-t border-black/10 pt-2"><span className="font-semibold">One-off total, collected first</span><strong className="text-[#dc2626]">{pounds(pr + suits + lic)}</strong></div>
                 <p className="text-xs text-gray-500">Everything is collected by Direct Debit, no card needed. The part-month payment is taken from your start date and the suit and licence as soon as the Direct Debit is ready (usually a few working days); monthly fees then come out on the 1st.</p>

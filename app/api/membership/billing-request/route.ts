@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { gc, gcEnv, gcConfigured, GcError } from '@/lib/gocardless/client'
-import { PLANS, DOJOS, planAllowed, membershipStart, suitPrice, licenceFeePence, LICENCE_TYPES, type PlanKey, type DojoKey, type LicenceType } from '@/lib/gocardless/plans'
+import { PLANS, DOJOS, planAllowed, membershipStart, requiredSuit, extrasLineItems, licenceFeePence, type PlanKey, type DojoKey, type LicenceType } from '@/lib/gocardless/plans'
 import { saveSignup, type Signup } from '@/lib/gocardless/store'
 
 export const runtime = 'nodejs'
@@ -10,7 +10,7 @@ const s = (v: unknown, max = 200) => (typeof v === 'string' ? v.trim().slice(0, 
 const DATE = /^\d{4}-\d{2}-\d{2}$/
 
 export async function POST(req: Request) {
-  if (!gcConfigured()) return NextResponse.json({ error: 'Direct Debit sign-up is not available yet.' }, { status: 503 })
+  // Validate the form first (so bad input always gets a 400), then check GoCardless is set up.
   const b = await req.json().catch(() => null)
   if (!b) return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
 
@@ -24,12 +24,10 @@ export async function POST(req: Request) {
   let bad = ''
   const students = (Array.isArray(b.students) ? b.students : []).slice(0, 6).map((x: any) => {
     const dateOfBirth = s(x?.dateOfBirth, 10)
-    let suit = null
-    if (x?.suit?.key) {
-      const pricePence = suitPrice(s(x.suit.key, 40), s(x.suit.size, 20))
-      if (pricePence == null) bad = 'Please choose a size for each karate suit.'
-      else suit = { key: s(x.suit.key, 40), size: s(x.suit.size, 20), pricePence }
-    }
+    // Every new member must buy the Official Forza Karate Club Gi (£40): no "already have one" path.
+    const suit = requiredSuit(x?.suit)
+    if (!suit && (s(x?.firstName, 60) || s(x?.surname, 60)))
+      bad = 'Every new member needs an Official Forza Karate Club Gi (£40). Please choose a suit size (by height) for each student.'
     // Joining students always get a first licence (paid). Any client-sent type is ignored.
     const t: LicenceType = 'first_time'
     const licence: { type: string; feePence: number } = { type: t, feePence: licenceFeePence(t, dateOfBirth) }
@@ -52,11 +50,14 @@ export async function POST(req: Request) {
   const emergency = { name: s(b.emergency?.name, 80), phone: s(b.emergency?.phone, 30) }
   if (!emergency.name || !emergency.phone) return NextResponse.json({ error: 'Please add an emergency contact.' }, { status: 400 })
   if (!b.consent?.terms) return NextResponse.json({ error: 'Please accept the club terms.' }, { status: 400 })
+  if (students.some((x: any) => !x.suit)) return NextResponse.json({ error: 'Please choose a suit size (by height) for each student.' }, { status: 400 })
+
+  if (!gcConfigured()) return NextResponse.json({ error: 'Direct Debit sign-up is not available yet.' }, { status: 503 })
 
   const signup: Signup = {
     plan, dojo, classTime: s(b.classTime, 120), trialDate, startDate: membershipStart(trialDate),
     students, parent, emergency, consent: { photos: !!b.consent?.photos, terms: true },
-    extrasPence: students.reduce((t: number, x: any) => t + (x.suit?.pricePence ?? 0) + (x.licence?.feePence ?? 0), 0),
+    extrasPence: extrasLineItems(students).reduce((t, item) => t + item.pricePence, 0),
     createdAt: new Date().toISOString(),
   }
 
