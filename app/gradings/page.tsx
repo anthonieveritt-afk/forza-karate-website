@@ -1,14 +1,16 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, Lock } from 'lucide-react'
 import BeltIcon from '@/components/ui/BeltIcon'
 import GradingCountdown from '@/components/sections/GradingCountdown'
 
-export const metadata: Metadata = {
-  title: 'Gradings',
-  description: 'Belt grading information for Forza Karate Club. Learn about the grading system, criteria, and register for upcoming gradings.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/gradings',
+  title: 'Karate Belt Gradings',
+  description: 'Karate belt gradings at Forza Karate Club, Rayleigh and Upminster: how the grading system works, what is assessed and how to register.',
+})
 
 const belts = [
   { kyu: '17th Kyu', name: 'White Belt / Red Stripe',    bg: '#ffffff', border: '#d1d5db', stripe: '#ef4444' },

@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Link from 'next/link'
 import { ArrowRight, MapPin } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 
-export const metadata: Metadata = {
-  title: 'Our Dojos',
-  description: 'Forza Karate Club trains at two locations — Rayleigh and Upminster. Find your nearest dojo.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/dojos',
+  title: 'Karate Clubs in Rayleigh & Upminster, Essex',
+  description: 'Forza Karate Club trains at two dojos: Rayleigh Primary School (SS6 7DD) and St Lawrence Church Hall, Upminster (RM14 2BB). Find your nearest class.',
+})
 
 const dojos = [
   {

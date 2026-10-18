@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
 import Hero from '@/components/sections/Hero'
@@ -9,10 +10,12 @@ import { Button } from '@/components/ui/Button'
 import { ArrowRight, Shield, Heart, Zap, Users } from 'lucide-react'
 import { allPosts, formatDate } from '@/lib/news'
 
-export const metadata: Metadata = {
-  title: 'Forza Karate Club — Rayleigh & Upminster',
-  description: 'Traditional Wado Ryu karate for all ages across Essex. Come and try it out — book a £10 trial class at Rayleigh or Upminster.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/',
+  title: 'Karate Classes in Rayleigh & Upminster, Essex | Forza Karate Club',
+  description: 'Karate for kids and adults in Rayleigh and Upminster, Essex. Beginners welcome from age 4. Book a £10 trial class at Forza Karate Club.',
+  absoluteTitle: true,
+})
 
 const classes = [
   {

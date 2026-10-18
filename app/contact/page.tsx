@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import ContactForm from '@/components/forms/ContactForm'
 import SecretaryBot from '@/components/SecretaryBot'
 
-export const metadata: Metadata = {
-  title: 'Contact',
-  description: 'Get in touch with Forza Karate Club in Rayleigh and Upminster, Essex.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/contact',
+  title: 'Contact Forza Karate Club, Rayleigh & Upminster',
+  description: 'Get in touch with Forza Karate Club about karate classes for kids and adults in Rayleigh and Upminster, Essex.',
+})
 
 export default function ContactPage() {
   return (

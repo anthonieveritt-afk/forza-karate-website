@@ -1,19 +1,16 @@
 import type { Metadata } from 'next'
+import { pageMeta, RAYLEIGH_TIMETABLE } from '@/lib/seo'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { MapPin, Clock, ArrowRight } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Rayleigh Dojo',
-  description: 'Forza Karate Club Rayleigh dojo — karate classes for all ages at Rayleigh Primary School, Love Lane, Essex SS6 7DD.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/dojos/rayleigh',
+  title: 'Karate Classes in Rayleigh, Essex – Rayleigh Dojo',
+  description: 'Karate classes in Rayleigh, Essex for kids aged 4+ and adults, at Rayleigh Primary School, Love Lane, SS6 7DD. Tuesdays and Saturdays. Book a £10 trial.',
+})
 
-const timetable = [
-  { day: 'Tuesday',  time: '6:15 – 7:00pm',  desc: 'Ages 4–10 · all grades' },
-  { day: 'Tuesday',  time: '7:00 – 8:00pm',  desc: '11 years+ · all grades' },
-  { day: 'Friday',   time: '3:40 – 4:40pm',  desc: 'After-school club · Rayleigh Primary School pupils only' },
-  { day: 'Saturday', time: '10:00 – 11:00am', desc: 'Ages 4+ · all grades' },
-]
+const timetable = RAYLEIGH_TIMETABLE
 
 export default function RayleighPage() {
   return (

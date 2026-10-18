@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Image from 'next/image'
 import { Star } from 'lucide-react'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: '/hall-of-fame',
   title: 'Hall of Fame',
-  description: 'Celebrating the black belts and honorary black belts of Forza Karate Club.',
-}
+  description: 'Celebrating the black belts and honorary black belts of Forza Karate Club, Rayleigh and Upminster, Essex.',
+})
 
 export default function HallOfFamePage() {
   return (

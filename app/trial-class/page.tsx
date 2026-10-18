@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import TrialClassForm from '@/components/forms/TrialClassForm'
 import { CheckCircle } from 'lucide-react'
 import { Suspense } from 'react'
 
-export const metadata: Metadata = {
-  title: 'Book a £10 Trial Class',
-  description: 'Come and try it out! Book a £10 trial karate class at Forza Karate Club. No kit needed, no commitment. Available at Rayleigh and Upminster.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/trial-class',
+  title: 'Book a £10 Karate Trial Class in Rayleigh or Upminster',
+  description: 'Book a £10 trial karate class for kids or adults at Forza Karate Club in Rayleigh or Upminster, Essex. No kit needed, beginners welcome.',
+})
 
 const perks = [
   'Trial class £10, paid securely online',

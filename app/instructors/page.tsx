@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
+import { pageMeta } from '@/lib/seo'
 import Image from 'next/image'
 import { Shield, Award, Heart } from 'lucide-react'
 import InstructorsClient from './InstructorsClient'
 
-export const metadata: Metadata = {
-  title: 'Instructors',
-  description: 'Meet the experienced, DBS enhanced, and fully insured instructors at Forza Karate Club.',
-}
+export const metadata: Metadata = pageMeta({
+  path: '/instructors',
+  title: 'Karate Instructors',
+  description: 'Meet the experienced, DBS-enhanced and fully insured karate instructors at Forza Karate Club in Rayleigh and Upminster, Essex.',
+})
 
 const credentials = [
   { icon: Shield, title: 'DBS Enhanced', desc: 'All instructors hold current enhanced DBS clearance.' },
