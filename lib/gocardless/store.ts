@@ -40,6 +40,8 @@ export type Signup = {
   monthlyFeePence?: number
   firstPaymentPence?: number
   /** First-month weekly band (from the start date; chosen on the form and checked by the server). */
+  /** Join via trial lookup: the Club Honbu trials used (opaque refs) and the trial date taken from them. */
+  trial?: { refs: string[]; trialDate: string; statuses: string[] }
   firstMonth?: { band: string; label: string; short: string; percent: number; monthlyFullPence: number; bandedPence: number; pence: number }
   discount?: AppliedDiscount | null
   createdAt: string
