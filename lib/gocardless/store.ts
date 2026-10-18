@@ -42,6 +42,8 @@ export type Signup = {
   /** First-month weekly band (from the start date; chosen on the form and checked by the server). */
   firstMonth?: { band: string; label: string; short: string; percent: number; monthlyFullPence: number; bandedPence: number; pence: number }
   discount?: AppliedDiscount | null
+  /** Approval-gated tester code: everything £0, held until Anthoni approves (lib/membership/tester.ts). */
+  tester?: boolean
   createdAt: string
 }
 
@@ -66,14 +68,14 @@ function key(): Buffer {
   return createHash('sha256').update(k).digest()
 }
 
-function enc(obj: unknown): string {
+export function enc(obj: unknown): string {
   const iv = randomBytes(12)
   const c = createCipheriv('aes-256-gcm', key(), iv)
   const data = Buffer.concat([c.update(JSON.stringify(obj), 'utf8'), c.final()])
   return Buffer.concat([iv, c.getAuthTag(), data]).toString('base64')
 }
 
-function dec<T>(b64: string): T {
+export function dec<T>(b64: string): T {
   const buf = Buffer.from(b64, 'base64')
   const d = createDecipheriv('aes-256-gcm', key(), buf.subarray(0, 12))
   d.setAuthTag(buf.subarray(12, 28))

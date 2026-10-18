@@ -58,7 +58,9 @@ export default function MembershipSignup() {
   const [error, setError] = useState('')
   // Optional discount code (training fees only). The server re-checks it and recomputes all amounts.
   const [codeInput, setCodeInput] = useState('')
-  const [applied, setApplied] = useState<{ code: string; percent: number; label: string } | null>(null)
+  const [applied, setApplied] = useState<{ code: string; percent: number; label: string; tester?: boolean } | null>(null)
+  // Tester code accepted and submitted: the sign-up is waiting for the club's approval.
+  const [pendingMsg, setPendingMsg] = useState('')
   const [codeMsg, setCodeMsg] = useState<{ ok: boolean; text: string } | null>(null)
   const [codeBusy, setCodeBusy] = useState(false)
   async function applyCode() {
@@ -68,7 +70,11 @@ export default function MembershipSignup() {
     try {
       const r = await fetch('/api/membership/discount-code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) })
       const d = await r.json().catch(() => ({}))
-      if (r.ok && d.valid) {
+      if (r.ok && d.valid && d.tester) {
+        // Approval-gated tester code: everything £0. The code itself stays as typed (never echoed back).
+        setApplied({ code: d.code, percent: 100, label: d.label, tester: true })
+        setCodeMsg({ ok: true, text: d.message ?? "Code accepted – this sign-up needs approval before it's confirmed" })
+      } else if (r.ok && d.valid) {
         setApplied({ code: d.code, percent: d.percent, label: d.label }); setCodeInput(d.code)
         setCodeMsg({ ok: true, text: `Code ${d.code} applied: ${d.percent}% off your training fees${d.percent === 100 ? ' (no monthly fee)' : ''}. The gi and licence are still charged in full.` })
       } else { setApplied(null); setCodeMsg({ ok: false, text: d.error ?? "Sorry, that discount code isn't valid." }) }
@@ -112,10 +118,11 @@ export default function MembershipSignup() {
       const res = await fetch('/api/membership/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, dojo, classTime, trialDate, parent, emergency, consent: { terms, photos }, discountCode: applied?.code ?? codeInput.trim(), firstMonthBand: bandKey,
+        body: JSON.stringify({ plan, dojo, classTime, trialDate, parent, emergency, consent: { terms, photos }, discountCode: applied && !applied.tester ? applied.code : codeInput.trim(), firstMonthBand: bandKey,
           students: students.map(st => ({ ...st, suit: { key: REQUIRED_SUIT_KEY, size: st.suitSize }, licence: { type: 'first_time' } })) }),
       })
       const d = await res.json()
+      if (res.ok && d.pending) { setPendingMsg(d.message ?? 'Thanks, your sign-up is waiting for approval by the club.'); setBusy(false); window.scrollTo({ top: 0 }); return }
       if (!res.ok || !d.url) { setError(d.error ?? 'Something went wrong.'); setBusy(false); return }
       window.location.assign(d.url)
     } catch {
@@ -123,6 +130,17 @@ export default function MembershipSignup() {
       setBusy(false)
     }
   }
+
+  if (pendingMsg) return (
+    <div className="min-h-screen bg-[#fafaf9] pt-28 pb-20 px-4">
+      <div className="max-w-2xl mx-auto bg-white rounded-3xl border border-black/8 p-6 sm:p-10 space-y-3" role="status">
+        <p className="text-xs font-semibold uppercase tracking-widest text-[#dc2626]">Forza Karate Club</p>
+        <h1 className="text-3xl font-bold text-[#111111]">Sign-up received</h1>
+        <p className="text-gray-600">{pendingMsg}</p>
+        <p className="text-sm text-gray-500">Nothing has been charged. You&apos;ll get an email once it has been confirmed.</p>
+      </div>
+    </div>
+  )
 
   return (
     <div className="min-h-screen bg-[#fafaf9] pt-28 pb-20 px-4">
@@ -261,7 +279,16 @@ export default function MembershipSignup() {
             <p className="text-xs text-gray-400 mt-1">Codes take money off training fees only, not the gi or the licence. One code per sign-up.</p>
           </div>
           <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-2">
-            {(() => {
+            {applied?.tester ? <>
+              {/* Display only: the server works out every amount itself. */}
+              <p className="font-semibold">Pay today</p>
+              <div className="flex justify-between"><span className="text-gray-500">Official Forza Karate Club Gi × {students.length}</span><strong>£0.00</strong></div>
+              <div className="flex justify-between"><span className="text-gray-500">Licence &amp; insurance</span><strong>£0.00</strong></div>
+              <div className="flex justify-between"><span className="text-gray-500">First month</span><strong>£0.00</strong></div>
+              <div className="flex justify-between border-t border-black/10 pt-2"><span className="font-semibold">Total</span><strong className="text-[#dc2626]">£0.00</strong></div>
+              <div className="flex justify-between pt-2"><span className="font-semibold">Monthly</span><strong>£0, no Direct Debit</strong></div>
+              <p className="text-xs text-gray-500">No card payment or Direct Debit. This sign-up needs approval by the club before it&apos;s confirmed.</p>
+            </> : (() => {
               const fullFee = PLANS[plan].price
               const fee = applyDiscount(fullFee, pct)
               const discountLine = applied && <div className="flex justify-between text-green-700"><span>Discount {applied.code} ({applied.percent}% off training fees)</span><strong>−{pounds(fullFee - fee)} a month</strong></div>
@@ -294,7 +321,7 @@ export default function MembershipSignup() {
           <Suspense><CancelledNotice /></Suspense>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <Button type="submit" size="lg" className="w-full" disabled={busy}>
-            {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opening secure checkout…</> : 'Continue to pay by card'}
+            {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> {applied?.tester ? 'Sending…' : 'Opening secure checkout…'}</> : applied?.tester ? 'Send sign-up for approval' : 'Continue to pay by card'}
           </Button>
         </section>
       </form>
