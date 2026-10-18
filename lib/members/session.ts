@@ -70,3 +70,40 @@ export function safeMembersRedirect(raw: string | null | undefined, fallback = '
     return fallback
   }
 }
+
+// ---- Logging out -------------------------------------------------------------------------
+// The session cookie is set with Path=/members (see app/api/members/login/route.ts). A browser
+// only removes a cookie when the Set-Cookie that expires it has the SAME name, path and domain,
+// so logout must expire it with Path=/members. Older code (and Next's cookies().delete(name)
+// with no options) used Path=/, which never matched, so the member stayed logged in.
+
+export const MEMBERS_COOKIE_PATH = '/members'
+
+/** Paths the members cookie may have been set on, now or by older builds. All get expired. */
+export const MEMBERS_COOKIE_PATHS = [MEMBERS_COOKIE_PATH, '/'] as const
+
+/** Attributes matching how the cookie is set at login, with an immediate expiry. */
+export function expiredMembersCookieOptions(path: string) {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const,
+    path,
+    maxAge: 0,
+    expires: new Date(0),
+  }
+}
+
+/** Raw Set-Cookie header values that expire the members cookie on every known path. */
+export function expiredMembersSetCookieHeaders(): string[] {
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : ''
+  return MEMBERS_COOKIE_PATHS.map(
+    (path) =>
+      `${MEMBERS_COOKIE}=; Path=${path}; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; SameSite=Lax${secure}`,
+  )
+}
+
+/** Forget a token in this instance's short validity cache (so a logged-out token isn't trusted for up to 60s). */
+export function forgetMemberSession(token: string | undefined | null) {
+  if (token) cache.delete(token)
+}

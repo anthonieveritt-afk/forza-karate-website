@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from '@/components/ui/Button'
 import GradingRegForm from '@/components/forms/GradingRegForm'
-import { logoutMembers } from '@/app/actions/members-auth'
+import LogoutButton from '@/components/members/LogoutButton'
 
 export const metadata: Metadata = {
   title: 'Register for Grading — Members',
@@ -22,9 +21,7 @@ export default function MembersGradingPage() {
           <div className="flex items-center gap-4">
             {/* Syllabus hidden for now — re-add the /members/syllabus link here when it returns */}
             <span className="text-sm text-gray-500">Members area</span>
-            <form action={logoutMembers}>
-              <Button type="submit" variant="outline" size="sm">Log out</Button>
-            </form>
+            <LogoutButton />
           </div>
         </div>
       </header>
