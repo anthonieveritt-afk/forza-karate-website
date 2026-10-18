@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { membersCoreLinks, membersEventLinks, type MembersLink } from '@/lib/members/links'
+import { membersCoreLinks, membersEventLinks, externalProps, type MembersLink } from '@/lib/members/links'
 import LogoutButton from '@/components/members/LogoutButton'
 
 function target(l: MembersLink) {
@@ -11,11 +11,12 @@ function target(l: MembersLink) {
 
 function Item({ link, current }: { link: MembersLink; current: string }) {
   const { href, label } = target(link)
-  const active = current === href || current.startsWith(href + '/')
+  const active = !link.external && (current === href || current.startsWith(href + '/'))
   return (
     <li>
       <Link
         href={href}
+        {...externalProps(link)}
         aria-current={active ? 'page' : undefined}
         className={`block rounded-xl px-3 py-2 text-sm transition-colors border-l-2 ${
           active
@@ -24,6 +25,7 @@ function Item({ link, current }: { link: MembersLink; current: string }) {
         }`}
       >
         {label}
+        {link.external && <span aria-hidden> ↗</span>}
       </Link>
     </li>
   )

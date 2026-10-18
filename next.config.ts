@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { legacyRedirects } from "./redirects";
+import { FIKC_URL, INVITATIONAL_PATHS } from "./lib/members/links";
 
 const nextConfig: NextConfig = {
   async headers() {
@@ -14,6 +15,8 @@ const nextConfig: NextConfig = {
       // Syllabus hidden for now (temporary 307); code/content kept so it can come back.
       { source: '/members/syllabus', destination: '/gradings', permanent: false },
       { source: '/forza-syllabus-template.html', destination: '/gradings', permanent: false },
+      // The Invitational Cup now lives on the FIKC site.
+      ...INVITATIONAL_PATHS.map((source) => ({ source, destination: FIKC_URL, permanent: true })),
       ...legacyRedirects,
     ];
   },
