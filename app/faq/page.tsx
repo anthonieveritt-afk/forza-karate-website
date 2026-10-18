@@ -58,8 +58,8 @@ const faqs: { group: string; items: Faq[] }[] = [
       },
       {
         q: 'Are beginners welcome?',
-        text: 'Yes, beginners are always welcome. All our instructors are DBS-checked and first-aid qualified.',
-        a: <p>Yes, beginners are always welcome. All our instructors are DBS-checked and first-aid qualified.</p>,
+        text: 'Yes, beginners are always welcome. All our instructors are DBS-checked and first-aid qualified. Make sure to register for a trial class online using the trial class link.',
+        a: <p>Yes, beginners are always welcome. All our instructors are DBS-checked and first-aid qualified. Make sure to register for a trial class online using the <Link href="/trial-class" className={link}>trial class link</Link>.</p>,
       },
     ],
   },
