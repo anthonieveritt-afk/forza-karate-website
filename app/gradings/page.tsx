@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { ArrowRight, Lock } from 'lucide-react'
 import BeltIcon from '@/components/ui/BeltIcon'
 import GradingCountdown from '@/components/sections/GradingCountdown'
+import { STANCES } from '@/lib/syllabus/stances'
 
 export const metadata: Metadata = pageMeta({
   path: '/gradings',
@@ -111,6 +112,43 @@ export default function GradingsPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Syllabus: stances */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-black/5">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-0.5 bg-[#dc2626]" />
+              <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Syllabus</span>
+            </div>
+            <h2 className="text-3xl font-bold text-[#111111] mb-4">Stances</h2>
+            <p className="text-gray-500 mb-6">
+              Every grading starts with good stances. White belts learn five beginner stances first, then cat stance and
+              forward leaning stance. From yellow belt, students also learn junzuki dachi and gyakuzuki dachi. See how to stand
+              in each one, with pictures and the common mistakes to avoid.
+            </p>
+            <Button asChild>
+              <Link href="/syllabus/stances">
+                See all stances
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {STANCES.map((s) => (
+              <li key={s.id}>
+                <Link
+                  href={`/syllabus/stances#${s.id}`}
+                  className="flex flex-col rounded-xl border border-black/8 px-4 py-3 hover:border-[#dc2626] transition-colors"
+                >
+                  <span className="font-semibold text-[#111111]">{s.japanese}</span>
+                  <span className="text-sm text-gray-500">{s.english}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

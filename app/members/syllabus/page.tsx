@@ -49,6 +49,9 @@ export default function MembersSyllabusPage() {
               <Button asChild variant="outline">
                 <Link href="/members/grading">Register to Grade →</Link>
               </Button>
+              <Button asChild variant="outline">
+                <Link href="/syllabus/stances">Stances →</Link>
+              </Button>
             </div>
           </div>
         </div>
