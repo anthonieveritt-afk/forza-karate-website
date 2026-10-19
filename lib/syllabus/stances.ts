@@ -1,7 +1,7 @@
 // Forza Karate Club stances, for the public syllabus page (/syllabus/stances).
 // Names and English labels: Anthoni, 19 Oct 2026 (final). Key points come from the Dojo Dash
 // stance trainer (/home/box/shared/dojo-dash/preview/training/stance.html) with Club Operations'
-// syllabus review applied. Items listed in `toCheck` are still to be confirmed by Club Operations.
+// syllabus review applied (19 Oct 09:30). Items listed in `toCheck` are still to be confirmed.
 // Figures are the same drawings as the Dojo Dash stance trainer, in Forza colours.
 
 type Pt = [number, number]
@@ -18,7 +18,7 @@ export type Stance = {
   /** Kid-friendly "how to stand" steps: feet, width/length, toes, knees, weight. */
   howTo: string[]
   mistake: string
-  /** Details not yet confirmed by Club Operations (kept out of the public text). */
+  /** Details not yet confirmed by Club Operations / Anthoni (kept out of the public text). */
   toCheck?: string
   // Figure data (same as the Dojo Dash trainer)
   view: 'front' | 'side'
@@ -28,6 +28,8 @@ export type Stance = {
   feet: Foot[]
   toeOut?: number
   tiptoe?: boolean
+  /** Footprints without a clear toe direction (used when toe angle is unconfirmed). */
+  neutralFeet?: boolean
 }
 
 export const STANCES: Stance[] = [
@@ -66,8 +68,8 @@ export const STANCES: Stance[] = [
       'Weight even on both feet.',
     ],
     mistake: 'Feet too wide or too close together. Aim for about the width of your shoulders, ready to move.',
-    toCheck: 'Toe angle not specified by Anthoni (figure drawn with toes forwards).',
-    view: 'front', arms: 'fists', hip: [120, 168],
+    toCheck: 'Toe angle not specified by Anthoni; figure footprints are drawn without a toe direction until he confirms (straight forwards vs slightly out).',
+    view: 'front', arms: 'fists', hip: [120, 168], neutralFeet: true,
     legs: [[[108, 168], [104, 218], [100, 266]], [[132, 168], [136, 218], [140, 266]]],
     feet: [[95, 55, 0], [145, 55, 0]],
   },
@@ -104,11 +106,12 @@ export const STANCES: Stance[] = [
       'Hips facing the front.',
       'A short stance with both knees bent.',
       'Back foot turned out at about 45°.',
+      'Front foot points forwards.',
       'Lift your front heel so only the ball of your foot touches the floor, light like a cat’s paw.',
       'Most of your weight is on your back leg, so your front leg can lift or turn easily.',
     ],
     mistake: 'Putting weight on the front foot or letting the front heel drop. Sit back on your back leg and keep the front foot light.',
-    toCheck: 'Exact weight split pending Anthoni (2/3–1/3, 70/30 or 80/20); the page only says "most of your weight on your back leg".',
+    toCheck: 'Exact weight split pending Anthoni (2/3–1/3, 70/30 or 80/20). Must match Dojo Dash Stance Training’s 70/30 once Anthoni decides. Page currently says "most of your weight on your back leg".',
     view: 'side', hip: [100, 182], tiptoe: true,
     legs: [[[96, 182], [124, 224], [94, 266]], [[104, 182], [142, 222], [150, 262]]],
     feet: [[100, 75, -45], [112, 30, 0, 1]],
@@ -116,14 +119,14 @@ export const STANCES: Stance[] = [
   {
     id: 'zenkutsu', japanese: 'Zenkutsu dachi', english: 'Forward leaning stance', summary: 'Front knee bent, back leg nearly straight', group: 'next',
     howTo: [
-      'Step one foot forwards.',
-      'Bend your front knee so it is over your toes.',
-      'Back leg nearly straight, back heel down.',
+      'Step forwards about 1.5–2 shoulder-widths, so your front knee is over your toes and your back leg is nearly straight.',
+      'Feet about hip-width apart side to side.',
       'Front foot points forwards, back foot points diagonally forwards.',
-      'A little more weight on your front leg.',
+      'Back heel down.',
+      'A little more weight on your front leg (about 60/40).',
     ],
     mistake: 'Lifting the back heel, or bending the front knee so far it goes past your toes. Keep the back heel down and the knee over the toes.',
-    toCheck: 'Length and weight split not specified by Anthoni (trainer uses about 60 front / 40 back; page says "a little more weight on your front leg").',
+    toCheck: 'Exact length and weight split pending Anthoni’s confirmation (page uses about 1.5–2 shoulder-widths and about 60/40).',
     view: 'side', hip: [118, 190],
     legs: [[[112, 190], [80, 228], [50, 266]], [[124, 190], [188, 222], [190, 266]]],
     feet: [[95, 88, -25], [140, 22, 0]],
@@ -131,13 +134,15 @@ export const STANCES: Stance[] = [
   {
     id: 'junzuki', japanese: 'Junzuki dachi', english: 'Lead-hand punch stance', summary: 'A variation of zenkutsu dachi', group: 'yellow',
     howTo: [
-      'This is the stance for a lead-hand (same-side) punch: you punch with the hand on the same side as your front leg.',
-      'About as long as zenkutsu dachi, but natural, not as long and low as some other styles.',
+      'This is the stance for a same-side punch: you punch with the hand on the same side as your front leg.',
+      'Same length as zenkutsu dachi, but natural, not as long and low as some other styles.',
+      'Feet about hip-width apart side to side.',
+      'Front foot points straight forwards, back foot diagonally forwards, back heel down.',
       'Front knee bent over the toes, back leg nearly straight.',
-      'Hips more square to the front.',
+      'A little more weight on your front leg (about 60/40).',
     ],
-    mistake: 'Making the stance so long and low that you can’t move quickly. Keep it natural so you can step and punch.',
-    toCheck: 'Weight split (about 60/40) and foot angles; the common mistake was written by Web Developer and is not in the source files.',
+    mistake: 'Lifting the back heel or letting the front knee fall inwards.',
+    toCheck: 'Hips more square to the front — removed from public text until Anthoni confirms whether junzuki is square or half-turned. English label "Lead-hand punch stance" is Anthoni’s; Club Ops asked whether to switch to "Same-side punch stance". Common mistake needs Anthoni’s sign-off with the page.',
     view: 'side', hip: [122, 184],
     legs: [[[116, 184], [86, 224], [62, 266]], [[128, 184], [176, 222], [180, 266]]],
     feet: [[100, 84, -25], [140, 26, 0]],
@@ -147,11 +152,13 @@ export const STANCES: Stance[] = [
     howTo: [
       'This is the stance for a reverse punch: you punch with the hand on the opposite side to your front leg.',
       'A little shorter and wider than junzuki dachi.',
-      'Hips turned, half-facing the front.',
+      'Front foot turned very slightly in, back foot pointing diagonally forwards.',
+      'Start half-turned; as you punch, drive your back hip forwards so your hips face the front.',
       'Front knee bent over the toes.',
+      'A little more weight on your front leg (about 60/40).',
     ],
     mistake: 'Standing with your feet on one line, like on a tightrope. Keep a little width between your feet so you stay balanced when your hips turn.',
-    toCheck: 'Exact length, width and weight split; the common mistake was written by Web Developer and is not in the source files.',
+    toCheck: 'Exact length/width numbers and weight split pending Anthoni (page uses about 60/40). Hips wording pending his confirmation (Q5). Common mistake needs Anthoni’s sign-off with the page.',
     view: 'side', hip: [120, 188],
     legs: [[[114, 188], [90, 226], [70, 266]], [[126, 188], [168, 222], [172, 266]]],
     feet: [[88, 80, -30], [150, 28, 0]],
@@ -185,7 +192,8 @@ function frontFoot(a: Pt, ang: number) {
 
 /** SVG markup for one stance figure with its top-view footprint panel. Static data only. */
 export function stanceFigureSvg(s: Stance): string {
-  const BELT = s.group === 'beginner' ? '#ffffff' : s.group === 'yellow' ? '#facc15' : '#f97316'
+  // Beginner = white, yellow belt = yellow, next stances = red (not orange: Forza order has red before yellow).
+  const BELT = s.group === 'beginner' ? '#ffffff' : s.group === 'yellow' ? '#facc15' : RED
   const h = s.hip
   const side = s.view === 'side'
   const sh: Pt = [h[0] + (side ? 6 : 0), h[1] - 78]
@@ -241,6 +249,11 @@ export function stanceFigureSvg(s: Stance): string {
   // Footprint panel (top view, forwards = up)
   o += `<g transform="translate(0,300)"><rect x="4" y="4" width="232" height="108" rx="12" fill="#f5f5f4" stroke="${INK}" stroke-width="3"/><path d="M120,12 V104" stroke="#a8a29e" stroke-dasharray="4 4"/><text x="226" y="22" font-size="10" text-anchor="end" fill="#57534e" font-family="system-ui,sans-serif">▲ front</text>`
   s.feet.forEach((f, i) => {
+    if (s.neutralFeet) {
+      // Round marks with no toe tip, so no toe angle is implied.
+      o += `<g transform="translate(${f[0]},${f[1]})"><ellipse cx="0" cy="0" rx="14" ry="14" fill="${SKIN}" stroke="${INK}" stroke-width="2.5"/></g>`
+      return
+    }
     const left = f[0] < 120 || i === 0
     o += `<g transform="translate(${f[0]},${f[1]}) rotate(${f[2]})"><ellipse cx="0" cy="0" rx="10" ry="20" fill="${f[3] ? '#fff' : SKIN}" stroke="${INK}" stroke-width="2.5"${f[3] ? ' stroke-dasharray="4 3"' : ''}/><circle cx="${left ? 5 : -5}" cy="-24" r="4.5" fill="${SKIN}" stroke="${INK}" stroke-width="2"/></g>`
   })
