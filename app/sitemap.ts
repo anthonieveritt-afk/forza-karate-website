@@ -12,6 +12,7 @@ const routes = [
   '/dojos/rayleigh',
   '/dojos/upminster',
   '/gradings',
+  '/syllabus/stances',
   '/team',
   '/gallery',
   '/shop',
