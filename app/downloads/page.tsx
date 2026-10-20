@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { FileDown } from 'lucide-react'
+import WallpaperCarousel from '@/components/downloads/WallpaperCarousel'
 
 export const metadata: Metadata = {
   title: 'Downloads',
@@ -15,14 +16,6 @@ const downloads = [
     href: '/downloads/forza-kumite-score-sheet.pdf',
     meta: 'PDF · 250 KB',
   },
-]
-
-const wallpapers = [
-  { label: 'Mac 4K', res: '3840 × 2160', size: '2.7 MB', file: 'forza-manga-mac-4k-3840x2160.jpg' },
-  { label: 'Mac 5K', res: '5120 × 2880', size: '4.4 MB', file: 'forza-manga-mac-5k-5120x2880.jpg' },
-  { label: 'Mac 8K', res: '7680 × 4320', size: '7.3 MB', file: 'forza-manga-mac-8k-7680x4320.jpg' },
-  { label: 'Windows 4K', res: '3840 × 2160', size: '1.8 MB', file: 'forza-manga-windows-4k-3840x2160.jpg' },
-  { label: 'Windows 8K', res: '7680 × 4320', size: '4.8 MB', file: 'forza-manga-windows-8k-7680x4320.jpg' },
 ]
 
 export default function DownloadsPage() {
@@ -40,9 +33,9 @@ export default function DownloadsPage() {
       </section>
 
       <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto space-y-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
           {downloads.map((d) => (
-            <div key={d.href} className="rounded-2xl border border-black/10 overflow-hidden">
+            <div key={d.href} className="rounded-2xl border border-black/10 overflow-hidden flex flex-col">
               <a
                 href={d.href}
                 download
@@ -84,48 +77,7 @@ export default function DownloadsPage() {
               </div>
             </div>
           ))}
-        </div>
-      </section>
-      <section className="pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#111111] mb-6">Desktop backgrounds</h2>
-          <div className="rounded-2xl border border-black/10 overflow-hidden">
-            <a
-              href="/downloads/backgrounds/forza-manga-mac-4k-3840x2160.jpg"
-              download
-              aria-label="Download Forza manga desktop background (Mac 4K, JPG)"
-              className="group block bg-white px-6 pt-10 pb-8 sm:px-10"
-            >
-              <Image
-                src="/downloads/backgrounds/forza-manga-preview.webp"
-                alt="Forza Karate manga-style desktop background: Forza Karate logo on a red and black comic burst"
-                width={1200}
-                height={675}
-                sizes="(min-width: 768px) 640px, 90vw"
-                className="mx-auto w-full rounded-lg border-[6px] border-white shadow-[0_10px_25px_rgba(0,0,0,0.18)] transition-transform duration-300 ease-out motion-reduce:transition-none group-hover:-translate-y-2 group-hover:shadow-[0_18px_35px_rgba(0,0,0,0.22)]"
-              />
-            </a>
-            <div className="p-6">
-              <h3 className="text-lg font-semibold text-[#111111]">Forza manga wallpaper</h3>
-              <p className="text-gray-500 mt-1">Choose the size that matches your screen. JPG images.</p>
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {wallpapers.map((w) => (
-                  <a
-                    key={w.file}
-                    href={`/downloads/backgrounds/${w.file}`}
-                    download
-                    className="inline-flex items-center gap-3 rounded-lg border border-black/10 px-4 py-3 hover:border-[#dc2626] transition-colors"
-                  >
-                    <FileDown className="w-5 h-5 text-[#dc2626] shrink-0" aria-hidden="true" />
-                    <span>
-                      <span className="block font-semibold text-[#111111]">{w.label}</span>
-                      <span className="block text-sm text-gray-400">{w.res} · {w.size}</span>
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
+          <WallpaperCarousel />
         </div>
       </section>
     </div>
