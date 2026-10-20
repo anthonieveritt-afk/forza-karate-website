@@ -92,6 +92,7 @@ export default function Footer() {
               <li><Link href="/dojos/upminster" className="hover:text-white transition-colors">Upminster Dojo</Link></li>
               <li><Link href="/safeguarding" className="hover:text-white transition-colors">Safeguarding</Link></li>
               <li><Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/downloads" className="hover:text-white transition-colors">Downloads</Link></li>
               <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
               <li><Link href="/dojo-dash" className="hover:text-white transition-colors">Dojo Dash (kids' game)</Link></li>
               <li><Link href="/grading-guides" className="hover:text-white transition-colors">Grading guides &amp; videos</Link></li>
