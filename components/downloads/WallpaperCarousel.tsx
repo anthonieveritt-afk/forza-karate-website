@@ -12,7 +12,67 @@ const base = '/downloads/backgrounds/'
 /** To add a design (e.g. from the v2 set), append one entry here. */
 export const wallpaperDesigns: WallpaperDesign[] = [
   {
-    name: 'Forza manga',
+    name: 'Shonen burst',
+    preview: 'forza-01-shonen-burst-preview.webp',
+    alt: 'Forza Karate desktop background: Forza Karate logo with red and black manga speed-line burst',
+    sizes: [
+      { label: 'Mac 4K', res: '3840 × 2160', size: '2.3 MB', file: 'forza-01-shonen-burst-windows-4k-3840x2160.jpg' },
+      { label: 'Mac 5K', res: '5120 × 2880', size: '3.4 MB', file: 'forza-01-shonen-burst-mac-5k-5120x2880.jpg' },
+      { label: 'Mac 6K', res: '6016 × 3384', size: '4.1 MB', file: 'forza-01-shonen-burst-mac-6k-6016x3384.jpg' },
+      { label: 'Windows 4K', res: '3840 × 2160', size: '2.3 MB', file: 'forza-01-shonen-burst-windows-4k-3840x2160.jpg' },
+      { label: 'Windows 8K', res: '7680 × 4320', size: '5.4 MB', file: 'forza-01-shonen-burst-windows-8k-7680x4320.jpg' },
+    ],
+  },
+  {
+    name: 'Night aura',
+    preview: 'forza-02-night-aura-preview.webp',
+    alt: 'Forza Karate desktop background: Forza Karate logo with glowing red aura on a dark night background',
+    sizes: [
+      { label: 'Mac 4K', res: '3840 × 2160', size: '1.5 MB', file: 'forza-02-night-aura-windows-4k-3840x2160.jpg' },
+      { label: 'Mac 5K', res: '5120 × 2880', size: '2.2 MB', file: 'forza-02-night-aura-mac-5k-5120x2880.jpg' },
+      { label: 'Mac 6K', res: '6016 × 3384', size: '2.8 MB', file: 'forza-02-night-aura-mac-6k-6016x3384.jpg' },
+      { label: 'Windows 4K', res: '3840 × 2160', size: '1.5 MB', file: 'forza-02-night-aura-windows-4k-3840x2160.jpg' },
+      { label: 'Windows 8K', res: '7680 × 4320', size: '3.9 MB', file: 'forza-02-night-aura-windows-8k-7680x4320.jpg' },
+    ],
+  },
+  {
+    name: 'Torn panels',
+    preview: 'forza-03-torn-panels-preview.webp',
+    alt: 'Forza Karate desktop background: Forza Karate logo with torn manga comic panels with red ink splashes',
+    sizes: [
+      { label: 'Mac 4K', res: '3840 × 2160', size: '2.0 MB', file: 'forza-03-torn-panels-windows-4k-3840x2160.jpg' },
+      { label: 'Mac 5K', res: '5120 × 2880', size: '3.0 MB', file: 'forza-03-torn-panels-mac-5k-5120x2880.jpg' },
+      { label: 'Mac 6K', res: '6016 × 3384', size: '3.7 MB', file: 'forza-03-torn-panels-mac-6k-6016x3384.jpg' },
+      { label: 'Windows 4K', res: '3840 × 2160', size: '2.0 MB', file: 'forza-03-torn-panels-windows-4k-3840x2160.jpg' },
+      { label: 'Windows 8K', res: '7680 × 4320', size: '5.0 MB', file: 'forza-03-torn-panels-windows-8k-7680x4320.jpg' },
+    ],
+  },
+  {
+    name: 'Sumi-e red sun',
+    preview: 'forza-04-sumie-red-sun-preview.webp',
+    alt: 'Forza Karate desktop background: Forza Karate logo with ink-wash brush strokes under a red sun',
+    sizes: [
+      { label: 'Mac 4K', res: '3840 × 2160', size: '1.2 MB', file: 'forza-04-sumie-red-sun-windows-4k-3840x2160.jpg' },
+      { label: 'Mac 5K', res: '5120 × 2880', size: '1.9 MB', file: 'forza-04-sumie-red-sun-mac-5k-5120x2880.jpg' },
+      { label: 'Mac 6K', res: '6016 × 3384', size: '2.4 MB', file: 'forza-04-sumie-red-sun-mac-6k-6016x3384.jpg' },
+      { label: 'Windows 4K', res: '3840 × 2160', size: '1.2 MB', file: 'forza-04-sumie-red-sun-windows-4k-3840x2160.jpg' },
+      { label: 'Windows 8K', res: '7680 × 4320', size: '3.4 MB', file: 'forza-04-sumie-red-sun-windows-8k-7680x4320.jpg' },
+    ],
+  },
+  {
+    name: 'Kick trail',
+    preview: 'forza-05-kick-trail-preview.webp',
+    alt: 'Forza Karate desktop background: Forza Karate logo with sweeping red and black brush-stroke kick trail',
+    sizes: [
+      { label: 'Mac 4K', res: '3840 × 2160', size: '2.2 MB', file: 'forza-05-kick-trail-windows-4k-3840x2160.jpg' },
+      { label: 'Mac 5K', res: '5120 × 2880', size: '3.3 MB', file: 'forza-05-kick-trail-mac-5k-5120x2880.jpg' },
+      { label: 'Mac 6K', res: '6016 × 3384', size: '4.0 MB', file: 'forza-05-kick-trail-mac-6k-6016x3384.jpg' },
+      { label: 'Windows 4K', res: '3840 × 2160', size: '2.2 MB', file: 'forza-05-kick-trail-windows-4k-3840x2160.jpg' },
+      { label: 'Windows 8K', res: '7680 × 4320', size: '5.4 MB', file: 'forza-05-kick-trail-windows-8k-7680x4320.jpg' },
+    ],
+  },
+  {
+    name: 'Forza manga (original)',
     preview: 'forza-manga-preview.webp',
     alt: 'Forza Karate manga-style desktop background: Forza Karate logo on a red and black comic burst',
     sizes: [
@@ -100,7 +160,7 @@ export default function WallpaperCarousel({ designs = wallpaperDesigns }: { desi
             className="flex-1 rounded-lg border border-black/15 bg-white px-3 py-3 text-[#111111] focus:border-[#dc2626] focus:outline-none focus:ring-2 focus:ring-[#dc2626]/30"
           >
             {design.sizes.map((s, i) => (
-              <option key={s.file} value={i}>{s.label} ({s.res}, {s.size})</option>
+              <option key={s.label} value={i}>{s.label} ({s.res}, {s.size})</option>
             ))}
           </select>
           <a
