@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { FileDown } from 'lucide-react'
+import WallpaperCarousel from '@/components/downloads/WallpaperCarousel'
 
 export const metadata: Metadata = {
   title: 'Downloads',
@@ -31,22 +33,51 @@ export default function DownloadsPage() {
       </section>
 
       <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto space-y-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
           {downloads.map((d) => (
-            <a
-              key={d.href}
-              href={d.href}
-              download
-              className="flex items-start gap-4 rounded-xl border border-black/10 p-6 hover:border-[#dc2626] transition-colors"
-            >
-              <FileDown className="w-6 h-6 text-[#dc2626] shrink-0 mt-1" aria-hidden="true" />
-              <div>
-                <h2 className="text-lg font-semibold text-[#111111]">{d.title}</h2>
-                <p className="text-gray-500 mt-1">{d.description}</p>
-                <p className="text-sm text-gray-400 mt-2">{d.meta}</p>
+            <div key={d.href} className="rounded-2xl border border-black/10 overflow-hidden flex flex-col">
+              <a
+                href={d.href}
+                download
+                aria-label={`Download ${d.title} (${d.meta})`}
+                className="group block bg-white px-6 pt-10 pb-8 sm:pt-12 sm:pb-10"
+              >
+                <div className="relative mx-auto h-56 sm:h-72 w-full max-w-md">
+                  {[
+                    { src: '/downloads/score-sheet-card-2.webp', rot: '-rotate-[8deg] group-hover:-rotate-[13deg] -translate-x-[58%] group-hover:-translate-x-[72%]', z: 'z-0' },
+                    { src: '/downloads/score-sheet-card-3.webp', rot: 'rotate-[8deg] group-hover:rotate-[13deg] -translate-x-[42%] group-hover:-translate-x-[28%]', z: 'z-10' },
+                    { src: '/downloads/score-sheet-card-1.webp', rot: 'rotate-0 -translate-x-1/2 group-hover:-translate-y-3', z: 'z-20' },
+                  ].map((c, i) => (
+                    <Image
+                      key={c.src}
+                      src={c.src}
+                      alt={i === 2 ? 'Forza Karate Club kumite individual score sheet' : ''}
+                      width={453}
+                      height={640}
+                      sizes="(min-width: 640px) 204px, 158px"
+                      className={`absolute left-1/2 top-0 h-56 sm:h-72 w-auto rounded-lg border-[6px] border-white bg-white shadow-[0_10px_25px_rgba(0,0,0,0.18)] transition-transform duration-300 ease-out motion-reduce:transition-none group-hover:shadow-[0_18px_35px_rgba(0,0,0,0.22)] ${c.rot} ${c.z}`}
+                    />
+                  ))}
+                </div>
+              </a>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-6">
+                <div className="flex-1">
+                  <h2 className="text-lg font-semibold text-[#111111]">{d.title}</h2>
+                  <p className="text-gray-500 mt-1">{d.description}</p>
+                  <p className="text-sm text-gray-400 mt-2">{d.meta}</p>
+                </div>
+                <a
+                  href={d.href}
+                  download
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#dc2626] px-5 py-3 font-semibold text-white hover:bg-[#b91c1c] transition-colors"
+                >
+                  <FileDown className="w-5 h-5" aria-hidden="true" />
+                  Download PDF
+                </a>
               </div>
-            </a>
+            </div>
           ))}
+          <WallpaperCarousel />
         </div>
       </section>
     </div>
