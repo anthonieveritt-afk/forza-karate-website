@@ -15,6 +15,7 @@ const navLinks = [
   { href: '/gallery',  label: 'Gallery' },
   { href: '/shop',     label: 'Shop' },
   { href: '/dojo-dash', label: 'Dojo Dash' },
+  { href: '/downloads', label: 'Downloads' },
   { href: '/faq',      label: 'FAQ' },
 ]
 
