@@ -39,7 +39,7 @@ export default function DownloadsPage() {
                 href={d.href}
                 download
                 aria-label={`Download ${d.title} (${d.meta})`}
-                className="group block bg-[radial-gradient(ellipse_at_center,#f5f1ea_0%,#e7e0d4_100%)] px-6 pt-10 pb-8 sm:pt-12 sm:pb-10"
+                className="group block bg-white px-6 pt-10 pb-8 sm:pt-12 sm:pb-10"
               >
                 <div className="relative mx-auto h-56 sm:h-72 w-full max-w-md">
                   {[
