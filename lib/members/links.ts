@@ -11,11 +11,14 @@ export type MembersLink = {
   sidebar?: { href: string; label: string }
 }
 
+/** Licence applications and renewals (Anthoni, 21 Oct 2026). The old /members/licence page is gone. */
+export const APPLY_LICENCE_URL = 'https://forza-karate-website.vercel.app/join/apply-licence'
+
 export const membersCoreLinks: MembersLink[] = [
   { href: '/members', label: '🔐 Members Login', sidebar: { href: '/members/portal', label: 'My portal' } },
   { href: '/members/grading', label: 'Register to Grade' },
   // Syllabus hidden for now (Anthoni, Oct 2026) — re-add: { href: '/members/syllabus', label: 'Syllabus' },
-  { href: '/members/licence', label: 'Renew your licence' },
+  { href: APPLY_LICENCE_URL, label: 'Renew your licence', external: true },
 ]
 
 export const FIKC_URL = 'https://www.fikc.co.uk'

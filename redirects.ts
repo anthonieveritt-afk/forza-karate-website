@@ -18,8 +18,8 @@ const rawLegacyRedirects: Redirect[] = [
   // → /members (1)
   ...to("/members", "/student-portal"),
 
-  // → /members/licence (1)
-  ...to("/members/licence", "/renew-licence"),
+  // → licence application page (1); /members/licence was removed (21 Oct 2026)
+  ...to("https://forza-karate-website.vercel.app/join/apply-licence", "/renew-licence"),
 
   // → /members/grading (1)
   ...to("/members/grading", "/child-grading-registration"),

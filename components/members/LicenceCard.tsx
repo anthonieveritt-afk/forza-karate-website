@@ -1,3 +1,4 @@
+import { APPLY_LICENCE_URL } from '@/lib/members/links'
 import { LicenceEditor } from './LicenceEditor'
 
 function parseDate(d: string | null | undefined): Date | null {
@@ -38,7 +39,7 @@ export function LicenceCard({
   licenceNumber,
   licenceStartDate,
   licenceExpiryDate,
-  renewHref = '/members/licence',
+  renewHref = APPLY_LICENCE_URL,
 }: {
   licenceNumber?: string | null
   licenceStartDate?: string | null
@@ -127,6 +128,8 @@ export function LicenceCard({
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <a
                 href={renewHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center rounded-lg bg-[#dc2626] px-4 py-2 text-sm font-semibold text-white hover:bg-[#b91c1c] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dc2626]/50"
               >
                 Renew licence
