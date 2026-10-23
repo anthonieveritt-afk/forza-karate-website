@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   description:
     'Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster. Come and try it out — book a £10 trial class today.',
   keywords: ['karate', 'karate classes', 'karate for kids', 'kids karate', 'martial arts', 'Rayleigh', 'Upminster', 'Essex', 'Hockley', 'Hornchurch', 'FKA', 'Wado Ryu', 'children karate', 'kids martial arts', 'adult karate'],
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/fkc-favicon-32.png', type: 'image/png', sizes: '32x32' },
+    ],
+    apple: [{ url: '/fkc-favicon-180.png', sizes: '180x180', type: 'image/png' }],
+  },
   openGraph: {
     title: 'Karate Classes in Rayleigh & Upminster, Essex | Forza Karate Club',
     description: 'Karate for kids and adults in Rayleigh and Upminster, Essex. Beginners welcome from age 4. Book a £10 trial class.',
