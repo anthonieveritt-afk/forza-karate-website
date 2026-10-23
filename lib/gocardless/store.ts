@@ -64,25 +64,49 @@ function dec<T>(b64: string): T {
 }
 
 const PREFIX = 'membership-signups'
+type Kind = 'signup' | 'done'
 
-async function save(name: string, obj: unknown) {
-  await put(`${PREFIX}/${name}`, enc(obj), {
+/**
+ * Pathnames:
+ * - Preferred (exact): membership-signups/${brId}.signup | .done
+ * - Legacy (addRandomSuffix: true treated ".signup"/".done" as the extension):
+ *   membership-signups/${brId}-<random>.signup | .done
+ *
+ * load() lists by prefix `${PREFIX}/${brId}` (not `…/${brId}.signup`) so both
+ * forms are found; exact match wins when both exist.
+ */
+async function save(brId: string, kind: Kind, obj: unknown) {
+  await put(`${PREFIX}/${brId}.${kind}`, enc(obj), {
     access: 'public',
-    addRandomSuffix: true,
+    addRandomSuffix: false,
+    allowOverwrite: true,
     contentType: 'text/plain',
   })
 }
 
-async function load<T>(name: string): Promise<T | null> {
-  const { blobs } = await list({ prefix: `${PREFIX}/${name}` })
-  if (!blobs.length) return null
-  const latest = blobs.sort((a, b) => +new Date(b.uploadedAt) - +new Date(a.uploadedAt))[0]
+function matchesKind(pathname: string, brId: string, kind: Kind): boolean {
+  const exact = `${PREFIX}/${brId}.${kind}`
+  if (pathname === exact) return true
+  // Legacy randomised: …/BRQ…-<random>.signup (suffix inserted before "extension")
+  const rest = pathname.startsWith(`${PREFIX}/`) ? pathname.slice(PREFIX.length + 1) : pathname
+  return rest.startsWith(`${brId}-`) && rest.endsWith(`.${kind}`)
+}
+
+async function load<T>(brId: string, kind: Kind): Promise<T | null> {
+  const { blobs } = await list({ prefix: `${PREFIX}/${brId}` })
+  const matches = blobs.filter((b) => matchesKind(b.pathname, brId, kind))
+  if (!matches.length) return null
+  const exactPath = `${PREFIX}/${brId}.${kind}`
+  const exact = matches.find((b) => b.pathname === exactPath)
+  const latest =
+    exact ??
+    matches.sort((a, b) => +new Date(b.uploadedAt) - +new Date(a.uploadedAt))[0]
   const res = await fetch(latest.url, { cache: 'no-store' })
   if (!res.ok) return null
   return dec<T>(await res.text())
 }
 
-export const saveSignup = (brId: string, s: Signup) => save(`${brId}.signup`, s)
-export const loadSignup = (brId: string) => load<Signup>(`${brId}.signup`)
-export const saveOutcome = (brId: string, o: Outcome) => save(`${brId}.done`, o)
-export const loadOutcome = (brId: string) => load<Outcome>(`${brId}.done`)
+export const saveSignup = (brId: string, s: Signup) => save(brId, 'signup', s)
+export const loadSignup = (brId: string) => load<Signup>(brId, 'signup')
+export const saveOutcome = (brId: string, o: Outcome) => save(brId, 'done', o)
+export const loadOutcome = (brId: string) => load<Outcome>(brId, 'done')
