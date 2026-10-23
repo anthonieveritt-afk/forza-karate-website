@@ -39,11 +39,16 @@ export function LicenceCard({
   licenceStartDate,
   licenceExpiryDate,
   renewHref = '/join/apply-licence?reason=renewal',
+  slipId,
+  slipFileName,
 }: {
   licenceNumber?: string | null
   licenceStartDate?: string | null
   licenceExpiryDate?: string | null
   renewHref?: string
+  /** Club Honbu member_licence_slips id when a PDF slip is on file */
+  slipId?: number | null
+  slipFileName?: string | null
 }) {
   const start = parseDate(licenceStartDate)
   const expiry = parseDate(licenceExpiryDate)
@@ -140,6 +145,20 @@ export function LicenceCard({
           )}
         </div>
       </div>
+      {typeof slipId === 'number' && slipId > 0 && (
+        <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-black/5 pt-6">
+          <a
+            href={`/members/licence-slip/${slipId}`}
+            className="inline-flex items-center rounded-lg border border-[#111111]/15 bg-white px-4 py-2 text-sm font-semibold text-[#111111] hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dc2626]/50"
+            download={slipFileName || undefined}
+          >
+            Download licence slip
+          </a>
+          <span className="text-xs text-gray-500">
+            Your EKNGB / FKA licence certificate{slipFileName ? ` (${slipFileName})` : ''}.
+          </span>
+        </div>
+      )}
       <LicenceEditor licenceNumber={licenceNumber} licenceStartDate={licenceStartDate} licenceExpiryDate={licenceExpiryDate} />
     </div>
   )

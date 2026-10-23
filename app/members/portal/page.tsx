@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getMemberPortalData } from '@/app/actions/portal'
+import { getMemberPortalData, getMemberLicenceSlipMeta } from '@/app/actions/portal'
 import MembersArea from '@/components/members/MembersArea'
 import { LicenceCard } from '@/components/members/LicenceCard'
 import { BeltJourney } from '@/components/members/BeltJourney'
@@ -44,6 +44,7 @@ export default async function MembersPortalPage() {
   if (!data) redirect('/members')
 
   const { profile, gradings, attendance, competitions, courses } = data
+  const slip = await getMemberLicenceSlipMeta()
 
   return (
     <div className="min-h-screen bg-[#fafaf9]">
@@ -87,6 +88,8 @@ export default async function MembersPortalPage() {
             licenceNumber={profile.licenceNumber}
             licenceStartDate={profile.licenceStartDate}
             licenceExpiryDate={profile.licenceExpiryDate}
+            slipId={slip?.slipId ?? null}
+            slipFileName={slip?.fileName ?? null}
           />
 
           {/* Belt journey */}

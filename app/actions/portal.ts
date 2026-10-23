@@ -65,3 +65,42 @@ export async function updateMemberLicence(input: LicenceUpdate): Promise<{ ok: t
     return { ok: false, error: 'Could not reach the club system. Please try again.' }
   }
 }
+
+
+export type LicenceSlipMeta = {
+  slipId: number
+  fileName: string | null
+  licenceNumber: string | null
+  startDate: string | null
+  expiryDate: string | null
+  status: string | null
+}
+
+/** Latest Sport:80 / EKNGB slip for the logged-in member (from Club Honbu). */
+export async function getMemberLicenceSlipMeta(): Promise<LicenceSlipMeta | null> {
+  const cookieStore = await cookies()
+  const token = cookieStore.get(COOKIE_NAME)?.value
+  if (!token) return null
+  try {
+    const res = await fetch(`${HONBU_API}/portal/licence`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+      cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
+    })
+    if (!res.ok) return null
+    const data = await res.json()
+    const slipId = data?.current?.slipId
+    if (typeof slipId !== 'number' || !Number.isInteger(slipId) || slipId <= 0) return null
+    const latest = Array.isArray(data?.slips) ? data.slips[0] : null
+    return {
+      slipId,
+      fileName: typeof latest?.fileName === 'string' ? latest.fileName : null,
+      licenceNumber: typeof data?.current?.licenceNumber === 'string' ? data.current.licenceNumber : null,
+      startDate: typeof data?.current?.startDate === 'string' ? data.current.startDate : null,
+      expiryDate: typeof data?.current?.expiryDate === 'string' ? data.current.expiryDate : null,
+      status: typeof data?.current?.status === 'string' ? data.current.status : null,
+    }
+  } catch {
+    return null
+  }
+}
