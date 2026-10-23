@@ -99,7 +99,7 @@ export default function MusicPlayer() {
 
       <div
         className={`
-          fixed bottom-[3.75rem] right-3 sm:bottom-[4.5rem] sm:right-6 z-50
+          fixed bottom-[3.75rem] left-3 sm:bottom-[4.5rem] sm:left-6 z-50
           bg-[#111111] text-white text-xs font-medium
           px-3 py-1.5 rounded-full
           transition-all duration-300 pointer-events-none whitespace-nowrap
@@ -111,7 +111,7 @@ export default function MusicPlayer() {
 
       <div
         className={`
-          fixed bottom-3 right-3 sm:bottom-6 sm:right-6 z-50
+          fixed bottom-3 left-3 sm:bottom-6 sm:left-6 z-50
           flex items-center gap-2
           transition-all duration-500
           ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
