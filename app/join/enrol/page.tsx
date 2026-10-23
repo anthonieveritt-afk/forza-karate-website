@@ -517,6 +517,9 @@ function EnrolWizard() {
             >
               Continue <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
+            <button type="button" onClick={() => { setError(''); setStep(0) }} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2">
+              ← Previous
+            </button>
           </div>
         )}
 
@@ -540,13 +543,15 @@ function EnrolWizard() {
               </div>
             </div>
             <p className="text-xs text-gray-400">
-              The bank account holder name can be a parent or guardian — it doesn't need to match the student's name.
+              {isMinor
+                ? "The bank account holder name can be a parent or guardian — it doesn't need to match the student's name."
+                : "The Direct Debit can be set up in your name, or another account holder if someone else pays for you."}
             </p>
             <Button size="lg" className="w-full" disabled={loading} onClick={startGoCardless}>
               {loading ? 'Redirecting…' : 'Set up Direct Debit with GoCardless →'}
             </Button>
-            <button onClick={() => setStep(1)} className="w-full text-sm text-gray-400 hover:text-[#111111] transition-colors text-center mt-2">
-              ← Back
+            <button type="button" onClick={() => setStep(1)} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2 mt-2">
+              ← Previous
             </button>
           </div>
         )}
@@ -594,8 +599,8 @@ function EnrolWizard() {
               {loading ? 'Redirecting to Stripe…' : 'Pay securely with Stripe →'}
             </Button>
 
-            <button onClick={() => setStep(isMonthly ? 2 : 1)} className="w-full text-sm text-gray-400 hover:text-[#111111] transition-colors text-center mt-2">
-              ← Back
+            <button type="button" onClick={() => setStep(isMonthly ? 2 : 1)} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2 mt-2">
+              ← Previous
             </button>
           </div>
         )}
