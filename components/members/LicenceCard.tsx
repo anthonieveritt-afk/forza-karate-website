@@ -161,7 +161,7 @@ export function LicenceCard({
             <iframe
               title="EKNGB / FKA licence certificate"
               src={`/members/licence-slip/${slipId}`}
-              className="h-[min(70vh,640px)] min-h-[480px] w-full border-0"
+              className="h-[min(35vh,320px)] min-h-[240px] w-full border-0"
             />
           </div>
         </div>
