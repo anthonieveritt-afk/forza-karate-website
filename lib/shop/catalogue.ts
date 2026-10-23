@@ -14,26 +14,32 @@ export const PRICES: Record<string, number> = {
   'forza-tshirt':                2000,
   'blitz-shin-blue':             4500,
   'blitz-gi':                    4000,
-  // WKF competition suits (supplier price + £15)
-  'wkf-koi-kumite-set':           26500,
-  'wkf-sendo-reversible':         16500,
-  'wkf-okami-kumite-white':       10500,
-  'wkf-okami-kumite-red':         10500,
-  'wkf-okami-kumite-blue':        10500,
-  'wkf-niwa-white-belt':          6500,
-  'wkf-arashi-kata-white':        16500,
-  'wkf-arashi-kata-red':          17500,
-  'wkf-arashi-kata-blue':         17500,
-  'wkf-kaji-kata-set':            30000,
+  // WKF competition suits — Best Sport PUBLIC RRP (logged-out guest, 23 Oct 2026) + £15.
+  // Source: https://bestsportuk.co.uk/wkf-karate-suits — no club/instructor/trade price used.
+  // display_regular_price === display_price on every variation (no sale strikethrough).
+  'wkf-koi-kumite-set':           26500, // RRP £250 → £265
+  'wkf-sendo-reversible':         16500, // RRP £150 → £165
+  'wkf-okami-kumite-white':       10500, // RRP £90 → £105
+  'wkf-okami-kumite-red':         10500, // RRP £90 → £105
+  'wkf-okami-kumite-blue':        10500, // RRP £90 → £105
+  'wkf-niwa-white-belt':          6500,  // RRP £50 → £65
+  'wkf-arashi-kata-white':        16500, // RRP £150 → £165
+  'wkf-arashi-kata-red':          17500, // RRP £160 → £175
+  'wkf-arashi-kata-blue':         17500, // RRP £160 → £175
+  'wkf-kaji-kata-set':            30000, // RRP £285 → £300
 }
 
 // Per-size prices (overrides PRICES when a size is selected)
 export const SIZE_PRICES: Record<string, Record<string, number>> = {
-  // WKF competition suits whose price depends on size (supplier price + £15)
+  // Size-dependent Best Sport public RRP + £15 (same guest scrape, 23 Oct 2026)
+  // KOI red/blue: RRP £165 (150–165cm) / £175 (170–190cm) → £180 / £190
   'wkf-koi-kumite-red': { '150cm': 18000, '155cm': 18000, '160cm': 18000, '165cm': 18000, '170cm': 19000, '175cm': 19000, '180cm': 19000, '185cm': 19000, '190cm': 19000 },
   'wkf-koi-kumite-blue': { '150cm': 18000, '155cm': 18000, '160cm': 18000, '165cm': 18000, '170cm': 19000, '175cm': 19000, '180cm': 19000, '185cm': 19000, '190cm': 19000 },
+  // NIJI bundle: RRP £185 (150–155) / £195 (160–200) → £200 / £210
   'wkf-niji-kumite-bundle': { '150cm': 20000, '155cm': 20000, '160cm': 21000, '165cm': 21000, '170cm': 21000, '175cm': 21000, '180cm': 21000, '185cm': 21000, '190cm': 21000, '195cm': 21000, '200cm': 21000 },
+  // NIJI white: RRP £115 (130–170) / £125 (175–190) → £130 / £140
   'wkf-niji-kumite-white': { '130cm': 13000, '150cm': 13000, '160cm': 13000, '165cm': 13000, '170cm': 13000, '175cm': 14000, '180cm': 14000, '185cm': 14000, '190cm': 14000 },
+  // UMI white: RRP £85 (150–165) / £90 (170–195) → £100 / £105
   'wkf-umi-kumite-white': { '150cm': 10000, '155cm': 10000, '160cm': 10000, '165cm': 10000, '170cm': 10500, '175cm': 10500, '180cm': 10500, '185cm': 10500, '190cm': 10500, '195cm': 10500 },
 }
 // ────────────────────────────────────────────────────────────────────────────
