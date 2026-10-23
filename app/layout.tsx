@@ -6,6 +6,7 @@ import LogoTicker from '@/components/layout/LogoTicker'
 import MusicPlayer from '@/components/layout/MusicPlayer'
 import { CartProvider } from '@/lib/cart-context'
 import { SITE_URL, orgSchema } from '@/lib/seo'
+import { Analytics } from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -31,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en-GB">
       <body className="min-h-screen flex flex-col">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
         <CartProvider>
@@ -41,6 +42,7 @@ export default function RootLayout({
           <Footer />
           <MusicPlayer />
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   )

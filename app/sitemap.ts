@@ -11,6 +11,8 @@ const routes = [
   '/dojos',
   '/dojos/rayleigh',
   '/dojos/upminster',
+  '/karate-rayleigh',
+  '/karate-upminster',
   '/gradings',
   '/team',
   '/gallery',
