@@ -50,6 +50,12 @@ const suitCost = (_st: Student) => GI.price // always added, one gi per student
 const licenceCost = (st: Student) => licenceFeePence('first_time', st.dateOfBirth)
 const ukDate = (iso: string) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
+/** Known under-18 only when DOB parses and age is under 18. Empty DOB is not treated as a child. */
+function knownUnder18(dob: string): boolean {
+  const a = ageOn(dob)
+  return a !== null && a < LICENCE_ADULT_AGE
+}
+
 export default function MembershipSignup() {
   const router = useRouter()
   const [planChoice, setPlanChoice] = useState<PlanKey | null>(null)
@@ -64,20 +70,19 @@ export default function MembershipSignup() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [scriptReady, setScriptReady] = useState(false)
+  // Two steps only: 1 = all signup details, 2 = Direct Debit summary + GoCardless.
   const [step, setStep] = useState(1)
-  // Adult solo = one student aged 18+: short path, never re-ask name.
+  const totalSteps = 2
+
+  // Adult solo = one student who is not known under-18 (empty DOB → optimistic adult path).
   // Account-holder name is derived from the student (single source of truth).
-  const allStudentsAdult = students.every(st => {
-    const a = ageOn(st.dateOfBirth)
-    return a !== null && a >= LICENCE_ADULT_AGE
-  })
-  const adultSolo = students.length === 1 && allStudentsAdult
-  const totalSteps = adultSolo ? 3 : 4
-  const photoConsentLabel = allStudentsAdult
-    ? (students.length > 1
+  const adultSolo = students.length === 1 && !knownUnder18(students[0].dateOfBirth)
+  const anyKnownChild = students.some(st => knownUnder18(st.dateOfBirth))
+  const photoConsentLabel = anyKnownChild
+    ? "I'm happy for photos of the student(s) to appear on club social media."
+    : (students.length > 1
         ? "I'm happy for photos of us to appear on club social media."
         : "I'm happy for photos of me to appear on club social media.")
-    : "I'm happy for photos of the student(s) to appear on club social media."
 
   /** Map student identity → account-holder for GoCardless / Club Honbu (adults: same person). */
   function accountHolderFromStudents() {
@@ -104,6 +109,25 @@ export default function MembershipSignup() {
 
   function contactIncomplete() {
     return !parent.email || !parent.phone || !parent.address || !parent.city || !parent.postCode || !emergency.name || !emergency.phone
+  }
+
+  function validateSignupStep(): string | null {
+    if (!dojo || !classTime || !trialDate) return 'Please choose a dojo, class and trial date.'
+    if (students.some(st => !st.firstName || !st.surname || !st.dateOfBirth || !st.suitSize)) {
+      return 'Please complete each student\'s name, date of birth and suit size.'
+    }
+    if (students.some(st => !GI.sizes.includes(st.suitSize))) {
+      return 'Please choose a suit size (by height) for each student. Every new member needs an Official Forza Karate Club Gi (£40).'
+    }
+    if (adultSolo) {
+      if (contactIncomplete()) return 'Please complete your contact and emergency details.'
+    } else {
+      if (!parent.givenName || !parent.familyName || contactIncomplete()) {
+        return 'Please complete the parent or guardian contact and emergency details.'
+      }
+    }
+    if (!terms) return 'Please agree to the club rules and privacy policy.'
+    return null
   }
 
   async function submit(e: React.FormEvent) {
@@ -138,11 +162,8 @@ export default function MembershipSignup() {
     }
   }
 
-  const showDd = adultSolo ? step >= 3 : step === 4
-  const showAccount = !adultSolo && step === 3
-  const showDetails = step === 2
-  const showMembership = step === 1
-  const progressStep = Math.min(step, totalSteps)
+  const showSignup = step === 1
+  const showDd = step === 2
 
   const contactFields = (
     <div className="grid sm:grid-cols-2 gap-4">
@@ -171,7 +192,7 @@ export default function MembershipSignup() {
           <p className="text-xs font-semibold uppercase tracking-widest text-[#dc2626] mb-2">Forza Karate Club</p>
           <h1 className="text-3xl font-bold text-[#111111]">Become a member</h1>
           <p className="text-gray-500 mt-2 text-sm leading-relaxed">
-            Enjoyed your trial class? Membership, karate suit, FKA licence and your monthly Direct Debit are set up here in a few short steps,
+            Enjoyed your trial class? Membership, karate suit, FKA licence and your monthly Direct Debit are set up here in two steps,
             finishing in GoCardless&apos;s secure window. Membership starts the week after your trial.
           </p>
         </header>
@@ -179,105 +200,113 @@ export default function MembershipSignup() {
         <div className="space-y-2" aria-label="Progress">
           <div className="flex items-center gap-2">
             {Array.from({ length: totalSteps }, (_, i) => i + 1).map(n => (
-              <span key={n} className={`flex-1 h-1 rounded-full ${progressStep >= n ? 'bg-[#dc2626]' : 'bg-black/10'}`} />
+              <span key={n} className={`flex-1 h-1 rounded-full ${step >= n ? 'bg-[#dc2626]' : 'bg-black/10'}`} />
             ))}
           </div>
-          <p className="text-xs text-gray-400">Step {progressStep} of {totalSteps}</p>
+          <p className="text-xs text-gray-400">Step {step} of {totalSteps}</p>
         </div>
 
-        {showMembership && (
-        <section className="space-y-4">
-          <h2 className="text-lg font-bold">1. Membership</h2>
-          <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            {(Object.keys(PLANS) as PlanKey[]).map(k => (
-              <button type="button" key={k} onClick={() => choosePlan(k)} aria-pressed={plan === k}
-                className={`text-left rounded-2xl border-2 p-3 sm:p-4 transition ${plan === k ? 'border-[#dc2626] bg-red-50' : 'border-black/10 hover:border-black/25'}`}>
-                <div className="font-semibold text-sm">{PLANS[k].label}</div>
-                <div className="text-xl sm:text-2xl font-bold">{pounds(PLANS[k].price)}<span className="text-xs sm:text-sm font-normal text-gray-500">/mo</span></div>
-                <div className="text-xs text-gray-500">{PLANS[k].desc}</div>
-              </button>
+        {showSignup && (
+        <section className="space-y-8">
+          <h2 className="text-lg font-bold">1. Your signup</h2>
+
+          <div className="space-y-4">
+            <h3 className="text-base font-semibold text-[#111111]">Membership</h3>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              {(Object.keys(PLANS) as PlanKey[]).map(k => (
+                <button type="button" key={k} onClick={() => choosePlan(k)} aria-pressed={plan === k}
+                  className={`text-left rounded-2xl border-2 p-3 sm:p-4 transition ${plan === k ? 'border-[#dc2626] bg-red-50' : 'border-black/10 hover:border-black/25'}`}>
+                  <div className="font-semibold text-sm">{PLANS[k].label}</div>
+                  <div className="text-xl sm:text-2xl font-bold">{pounds(PLANS[k].price)}<span className="text-xs sm:text-sm font-normal text-gray-500">/mo</span></div>
+                  <div className="text-xs text-gray-500">{PLANS[k].desc}</div>
+                </button>
+              ))}
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className={lbl}>Dojo</label>
+                <select required className={input} value={dojo} onChange={e => { setDojo(e.target.value); setClassTime('') }}>
+                  <option value="">Choose a dojo</option>
+                  <option value="rayleigh">Rayleigh</option>
+                  <option value="upminster">Upminster</option>
+                </select>
+              </div>
+              <div>
+                <label className={lbl}>Class</label>
+                <select required className={input} value={classTime} onChange={e => setClassTime(e.target.value)} disabled={!dojo}>
+                  <option value="">Choose a class</option>
+                  {(CLASSES[dojo] ?? []).map(c => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={lbl}>Date of trial class</label>
+                <DateInput required className={input} value={trialDate} onChange={e => setTrialDate(e.target.value)} />
+              </div>
+              <div className="flex items-end text-sm text-gray-600 pb-3">
+                {trialDate ? <>Membership starts <strong className="ml-1">{ukDate(membershipStart(trialDate))}</strong></> : 'Membership starts the week after your trial.'}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-base font-semibold text-[#111111]">{adultSolo ? 'About you' : 'Student details'}</h3>
+            {students.map((st, i) => (
+              <div key={i} className="rounded-2xl border border-black/10 p-4 space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-sm">{adultSolo ? 'Your details' : `Student ${i + 1}`}</span>
+                  {i > 0 && <button type="button" onClick={() => setStudents(s => s.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>}
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div><label className={lbl}>First name</label><input required className={input} value={st.firstName} onChange={e => setStudent(i, 'firstName', e.target.value)} /></div>
+                  <div><label className={lbl}>Surname</label><input required className={input} value={st.surname} onChange={e => setStudent(i, 'surname', e.target.value)} /></div>
+                  <div><label className={lbl}>Date of birth</label><DateInput required className={input} value={st.dateOfBirth} onChange={e => setStudent(i, 'dateOfBirth', e.target.value)} /></div>
+                  <div><label className={lbl}>Current belt</label>
+                    <select className={input} value={st.belt} onChange={e => setStudent(i, 'belt', e.target.value)}>{BELTS.map(b => <option key={b}>{b}</option>)}</select></div>
+                </div>
+                <div><label className={lbl}>Medical conditions or allergies (optional)</label><input className={input} value={st.medical} onChange={e => setStudent(i, 'medical', e.target.value)} placeholder="Leave blank if none" /></div>
+                <p className="flex items-center gap-2 text-xs font-semibold text-[#111111] bg-[#fafaf9] border-l-4 border-[#dc2626] rounded-r-lg px-3 py-2">Only official Forza Karate Club uniforms may be worn in class.</p>
+                <div className="grid sm:grid-cols-2 gap-4 pt-2 border-t border-black/5">
+                  <div><label className={lbl}>Karate suit</label>
+                    <p className="text-xs text-gray-500 -mt-0.5 mb-1.5">All members need an official Forza Karate suit (£40)</p>
+                    <div className={`${input} flex items-center justify-between bg-[#fafaf9]`} aria-live="polite">
+                      <span>{GI.name}</span><strong>{pounds(GI.price)}</strong>
+                    </div></div>
+                  <div><label className={lbl} htmlFor={`suit-size-${i}`}>Suit size (by height) <span className="text-[#dc2626]">*</span></label>
+                    <select id={`suit-size-${i}`} className={input} required value={st.suitSize} onChange={e => setStudent(i, 'suitSize', e.target.value)}>
+                      <option value="">Choose a size</option>
+                      {GI.sizes.map(z => <option key={z} value={z}>{/^\d+cm$/.test(z) ? `${z.replace('cm', '')} cm tall` : z}</option>)}
+                    </select>
+                    </div>
+                  <div className="sm:col-span-2 -mt-2"><HeightGuide /></div>
+                  <div className="sm:col-span-2"><div className={lbl}>FKA licence &amp; insurance (required)</div>
+                    <p className="text-sm text-gray-700 mt-1">Licence: {LICENCE_TYPES.first_time}{st.dateOfBirth ? <> · <strong>{pounds(licenceCost(st))}</strong></> : <span className="text-gray-400"> (price shows once date of birth is entered)</span>}</p>
+                    <p className="text-xs text-gray-400 mt-1">All students must have a valid and up-to-date licence to train, grade, attend courses and competitions. It is the student/parent&apos;s responsibility to make sure the licence is in date at all times.</p></div>
+                </div>
+              </div>
             ))}
+            {students.length < 6 && (
+              <button type="button" onClick={() => setStudents(s => [...s, blank()])} className="flex items-center gap-1.5 text-sm font-medium text-[#dc2626]">
+                <Plus className="h-4 w-4" /> Add another student
+              </button>
+            )}
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className={lbl}>Dojo</label>
-              <select required className={input} value={dojo} onChange={e => { setDojo(e.target.value); setClassTime('') }}>
-                <option value="">Choose a dojo</option>
-                <option value="rayleigh">Rayleigh</option>
-                <option value="upminster">Upminster</option>
-              </select>
-            </div>
-            <div>
-              <label className={lbl}>Class</label>
-              <select required className={input} value={classTime} onChange={e => setClassTime(e.target.value)} disabled={!dojo}>
-                <option value="">Choose a class</option>
-                {(CLASSES[dojo] ?? []).map(c => <option key={c}>{c}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className={lbl}>Date of trial class</label>
-              <DateInput required className={input} value={trialDate} onChange={e => setTrialDate(e.target.value)} />
-            </div>
-            <div className="flex items-end text-sm text-gray-600 pb-3">
-              {trialDate ? <>Membership starts <strong className="ml-1">{ukDate(membershipStart(trialDate))}</strong></> : 'Membership starts the week after your trial.'}
-            </div>
-          </div>
-          <Button type="button" size="lg" className="w-full" onClick={() => {
-            if (!dojo || !classTime || !trialDate) { setError('Please choose a dojo, class and trial date.'); return }
-            setError(''); setStep(2)
-          }}>Continue</Button>
-          {error && step === 1 && <p className="text-sm text-red-600">{error}</p>}
-        </section>
-        )}
 
-        {showDetails && (
-        <section className="space-y-4">
-          <h2 className="text-lg font-bold">{adultSolo ? '2. Your details' : '2. Student details'}</h2>
-          {students.map((st, i) => (
-            <div key={i} className="rounded-2xl border border-black/10 p-4 space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="font-semibold text-sm">{adultSolo ? 'About you' : `Student ${i + 1}`}</span>
-                {i > 0 && <button type="button" onClick={() => setStudents(s => s.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>}
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div><label className={lbl}>First name</label><input required className={input} value={st.firstName} onChange={e => setStudent(i, 'firstName', e.target.value)} /></div>
-                <div><label className={lbl}>Surname</label><input required className={input} value={st.surname} onChange={e => setStudent(i, 'surname', e.target.value)} /></div>
-                <div><label className={lbl}>Date of birth</label><DateInput required className={input} value={st.dateOfBirth} onChange={e => setStudent(i, 'dateOfBirth', e.target.value)} /></div>
-                <div><label className={lbl}>Current belt</label>
-                  <select className={input} value={st.belt} onChange={e => setStudent(i, 'belt', e.target.value)}>{BELTS.map(b => <option key={b}>{b}</option>)}</select></div>
-              </div>
-              <div><label className={lbl}>Medical conditions or allergies (optional)</label><input className={input} value={st.medical} onChange={e => setStudent(i, 'medical', e.target.value)} placeholder="Leave blank if none" /></div>
-              <p className="flex items-center gap-2 text-xs font-semibold text-[#111111] bg-[#fafaf9] border-l-4 border-[#dc2626] rounded-r-lg px-3 py-2">Only official Forza Karate Club uniforms may be worn in class.</p>
-              <div className="grid sm:grid-cols-2 gap-4 pt-2 border-t border-black/5">
-                <div><label className={lbl}>Karate suit</label>
-                  <p className="text-xs text-gray-500 -mt-0.5 mb-1.5">All members need an official Forza Karate suit (£40)</p>
-                  <div className={`${input} flex items-center justify-between bg-[#fafaf9]`} aria-live="polite">
-                    <span>{GI.name}</span><strong>{pounds(GI.price)}</strong>
-                  </div></div>
-                <div><label className={lbl} htmlFor={`suit-size-${i}`}>Suit size (by height) <span className="text-[#dc2626]">*</span></label>
-                  <select id={`suit-size-${i}`} className={input} required value={st.suitSize} onChange={e => setStudent(i, 'suitSize', e.target.value)}>
-                    <option value="">Choose a size</option>
-                    {GI.sizes.map(z => <option key={z} value={z}>{/^\d+cm$/.test(z) ? `${z.replace('cm', '')} cm tall` : z}</option>)}
-                  </select>
-                  </div>
-                <div className="sm:col-span-2 -mt-2"><HeightGuide /></div>
-                <div className="sm:col-span-2"><div className={lbl}>FKA licence &amp; insurance (required)</div>
-                  <p className="text-sm text-gray-700 mt-1">Licence: {LICENCE_TYPES.first_time}{st.dateOfBirth ? <> · <strong>{pounds(licenceCost(st))}</strong></> : <span className="text-gray-400"> (price shows once date of birth is entered)</span>}</p>
-                  <p className="text-xs text-gray-400 mt-1">All students must have a valid and up-to-date licence to train, grade, attend courses and competitions. It is the student/parent&apos;s responsibility to make sure the licence is in date at all times.</p></div>
-              </div>
-            </div>
-          ))}
-          {students.length < 6 && !adultSolo && (
-            <button type="button" onClick={() => setStudents(s => [...s, blank()])} className="flex items-center gap-1.5 text-sm font-medium text-[#dc2626]">
-              <Plus className="h-4 w-4" /> Add another student
-            </button>
-          )}
-
-          {/* Adult solo: contact + consent on the same step — names are not asked again */}
-          {adultSolo && (
+          {/* Adult solo: contact + consent once — name is the student name above, never re-asked */}
+          {adultSolo ? (
             <div className="space-y-4 pt-2 border-t border-black/8">
-              <h3 className="text-base font-bold">Contact &amp; Direct Debit account</h3>
+              <h3 className="text-base font-semibold text-[#111111]">Contact &amp; Direct Debit account</h3>
               <p className="text-xs text-gray-500">Your name above is used for membership and as the Direct Debit account holder — we won&apos;t ask for it again.</p>
+              {contactFields}
+              {consentFields}
+            </div>
+          ) : (
+            <div className="space-y-4 pt-2 border-t border-black/8">
+              <h3 className="text-base font-semibold text-[#111111]">Parent or guardian (account holder)</h3>
+              <p className="text-xs text-gray-500">This person is the Direct Debit account holder. Student names are already above.</p>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div><label className={lbl}>First name</label><input required className={input} value={parent.givenName} onChange={e => setParent({ ...parent, givenName: e.target.value })} /></div>
+                <div><label className={lbl}>Surname</label><input required className={input} value={parent.familyName} onChange={e => setParent({ ...parent, familyName: e.target.value })} /></div>
+              </div>
               {contactFields}
               {consentFields}
             </div>
@@ -285,53 +314,18 @@ export default function MembershipSignup() {
 
           <div className="flex flex-col gap-2">
             <Button type="button" size="lg" className="w-full" onClick={() => {
-              if (students.some(st => !st.firstName || !st.surname || !st.dateOfBirth || !st.suitSize)) {
-                setError('Please complete each student\'s name, date of birth and suit size.'); return
-              }
-              if (adultSolo) {
-                if (contactIncomplete()) { setError('Please complete your contact and emergency details.'); return }
-                if (!terms) { setError('Please agree to the club rules and privacy policy.'); return }
-                setError(''); setStep(3); return
-              }
-              setError(''); setStep(3)
-            }}>Continue</Button>
-            <button type="button" onClick={() => { setError(''); setStep(1) }} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2">
-              ← Previous
-            </button>
-            {error && step === 2 && <p className="text-sm text-red-600">{error}</p>}
-          </div>
-        </section>
-        )}
-
-        {showAccount && (
-        <section className="space-y-4">
-          <h2 className="text-lg font-bold">{allStudentsAdult ? '3. Your details (account holder)' : '3. Parent or guardian (account holder)'}</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {/* Multi-adult or child: collect account-holder name once here (student names already captured on step 2) */}
-            <div><label className={lbl}>First name</label><input required className={input} value={parent.givenName} onChange={e => setParent({ ...parent, givenName: e.target.value })} /></div>
-            <div><label className={lbl}>Surname</label><input required className={input} value={parent.familyName} onChange={e => setParent({ ...parent, familyName: e.target.value })} /></div>
-          </div>
-          {contactFields}
-          {consentFields}
-          <div className="flex flex-col gap-2">
-            <Button type="button" size="lg" className="w-full" onClick={() => {
-              if (!parent.givenName || !parent.familyName || contactIncomplete()) {
-                setError('Please complete your contact and emergency details.'); return
-              }
-              if (!terms) { setError('Please agree to the club rules and privacy policy.'); return }
-              setError(''); setStep(4)
-            }}>Continue</Button>
-            <button type="button" onClick={() => { setError(''); setStep(2) }} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2">
-              ← Previous
-            </button>
-            {error && step === 3 && <p className="text-sm text-red-600">{error}</p>}
+              const msg = validateSignupStep()
+              if (msg) { setError(msg); return }
+              setError(''); setStep(2)
+            }}>Continue to Direct Debit</Button>
+            {error && step === 1 && <p className="text-sm text-red-600">{error}</p>}
           </div>
         </section>
         )}
 
         {showDd && (
         <section className="space-y-4">
-          <h2 className="text-lg font-bold">{adultSolo ? '3. Direct Debit' : '4. Direct Debit'}</h2>
+          <h2 className="text-lg font-bold">2. Direct Debit</h2>
           <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-2">
             {(() => {
               const fee = PLANS[plan].price
@@ -361,7 +355,7 @@ export default function MembershipSignup() {
           <Button type="submit" size="lg" className="w-full" disabled={busy}>
             {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opening secure form…</> : 'Continue to set up Direct Debit'}
           </Button>
-          <button type="button" onClick={() => { setError(''); setStep(adultSolo ? 2 : 3) }} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2" disabled={busy}>
+          <button type="button" onClick={() => { setError(''); setStep(1) }} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2" disabled={busy}>
             ← Previous
           </button>
           {!scriptReady && <p className="text-xs text-gray-400 text-center">Loading secure payment form…</p>}
