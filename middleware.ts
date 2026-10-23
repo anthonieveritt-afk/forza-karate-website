@@ -15,12 +15,6 @@ export async function middleware(request: NextRequest) {
     )
   }
 
-  // Old renew hub — send straight to the renewal form (before members login gate).
-  const clean = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname
-  if (clean === '/members/licence') {
-    return NextResponse.redirect(new URL('/join/apply-licence?reason=renewal', request.url), 308)
-  }
-
   // Event registration moved into the members area (members only, Oct 2026).
   // Old links (/register/...) keep working: they go to the new page, which asks for login.
   const legacy = legacyEventPaths[pathname.replace(/\/+$/, '')]

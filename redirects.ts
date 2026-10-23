@@ -18,8 +18,8 @@ const rawLegacyRedirects: Redirect[] = [
   // → /members (1)
   ...to("/members", "/student-portal"),
 
-  // → renewal form (old members licence hub + WP renew URL)
-  ...to("/join/apply-licence?reason=renewal", "/renew-licence", "/members/licence"),
+  // → members renew form (WP renew URL; /members/licence is a real page again)
+  ...to("/members/licence", "/renew-licence"),
 
   // → /members/grading (1)
   ...to("/members/grading", "/child-grading-registration"),

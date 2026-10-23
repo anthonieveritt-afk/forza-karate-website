@@ -1,6 +1,28 @@
-import { redirect } from 'next/navigation'
+import type { Metadata } from 'next'
+import { Suspense } from 'react'
+import MembersArea from '@/components/members/MembersArea'
+import { ApplyLicenceForm } from '@/components/licence/ApplyLicenceForm'
+import { requireMemberPage } from '@/lib/members/require'
 
-/** Old members “Renew your licence” hub (licence + Direct Debit cards). Removed — renew goes straight to the form. */
-export default function MembersLicenceRedirect() {
-  redirect('/join/apply-licence?reason=renewal')
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+export const metadata: Metadata = {
+  title: 'Renew Your Licence — Members',
+  description: 'Renew your FKA licence and insurance as a Forza Karate Club member.',
+  robots: { index: false, follow: false },
+}
+
+export default async function MembersLicencePage() {
+  await requireMemberPage('/members/licence')
+
+  return (
+    <div className="min-h-screen bg-[#fafaf9]">
+      <MembersArea>
+        <Suspense fallback={<p className="text-sm text-gray-500">Loading licence form…</p>}>
+          <ApplyLicenceForm forceRenewal embedded />
+        </Suspense>
+      </MembersArea>
+    </div>
+  )
 }

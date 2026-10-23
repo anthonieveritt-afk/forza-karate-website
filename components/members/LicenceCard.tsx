@@ -38,7 +38,7 @@ export function LicenceCard({
   licenceNumber,
   licenceStartDate,
   licenceExpiryDate,
-  renewHref = '/join/apply-licence?reason=renewal',
+  renewHref = '/members/licence',
   slipId,
   slipFileName,
 }: {
