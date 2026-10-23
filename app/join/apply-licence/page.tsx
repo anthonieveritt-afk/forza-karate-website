@@ -21,6 +21,8 @@ function ApplyLicenceForm() {
   const searchParams = useSearchParams()
   const returnedFromPayment = searchParams.get('paid') === 'true'
   const sessionId = searchParams.get('session_id')
+  // Members “Renew your licence” lands here with ?reason=renewal — lock to renewal only.
+  const renewMode = searchParams.get('reason') === 'renewal'
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -63,7 +65,7 @@ function ApplyLicenceForm() {
     email: '',
     phone: '',
     belt: '',
-    reason: 'first_time',
+    reason: renewMode ? 'renewal' : 'first_time',
   })
 
   const age = calculateAge(form.dateOfBirth)
@@ -74,8 +76,14 @@ function ApplyLicenceForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
+    if (renewMode && name === 'reason') return
+    setForm(prev => ({ ...prev, [name]: value, ...(renewMode ? { reason: 'renewal' as const } : {}) }))
   }
+
+  useEffect(() => {
+    if (!renewMode) return
+    setForm(prev => (prev.reason === 'renewal' ? prev : { ...prev, reason: 'renewal' }))
+  }, [renewMode])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -91,8 +99,8 @@ function ApplyLicenceForm() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             ...form,
-            successUrl: `${origin}/join/apply-licence?paid=true&session_id={CHECKOUT_SESSION_ID}`,
-            cancelUrl: `${origin}/join/apply-licence`,
+            successUrl: `${origin}/join/apply-licence?paid=true&session_id={CHECKOUT_SESSION_ID}${renewMode ? '&reason=renewal' : ''}`,
+            cancelUrl: `${origin}/join/apply-licence${renewMode ? '?reason=renewal' : ''}`,
           }),
         })
 
@@ -198,8 +206,12 @@ function ApplyLicenceForm() {
   return (
     <div className="min-h-screen bg-white px-4 py-12">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-[#111111] mb-2">Apply for Your Licence & Insurance</h1>
-        <p className="text-gray-600 mb-8">Complete this form to apply for your official karate licence and insurance coverage.</p>
+        <h1 className="text-4xl font-bold text-[#111111] mb-2">{renewMode ? 'Renew Your Licence & Insurance' : 'Apply for Your Licence & Insurance'}</h1>
+        <p className="text-gray-600 mb-8">
+          {renewMode
+            ? 'Renew your FKA licence and insurance for the new season.'
+            : 'Complete this form to apply for your official karate licence and insurance coverage.'}
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
@@ -289,19 +301,29 @@ function ApplyLicenceForm() {
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-[#111111] mb-2">Application Type *</label>
-            <select
-              name="reason"
-              value={form.reason}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#dc2626]"
-            >
-              <option value="first_time">First Time Licence (new member)</option>
-              <option value="renewal">Licence Renewal</option>
-              <option value="upgrade">Grading Certificate / Belt Upgrade</option>
-            </select>
-          </div>
+          {renewMode ? (
+            <div>
+              <label className="block text-sm font-semibold text-[#111111] mb-2">Application Type</label>
+              <p className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-[#111111] font-medium">
+                Licence Renewal
+              </p>
+              <input type="hidden" name="reason" value="renewal" />
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-semibold text-[#111111] mb-2">Application Type *</label>
+              <select
+                name="reason"
+                value={form.reason}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#dc2626]"
+              >
+                <option value="first_time">First Time Licence (new member)</option>
+                <option value="renewal">Licence Renewal</option>
+                <option value="upgrade">Grading Certificate / Belt Upgrade</option>
+              </select>
+            </div>
+          )}
 
           {/* Renewal fee badge — shown when renewal is selected and DOB is entered */}
           {isRenewal && (
