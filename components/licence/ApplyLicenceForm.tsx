@@ -1,0 +1,395 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Button } from '@/components/ui/Button'
+import { AlertCircle, CheckCircle, Loader2, BadgePoundSterling } from 'lucide-react'
+import { DateInput } from '@/components/DateInput'
+import { LICENCE_ADULT_AGE, licenceFeeForAge, pounds } from '@/lib/gocardless/plans'
+
+const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
+
+function calculateAge(dob: string): number | null {
+  if (!dob) return null
+  const d = new Date(dob)
+  if (isNaN(d.getTime())) return null
+  return Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25))
+}
+
+export type ApplyLicenceFormProps = {
+  /** Lock Application Type to Licence Renewal (members renew flow). */
+  forceRenewal?: boolean
+  /** Render inside MembersArea — no full-page chrome. */
+  embedded?: boolean
+}
+
+export function ApplyLicenceForm({ forceRenewal = false, embedded = false }: ApplyLicenceFormProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const returnedFromPayment = searchParams.get('paid') === 'true'
+  const sessionId = searchParams.get('session_id')
+  const renewMode = forceRenewal || searchParams.get('reason') === 'renewal'
+  const formBasePath = embedded || forceRenewal ? '/members/licence' : '/join/apply-licence'
+
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(returnedFromPayment)
+  // Only say "paid" once Club Honbu has confirmed the Stripe session is paid.
+  type PayCheck = 'checking' | 'paid' | 'unpaid' | 'pending'
+  const [payCheck, setPayCheck] = useState<PayCheck>('checking')
+  const paid = returnedFromPayment && payCheck === 'paid'
+
+  useEffect(() => {
+    if (!returnedFromPayment) return
+    if (!sessionId || !/^cs_(test|live)_[A-Za-z0-9]+$/.test(sessionId)) { setPayCheck('unpaid'); return }
+    let cancelled = false
+    ;(async () => {
+      for (let attempt = 0; attempt < 3 && !cancelled; attempt++) {
+        try {
+          const r = await fetch(`${HONBU_API}/licence-applications/stripe/verify?session_id=${encodeURIComponent(sessionId)}`)
+          if (r.status === 404 || r.status === 400) {
+            const d = await r.json().catch(() => ({}))
+            // 404 without a JSON body = verify endpoint not deployed yet; don't claim either way.
+            if (!cancelled) setPayCheck(d && 'paid' in d ? 'unpaid' : 'pending')
+            return
+          }
+          if (r.ok) {
+            const d = await r.json()
+            if (d.paid) { if (!cancelled) setPayCheck('paid'); return }
+          }
+        } catch { /* retry */ }
+        await new Promise(res => setTimeout(res, 2000))
+      }
+      if (!cancelled) setPayCheck('pending')
+    })()
+    return () => { cancelled = true }
+  }, [returnedFromPayment, sessionId])
+
+  const [form, setForm] = useState({
+    firstName: '',
+    surname: '',
+    dateOfBirth: '',
+    email: '',
+    phone: '',
+    belt: '',
+    reason: renewMode ? 'renewal' : 'first_time',
+  })
+
+  const age = calculateAge(form.dateOfBirth)
+  // First licence and renewal are both paid, same price; grading certificate/upgrade is not.
+  const isRenewal = form.reason === 'renewal' || form.reason === 'first_time'
+  const renewalFee = age !== null ? pounds(licenceFeeForAge(age)) : null
+  const renewalLabel = age !== null ? (age < LICENCE_ADULT_AGE ? `Under ${LICENCE_ADULT_AGE}` : `Adult (${LICENCE_ADULT_AGE}+)`) : null
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    if (renewMode && name === 'reason') return
+    setForm(prev => ({ ...prev, [name]: value, ...(renewMode ? { reason: 'renewal' as const } : {}) }))
+  }
+
+  useEffect(() => {
+    if (!renewMode) return
+    setForm(prev => (prev.reason === 'renewal' ? prev : { ...prev, reason: 'renewal' }))
+  }, [renewMode])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    try {
+      if (isRenewal) {
+        // First licence or renewal: paid, via Stripe checkout
+        const origin = window.location.origin
+        const response = await fetch(`${HONBU_API}/licence-applications/stripe/checkout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...form,
+            successUrl: `${origin}${formBasePath}?paid=true&session_id={CHECKOUT_SESSION_ID}${!forceRenewal && renewMode ? '&reason=renewal' : ''}`,
+            cancelUrl: `${origin}${formBasePath}${!forceRenewal && renewMode ? '?reason=renewal' : ''}`,
+          }),
+        })
+
+        const data = await response.json()
+
+        if (response.ok && data.checkoutUrl) {
+          window.location.href = data.checkoutUrl
+          return
+        } else {
+          setError(data.error || 'Failed to start payment. Please try again.')
+        }
+      } else {
+        // Grading certificate / belt upgrade: no payment needed
+        const response = await fetch(`${HONBU_API}/licence-applications`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: form.firstName,
+            surname: form.surname,
+            dateOfBirth: form.dateOfBirth,
+            email: form.email,
+            phone: form.phone,
+            beltLevel: form.belt,
+            applicationType: form.reason,
+          }),
+        })
+
+        const data = await response.json()
+
+        if (response.ok) {
+          setSuccess(true)
+          setTimeout(() => router.push('/'), 3000)
+        } else {
+          setError(data.error || 'Failed to submit application')
+        }
+      }
+    } catch (err) {
+      console.error('Error submitting licence application:', err)
+      setError('An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (success && returnedFromPayment && payCheck !== 'paid') {
+    return (
+      <div className={embedded ? "py-6" : "min-h-screen bg-white flex items-center justify-center px-4"}>
+        <div className="max-w-md w-full text-center">
+          {payCheck === 'checking' ? (
+            <>
+              <Loader2 className="h-12 w-12 text-gray-400 mx-auto mb-6 animate-spin" />
+              <h1 className="text-2xl font-bold text-[#111111] mb-3">Checking your payment…</h1>
+            </>
+          ) : payCheck === 'unpaid' ? (
+            <>
+              <AlertCircle className="h-14 w-14 text-amber-500 mx-auto mb-6" />
+              <h1 className="text-2xl font-bold text-[#111111] mb-3">We couldn&apos;t confirm your payment</h1>
+              <p className="text-gray-500 leading-relaxed">
+                If you completed payment, please contact us and we&apos;ll check it for you. Please don&apos;t pay again before we&apos;ve checked.
+              </p>
+              <Button className="mt-8" onClick={() => router.push(formBasePath)}>Back to the licence form</Button>
+            </>
+          ) : (
+            <>
+              <CheckCircle className="h-14 w-14 text-gray-400 mx-auto mb-6" />
+              <h1 className="text-2xl font-bold text-[#111111] mb-3">Thanks, we&apos;re confirming your payment</h1>
+              <p className="text-gray-500 leading-relaxed">
+                Stripe has sent you back to us. We&apos;ll confirm your licence once the payment is checked. Please don&apos;t pay again.
+              </p>
+              <Button className="mt-8" onClick={() => router.push('/')}>Back to home</Button>
+            </>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  if (success) {
+    return (
+      <div className={embedded ? "py-6" : "min-h-screen bg-white flex items-center justify-center px-4"}>
+        <div className="max-w-md w-full text-center">
+          <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
+          <h1 className="text-3xl font-bold text-[#111111] mb-3">
+            {paid ? 'Licence paid! 🎖️' : 'Application Submitted! 🎖️'}
+          </h1>
+          <p className="text-gray-500 leading-relaxed">
+            {paid
+              ? "Your licence payment has been received. We'll process your licence and be in touch shortly."
+              : "Thank you! Your licence application has been received. We'll review it and get back to you soon."}
+          </p>
+          {!paid && <p className="text-sm text-gray-400 mt-6">Redirecting you in a moment...</p>}
+          {paid && (
+            <Button className="mt-8" onClick={() => router.push('/')}>
+              Back to home
+            </Button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  const pageClass = embedded ? '' : 'min-h-screen bg-white px-4 py-12'
+  const innerClass = embedded ? 'max-w-2xl' : 'max-w-2xl mx-auto'
+
+  return (
+    <div className={pageClass}>
+      <div className={innerClass}>
+        <h1 className="text-4xl font-bold text-[#111111] mb-2">{renewMode ? 'Renew Your Licence & Insurance' : 'Apply for Your Licence & Insurance'}</h1>
+        <p className="text-gray-600 mb-8">
+          {renewMode
+            ? 'Renew your FKA licence and insurance for the new season.'
+            : 'Complete this form to apply for your official karate licence and insurance coverage.'}
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-[#111111] mb-2">First Name *</label>
+              <input
+                type="text"
+                name="firstName"
+                value={form.firstName}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#dc2626]"
+                placeholder="John"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-[#111111] mb-2">Surname *</label>
+              <input
+                type="text"
+                name="surname"
+                value={form.surname}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#dc2626]"
+                placeholder="Doe"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-[#111111] mb-2">Date of Birth *</label>
+            <DateInput
+              name="dateOfBirth"
+              value={form.dateOfBirth}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#dc2626]"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-[#111111] mb-2">Email *</label>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#dc2626]"
+                placeholder="john@example.com"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-[#111111] mb-2">Phone *</label>
+              <input
+                type="tel"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#dc2626]"
+                placeholder="07700 900000"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-[#111111] mb-2">Current Belt Level *</label>
+            <select
+              name="belt"
+              value={form.belt}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#dc2626]"
+            >
+              <option value="">Select belt...</option>
+              <option value="white">White (Beginner)</option>
+              <option value="red">Red / Red Stripe</option>
+              <option value="yellow">Yellow / Yellow Stripe</option>
+              <option value="orange">Orange / Orange Stripe</option>
+              <option value="green">Green / Green Stripe</option>
+              <option value="blue">Blue / Blue Stripe</option>
+              <option value="purple">Purple / Purple Stripe</option>
+              <option value="brown">Brown / Brown Stripe</option>
+              <option value="black">Black Belt</option>
+            </select>
+          </div>
+
+          {renewMode ? (
+            <div>
+              <label className="block text-sm font-semibold text-[#111111] mb-2">Application Type</label>
+              <p className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-[#111111] font-medium">
+                Licence Renewal
+              </p>
+              <input type="hidden" name="reason" value="renewal" />
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-semibold text-[#111111] mb-2">Application Type *</label>
+              <select
+                name="reason"
+                value={form.reason}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#dc2626]"
+              >
+                <option value="first_time">First Time Licence (new member)</option>
+                <option value="renewal">Licence Renewal</option>
+                <option value="upgrade">Grading Certificate / Belt Upgrade</option>
+              </select>
+            </div>
+          )}
+
+          {/* Renewal fee badge — shown when renewal is selected and DOB is entered */}
+          {isRenewal && (
+            <div className={`flex items-start gap-3 p-4 rounded-xl border ${renewalFee ? 'bg-red-50 border-[#dc2626]/20' : 'bg-gray-50 border-gray-200'}`}>
+              <BadgePoundSterling className={`h-5 w-5 mt-0.5 flex-shrink-0 ${renewalFee ? 'text-[#dc2626]' : 'text-gray-400'}`} />
+              <div>
+                {renewalFee ? (
+                  <>
+                    <p className="text-sm font-semibold text-[#111111]">
+                      Licence fee: <span className="text-[#dc2626]">{renewalFee}</span>
+                      <span className="text-gray-400 font-normal ml-2">({renewalLabel})</span>
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      You'll be taken to a secure Stripe payment page to pay for your licence.
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    Enter your date of birth above to see the licence fee.
+                    <span className="block text-xs text-gray-400 mt-0.5">{`Under ${LICENCE_ADULT_AGE}: £50 · Adult (${LICENCE_ADULT_AGE}+): £55`}</span>
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          )}
+
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white font-semibold py-3 rounded-xl text-lg transition-colors flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                {isRenewal ? 'Redirecting to payment...' : 'Submitting...'}
+              </>
+            ) : (
+              isRenewal ? `Pay for Licence${renewalFee ? ` — ${renewalFee}` : ''}` : 'Submit Application'
+            )}
+          </Button>
+
+          <p className="text-xs text-gray-500 text-center">
+            {isRenewal
+              ? 'Payment is processed securely via Stripe. Your licence will be processed once payment is confirmed.'
+              : "Your application will be reviewed and you'll hear from us within 2\u20133 business days."}
+          </p>
+        </form>
+      </div>
+    </div>
+  )
+}
+

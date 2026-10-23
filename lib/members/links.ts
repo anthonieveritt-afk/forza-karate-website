@@ -15,7 +15,7 @@ export const membersCoreLinks: MembersLink[] = [
   { href: '/members', label: '🔐 Members Login', sidebar: { href: '/members/portal', label: 'My portal' } },
   { href: '/members/grading', label: 'Register to Grade' },
   // Syllabus hidden for now (Anthoni, Oct 2026) — re-add: { href: '/members/syllabus', label: 'Syllabus' },
-  { href: '/join/apply-licence?reason=renewal', label: 'Renew your licence' },
+  { href: '/members/licence', label: 'Renew your licence' },
 ]
 
 export const FIKC_URL = 'https://www.fikc.co.uk'
