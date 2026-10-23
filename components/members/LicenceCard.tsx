@@ -38,7 +38,7 @@ export function LicenceCard({
   licenceNumber,
   licenceStartDate,
   licenceExpiryDate,
-  renewHref = '/members/licence',
+  renewHref = '/join/apply-licence?reason=renewal',
 }: {
   licenceNumber?: string | null
   licenceStartDate?: string | null
