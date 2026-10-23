@@ -44,7 +44,7 @@ function SponsorLogo({ s, index }: { s: typeof sponsors[0]; index: number }) {
       style={{
         transition: 'transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 300ms ease',
         transform: hovered ? 'scale(1.55) translateY(-6px)' : 'scale(1)',
-        opacity: hovered ? 1 : 0.55,
+        opacity: 1,
         transformOrigin: 'bottom center',
         zIndex: hovered ? 10 : 1,
         position: 'relative',
@@ -62,8 +62,8 @@ function SponsorLogo({ s, index }: { s: typeof sponsors[0]; index: number }) {
 
 export default function LogoTicker() {
   return (
-    <div className="bg-white border-t border-black/8 border-b border-black/8 py-6 overflow-hidden">
-      <p className="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-5">
+    <div className="bg-white border-t border-black/8 border-b border-black/8 py-10 overflow-hidden">
+      <p className="text-center text-[11px] font-semibold text-gray-700 uppercase tracking-widest mb-5">
         Our Partners &amp; Sponsors
       </p>
       <div className="relative flex" style={{ paddingBottom: '16px' }}>

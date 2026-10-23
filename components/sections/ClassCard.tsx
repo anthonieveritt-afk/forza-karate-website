@@ -26,10 +26,8 @@ export default function ClassCard({
 }: ClassCardProps) {
   return (
     <article
-      className={`group overflow-hidden rounded-2xl border bg-white transition-all hover:shadow-lg ${
-        playful
-          ? 'border-[#dc2626]/20 shadow-sm rotate-[-0.4deg] hover:rotate-0'
-          : 'border-black/8 hover:border-black/15'
+      className={`group overflow-hidden rounded-2xl border bg-white border-black/8 transition-all hover:shadow-lg hover:border-black/15 focus-within:border-black/25 ${
+        playful ? 'shadow-sm' : ''
       }`}
     >
       {imageSrc && (
@@ -63,7 +61,7 @@ export default function ClassCard({
         </div>
         <h3 className="text-xl font-bold text-[#111111] mb-1">{title}</h3>
         <p className="text-sm text-[#dc2626] font-medium mb-3">{subtitle}</p>
-        <p className="text-gray-500 text-sm leading-relaxed mb-5">{description}</p>
+        <p className="text-gray-700 text-sm leading-relaxed mb-5">{description}</p>
         <Link
           href={href}
           className="inline-flex items-center gap-1.5 text-sm font-medium text-[#111111] hover:text-[#dc2626] transition-colors group-hover:gap-2.5 min-h-11"

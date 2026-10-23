@@ -29,14 +29,14 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-black/8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-3 py-1">
+        <div className="flex items-center justify-between gap-3 py-2">
           <Link href="/" className="flex items-center shrink-0">
             <Image
               src="/forza-logo.webp"
               alt="Forza Karate Club"
               width={200}
               height={80}
-              className="h-[45px] md:h-[80px] w-auto object-contain"
+              className="h-10 md:h-12 w-auto max-w-[180px] object-contain"
               priority
             />
           </Link>

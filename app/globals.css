@@ -4,6 +4,12 @@
 :root {
   --background: #ffffff;
   --foreground: #111111;
+  /* Brand: ONE UI red for CTAs/links/accents (AA with white text). Logo red #FB0100 is for the mark only. */
+  --forza-red: #dc2626;
+  --forza-red-logo: #fb0100;
+  /* Kit gold — sparing accents only (kicker rules, step numbers, belt details) */
+  --forza-gold: #ffcc00;
+  --forza-body: #374151;
 }
 
 * {

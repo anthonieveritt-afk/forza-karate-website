@@ -139,7 +139,7 @@ export default function HomePage() {
             <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] mb-4">
               A class for every age
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
+            <p className="text-gray-700 max-w-xl mx-auto">
               From 4-year-old ninjas to teens and adults — beginners are welcome in every group.
             </p>
           </div>
@@ -165,7 +165,7 @@ export default function HomePage() {
             <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] mb-4">
               Skills that travel off the mat
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
+            <p className="text-gray-700 max-w-xl mx-auto">
               Karate helps children and adults practise focus, respect and fitness — at their own pace.
             </p>
           </div>
@@ -177,7 +177,7 @@ export default function HomePage() {
               >
                 <b.icon className="h-6 w-6 text-[#dc2626] mb-4" aria-hidden />
                 <h3 className="font-semibold text-[#111111] mb-2">{b.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{b.desc}</p>
+                <p className="text-gray-700 text-sm leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -213,11 +213,11 @@ export default function HomePage() {
                 key={s.n}
                 className="relative p-7 rounded-2xl bg-[#fafaf9] border border-black/5"
               >
-                <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#dc2626] text-white font-bold text-sm mb-4">
+                <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#ffcc00] text-[#111111] font-bold text-sm mb-4">
                   {s.n}
                 </span>
                 <h3 className="font-bold text-[#111111] mb-2">{s.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{s.desc}</p>
+                <p className="text-gray-700 text-sm leading-relaxed">{s.desc}</p>
               </li>
             ))}
           </ol>
@@ -256,7 +256,7 @@ export default function HomePage() {
               Sensei Anthoni Everitt
             </h2>
             <p className="text-[#dc2626] font-medium mb-4">6th Dan · Head Instructor</p>
-            <p className="text-white/70 leading-relaxed mb-6">
+            <p className="text-white/85 leading-relaxed mb-6">
               Head Instructor at Forza Karate Club, teaching at Rayleigh and Upminster. The wider
               coaching team is DBS enhanced, first aid qualified and fully insured.
             </p>
@@ -274,13 +274,15 @@ export default function HomePage() {
               </Button>
               <Button asChild variant="outline" className="border-white/25 bg-transparent text-white hover:bg-white/10">
                 <Link href="/safeguarding" className="inline-flex items-center gap-2">
-                  <Image
-                    src="/safeguarding-code-logo.webp"
-                    alt=""
-                    width={24}
-                    height={24}
-                    className="w-6 h-6 object-contain"
-                  />
+                  <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white p-0.5">
+                    <Image
+                      src="/safeguarding-code-logo.webp"
+                      alt=""
+                      width={24}
+                      height={24}
+                      className="w-6 h-6 object-contain"
+                    />
+                  </span>
                   Safeguarding
                 </Link>
               </Button>
@@ -303,7 +305,7 @@ export default function HomePage() {
             <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] mb-4">
               Club life at Forza
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
+            <p className="text-gray-700 max-w-xl mx-auto">
               Real photos from our dojos and events — students of all ages training together.
             </p>
           </div>
@@ -347,7 +349,7 @@ export default function HomePage() {
             <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] mb-4">
               Rayleigh &amp; Upminster
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
+            <p className="text-gray-700 max-w-xl mx-auto">
               Two dojos, same club. Term time — 40 weeks per year.
             </p>
           </div>
@@ -361,7 +363,7 @@ export default function HomePage() {
                   <MapPin className="h-5 w-5 text-[#dc2626] mt-0.5 shrink-0" aria-hidden />
                   <div>
                     <h3 className="text-xl font-bold text-[#111111]">{d.name}</h3>
-                    <p className="text-sm text-gray-500 mt-1">{d.venue}</p>
+                    <p className="text-sm text-gray-700 mt-1">{d.venue}</p>
                   </div>
                 </div>
                 <ul className="space-y-2 mb-6 flex-1">
@@ -370,8 +372,8 @@ export default function HomePage() {
                       <Clock className="h-4 w-4 text-gray-400 mt-0.5 shrink-0" aria-hidden />
                       <span>
                         <span className="font-medium text-[#111111]">{s.day}</span>
-                        <span className="text-gray-500"> · {s.time}</span>
-                        <span className="block text-xs text-gray-400">{s.desc}</span>
+                        <span className="text-gray-700"> · {s.time}</span>
+                        <span className="block text-xs text-gray-600">{s.desc}</span>
                       </span>
                     </li>
                   ))}
@@ -407,7 +409,7 @@ export default function HomePage() {
               <h2 className="text-3xl sm:text-4xl font-bold text-[#111111]">
                 Achievements &amp; news
               </h2>
-              <p className="text-gray-500 mt-2 max-w-lg text-sm">
+              <p className="text-gray-700 mt-2 max-w-lg text-sm">
                 Championship results alongside everyday club life — both matter here.
               </p>
             </div>
@@ -434,7 +436,7 @@ export default function HomePage() {
                   )}
                 </div>
                 <div className="p-5">
-                  <p className="text-xs text-gray-400 mb-2">{formatDate(p.date)}</p>
+                  <p className="text-xs text-gray-600 mb-2">{formatDate(p.date)}</p>
                   <h3 className="font-bold text-[#111111] leading-snug group-hover:text-[#dc2626]">
                     {p.title}
                   </h3>
@@ -452,7 +454,7 @@ export default function HomePage() {
           <h2 className="text-3xl sm:text-5xl font-bold text-white mb-4 leading-tight">
             Ready for a first class?
           </h2>
-          <p className="text-white/70 mb-10 text-lg">
+          <p className="text-white/85 mb-10 text-lg">
             Book a £10 trial at Rayleigh or Upminster. No kit needed. Beginners welcome from age 4.
           </p>
           <Button asChild size="lg">
@@ -466,18 +468,20 @@ export default function HomePage() {
               href="/safeguarding"
               className="flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 transition-colors"
             >
-              <Image
-                src="/safeguarding-code-logo.webp"
-                alt="Safeguarding Code in Martial Arts"
-                width={48}
-                height={48}
-                className="w-12 h-12 object-contain"
-              />
+              <span className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-white p-1 shrink-0">
+                <Image
+                  src="/safeguarding-code-logo.webp"
+                  alt="Safeguarding Code in Martial Arts"
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 object-contain"
+                />
+              </span>
               <div className="text-left">
                 <p className="text-xs font-bold text-white uppercase tracking-wider">
                   Safeguarding Code
                 </p>
-                <p className="text-xs text-white/50">in Martial Arts — certified</p>
+                <p className="text-xs text-white/75">in Martial Arts — certified</p>
               </div>
             </Link>
           </div>

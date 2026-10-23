@@ -40,11 +40,26 @@ export default function BeltJourney() {
           <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] mb-4">
             The journey to black belt
           </h2>
-          <p className="text-gray-500 max-w-xl mx-auto">
+          <p className="text-gray-700 max-w-xl mx-auto">
             Every champion started with a white belt. Progress is earned through
             consistent attendance, technical skill, and personal growth.
           </p>
         </div>
+
+        {/* Overview graphic (Designer) — the grid below remains the full, authoritative belt order */}
+        <picture className="block mb-12 rounded-2xl overflow-hidden border border-black/5 bg-white">
+          <source srcSet="/assets/home/belt-journey-1600.webp" type="image/webp" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/home/belt-journey-1600.png"
+            alt="Overview of the Forza belt journey from white belt (17th Kyu) to black belt (Shodan)"
+            width={1600}
+            height={420}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-auto"
+          />
+        </picture>
 
         {/* Belt grid */}
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-x-4 gap-y-6">
@@ -58,7 +73,7 @@ export default function BeltJourney() {
               />
               <div className="text-center">
                 {belt.kyu && (
-                  <div className="text-[10px] text-gray-400 font-medium leading-tight">{belt.kyu}</div>
+                  <div className="text-[10px] text-gray-600 font-medium leading-tight">{belt.kyu}</div>
                 )}
                 <div className="text-[10px] font-semibold text-[#111111] leading-tight mt-0.5">
                   {belt.name}

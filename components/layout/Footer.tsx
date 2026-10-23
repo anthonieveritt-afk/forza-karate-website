@@ -34,7 +34,7 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0a0a0a] text-gray-400">
+    <footer className="bg-[#0a0a0a] text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="md:col-span-1">
@@ -42,7 +42,7 @@ export default function Footer() {
               <span className="text-[#dc2626]">FORZA</span>
               <span className="text-white"> KARATE CLUB</span>
             </div>
-            <p className="text-sm leading-relaxed text-gray-500">
+            <p className="text-sm leading-relaxed text-gray-400">
               Developing champions on and off the mat. FKA affiliated. Established with purpose.
             </p>
             <div className="flex gap-3 mt-5">
@@ -101,7 +101,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/8 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-600">
+        <div className="border-t border-white/8 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
           <p>© 2012 – 2026 Forza Karate Club. All rights reserved.</p>
           <p>FKA (Frontier Karate Association) Affiliated</p>
         </div>
