@@ -5,9 +5,9 @@ import { useState } from 'react'
 import { ShoppingBag, ShoppingCart } from 'lucide-react'
 import { useCart } from '@/lib/cart-context'
 import CartDrawer from '@/components/shop/CartDrawer'
-import { PRICES, SIZE_PRICES, products, type Product } from '@/lib/shop/catalogue'
+import { PRICES, SIZE_PRICES, WKF_CATEGORY, getPriceRange, orderName, products, type Product } from '@/lib/shop/catalogue'
 
-const categories = ['All', 'Clothing', 'Equipment']
+const categories = ['All', 'Clothing', 'Equipment', WKF_CATEGORY]
 
 function priceLabel(pence: number) {
   return (pence / 100).toLocaleString('en-GB', { style: 'currency', currency: 'GBP' })
@@ -35,7 +35,7 @@ export default function ShopPage() {
     addItem({
       id: `${product.key}-${size}`,
       productKey: product.key,
-      name: product.name,
+      name: orderName(product),
       size,
       price,
       priceLabel: priceLabel(price),
@@ -98,6 +98,15 @@ export default function ShopPage() {
       {/* Product grid */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
+          {active === WKF_CATEGORY && (
+            <div className="mb-8 p-5 rounded-2xl bg-[#fafaf9] border border-black/5">
+              <p className="text-sm font-semibold text-[#111111] mb-1">WKF approved competition suits</p>
+              <p className="text-sm text-gray-500">
+                Kumite and kata suits for tournaments, sized by height. These are extra to the
+                Official Forza Karate Club Gi, which every member needs for training.
+              </p>
+            </div>
+          )}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {filtered.map(product => {
               const size = selected[product.key]
@@ -122,8 +131,8 @@ export default function ShopPage() {
                         {product.badge}
                       </span>
                     )}
-                    <span className="absolute top-2 right-2 text-[10px] font-medium px-2 py-0.5 rounded-full bg-white border border-black/8 text-gray-500">
-                      {product.category}
+                    <span className={`absolute top-2 right-2 text-[10px] font-medium px-2 py-0.5 rounded-full bg-white border border-black/8 text-gray-500 ${product.badge ? 'hidden sm:inline' : ''}`}>
+                      {product.category === WKF_CATEGORY ? 'Competition' : product.category}
                     </span>
                   </div>
 
@@ -154,14 +163,18 @@ export default function ShopPage() {
                       ))}
                     </div>
 
-                    <div className="flex items-center justify-between mt-auto pt-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mt-auto pt-2">
                       {product.priceOnRequest ? (
                         <span className="text-sm font-semibold text-gray-400">POA</span>
                       ) : SIZE_PRICES[product.key] ? (
                         <span className="text-sm font-bold text-[#111111]">
                           {size && SIZE_PRICES[product.key][size]
                             ? priceLabel(SIZE_PRICES[product.key][size])
-                            : '£135–£156'}
+                            : (() => {
+                                const r = getPriceRange(product.key)
+                                if (!r) return '—'
+                                return r.min === r.max ? priceLabel(r.min) : `${priceLabel(r.min)}–${priceLabel(r.max)}`
+                              })()}
                         </span>
                       ) : (
                         <span className="text-sm font-bold text-[#111111]">
@@ -171,7 +184,7 @@ export default function ShopPage() {
                       <button
                         onClick={() => handleAdd(product)}
                         disabled={!size || !!product.priceOnRequest}
-                        className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+                        className={`whitespace-nowrap text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
                           product.priceOnRequest
                             ? 'bg-black/5 text-gray-400 cursor-not-allowed'
                             : isAdded

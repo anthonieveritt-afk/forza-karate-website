@@ -14,11 +14,38 @@ export const PRICES: Record<string, number> = {
   'forza-tshirt':                2000,
   'blitz-shin-blue':             4500,
   'blitz-gi':                    4000,
+  // WKF competition suits — Best Sport PUBLIC RRP (logged-out guest, 23 Oct 2026) + £15.
+  // Source: https://bestsportuk.co.uk/wkf-karate-suits — no club/instructor/trade price used.
+  // display_regular_price === display_price on every variation (no sale strikethrough).
+  'wkf-koi-kumite-set':           26500, // RRP £250 → £265
+  'wkf-sendo-reversible':         16500, // RRP £150 → £165
+  'wkf-okami-kumite-white':       10500, // RRP £90 → £105
+  'wkf-okami-kumite-red':         10500, // RRP £90 → £105
+  'wkf-okami-kumite-blue':        10500, // RRP £90 → £105
+  'wkf-niwa-white-belt':          6500,  // RRP £50 → £65
+  'wkf-arashi-kata-white':        16500, // RRP £150 → £165
+  'wkf-arashi-kata-red':          17500, // RRP £160 → £175
+  'wkf-arashi-kata-blue':         17500, // RRP £160 → £175
+  'wkf-kaji-kata-set':            30000, // RRP £285 → £300
 }
 
 // Per-size prices (overrides PRICES when a size is selected)
-export const SIZE_PRICES: Record<string, Record<string, number>> = {}
+export const SIZE_PRICES: Record<string, Record<string, number>> = {
+  // Size-dependent Best Sport public RRP + £15 (same guest scrape, 23 Oct 2026)
+  // KOI red/blue: RRP £165 (150–165cm) / £175 (170–190cm) → £180 / £190
+  'wkf-koi-kumite-red': { '150cm': 18000, '155cm': 18000, '160cm': 18000, '165cm': 18000, '170cm': 19000, '175cm': 19000, '180cm': 19000, '185cm': 19000, '190cm': 19000 },
+  'wkf-koi-kumite-blue': { '150cm': 18000, '155cm': 18000, '160cm': 18000, '165cm': 18000, '170cm': 19000, '175cm': 19000, '180cm': 19000, '185cm': 19000, '190cm': 19000 },
+  // NIJI bundle: RRP £185 (150–155) / £195 (160–200) → £200 / £210
+  'wkf-niji-kumite-bundle': { '150cm': 20000, '155cm': 20000, '160cm': 21000, '165cm': 21000, '170cm': 21000, '175cm': 21000, '180cm': 21000, '185cm': 21000, '190cm': 21000, '195cm': 21000, '200cm': 21000 },
+  // NIJI white: RRP £115 (130–170) / £125 (175–190) → £130 / £140
+  'wkf-niji-kumite-white': { '130cm': 13000, '150cm': 13000, '160cm': 13000, '165cm': 13000, '170cm': 13000, '175cm': 14000, '180cm': 14000, '185cm': 14000, '190cm': 14000 },
+  // UMI white: RRP £85 (150–165) / £90 (170–195) → £100 / £105
+  'wkf-umi-kumite-white': { '150cm': 10000, '155cm': 10000, '160cm': 10000, '165cm': 10000, '170cm': 10500, '175cm': 10500, '180cm': 10500, '185cm': 10500, '190cm': 10500, '195cm': 10500 },
+}
 // ────────────────────────────────────────────────────────────────────────────
+
+/** Shop category for the WKF approved competition suits. */
+export const WKF_CATEGORY = 'WKF Competition Suits'
 
 export type Product = {
   key: string
@@ -90,6 +117,157 @@ export const products: Product[] = [
     img: '/shop/blitz-gi.jpg',
     desc: 'Sized by height. If between sizes, go up.',
   },
+  // ── WKF competition suits ── for tournaments; members still train in the club gi above.
+  {
+    key: 'wkf-koi-kumite-red',
+    name: 'KOI Kumite Gi – Platinum',
+    category: WKF_CATEGORY,
+    colour: 'Red (aka)',
+    sizes: ['150cm',  '155cm',  '160cm',  '165cm',  '170cm',  '175cm',  '180cm',  '185cm',  '190cm'],
+    img: '/shop/wkf-koi-kumite-red.webp',
+    badge: 'WKF Approved',
+    desc: 'Kumite competition suit. Slim fit, ultralight 4.3oz polyester, no shrinkage. Breathable inserts. Sized by height.',
+  },
+  {
+    key: 'wkf-koi-kumite-blue',
+    name: 'KOI Kumite Gi – Platinum',
+    category: WKF_CATEGORY,
+    colour: 'Blue (ao)',
+    sizes: ['150cm',  '155cm',  '160cm',  '165cm',  '170cm',  '175cm',  '180cm',  '185cm',  '190cm'],
+    img: '/shop/wkf-koi-kumite-blue.webp',
+    badge: 'WKF Approved',
+    desc: 'Kumite competition suit. Slim fit, ultralight 4.3oz polyester, no shrinkage. Breathable inserts. Sized by height.',
+  },
+  {
+    key: 'wkf-koi-kumite-set',
+    name: 'KOI Kumite Gi Set – Platinum',
+    category: WKF_CATEGORY,
+    colour: '1 red + 1 blue gi',
+    sizes: ['150cm',  '155cm',  '160cm',  '165cm',  '170cm',  '175cm',  '180cm',  '185cm',  '190cm'],
+    img: '/shop/wkf-koi-kumite-set.webp',
+    badge: 'WKF Approved',
+    desc: 'Kumite competition suit. Two full gis, one red collar and one blue collar. Slim fit, 4.3oz polyester. Sized by height.',
+  },
+  {
+    key: 'wkf-niji-kumite-bundle',
+    name: 'NIJI Kumite Gi Bundle – Premium',
+    category: WKF_CATEGORY,
+    colour: 'Red + blue jacket, 1 trousers',
+    sizes: ['150cm',  '155cm',  '160cm',  '165cm',  '170cm',  '175cm',  '180cm',  '185cm',  '190cm',  '195cm',  '200cm'],
+    img: '/shop/wkf-niji-kumite-bundle.webp',
+    badge: 'WKF Approved',
+    desc: 'Kumite competition suit. 2 jackets (red and blue shoulder trim) plus 1 trousers. Slim fit, 4.3oz polyester. Sized by height.',
+  },
+  {
+    key: 'wkf-niji-kumite-white',
+    name: 'NIJI Kumite Gi – Premium',
+    category: WKF_CATEGORY,
+    colour: 'White',
+    sizes: ['130cm',  '150cm',  '160cm',  '165cm',  '170cm',  '175cm',  '180cm',  '185cm',  '190cm'],
+    img: '/shop/wkf-niji-kumite-white.webp',
+    badge: 'WKF Approved',
+    desc: 'Kumite competition suit. Slim fit, ultralight 4.3oz polyester, no shrinkage. Breathable inserts. Sized by height.',
+  },
+  {
+    key: 'wkf-sendo-reversible',
+    name: 'SENDO Reversible Kumite Gi – Premium',
+    category: WKF_CATEGORY,
+    colour: 'Reversible red / blue jacket',
+    sizes: ['150cm',  '155cm',  '160cm',  '165cm',  '170cm',  '175cm',  '180cm',  '185cm',  '190cm',  '195cm',  '200cm'],
+    img: '/shop/wkf-sendo-reversible.webp',
+    badge: 'WKF Approved',
+    desc: 'Kumite competition suit. Jacket reverses from red to blue, plus trousers. Very light 2.5oz polyester. Sized by height.',
+  },
+  {
+    key: 'wkf-umi-kumite-white',
+    name: 'UMI Kumite Gi – Signature',
+    category: WKF_CATEGORY,
+    colour: 'White',
+    sizes: ['150cm',  '155cm',  '160cm',  '165cm',  '170cm',  '175cm',  '180cm',  '185cm',  '190cm',  '195cm'],
+    img: '/shop/wkf-umi-kumite-white.webp',
+    badge: 'WKF Approved',
+    desc: 'Kumite competition suit. Very light 2.5oz polyester, no shrinkage. Breathable inserts. Sized by height.',
+  },
+  {
+    key: 'wkf-okami-kumite-white',
+    name: 'OKAMI Kumite Gi – Signature',
+    category: WKF_CATEGORY,
+    colour: 'White',
+    sizes: ['130cm',  '140cm',  '145cm',  '150cm',  '160cm',  '165cm',  '170cm',  '175cm',  '180cm',  '185cm',  '190cm',  '195cm',  '200cm'],
+    img: '/shop/wkf-okami-kumite-white.webp',
+    badge: 'WKF Approved',
+    desc: 'Kumite competition suit. Free cut for any build. 4.3oz polyester, breathable inserts. Sized by height.',
+  },
+  {
+    key: 'wkf-okami-kumite-red',
+    name: 'OKAMI Kumite Gi – Signature',
+    category: WKF_CATEGORY,
+    colour: 'Red (aka)',
+    sizes: ['145cm',  '160cm',  '180cm',  '195cm',  '200cm'],
+    img: '/shop/wkf-okami-kumite-red.webp',
+    badge: 'WKF Approved',
+    desc: 'Kumite competition suit. Free cut for any build. 4.3oz polyester, breathable inserts. Sized by height.',
+  },
+  {
+    key: 'wkf-okami-kumite-blue',
+    name: 'OKAMI Kumite Gi – Signature',
+    category: WKF_CATEGORY,
+    colour: 'Blue (ao)',
+    sizes: ['145cm',  '160cm',  '180cm',  '200cm'],
+    img: '/shop/wkf-okami-kumite-blue.webp',
+    badge: 'WKF Approved',
+    desc: 'Kumite competition suit. Free cut for any build. 4.3oz polyester, breathable inserts. Sized by height.',
+  },
+  {
+    key: 'wkf-niwa-white-belt',
+    name: 'NIWA Gi with Belt – Essential',
+    category: WKF_CATEGORY,
+    colour: 'White, belt included',
+    sizes: ['100cm',  '110cm',  '120cm',  '125cm',  '130cm',  '135cm',  '140cm',  '145cm',  '150cm',  '155cm',  '160cm',  '165cm',  '170cm',  '175cm',  '180cm',  '185cm',  '190cm'],
+    img: '/shop/wkf-niwa-white-belt.webp',
+    badge: 'WKF Approved',
+    desc: 'WKF approved entry-level suit for competition and training. 7oz cotton/polyester ribbed weave. Belt included. Allow 2–3cm for shrinkage. Sized by height.',
+  },
+  {
+    key: 'wkf-arashi-kata-white',
+    name: 'ARASHI Kata Gi',
+    category: WKF_CATEGORY,
+    colour: 'White',
+    sizes: ['145cm',  '160cm',  '170cm',  '180cm',  '185cm',  '190cm'],
+    img: '/shop/wkf-arashi-kata-white.webp',
+    badge: 'WKF Approved',
+    desc: 'Kata competition suit. Heavy 13oz canvas (95% cotton) with a sharp snap on fast moves. Sized by height.',
+  },
+  {
+    key: 'wkf-arashi-kata-red',
+    name: 'ARASHI Kata Gi K1',
+    category: WKF_CATEGORY,
+    colour: 'Red (aka)',
+    sizes: ['145cm',  '160cm',  '170cm',  '180cm',  '185cm',  '190cm'],
+    img: '/shop/wkf-arashi-kata-red.webp',
+    badge: 'WKF Approved',
+    desc: 'Kata competition suit. Heavy 13oz canvas (95% cotton) with a sharp snap on fast moves. Red shoulder trim. Sized by height.',
+  },
+  {
+    key: 'wkf-arashi-kata-blue',
+    name: 'ARASHI Kata Gi K1',
+    category: WKF_CATEGORY,
+    colour: 'Blue (ao)',
+    sizes: ['170cm',  '180cm',  '190cm'],
+    img: '/shop/wkf-arashi-kata-blue.webp',
+    badge: 'WKF Approved',
+    desc: 'Kata competition suit. Heavy 13oz canvas (95% cotton) with a sharp snap on fast moves. Blue shoulder trim. Sized by height.',
+  },
+  {
+    key: 'wkf-kaji-kata-set',
+    name: 'KAJI Kata Gi Set',
+    category: WKF_CATEGORY,
+    colour: 'Red + blue jacket, 1 trousers',
+    sizes: ['150cm',  '155cm',  '160cm',  '165cm',  '170cm',  '175cm',  '180cm',  '185cm',  '190cm',  '195cm',  '200cm'],
+    img: '/shop/wkf-kaji-kata-set.webp',
+    badge: 'WKF Approved',
+    desc: 'Kata competition suit. 2 jackets (red and blue trim) plus 1 trousers. Heavy 13oz canvas with a sharp snap. Sized by height.',
+  },
 ]
 
 /**
@@ -107,6 +285,24 @@ export function getUnitPrice(productKey: string, size: string): number | null {
   if (!product.sizes.includes(size)) return null
   if (SIZE_PRICES[productKey]) return SIZE_PRICES[productKey][size] ?? null
   return PRICES[productKey] ?? null
+}
+
+/** Lowest and highest unit price in pence across a product's sizes. */
+export function getPriceRange(productKey: string): { min: number; max: number } | null {
+  const product = getProduct(productKey)
+  if (!product || product.priceOnRequest) return null
+  const all = product.sizes.map(s => getUnitPrice(productKey, s)).filter((p): p is number => p != null)
+  if (!all.length) return null
+  return { min: Math.min(...all), max: Math.max(...all) }
+}
+
+/**
+ * Name for baskets, Stripe and order emails. When several products share a model name
+ * (e.g. the red and blue KOI), the colour is added to tell them apart.
+ */
+export function orderName(product: Product): string {
+  const shared = products.filter(p => p.name === product.name).length > 1
+  return shared && product.colour ? `${product.name}, ${product.colour.split(' (')[0]}` : product.name
 }
 
 export function getProduct(productKey: string): Product | undefined {

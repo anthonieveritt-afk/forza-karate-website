@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { getProduct, getUnitPrice } from '@/lib/shop/catalogue'
+import { getProduct, getUnitPrice, orderName } from '@/lib/shop/catalogue'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://forza-karate-website.vercel.app'
 
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
       price_data: {
         currency: 'gbp',
         product_data: {
-          name: `${product.name} — ${item.size}`,
+          name: `${orderName(product)} — ${item.size}`,
           images: [new URL(product.img, SITE_URL).toString()],
           metadata: { productKey: item.productKey, size: item.size },
         },
