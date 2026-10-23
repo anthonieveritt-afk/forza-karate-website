@@ -1,4 +1,5 @@
-// Pending sign-ups, keyed by GoCardless billing request id.
+// Pending sign-ups, keyed by GoCardless billing request id (BRQ…) or provisional
+// signup id (MSU…) before Stripe/GoCardless complete.
 // Stored in Vercel Blob, AES-256-GCM encrypted with SIGNUP_ENCRYPTION_KEY, so the
 // (unguessable) blob URL alone reveals nothing.
 import 'server-only'
@@ -16,7 +17,16 @@ export type Student = {
   licence?: { type: string; feePence: number; expiry?: string } | null
 }
 
+export type StripePayment = {
+  sessionId: string
+  paymentIntentId: string | null
+  amountPence: number
+  paidAt: string
+}
+
 export type Signup = {
+  /** Provisional id (MSU…) before a billing request exists; kept after BR is linked. */
+  signupId?: string
   plan: PlanKey
   dojo: DojoKey
   classTime: string
@@ -27,6 +37,12 @@ export type Signup = {
   emergency: { name: string; phone: string }
   consent: { photos: boolean; terms: boolean }
   extrasPence: number
+  /** Pro-rata first month in pence (charged via Stripe with extras). */
+  proRataPence?: number
+  /** One-off Stripe charge (kit + licence + pro-rata). Set after Checkout succeeds. */
+  stripe?: StripePayment | null
+  /** Linked once the GoCardless billing request is created after Stripe. */
+  billingRequestId?: string | null
   createdAt: string
 }
 
@@ -36,9 +52,13 @@ export type Outcome = {
   mandateId: string
   subscriptionId: string | null
   subscriptionStart: string | null
+  /** Legacy GoCardless one-off ids (null when one-off was taken on Stripe). */
   firstPaymentId?: string | null
   firstPaymentDate?: string | null
   extrasPaymentId?: string | null
+  stripeSessionId?: string | null
+  stripePaymentIntentId?: string | null
+  stripeAmountPence?: number | null
   honbu: { ok: boolean; detail?: string; memberIds?: number[] }
   completedAt: string
 }
@@ -68,15 +88,16 @@ type Kind = 'signup' | 'done'
 
 /**
  * Pathnames:
- * - Preferred (exact): membership-signups/${brId}.signup | .done
+ * - Preferred (exact): membership-signups/${id}.signup | .done
  * - Legacy (addRandomSuffix: true treated ".signup"/".done" as the extension):
- *   membership-signups/${brId}-<random>.signup | .done
+ *   membership-signups/${id}-<random>.signup | .done
  *
- * load() lists by prefix `${PREFIX}/${brId}` (not `…/${brId}.signup`) so both
+ * load() lists by prefix `${PREFIX}/${id}` (not `…/${id}.signup`) so both
  * forms are found; exact match wins when both exist.
+ * id is either BRQ… or MSU… (provisional signup id).
  */
-async function save(brId: string, kind: Kind, obj: unknown) {
-  await put(`${PREFIX}/${brId}.${kind}`, enc(obj), {
+async function save(id: string, kind: Kind, obj: unknown) {
+  await put(`${PREFIX}/${id}.${kind}`, enc(obj), {
     access: 'public',
     addRandomSuffix: false,
     allowOverwrite: true,
@@ -84,19 +105,18 @@ async function save(brId: string, kind: Kind, obj: unknown) {
   })
 }
 
-function matchesKind(pathname: string, brId: string, kind: Kind): boolean {
-  const exact = `${PREFIX}/${brId}.${kind}`
+function matchesKind(pathname: string, id: string, kind: Kind): boolean {
+  const exact = `${PREFIX}/${id}.${kind}`
   if (pathname === exact) return true
-  // Legacy randomised: …/BRQ…-<random>.signup (suffix inserted before "extension")
   const rest = pathname.startsWith(`${PREFIX}/`) ? pathname.slice(PREFIX.length + 1) : pathname
-  return rest.startsWith(`${brId}-`) && rest.endsWith(`.${kind}`)
+  return rest.startsWith(`${id}-`) && rest.endsWith(`.${kind}`)
 }
 
-async function load<T>(brId: string, kind: Kind): Promise<T | null> {
-  const { blobs } = await list({ prefix: `${PREFIX}/${brId}` })
-  const matches = blobs.filter((b) => matchesKind(b.pathname, brId, kind))
+async function load<T>(id: string, kind: Kind): Promise<T | null> {
+  const { blobs } = await list({ prefix: `${PREFIX}/${id}` })
+  const matches = blobs.filter((b) => matchesKind(b.pathname, id, kind))
   if (!matches.length) return null
-  const exactPath = `${PREFIX}/${brId}.${kind}`
+  const exactPath = `${PREFIX}/${id}.${kind}`
   const exact = matches.find((b) => b.pathname === exactPath)
   const latest =
     exact ??
@@ -106,7 +126,12 @@ async function load<T>(brId: string, kind: Kind): Promise<T | null> {
   return dec<T>(await res.text())
 }
 
-export const saveSignup = (brId: string, s: Signup) => save(brId, 'signup', s)
-export const loadSignup = (brId: string) => load<Signup>(brId, 'signup')
+/** New provisional signup id (before Stripe / GoCardless). */
+export function newSignupId(): string {
+  return `MSU${randomBytes(12).toString('hex').toUpperCase()}`
+}
+
+export const saveSignup = (id: string, s: Signup) => save(id, 'signup', s)
+export const loadSignup = (id: string) => load<Signup>(id, 'signup')
 export const saveOutcome = (brId: string, o: Outcome) => save(brId, 'done', o)
 export const loadOutcome = (brId: string) => load<Outcome>(brId, 'done')

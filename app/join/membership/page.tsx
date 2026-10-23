@@ -1,26 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import Script from 'next/script'
-import { useRouter } from 'next/navigation'
-import { Loader2, Plus, Trash2, ShieldCheck } from 'lucide-react'
+import { Suspense, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Loader2, Plus, Trash2, ShieldCheck, CreditCard } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
 import { HeightGuide } from '@/components/HeightGuide'
 import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, REQUIRED_SUIT_KEY, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, ageOn, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
-
-declare global {
-  interface Window {
-    GoCardlessDropin?: {
-      create: (o: {
-        billingRequestFlowID: string
-        environment: 'live' | 'sandbox'
-        onSuccess: (br: { id: string }) => void
-        onExit: (error: unknown, metadata: unknown) => void
-      }) => { open: () => void; exit: () => void }
-    }
-  }
-}
 
 const CLASSES: Record<string, string[]> = {
   rayleigh: [
@@ -56,8 +42,8 @@ function knownUnder18(dob: string): boolean {
   return a !== null && a < LICENCE_ADULT_AGE
 }
 
-export default function MembershipSignup() {
-  const router = useRouter()
+function MembershipSignup() {
+  const cancelled = useSearchParams().get('cancelled') === '1'
   const [planChoice, setPlanChoice] = useState<PlanKey | null>(null)
   const [dojo, setDojo] = useState('')
   const [classTime, setClassTime] = useState('')
@@ -69,8 +55,7 @@ export default function MembershipSignup() {
   const [photos, setPhotos] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  const [scriptReady, setScriptReady] = useState(false)
-  // Two steps only: 1 = all signup details, 2 = Direct Debit summary + GoCardless.
+  // Two steps: 1 = all signup details, 2 = pay one-off on Stripe then set up monthly DD.
   const [step, setStep] = useState(1)
   const totalSteps = 2
 
@@ -134,11 +119,10 @@ export default function MembershipSignup() {
     e.preventDefault()
     setError('')
     if (students.some(st => !GI.sizes.includes(st.suitSize))) { setError('Please choose a suit size (by height) for each student. Every new member needs an Official Forza Karate Club Gi (£40).'); return }
-    if (!window.GoCardlessDropin) { setError('The secure Direct Debit form is still loading. Please try again in a moment.'); return }
     setBusy(true)
     try {
       const account = accountHolderFromStudents()
-      const res = await fetch('/api/membership/billing-request', {
+      const res = await fetch('/api/membership/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, dojo, classTime, trialDate, parent: account, emergency, consent: { terms, photos },
@@ -146,16 +130,9 @@ export default function MembershipSignup() {
       })
       const d = await res.json()
       if (!res.ok) { setError(d.error ?? 'Something went wrong.'); setBusy(false); return }
-      const brId: string = d.billingRequestId
-      window.GoCardlessDropin.create({
-        billingRequestFlowID: d.flowId,
-        environment: d.environment,
-        onSuccess: () => router.push(`/join/membership/done?br=${brId}`),
-        onExit: () => {
-          fetch('/api/membership/cancel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ billingRequestId: brId }) }).catch(() => {})
-          setBusy(false)
-        },
-      }).open()
+      if (!d.url) { setError('Could not open card payment.'); setBusy(false); return }
+      // Leave this page for Stripe Checkout; after pay, pay-done opens GoCardless for monthly DD only.
+      window.location.href = d.url
     } catch {
       setError('Could not connect. Please try again.')
       setBusy(false)
@@ -186,14 +163,14 @@ export default function MembershipSignup() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9] pt-28 pb-20 px-4">
-      <Script src="https://pay.gocardless.com/billing/static/dropin/v2/initialise.js" onReady={() => setScriptReady(true)} />
       <form onSubmit={submit} className="max-w-2xl mx-auto bg-white rounded-3xl border border-black/8 p-6 sm:p-10 space-y-10">
         <header>
+          {cancelled && <p className="mb-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">Card payment was cancelled — nothing was charged. You can try again when ready.</p>}
           <p className="text-xs font-semibold uppercase tracking-widest text-[#dc2626] mb-2">Forza Karate Club</p>
           <h1 className="text-3xl font-bold text-[#111111]">Become a member</h1>
           <p className="text-gray-500 mt-2 text-sm leading-relaxed">
-            Enjoyed your trial class? Membership, karate suit, FKA licence and your monthly Direct Debit are set up here in two steps,
-            finishing in GoCardless&apos;s secure window. Membership starts the week after your trial.
+            Enjoyed your trial class? Pay suit, licence and your first (pro-rata) month by card, then set up Direct Debit for monthly lesson fees only.
+            Membership starts the week after your trial.
           </p>
         </header>
 
@@ -294,15 +271,15 @@ export default function MembershipSignup() {
           {/* Adult solo: contact + consent once — name is the student name above, never re-asked */}
           {adultSolo ? (
             <div className="space-y-4 pt-2 border-t border-black/8">
-              <h3 className="text-base font-semibold text-[#111111]">Contact &amp; Direct Debit account</h3>
-              <p className="text-xs text-gray-500">Your name above is used for membership and as the Direct Debit account holder — we won&apos;t ask for it again.</p>
+              <h3 className="text-base font-semibold text-[#111111]">Contact &amp; account holder</h3>
+              <p className="text-xs text-gray-500">Your name above is used for membership and as the Direct Debit account holder for monthly fees — we won&apos;t ask for it again.</p>
               {contactFields}
               {consentFields}
             </div>
           ) : (
             <div className="space-y-4 pt-2 border-t border-black/8">
               <h3 className="text-base font-semibold text-[#111111]">Parent or guardian (account holder)</h3>
-              <p className="text-xs text-gray-500">This person is the Direct Debit account holder. Student names are already above.</p>
+              <p className="text-xs text-gray-500">This person pays by card for the one-off total and is the Direct Debit account holder for monthly fees. Student names are already above.</p>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div><label className={lbl}>First name</label><input required className={input} value={parent.givenName} onChange={e => setParent({ ...parent, givenName: e.target.value })} /></div>
                 <div><label className={lbl}>Surname</label><input required className={input} value={parent.familyName} onChange={e => setParent({ ...parent, familyName: e.target.value })} /></div>
@@ -317,7 +294,7 @@ export default function MembershipSignup() {
               const msg = validateSignupStep()
               if (msg) { setError(msg); return }
               setError(''); setStep(2)
-            }}>Continue to Direct Debit</Button>
+            }}>Continue to payment</Button>
             {error && step === 1 && <p className="text-sm text-red-600">{error}</p>}
           </div>
         </section>
@@ -325,43 +302,58 @@ export default function MembershipSignup() {
 
         {showDd && (
         <section className="space-y-4">
-          <h2 className="text-lg font-bold">2. Direct Debit</h2>
-          <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-2">
+          <h2 className="text-lg font-bold">2. Pay now, then Direct Debit</h2>
+          <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-4">
             {(() => {
               const fee = PLANS[plan].price
               if (!trialDate) return <>
                 <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">Monthly fee</span><strong>{pounds(fee)} on the 1st of each month</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">Official Forza Karate Club Gi × {students.length}</span><strong>{pounds(GI.price * students.length)}</strong></div>
-                <p className="text-xs text-gray-500">Enter your trial date to see your first payment. Your first payment covers the rest of the month you start in.</p>
+                <p className="text-xs text-gray-500">Enter your trial date on the previous step to see exact amounts.</p>
               </>
               const start = membershipStart(trialDate)
               const pr = proRataPence(fee, start)
               const suits = students.reduce((t, x) => t + suitCost(x), 0)
               const lic = students.reduce((t, x) => t + licenceCost(x), 0)
+              const oneOff = pr + suits + lic
               return <>
                 <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">Monthly fee</span><strong>{pounds(fee)} on the 1st, from {ukDate(firstOfNextMonth(start))}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">First payment, part month ({proRataLabel(start)} from {ukDate(start)})</span><strong>{pounds(pr)}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">Official Forza Karate Club Gi × {students.length}</span><strong>{pounds(suits)}</strong></div>
-                <div className="flex justify-between"><span className="text-gray-500">Licence &amp; insurance</span><strong>{pounds(lic)}</strong></div>
-                <div className="flex justify-between border-t border-black/10 pt-2"><span className="font-semibold">One-off total, collected first</span><strong className="text-[#dc2626]">{pounds(pr + suits + lic)}</strong></div>
-                <p className="text-xs text-gray-500">Everything is collected by Direct Debit, no card needed. The part-month payment is taken from your start date and the suit and licence as soon as the Direct Debit is ready (usually a few working days); monthly fees then come out on the 1st.</p>
+
+                <div className="rounded-xl bg-white border border-black/8 p-3 space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-[#dc2626] flex items-center gap-1.5">
+                    <CreditCard className="h-3.5 w-3.5" /> Pay now by card (Stripe)
+                  </p>
+                  <div className="flex justify-between"><span className="text-gray-500">First month, part month ({proRataLabel(start)} from {ukDate(start)})</span><strong>{pounds(pr)}</strong></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Official Forza Karate Club Gi × {students.length}</span><strong>{pounds(suits)}</strong></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Licence &amp; insurance</span><strong>{pounds(lic)}</strong></div>
+                  <div className="flex justify-between border-t border-black/10 pt-2"><span className="font-semibold">Card total today</span><strong className="text-[#dc2626]">{pounds(oneOff)}</strong></div>
+                </div>
+
+                <div className="rounded-xl bg-white border border-black/8 p-3 space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-700 flex items-center gap-1.5">
+                    <ShieldCheck className="h-3.5 w-3.5 text-green-600" /> Then Direct Debit (GoCardless)
+                  </p>
+                  <div className="flex justify-between"><span className="text-gray-500">Monthly lesson fees</span><strong>{pounds(fee)} on the 1st, from {ukDate(firstOfNextMonth(start))}</strong></div>
+                  <p className="text-xs text-gray-500">Suit, licence and first month are <strong>not</strong> taken on Direct Debit — only the ongoing monthly membership.</p>
+                </div>
               </>
             })()}
           </div>
-          <p className="flex gap-2 text-xs text-gray-500"><ShieldCheck className="h-4 w-4 shrink-0 text-green-600" /> Bank details are entered in GoCardless&apos;s secure window and are protected by the Direct Debit Guarantee. Forza Karate Club never sees your account number.</p>
+          <p className="flex gap-2 text-xs text-gray-500"><CreditCard className="h-4 w-4 shrink-0 text-[#dc2626]" /> You&apos;ll pay the one-off total securely with Stripe. After that, GoCardless opens so you can set up the monthly Direct Debit (bank details protected by the Direct Debit Guarantee).</p>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <Button type="submit" size="lg" className="w-full" disabled={busy}>
-            {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opening secure form…</> : 'Continue to set up Direct Debit'}
+            {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opening card payment…</> : 'Pay now by card'}
           </Button>
           <button type="button" onClick={() => { setError(''); setStep(1) }} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2" disabled={busy}>
             ← Previous
           </button>
-          {!scriptReady && <p className="text-xs text-gray-400 text-center">Loading secure payment form…</p>}
         </section>
         )}
       </form>
     </div>
   )
+}
+
+
+export default function Page() {
+  return <Suspense fallback={<div className="min-h-screen bg-[#fafaf9] pt-28" />}><MembershipSignup /></Suspense>
 }

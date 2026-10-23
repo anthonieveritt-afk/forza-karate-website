@@ -59,7 +59,7 @@ export function firstOfNextMonth(date: string): string {
   return d.toISOString().slice(0, 10)
 }
 
-// ─── One-off extras taken in the same Direct Debit flow ─────────────────────
+// ─── One-off extras (suit + licence) — charged on Stripe with pro-rata first month ─
 
 export const SUIT_KEYS = ['blitz-gi'] as const
 export type SuitKey = typeof SUIT_KEYS[number]

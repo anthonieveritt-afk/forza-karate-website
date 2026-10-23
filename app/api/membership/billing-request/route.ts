@@ -1,63 +1,27 @@
 import { NextResponse } from 'next/server'
 import { gc, gcEnv, gcConfigured, GcError } from '@/lib/gocardless/client'
-import { PLANS, DOJOS, planAllowed, membershipStart, requiredSuit, extrasLineItems, licenceFeePence, type PlanKey, type DojoKey, type LicenceType } from '@/lib/gocardless/plans'
+import { PLANS } from '@/lib/gocardless/plans'
+import { parseMembershipBody } from '@/lib/gocardless/parse-signup'
 import { saveSignup, type Signup } from '@/lib/gocardless/store'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const s = (v: unknown, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '')
-const DATE = /^\d{4}-\d{2}-\d{2}$/
-
+/**
+ * Legacy: create a GoCardless billing request immediately (mandate + later GC one-offs).
+ * Prefer POST /api/membership/checkout (Stripe one-off, then start-dd for mandate only).
+ */
 export async function POST(req: Request) {
-  // Validate the form first (so bad input always gets a 400), then check GoCardless is set up.
   const b = await req.json().catch(() => null)
-  if (!b) return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
-
-  const plan = s(b.plan) as PlanKey
-  const dojo = s(b.dojo) as DojoKey
-  if (!(plan in PLANS)) return NextResponse.json({ error: 'Please choose a membership.' }, { status: 400 })
-  if (!(dojo in DOJOS)) return NextResponse.json({ error: 'Please choose a dojo.' }, { status: 400 })
-  const trialDate = s(b.trialDate, 10)
-  if (!DATE.test(trialDate)) return NextResponse.json({ error: 'Please enter the date of the trial class.' }, { status: 400 })
-
-  let bad = ''
-  const students = (Array.isArray(b.students) ? b.students : []).slice(0, 6).map((x: any) => {
-    const dateOfBirth = s(x?.dateOfBirth, 10)
-    // Every new member must buy the Official Forza Karate Club Gi (£40): no "already have one" path.
-    const suit = requiredSuit(x?.suit)
-    if (!suit && (s(x?.firstName, 60) || s(x?.surname, 60)))
-      bad = 'Every new member needs an Official Forza Karate Club Gi (£40). Please choose a suit size (by height) for each student.'
-    // Joining students always get a first licence (paid). Any client-sent type is ignored.
-    const t: LicenceType = 'first_time'
-    const licence: { type: string; feePence: number } = { type: t, feePence: licenceFeePence(t, dateOfBirth) }
-    return { firstName: s(x?.firstName, 60), surname: s(x?.surname, 60), dateOfBirth,
-      belt: s(x?.belt, 40) || 'White', medical: s(x?.medical, 500), suit, licence }
-  }).filter((x: any) => x.firstName && x.surname)
-  if (bad) return NextResponse.json({ error: bad }, { status: 400 })
-  if (students.length && !planAllowed(plan, students.length))
-    return NextResponse.json({ error: 'That package doesn\'t match the number of students: Single is 1 student, Siblings is 2, Family is 3 or more.' }, { status: 400 })
-  if (!students.length || students.some((x: any) => !DATE.test(x.dateOfBirth)))
-    return NextResponse.json({ error: "Please enter each student's name and date of birth." }, { status: 400 })
-
-  const p = b.parent ?? {}
-  const parent = {
-    givenName: s(p.givenName, 60), familyName: s(p.familyName, 60), email: s(p.email, 120).toLowerCase(),
-    phone: s(p.phone, 30), address: s(p.address, 200), city: s(p.city, 60), postCode: s(p.postCode, 10).toUpperCase(),
-  }
-  if (!parent.givenName || !parent.familyName || !/^\S+@\S+\.\S+$/.test(parent.email) || !parent.phone || !parent.address || !parent.postCode)
-    return NextResponse.json({ error: 'Please complete the parent or guardian details.' }, { status: 400 })
-  const emergency = { name: s(b.emergency?.name, 80), phone: s(b.emergency?.phone, 30) }
-  if (!emergency.name || !emergency.phone) return NextResponse.json({ error: 'Please add an emergency contact.' }, { status: 400 })
-  if (!b.consent?.terms) return NextResponse.json({ error: 'Please accept the club terms.' }, { status: 400 })
-  if (students.some((x: any) => !x.suit)) return NextResponse.json({ error: 'Please choose a suit size (by height) for each student.' }, { status: 400 })
-
+  const parsed = parseMembershipBody(b)
+  if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 })
   if (!gcConfigured()) return NextResponse.json({ error: 'Direct Debit sign-up is not available yet.' }, { status: 503 })
 
+  const core = parsed.signup
   const signup: Signup = {
-    plan, dojo, classTime: s(b.classTime, 120), trialDate, startDate: membershipStart(trialDate),
-    students, parent, emergency, consent: { photos: !!b.consent?.photos, terms: true },
-    extrasPence: extrasLineItems(students).reduce((t, item) => t + item.pricePence, 0),
+    ...core,
+    stripe: null,
+    billingRequestId: null,
     createdAt: new Date().toISOString(),
   }
 
@@ -66,8 +30,8 @@ export async function POST(req: Request) {
       method: 'POST',
       body: {
         billing_requests: {
-          mandate_request: { scheme: 'bacs', currency: 'GBP', description: `Forza Karate membership — ${PLANS[plan].label}` },
-          metadata: { source: 'forza-website-signup', plan, dojo },
+          mandate_request: { scheme: 'bacs', currency: 'GBP', description: `Forza Karate membership — ${PLANS[core.plan].label}` },
+          metadata: { source: 'forza-website-signup', plan: core.plan, dojo: core.dojo },
         },
       },
     })
@@ -81,14 +45,14 @@ export async function POST(req: Request) {
           lock_customer_details: false,
           show_redirect_buttons: false,
           prefilled_customer: {
-            given_name: parent.givenName, family_name: parent.familyName, email: parent.email,
-            address_line1: parent.address, city: parent.city, postal_code: parent.postCode, country_code: 'GB',
+            given_name: core.parent.givenName, family_name: core.parent.familyName, email: core.parent.email,
+            address_line1: core.parent.address, city: core.parent.city, postal_code: core.parent.postCode, country_code: 'GB',
           },
           links: { billing_request: br.id },
         },
       },
     })
-    await saveSignup(br.id, signup)
+    await saveSignup(br.id, { ...signup, billingRequestId: br.id })
     return NextResponse.json({ billingRequestId: br.id, flowId: flow.id, environment: gcEnv(), startDate: signup.startDate, extrasPence: signup.extrasPence })
   } catch (e) {
     console.error('billing-request error', e instanceof GcError ? JSON.stringify(e.body).slice(0, 500) : e)

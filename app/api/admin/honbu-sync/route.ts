@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       if (!apply) continue
       const s = await loadSignup(id)
       if (!s) { failed.push({ id, detail: 'sign-up details not found' }); continue }
-      const honbu = await handOffToHonbu(id, s, { customerId: o.customerId, mandateId: o.mandateId, subscriptionId: o.subscriptionId, firstPaymentId: o.firstPaymentId ?? null, extrasPaymentId: o.extrasPaymentId ?? null })
+      const honbu = await handOffToHonbu(id, s, { customerId: o.customerId, mandateId: o.mandateId, subscriptionId: o.subscriptionId, firstPaymentId: o.firstPaymentId ?? null, extrasPaymentId: o.extrasPaymentId ?? null, stripeSessionId: o.stripeSessionId ?? s.stripe?.sessionId ?? null, stripePaymentIntentId: o.stripePaymentIntentId ?? s.stripe?.paymentIntentId ?? null, stripeAmountPence: o.stripeAmountPence ?? s.stripe?.amountPence ?? null })
       if (honbu.ok) { await saveOutcome(id, { ...o, honbu }); sent.push(id) } else failed.push({ id, detail: honbu.detail })
     }
     out.signups = { completedSignups: brIds.size, alreadyInHonbu: okAlready, notInHonbu: pending.length, pendingIds: pending, ...(apply ? { sent: sent.length, failed } : { dryRun: true }) }
