@@ -34,7 +34,7 @@ function Done() {
         {state === 'done' && <>
           <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold mb-2">Welcome to Forza Karate Club!</h1>
-          <p className="text-gray-500 text-sm">Your Direct Debit is set up{start ? `, and the monthly payments start on ${new Date(start + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}` : ''}. GoCardless will email you a confirmation, and we&apos;ll be in touch about your first class as a member.</p>
+          <p className="text-gray-500 text-sm">Your card payment for suit, licence and first month is complete, and your monthly Direct Debit is set up{start ? ` (from ${new Date(start + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })})` : ''}. GoCardless will email you a confirmation, and we&apos;ll be in touch about your first class as a member.</p>
         </>}
         {state === 'pending' && <><h1 className="text-xl font-bold mb-2">Nearly there</h1><p className="text-gray-500 text-sm">GoCardless is still confirming your Direct Debit. There&apos;s nothing more to do; we&apos;ll email you once it&apos;s confirmed.</p></>}
         {state === 'error' && <><h1 className="text-xl font-bold mb-2">We couldn&apos;t confirm this yet</h1><p className="text-gray-500 text-sm mb-4">If you completed the Direct Debit, there&apos;s nothing more to do and we&apos;ll be in touch. Otherwise please try again.</p><Link href="/join/membership" className="text-[#dc2626] underline text-sm">Back to the form</Link></>}

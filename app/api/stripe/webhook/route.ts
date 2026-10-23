@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     const s = event.data.object as Stripe.Checkout.Session
     const kind = s.metadata?.kind
     if (s.payment_status !== 'paid' && kind !== 'video') return NextResponse.json({ received: true, skipped: 'unpaid' })
-    if (kind !== 'trial' && kind !== 'guide' && kind !== 'video') return NextResponse.json({ received: true, skipped: 'not ours' })
+    if (kind !== 'trial' && kind !== 'guide' && kind !== 'video' && kind !== 'membership') return NextResponse.json({ received: true, skipped: 'not ours' })
 
     // Idempotency: one checkout session = one set of emails, however often Stripe delivers it.
     const onceKey = `checkout-${s.id}`
@@ -103,6 +103,15 @@ export async function POST(req: NextRequest) {
         ])
       } else if (kind === 'video') {
         await notifyClub('New video membership', [`${s.customer_details?.email || ''} subscribed.`, `Stripe session: ${s.id}`])
+      } else if (kind === 'membership') {
+        // One-off kit/licence/pro-rata; monthly DD is created after GoCardless on the success page.
+        await notifyClub(`Membership one-off paid (Stripe)${s.livemode ? '' : ' [TEST]'}`, [
+          `${gbp(s.amount_total ?? 0)} — signup ${s.metadata?.signupId || '?'} — ${s.metadata?.plan || ''} / ${s.metadata?.dojo || ''}`,
+          `Students: ${s.metadata?.students || ''}`,
+          `Email: ${s.customer_details?.email || s.metadata?.email || ''}`,
+          `Stripe session: ${s.id}`,
+          'Next: customer sets up monthly Direct Debit (mandate only) on the website.',
+        ])
       }
     } catch (err) {
       console.error('[stripe-webhook] processing failed, asking Stripe to retry:', err instanceof Error ? err.message : err)
