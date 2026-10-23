@@ -7,7 +7,7 @@ import { Loader2, Plus, Trash2, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
 import { HeightGuide } from '@/components/HeightGuide'
-import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, REQUIRED_SUIT_KEY, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
+import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, REQUIRED_SUIT_KEY, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, ageOn, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
 
 declare global {
   interface Window {
@@ -64,6 +64,21 @@ export default function MembershipSignup() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [scriptReady, setScriptReady] = useState(false)
+  const [step, setStep] = useState(1)
+  // Account-holder copy: parent/guardian only when any student is under 18 (or DOB not yet filled).
+  // Adults joining themselves see "Your details (account holder)".
+  const allStudentsAdult = students.every(st => {
+    const a = ageOn(st.dateOfBirth)
+    return a !== null && a >= LICENCE_ADULT_AGE
+  })
+  const accountTitle = allStudentsAdult
+    ? '3. Your details (account holder)'
+    : '3. Parent or guardian (account holder)'
+  const photoConsentLabel = allStudentsAdult
+    ? (students.length > 1
+        ? "I'm happy for photos of us to appear on club social media."
+        : "I'm happy for photos of me to appear on club social media.")
+    : "I'm happy for photos of the student(s) to appear on club social media."
 
   const autoPlan: PlanKey = students.length >= 3 ? 'monthly_family' : students.length === 2 ? 'monthly_two' : 'monthly_single'
   const plan: PlanKey = planChoice && planAllowed(planChoice, students.length) ? planChoice : autoPlan
@@ -120,11 +135,21 @@ export default function MembershipSignup() {
           <p className="text-xs font-semibold uppercase tracking-widest text-[#dc2626] mb-2">Forza Karate Club</p>
           <h1 className="text-3xl font-bold text-[#111111]">Become a member</h1>
           <p className="text-gray-500 mt-2 text-sm leading-relaxed">
-            Enjoyed your trial class? Everything is on this one page: membership, karate suit, FKA licence and your monthly Direct Debit, set up in the secure
-            GoCardless window, all without leaving this page. Membership starts the week after your trial.
+            Enjoyed your trial class? Membership, karate suit, FKA licence and your monthly Direct Debit are set up here in a few short steps,
+            finishing in GoCardless&apos;s secure window. Membership starts the week after your trial.
           </p>
         </header>
 
+        <div className="space-y-2" aria-label="Progress">
+          <div className="flex items-center gap-2">
+            {[1, 2, 3, 4].map(n => (
+              <span key={n} className={`flex-1 h-1 rounded-full ${step >= n ? 'bg-[#dc2626]' : 'bg-black/10'}`} />
+            ))}
+          </div>
+          <p className="text-xs text-gray-400">Step {step} of 4</p>
+        </div>
+
+        {step === 1 && (
         <section className="space-y-4">
           <h2 className="text-lg font-bold">1. Membership</h2>
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
@@ -161,8 +186,15 @@ export default function MembershipSignup() {
               {trialDate ? <>Membership starts <strong className="ml-1">{ukDate(membershipStart(trialDate))}</strong></> : 'Membership starts the week after your trial.'}
             </div>
           </div>
+          <Button type="button" size="lg" className="w-full" onClick={() => {
+            if (!dojo || !classTime || !trialDate) { setError('Please choose a dojo, class and trial date.'); return }
+            setError(''); setStep(2)
+          }}>Continue</Button>
+          {error && step === 1 && <p className="text-sm text-red-600">{error}</p>}
         </section>
+        )}
 
+        {step === 2 && (
         <section className="space-y-4">
           <h2 className="text-lg font-bold">2. Student details</h2>
           {students.map((st, i) => (
@@ -204,10 +236,24 @@ export default function MembershipSignup() {
               <Plus className="h-4 w-4" /> Add another student
             </button>
           )}
+          <div className="flex flex-col gap-2">
+            <Button type="button" size="lg" className="w-full" onClick={() => {
+              if (students.some(st => !st.firstName || !st.surname || !st.dateOfBirth || !st.suitSize)) {
+                setError('Please complete each student\'s name, date of birth and suit size.'); return
+              }
+              setError(''); setStep(3)
+            }}>Continue</Button>
+            <button type="button" onClick={() => { setError(''); setStep(1) }} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2">
+              ← Previous
+            </button>
+            {error && step === 2 && <p className="text-sm text-red-600">{error}</p>}
+          </div>
         </section>
+        )}
 
+        {step === 3 && (
         <section className="space-y-4">
-          <h2 className="text-lg font-bold">3. Parent or guardian (account holder)</h2>
+          <h2 className="text-lg font-bold">{accountTitle}</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div><label className={lbl}>First name</label><input required className={input} value={parent.givenName} onChange={e => setParent({ ...parent, givenName: e.target.value })} /></div>
             <div><label className={lbl}>Surname</label><input required className={input} value={parent.familyName} onChange={e => setParent({ ...parent, familyName: e.target.value })} /></div>
@@ -219,10 +265,25 @@ export default function MembershipSignup() {
             <div><label className={lbl}>Emergency contact name</label><input required className={input} value={emergency.name} onChange={e => setEmergency({ ...emergency, name: e.target.value })} /></div>
             <div><label className={lbl}>Emergency contact phone</label><input required type="tel" className={input} value={emergency.phone} onChange={e => setEmergency({ ...emergency, phone: e.target.value })} /></div>
           </div>
-          <label className="flex gap-3 text-sm text-gray-600"><input type="checkbox" checked={photos} onChange={e => setPhotos(e.target.checked)} className="mt-1" /> I&apos;m happy for photos of the student(s) to appear on club social media.</label>
+          <label className="flex gap-3 text-sm text-gray-600"><input type="checkbox" checked={photos} onChange={e => setPhotos(e.target.checked)} className="mt-1" /> {photoConsentLabel}</label>
           <label className="flex gap-3 text-sm text-gray-600"><input required type="checkbox" checked={terms} onChange={e => setTerms(e.target.checked)} className="mt-1" /> I agree to the club rules (including that only official Forza Karate Club uniforms may be worn in class) and the <a href="/privacy-policy" className="underline" target="_blank">privacy policy</a>.</label>
+          <div className="flex flex-col gap-2">
+            <Button type="button" size="lg" className="w-full" onClick={() => {
+              if (!parent.givenName || !parent.familyName || !parent.email || !parent.phone || !parent.address || !parent.city || !parent.postCode || !emergency.name || !emergency.phone) {
+                setError('Please complete your contact and emergency details.'); return
+              }
+              if (!terms) { setError('Please agree to the club rules and privacy policy.'); return }
+              setError(''); setStep(4)
+            }}>Continue</Button>
+            <button type="button" onClick={() => { setError(''); setStep(2) }} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2">
+              ← Previous
+            </button>
+            {error && step === 3 && <p className="text-sm text-red-600">{error}</p>}
+          </div>
         </section>
+        )}
 
+        {step === 4 && (
         <section className="space-y-4">
           <h2 className="text-lg font-bold">4. Direct Debit</h2>
           <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-2">
@@ -254,8 +315,12 @@ export default function MembershipSignup() {
           <Button type="submit" size="lg" className="w-full" disabled={busy}>
             {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opening secure form…</> : 'Continue to set up Direct Debit'}
           </Button>
+          <button type="button" onClick={() => { setError(''); setStep(3) }} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2" disabled={busy}>
+            ← Previous
+          </button>
           {!scriptReady && <p className="text-xs text-gray-400 text-center">Loading secure payment form…</p>}
         </section>
+        )}
       </form>
     </div>
   )
