@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getMemberPortalData, getMemberLicenceSlipMeta } from '@/app/actions/portal'
 import MembersArea from '@/components/members/MembersArea'
 import { LicenceCard } from '@/components/members/LicenceCard'
+import { LicenceSlipPreview } from '@/components/members/LicenceSlipPreview'
 import { BeltJourney } from '@/components/members/BeltJourney'
 
 function beltBadgeClass(belt: string | null): string {
@@ -48,7 +49,13 @@ export default async function MembersPortalPage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9]">
-      <MembersArea>
+      <MembersArea
+        asideExtra={
+          typeof slip?.slipId === 'number' && slip.slipId > 0 ? (
+            <LicenceSlipPreview slipId={slip.slipId} slipFileName={slip.fileName} />
+          ) : null
+        }
+      >
         <div className="space-y-8">
 
           {/* Profile card */}
@@ -88,8 +95,6 @@ export default async function MembersPortalPage() {
             licenceNumber={profile.licenceNumber}
             licenceStartDate={profile.licenceStartDate}
             licenceExpiryDate={profile.licenceExpiryDate}
-            slipId={slip?.slipId ?? null}
-            slipFileName={slip?.fileName ?? null}
           />
 
           {/* Belt journey */}
