@@ -190,15 +190,7 @@ export default function PrivacyPolicyPage() {
             </div>
 
             <div>
-              <h2 className="text-xl font-bold text-[#111111] mb-3">10. Complaints</h2>
-              <p>
-                If you have a concern about how we handle your data, you can contact the ICO (Information
-                Commissioner&apos;s Office) at <strong>ico.org.uk</strong> or call 0303 123 1113.
-              </p>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-bold text-[#111111] mb-3">11. Changes to this policy</h2>
+              <h2 className="text-xl font-bold text-[#111111] mb-3">10. Changes to this policy</h2>
               <p>
                 We may update this policy from time to time. The latest version will always be available
                 on this page.
