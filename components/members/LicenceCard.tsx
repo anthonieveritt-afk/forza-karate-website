@@ -146,17 +146,24 @@ export function LicenceCard({
         </div>
       </div>
       {typeof slipId === 'number' && slipId > 0 && (
-        <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-black/5 pt-6">
-          <a
-            href={`/members/licence-slip/${slipId}`}
-            className="inline-flex items-center rounded-lg border border-[#111111]/15 bg-white px-4 py-2 text-sm font-semibold text-[#111111] hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dc2626]/50"
-            download={slipFileName || undefined}
-          >
-            Download licence slip
-          </a>
-          <span className="text-xs text-gray-500">
-            Your EKNGB / FKA licence certificate{slipFileName ? ` (${slipFileName})` : ''}.
-          </span>
+        <div className="mt-6 border-t border-black/5 pt-6">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-gray-600">Your EKNGB / FKA licence certificate</p>
+            <a
+              href={`/members/licence-slip/${slipId}?download=1`}
+              className="inline-flex items-center rounded-lg border border-[#111111]/15 bg-white px-4 py-2 text-sm font-semibold text-[#111111] hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dc2626]/50"
+              download={slipFileName || 'licence-slip.pdf'}
+            >
+              Download
+            </a>
+          </div>
+          <div className="overflow-hidden rounded-xl border border-black/10 bg-gray-50">
+            <iframe
+              title="EKNGB / FKA licence certificate"
+              src={`/members/licence-slip/${slipId}`}
+              className="h-[min(70vh,640px)] min-h-[480px] w-full border-0"
+            />
+          </div>
         </div>
       )}
       <LicenceEditor licenceNumber={licenceNumber} licenceStartDate={licenceStartDate} licenceExpiryDate={licenceExpiryDate} />
