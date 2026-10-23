@@ -52,14 +52,19 @@ export default function BeltJourney() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/assets/home/belt-journey-1600.png"
-            alt="Overview of the Forza belt journey from white belt (17th Kyu) to black belt (Shodan)"
-            width={1600}
-            height={420}
+            alt="Overview of the Forza belt journey from white belt (17th Kyu) to black belt (Shodan), including Brown/Black Stripe and Black/White Stripe"
+            width={1680}
+            height={400}
             loading="lazy"
             decoding="async"
             className="w-full h-auto"
           />
         </picture>
+        <p className="-mt-8 mb-12 text-center text-xs text-gray-600">
+          <span className="font-semibold text-[#111111]">B/Bk</span> = Brown / Black Stripe ·{' '}
+          <span className="font-semibold text-[#111111]">Bk/W</span> = Black / White Stripe ·{' '}
+          <span className="font-semibold text-[#111111]">Dan</span> = 1st Dan (Shodan)
+        </p>
 
         {/* Belt grid */}
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-x-4 gap-y-6">
