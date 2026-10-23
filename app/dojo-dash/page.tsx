@@ -34,7 +34,7 @@ export default function DojoDashPage() {
         >
           Parents — book a £10 trial
         </Link>
-        <p className="mt-3 text-sm text-gray-500">A Forza Karate Club learning game</p>
+        <p className="mt-3 text-sm text-gray-500">for a real karate class with Forza Karate Club.</p>
       </div>
     </main>
   )
