@@ -3,8 +3,50 @@ import type { NextRequest } from 'next/server'
 import { checkMemberSession, MEMBERS_COOKIE } from '@/lib/members/session'
 import { isMembersOnlyPath, legacyEventPaths } from '@/lib/members/links'
 
+function isDojoDashGamePath(pathname: string) {
+  const p = pathname.replace(/\/+$/, '') || '/'
+  return p === '/games/dojo-dash' || p === '/games/dojo-dash/index.html' || p.startsWith('/games/dojo-dash/')
+}
+
+/** Top-level hits to the bare game URL go through the soft parent interstitial on /dojo-dash. Same-origin iframes still load. */
+function gateBareDojoDash(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  if (!isDojoDashGamePath(pathname)) return null
+
+  const dest = (request.headers.get('sec-fetch-dest') || '').toLowerCase()
+  if (dest === 'iframe' || dest === 'embed') return NextResponse.next()
+
+  if (dest === 'document') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dojo-dash'
+    url.search = ''
+    url.hash = ''
+    return NextResponse.redirect(url, 307)
+  }
+
+  // Older browsers / odd clients: allow when Referer is same host (iframe/nav from Forza), else redirect.
+  const referer = request.headers.get('referer')
+  if (referer) {
+    try {
+      const ref = new URL(referer)
+      if (ref.host === request.nextUrl.host) return NextResponse.next()
+    } catch {
+      /* ignore bad referer */
+    }
+  }
+
+  const url = request.nextUrl.clone()
+  url.pathname = '/dojo-dash'
+  url.search = ''
+  url.hash = ''
+  return NextResponse.redirect(url, 307)
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  const dojoGate = gateBareDojoDash(request)
+  if (dojoGate) return dojoGate
 
   // Defence in depth: gallery-proxy must never act for anonymous callers.
   // The route itself returns 410; this also blocks before the handler if needed.
@@ -60,5 +102,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/members/:path+', '/register/:path*', '/api/gallery-proxy/:path*'],
+  matcher: [
+    '/members/:path+',
+    '/register/:path*',
+    '/api/gallery-proxy/:path*',
+    '/games/dojo-dash',
+    '/games/dojo-dash/:path*',
+  ],
 }

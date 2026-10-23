@@ -7,9 +7,17 @@ const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   async headers() {
     // /admin stays reachable by direct URL for staff but is never indexed or linked.
+    // Dojo Dash game assets: only Forza may iframe them (soft parent gate on /dojo-dash).
     return [
       { source: '/admin', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
       { source: '/admin/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
+      {
+        source: '/games/dojo-dash/:path*',
+        headers: [
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'self'" },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+        ],
+      },
     ];
   },
   async redirects() {
