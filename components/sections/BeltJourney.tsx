@@ -1,4 +1,6 @@
+import Link from 'next/link'
 import BeltIcon from '@/components/ui/BeltIcon'
+import { ArrowRight } from 'lucide-react'
 
 const belts = [
   { kyu: '17th Kyu', name: 'White Belt / Red Stripe',    bg: '#ffffff', border: '#d1d5db', stripe: '#ef4444' },
@@ -64,6 +66,16 @@ export default function BeltJourney() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <Link
+            href="/gradings"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#dc2626] hover:underline min-h-11"
+          >
+            Full grading information
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
         </div>
       </div>
     </section>

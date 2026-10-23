@@ -58,7 +58,7 @@ export default function RayleighPage() {
 
             <div className="mt-10">
               <Button asChild>
-                <Link href="/join">
+                <Link href="/trial-class">
                   Book a £10 Trial at Rayleigh
                   <ArrowRight className="h-4 w-4" />
                 </Link>

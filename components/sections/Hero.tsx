@@ -1,169 +1,120 @@
-'use client'
-
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight } from 'lucide-react'
-import AnimatedWord from '@/components/ui/AnimatedWord'
 
-const photos = [
-  { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 15%' },
-  { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 15%' },
-  { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 20%' },
-  { src: '/hero5.jpg',                      alt: 'Forza Karate Club competition victory', position: '50% 15%' },
-  { src: '/hero6.webp',                     alt: 'Forza Karate Club',                  position: '50% 15%' },
-  { src: '/hero7.jpg',                      alt: 'Forza Karate Club',                  position: '50% 15%' },
-  { src: '/hero18.jpg',                     alt: 'Forza Karate Club young student',    position: '50% 15%' },
-  { src: '/hero9.jpg',                      alt: 'Forza Karate Club',                  position: '50% 15%' },
-  { src: '/hero12.jpg',                     alt: 'Forza Karate Club',                  position: '50% 15%' },
-  { src: '/hero14.jpg',                     alt: 'Forza Karate Club',                  position: '50% 15%' },
-  { src: '/team/team-01.jpg',               alt: 'Forza Karate squad',                 position: '50% 15%' },
-  { src: '/team/team-02.jpg',               alt: 'Forza Karate squad',                 position: '50% 15%' },
-  { src: '/team/team-03.jpg',               alt: 'Forza Karate squad',                 position: '50% 15%' },
-  { src: '/team/team-04.jpg',               alt: 'Forza Karate squad',                 position: '50% 15%' },
-  { src: '/team/team-05.jpg',               alt: 'Forza Karate squad',                 position: '50% 15%' },
-  { src: '/team/team-group.jpg',            alt: 'Forza Karate squad group',           position: '50% 15%' },
-  { src: '/team/team-competition-01.jpg',   alt: 'Forza Karate competition',           position: '50% 15%' },
-  { src: '/hero16.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero19.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero20.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero21.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero27.jpg',                     alt: 'Forza Karate class training',        position: '50% 20%' },
-  { src: '/hero28.jpg',                     alt: 'Forza Karate class',                 position: '50% 20%' },
-  { src: '/hero29.jpg',                     alt: 'Forza Karate class group',           position: '50% 15%' },
-  { src: '/hero30.jpg',                     alt: 'BKF Four Nations medals',            position: '50% 15%' },
-  { src: '/hero31.jpg',                     alt: 'Forza Karate competition action',    position: '50% 15%' },
-  { src: '/hero32.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero33.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero34.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero35.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero36.jpg',                     alt: 'Forza Karate',                       position: '50% 15%' },
-  { src: '/hero37.jpg',                     alt: 'Forza Karate kata competition',      position: '50% 15%' },
-  { src: '/hero38.jpg',                     alt: 'Forza Karate Club group',            position: '50% 15%' },
-]
+/** Single composed club photo — joyful young student, clear face/action, space for text on the right. */
+const HERO_PHOTO = {
+  src: '/hero18.jpg',
+  alt: 'Young Forza Karate student smiling in class with blue sparring gloves',
+}
 
 export default function Hero() {
-  const [current, setCurrent] = useState(0)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((i) => (i + 1) % photos.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
-
   return (
-    <section className="bg-white overflow-hidden">
-
-      {/* ── MOBILE: photo block above text ── */}
-      <div className="relative h-72 sm:h-96 md:hidden overflow-hidden">
-        {photos.map((photo, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={photo.src}
-            src={photo.src}
-            alt={photo.alt}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: photo.position,
-              opacity: i === current ? 1 : 0,
-              transition: 'opacity 0.8s ease-in-out',
-            }}
+    <section className="relative bg-[#111111] overflow-hidden">
+      {/* Desktop / tablet: photo with localised left gradient, text beside */}
+      <div className="relative hidden md:grid md:grid-cols-2 min-h-[min(88vh,720px)]">
+        <div className="relative order-2 md:order-1">
+          <Image
+            src={HERO_PHOTO.src}
+            alt={HERO_PHOTO.alt}
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover object-[30%_20%]"
           />
-        ))}
-      </div>
-
-      {/* ── DESKTOP: full-background photo behind content ── */}
-      <div className="relative min-h-screen hidden md:flex items-center">
-        {photos.map((photo, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={photo.src}
-            src={photo.src}
-            alt={photo.alt}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: photo.position,
-              opacity: i === current ? 1 : 0,
-              transition: 'opacity 0.8s ease-in-out',
-              zIndex: i === current ? 1 : 0,
-            }}
+          {/* Soft edge into text column — not a heavy white wash over faces */}
+          <div
+            className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#111111] to-transparent pointer-events-none"
+            aria-hidden
           />
-        ))}
-        {/* White fade right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-white" style={{ zIndex: 2 }} />
-        <div className="relative z-10 ml-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="ml-auto max-w-lg py-24">
+        </div>
+
+        <div className="relative order-1 md:order-2 flex items-center bg-[#111111] px-8 lg:px-12 xl:px-16 py-20">
+          <div className="max-w-xl">
             <div className="flex items-center gap-2 mb-6">
               <div className="w-8 h-0.5 bg-[#dc2626]" />
-              <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Forza Karate Club</span>
+              <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">
+                Forza Karate Club
+              </span>
             </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#111111] leading-[1.05] tracking-tight mb-6">
-              This is where<br />our students{' '}<AnimatedWord />
+            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.08] tracking-tight mb-5">
+              Big confidence starts with a first class.
             </h1>
-            <p className="text-lg text-gray-600 leading-relaxed mb-10">
-              Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster.
-              Term-time classes, real progression, and a community that lasts.
+            <p className="text-lg text-white/75 leading-relaxed mb-8">
+              Help your child build confidence, focus and friendships through karate in Rayleigh
+              and Upminster. Beginners welcome.
             </p>
-            <div className="grid grid-cols-2 gap-3">
-              <Button asChild size="lg" className="w-full justify-center">
-                <Link href="/trial-class">Book a £10 Trial</Link>
+            <div className="flex flex-wrap gap-3 mb-8">
+              <Button asChild size="lg">
+                <Link href="/trial-class">
+                  Book a £10 Trial
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </Button>
-              <Button asChild size="lg" className="w-full justify-center bg-white text-[#dc2626] hover:bg-gray-50 border-2 border-[#dc2626]">
-                <Link href="/join">Join Now</Link>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="border-white/25 bg-transparent text-white hover:bg-white/10"
+              >
+                <Link href="#find-class">Find Your Child&apos;s Class</Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="w-full justify-center">
-                <Link href="/classes">View Classes</Link>
-              </Button>
-              <Link href="/safeguarding" className="inline-flex items-center justify-center gap-2 px-4 h-12 rounded-2xl border border-black/12 bg-white/80 hover:bg-white hover:border-black/25 transition-colors text-sm font-medium">
-                <Image src="/safeguarding-code-logo.webp" alt="Safeguarding Code" width={28} height={28} className="w-7 h-7 object-contain flex-shrink-0" />
-                <span className="text-[#111111] leading-tight">Safeguarding Code</span>
-              </Link>
             </div>
+            <p className="text-sm text-white/55">
+              Classes from age 4 · Rayleigh &amp; Upminster · Beginners welcome
+            </p>
           </div>
         </div>
       </div>
 
-      {/* ── MOBILE: text below photo ── */}
-      <div className="md:hidden px-5 py-10 bg-white">
-        <div className="max-w-lg">
+      {/* Mobile: photo on top, text below — no overlay on faces */}
+      <div className="md:hidden">
+        <div className="relative h-72 sm:h-80">
+          <Image
+            src={HERO_PHOTO.src}
+            alt={HERO_PHOTO.alt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[35%_18%]"
+          />
+        </div>
+        <div className="px-5 py-10 bg-[#111111]">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-0.5 bg-[#dc2626]" />
-            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Forza Karate Club</span>
+            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">
+              Forza Karate Club
+            </span>
           </div>
-          <h1 className="text-4xl font-bold text-[#111111] leading-[1.1] tracking-tight mb-4">
-            This is where<br />our students{' '}<AnimatedWord />
+          <h1 className="text-3xl sm:text-4xl font-bold text-white leading-[1.1] tracking-tight mb-4">
+            Big confidence starts with a first class.
           </h1>
-          <p className="text-base text-gray-600 leading-relaxed mb-8">
-            Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster.
+          <p className="text-base text-white/75 leading-relaxed mb-7">
+            Help your child build confidence, focus and friendships through karate in Rayleigh
+            and Upminster. Beginners welcome.
           </p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-3 mb-6">
             <Button asChild size="lg" className="w-full justify-center">
-              <Link href="/trial-class">Book a £10 Trial</Link>
+              <Link href="/trial-class">
+                Book a £10 Trial
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </Button>
-            <Button asChild size="lg" className="w-full justify-center bg-white text-[#dc2626] hover:bg-gray-50 border-2 border-[#dc2626]">
-              <Link href="/join">Join Now</Link>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="w-full justify-center border-white/25 bg-transparent text-white hover:bg-white/10"
+            >
+              <Link href="#find-class">Find Your Child&apos;s Class</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="w-full justify-center">
-              <Link href="/classes">View Classes</Link>
-            </Button>
-            <Link href="/safeguarding" className="inline-flex items-center justify-center gap-2 px-4 h-12 rounded-2xl border border-black/12 bg-white/80 hover:bg-white hover:border-black/25 transition-colors text-sm font-medium">
-              <Image src="/safeguarding-code-logo.webp" alt="Safeguarding Code" width={28} height={28} className="w-7 h-7 object-contain flex-shrink-0" />
-              <span className="text-[#111111] leading-tight">Safeguarding Code</span>
-            </Link>
           </div>
+          <p className="text-sm text-white/55">
+            Classes from age 4 · Rayleigh &amp; Upminster · Beginners welcome
+          </p>
         </div>
       </div>
-
     </section>
   )
 }

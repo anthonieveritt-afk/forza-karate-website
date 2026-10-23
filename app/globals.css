@@ -58,3 +58,11 @@ body {
 .news-body table { width: 100%; border-collapse: collapse; font-size: 0.875rem; display: block; overflow-x: auto; }
 .news-body td, .news-body th { border: 1px solid rgba(0,0,0,.08); padding: .4rem .6rem; }
 .news-body blockquote { border-left: 3px solid #dc2626; padding-left: 1rem; font-style: italic; }
+
+@media (prefers-reduced-motion: reduce) {
+  .team-scroll-track,
+  .animate-ticker,
+  .animate-ping {
+    animation: none !important;
+  }
+}
