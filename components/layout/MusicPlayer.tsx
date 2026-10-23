@@ -120,7 +120,7 @@ export default function MusicPlayer() {
         <button
           onClick={prev}
           aria-label="Previous track"
-          className="w-9 h-9 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
+          className="relative z-10 w-9 h-9 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
             <polygon points="11,1 4,6 11,11" />
@@ -128,27 +128,35 @@ export default function MusicPlayer() {
           </svg>
         </button>
 
-        <button
-          onClick={togglePlay}
-          aria-label={playing ? 'Pause music' : 'Play music'}
-          className="w-12 h-12 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center shadow-lg shadow-black/30 hover:bg-[#dc2626] hover:border-[#dc2626] hover:scale-110 transition-all duration-200"
-        >
-          {playing ? (
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="white">
-              <rect x="2" y="1" width="3.5" height="12" rx="1" />
-              <rect x="8.5" y="1" width="3.5" height="12" rx="1" />
-            </svg>
-          ) : (
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="white">
-              <path d="M3 2 L12 7 L3 12 Z" />
-            </svg>
+        <div className="relative z-10 w-12 h-12 shrink-0">
+          {playing && (
+            <span
+              aria-hidden
+              className="absolute inset-0 rounded-full border border-[#dc2626]/40 animate-ping pointer-events-none"
+            />
           )}
-        </button>
+          <button
+            onClick={togglePlay}
+            aria-label={playing ? 'Pause music' : 'Play music'}
+            className="relative z-10 w-12 h-12 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center shadow-lg shadow-black/30 hover:bg-[#dc2626] hover:border-[#dc2626] hover:scale-110 transition-all duration-200"
+          >
+            {playing ? (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="white">
+                <rect x="2" y="1" width="3.5" height="12" rx="1" />
+                <rect x="8.5" y="1" width="3.5" height="12" rx="1" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="white">
+                <path d="M3 2 L12 7 L3 12 Z" />
+              </svg>
+            )}
+          </button>
+        </div>
 
         <button
           onClick={next}
           aria-label="Next track"
-          className="w-9 h-9 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
+          className="relative z-10 w-9 h-9 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
             <polygon points="1,1 8,6 1,11" />
@@ -156,10 +164,6 @@ export default function MusicPlayer() {
           </svg>
         </button>
       </div>
-
-      {playing && (
-        <span className="fixed bottom-6 right-[3.25rem] z-40 w-12 h-12 rounded-full border border-[#dc2626]/40 animate-ping pointer-events-none" />
-      )}
     </>
   )
 }
