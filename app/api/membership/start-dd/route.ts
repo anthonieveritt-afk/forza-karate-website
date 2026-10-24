@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, after } from 'next/server'
+import { recordCardPaid } from '@/lib/gocardless/fulfil'
 import { getForzaStripe } from '@/lib/paid/stripe'
 import { gc, gcEnv, gcConfigured, GcError } from '@/lib/gocardless/client'
 import { PLANS } from '@/lib/gocardless/plans'
@@ -58,6 +59,10 @@ export async function POST(req: Request) {
     amountPence: paid,
     paidAt: new Date().toISOString(),
   }
+
+  // Stage 1 (same idempotent function as the Stripe webhook): create the member in Club Honbu now,
+  // without making the customer wait for it before the Direct Debit form opens.
+  after(() => recordCardPaid(signupId, stripeInfo).catch(e => console.error('recordCardPaid failed', signupId, e)))
 
   // Already created a BR for this paid signup — return the same flow (idempotent).
   if (signup.billingRequestId) {

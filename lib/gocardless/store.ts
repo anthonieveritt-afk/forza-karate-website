@@ -46,6 +46,16 @@ export type Signup = {
   createdAt: string
 }
 
+/** Card-paid stage: member created in Club Honbu as "awaiting Direct Debit". Keyed by signupId (MSU…). */
+export type CardOutcome = {
+  signupId: string
+  stripe: StripePayment
+  honbu: { ok: boolean; detail?: string; memberIds?: number[] }
+  alertedAt?: string | null
+  backupEmailedAt?: string | null
+  at: string
+}
+
 export type Outcome = {
   billingRequestId: string
   customerId: string
@@ -86,7 +96,7 @@ function dec<T>(b64: string): T {
 }
 
 const PREFIX = 'membership-signups'
-type Kind = 'signup' | 'done'
+type Kind = 'signup' | 'done' | 'card'
 
 /**
  * Pathnames:
@@ -137,6 +147,24 @@ export const saveSignup = (id: string, s: Signup) => save(id, 'signup', s)
 export const loadSignup = (id: string) => load<Signup>(id, 'signup')
 export const saveOutcome = (brId: string, o: Outcome) => save(brId, 'done', o)
 export const loadOutcome = (brId: string) => load<Outcome>(brId, 'done')
+
+export const saveCardOutcome = (signupId: string, o: CardOutcome) => save(signupId, 'card', o)
+export const loadCardOutcome = (signupId: string) => load<CardOutcome>(signupId, 'card')
+
+/** MSU ids with a card-stage record uploaded since `sinceMs`. */
+export async function listRecentCardSignupIds(sinceMs: number): Promise<string[]> {
+  const ids: string[] = []
+  let cursor: string | undefined
+  do {
+    const page = await list({ prefix: `${PREFIX}/MSU`, cursor })
+    for (const b of page.blobs) {
+      const m = /^membership-signups\/(MSU[0-9A-F]+)\.card$/i.exec(b.pathname)
+      if (m && +new Date(b.uploadedAt) >= sinceMs) ids.push(m[1])
+    }
+    cursor = page.hasMore ? page.cursor : undefined
+  } while (cursor)
+  return ids
+}
 
 /** BRQ ids that have a saved signup (exact-path blobs only), newest first, uploaded since `sinceMs`. */
 export async function listRecentBillingRequestIds(sinceMs: number): Promise<string[]> {

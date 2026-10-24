@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { processBillingRequest } from '@/lib/gocardless/fulfil'
-import { listRecentBillingRequestIds, loadOutcome, loadSignup } from '@/lib/gocardless/store'
+import { processBillingRequest, recordCardPaid } from '@/lib/gocardless/fulfil'
+import { listRecentBillingRequestIds, listRecentCardSignupIds, loadCardOutcome, loadOutcome, loadSignup } from '@/lib/gocardless/store'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -32,6 +32,18 @@ export async function GET(req: Request) {
       results[id] = r.state === 'done' ? (r.outcome.honbu.ok ? 'recorded' : 'honbu-failed') : r.state === 'pending' ? `pending:${r.status}` : r.state
     } catch (e) {
       console.error('reconcile failed', id, e)
+      results[id] = 'error'
+    }
+  }
+  // Card-paid members not yet in Club Honbu (Honbu was down at payment time).
+  for (const id of await listRecentCardSignupIds(Date.now() - 7 * 86400_000)) {
+    try {
+      const c = await loadCardOutcome(id)
+      if (!c || c.honbu.ok) continue
+      const r = await recordCardPaid(id, c.stripe, { honbuWaits: [0] })
+      results[id] = r.state
+    } catch (e) {
+      console.error('reconcile card failed', id, e)
       results[id] = 'error'
     }
   }
