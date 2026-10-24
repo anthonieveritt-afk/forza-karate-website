@@ -29,7 +29,7 @@ const kumiteAthletes = [
   'David Butlin',
   'Alex Austin',
   'Claire Buss',
-  'Annabelle Buss',
+  'Kumite team member',
   'Quinn Godfrey',
   'Archie Tebbutt',
   'Lukas Tran',
@@ -45,7 +45,7 @@ const kataAthletes = [
 ]
 
 const paraAthletes = [
-  'L. Buss',
+  'Para athlete',
 ]
 
 const coaches = [
@@ -55,7 +55,7 @@ const coaches = [
 ]
 
 const paraCoaches = [
-  { name: 'Claire Buss', grade: '2nd Kyu', role: 'Para Team Coach' },
+  { name: 'Claire Buss', grade: '2nd Kyu', role: 'Para Head Coach' },
 ]
 
 function AthleteList({ names }: { names: string[] }) {
@@ -138,18 +138,18 @@ export default function TeamPage() {
               <p className="text-sm text-gray-400">{kumiteAthletes.length} athletes</p>
               <div className="mt-6 grid grid-cols-3 gap-3">
                 {[
-                  { src: '/team/kumite-y-yogarajah.jpg', name: 'Y. Yogarajah' },
-                  { src: '/team/kumite-q-wong.jpg',      name: 'Q. Wong' },
-                  { src: '/team/kumite-h-dosser.jpg',    name: 'H. Dosser' },
-                  { src: '/team/kumite-q-godfrey.jpg',   name: 'Q. Godfrey' },
-                  { src: '/team/kumite-a-tebbutt.jpg',   name: 'A. Tebbutt' },
-                  { src: '/team/kumite-a-buss.jpg',      name: 'A. Buss' },
-                  { src: '/team/kumite-7.jpg',            name: 'Kumite 7' },
-                  { src: '/team/kumite-new-01.jpg',       name: 'Kumite' },
-                  { src: '/team/kata-nam-mac.jpg',        name: 'Nam Mac' },
-                  { src: '/team/kata-c-buss.jpg',         name: 'Claire Buss' },
+                  { src: '/team/kumite-y-yogarajah.jpg', },
+                  { src: '/team/kumite-q-wong.jpg', },
+                  { src: '/team/kumite-h-dosser.jpg', },
+                  { src: '/team/kumite-q-godfrey.jpg', },
+                  { src: '/team/kumite-a-tebbutt.jpg', },
+                  { src: '/team/kumite-06.jpg', },
+                  { src: '/team/kumite-7.jpg', },
+                  { src: '/team/kumite-new-01.jpg', },
+                  { src: '/team/kata-nam-mac.jpg', },
+                  { src: '/team/kata-c-buss.jpg', },
                 ].map((a) => (
-                  <div key={a.name} className="rounded-2xl overflow-hidden border border-black/8">
+                  <div key={a.src} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
                       src={a.src}
                       alt="Kumite athlete"
@@ -171,17 +171,17 @@ export default function TeamPage() {
               <p className="text-sm text-gray-400">{kataAthletes.length} athletes</p>
               <div className="mt-6 grid grid-cols-3 gap-3">
                 {[
-                  { src: '/team/y-yogarajah.jpg',  name: 'Y. Yogarajah' },
-                  { src: '/team/a-wong.jpg',         name: 'A. Wong' },
-                  { src: '/team/q-wong.jpg',         name: 'Q. Wong' },
-                  { src: '/team/kata-ahm-mac.jpg',   name: 'Ahm Mac' },
-                  { src: '/team/kata-nam-mac.jpg',   name: 'Nam Mac' },
-                  { src: '/team/kata-c-buss.jpg',    name: 'Claire Buss' },
+                  { src: '/team/y-yogarajah.jpg', },
+                  { src: '/team/a-wong.jpg', },
+                  { src: '/team/q-wong.jpg', },
+                  { src: '/team/kata-ahm-mac.jpg', },
+                  { src: '/team/kata-nam-mac.jpg', },
+                  { src: '/team/kata-c-buss.jpg', },
                 ].map((a) => (
-                  <div key={a.name} className="rounded-2xl overflow-hidden border border-black/8">
+                  <div key={a.src} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
                       src={a.src}
-                      alt={`${a.name} – Kata athlete`}
+                      alt="Kata athlete"
                       width={300}
                       height={380}
                       className="w-full object-cover object-top"
@@ -201,7 +201,7 @@ export default function TeamPage() {
               <div className="mt-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                 <div className="rounded-2xl overflow-hidden border border-black/8">
                   <Image
-                    src="/team/leo-buss.jpg"
+                    src="/team/para-athlete-01.jpg"
                     alt="Para Karate athlete"
                     width={300}
                     height={380}
