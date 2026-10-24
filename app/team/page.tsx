@@ -14,38 +14,38 @@ export const metadata: Metadata = pageMeta({
 
 const eliteSquad = [
   'Kobe Yogarajah',
-  'Yuan Yogarajah',
-  'Quintin Wong',
-  'Ayden Wong',
+  'Y. Yogarajah',
+  'Q. Wong',
+  'A. Wong',
 ]
 
 const kumiteAthletes = [
   'Kobe Yogarajah',
-  'Yuan Yogarajah',
-  'Quintin Wong',
-  'Ayden Wong',
-  'Nam Mac',
-  'Harry Dossor',
+  'Y. Yogarajah',
+  'Q. Wong',
+  'A. Wong',
+  'N. Mac',
+  'H. Dossor',
   'David Butlin',
-  'Alex Austin',
+  'A. Austin',
   'Claire Buss',
-  'Kumite team member',
-  'Quinn Godfrey',
-  'Archie Tebbutt',
-  'Lukas Tran',
+  'A. Buss',
+  'Q. Godfrey',
+  'A. Tebbutt',
+  'L. Tran',
 ]
 
 const kataAthletes = [
   'Kobe Yogarajah',
-  'Yuan Yogarajah',
+  'Y. Yogarajah',
   'Claire Buss',
-  'Ahm Mac',
-  'Nam Mac',
-  'Lukas Tran',
+  'A. Mac',
+  'N. Mac',
+  'L. Tran',
 ]
 
 const paraAthletes = [
-  'Para athlete',
+  'L. Buss',
 ]
 
 const coaches = [

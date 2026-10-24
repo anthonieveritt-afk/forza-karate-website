@@ -50,7 +50,7 @@ const instructors = [
     bio: "Claire Buss returned to karate in her 40s with her two young children, including her autistic son. Having trained previously in her 20s, coming back to training had always been her goal, and the family-friendly atmosphere at Forza Karate was immediately welcoming. Muscle memory kicked in, and the other karateka in the dojo were always willing to demonstrate and explain. Forza Karate not only offered traditional Wado-Ryu karate but also opened up Claire's eyes to the world of Sport Karate and, more importantly, the Veteran Category! Being able to challenge herself in the dojo and on the tatami has only made Claire's love of karate grow, and now she can pass that passion on to a younger generation through assisting with training and encouraging students to challenge themselves. Karate has been immensely beneficial for her son, helping with confidence, body & spatial awareness, balance and fitness as well as being a place of acceptance and friendship. As a SEND parent, Claire is able to bring that extra level of understanding and awareness to the Para athletes that want to compete in her role as Para Head Coach. To any parent thinking about joining in with their kids or even just doing it for themselves, Claire would always say \"Go For It!\"",
   },
   {
-    name: 'Yuan Yogarajah',
+    name: 'Y. Yogarajah',
     grade: '1st Dan',
     role: 'Assistant Instructor',
     dojo: 'Rayleigh & Upminster',
