@@ -5,6 +5,7 @@ import { postTrialToHonbu } from '@/lib/paid/honbu-trial'
 import { emailConfigured, envAddresses, esc, sendEmail } from '@/lib/email'
 import { gbp } from '@/lib/paid/catalogue'
 import { claimOnce, releaseOnce } from '@/lib/paid/once'
+import { recordCardPaid } from '@/lib/gocardless/fulfil'
 
 // Stripe → POST /api/stripe/webhook, event: checkout.session.completed
 // Signing secret: FORZA_STRIPE_WEBHOOK_SECRET (whsec_…)
@@ -104,14 +105,16 @@ export async function POST(req: NextRequest) {
       } else if (kind === 'video') {
         await notifyClub('New video membership', [`${s.customer_details?.email || ''} subscribed.`, `Stripe session: ${s.id}`])
       } else if (kind === 'membership') {
-        // One-off kit/licence/pro-rata; monthly DD is created after GoCardless on the success page.
-        await notifyClub(`Membership one-off paid (Stripe)${s.livemode ? '' : ' [TEST]'}`, [
-          `${gbp(s.amount_total ?? 0)} — signup ${s.metadata?.signupId || '?'} — ${s.metadata?.plan || ''} / ${s.metadata?.dojo || ''}`,
-          `Students: ${s.metadata?.students || ''}`,
-          `Email: ${s.customer_details?.email || s.metadata?.email || ''}`,
-          `Stripe session: ${s.id}`,
-          'Next: customer sets up monthly Direct Debit (mandate only) on the website.',
-        ])
+        // Stage 1: card paid → backup (blob + admin email with full details) and create the member in
+        // Club Honbu straight away as "awaiting Direct Debit". Idempotent with the pay-done page.
+        const signupId = s.metadata?.signupId
+        if (signupId && /^MSU[0-9A-F]+$/i.test(signupId)) {
+          const pi = typeof s.payment_intent === 'string' ? s.payment_intent : s.payment_intent?.id ?? null
+          const r = await recordCardPaid(signupId, { sessionId: s.id, paymentIntentId: pi, amountPence: s.amount_total ?? 0, paidAt: new Date((s.created ?? Date.now() / 1000) * 1000).toISOString() })
+          // Honbu down: admin already alerted with the details; fail so Stripe retries (up to 3 days).
+          if (r.state === 'honbu-failed') throw new Error(`Club Honbu membership hand-off failed: ${r.outcome?.honbu.detail ?? ''}`)
+          if (r.state === 'unknown') await notifyClub(`Membership paid but sign-up details not found (${signupId})`, [`Stripe session: ${s.id}`, `Email: ${s.customer_details?.email || ''}`])
+        }
       }
     } catch (err) {
       console.error('[stripe-webhook] processing failed, asking Stripe to retry:', err instanceof Error ? err.message : err)

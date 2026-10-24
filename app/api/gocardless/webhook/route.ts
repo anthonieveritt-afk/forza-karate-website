@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
 import { createHmac, timingSafeEqual } from 'crypto'
-import { processBillingRequest } from '@/lib/gocardless/fulfil'
+import { handleGcEvent } from '@/lib/gocardless/fulfil'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+export const maxDuration = 60
 
 // GoCardless webhook for the website sign-up. Verifies Webhook-Signature
 // (HMAC-SHA256 of the raw body with GOCARDLESS_WEBHOOK_SECRET).
@@ -18,10 +19,13 @@ export async function POST(req: Request) {
 
   let events: any[] = []
   try { events = JSON.parse(raw).events ?? [] } catch { return NextResponse.json({ error: 'bad json' }, { status: 400 }) }
+  let failed = false
   for (const ev of events) {
-    if (ev.resource_type === 'billing_requests' && ev.action === 'fulfilled' && ev.links?.billing_request) {
-      try { await processBillingRequest(ev.links.billing_request) } catch (e) { console.error('webhook fulfil failed', ev.id, e) }
+    try { await handleGcEvent(ev) } catch (e) {
+      console.error('webhook fulfil failed', ev.id, e)
+      failed = true
     }
   }
-  return NextResponse.json({ ok: true })
+  // Non-2xx makes GoCardless retry the webhook (all processing is idempotent).
+  return failed ? NextResponse.json({ ok: false }, { status: 500 }) : NextResponse.json({ ok: true })
 }

@@ -1,46 +1,61 @@
-'use client'
+import { CheckCircle, AlertTriangle } from 'lucide-react'
+import { processBillingRequest, type FulfilResult } from '@/lib/gocardless/fulfil'
+import { loadSignup } from '@/lib/gocardless/store'
 
-import { Suspense, useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { CheckCircle, Loader2 } from 'lucide-react'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 30
+export const metadata = { title: 'Membership confirmed | Forza Karate Club', robots: { index: false } }
 
-function Done() {
-  const br = useSearchParams().get('br') ?? ''
-  const [state, setState] = useState<'loading' | 'done' | 'pending' | 'error'>('loading')
-  const [start, setStart] = useState<string | null>(null)
+type View = { kind: 'confirmed' | 'received' | 'failed'; start?: string | null }
 
-  useEffect(() => {
-    let tries = 0
-    let stop = false
-    async function poll() {
-      try {
-        const r = await fetch('/api/membership/complete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ billingRequestId: br }) })
-        const d = await r.json()
-        if (stop) return
-        if (d.state === 'done') { setStart(d.subscriptionStart); setState('done'); return }
-        if (++tries < 6) { setTimeout(poll, 2500); return }
-        setState(d.state === 'pending' ? 'pending' : 'error')
-      } catch { if (!stop) setState('error') }
-    }
-    if (br) poll(); else setState('error')
-    return () => { stop = true }
-  }, [br])
+/**
+ * Server-rendered: the confirmation runs on this request, so the first paint is the answer.
+ * Not fulfilled yet / Honbu slow → "You're all set" (card already paid); webhook + cron finish.
+ */
+async function resolve(br: string): Promise<View> {
+  if (!/^BRQ[0-9A-Z]+$/.test(br)) return { kind: 'failed' }
+  let r: FulfilResult
+  try {
+    r = await Promise.race([
+      processBillingRequest(br, { honbuWaits: [0] }),
+      new Promise<FulfilResult>(res => setTimeout(() => res({ state: 'pending', status: 'timeout' }), 12000)),
+    ])
+  } catch (e) {
+    console.error('done page fulfil error', br, e)
+    r = { state: 'pending', status: 'error' }
+  }
+  if (r.state === 'done') return { kind: r.outcome.honbu.ok ? 'confirmed' : 'received', start: r.outcome.subscriptionStart }
+  if (r.state === 'pending' && r.status === 'cancelled') return { kind: 'failed' }
+  if (r.state === 'unknown') {
+    const s = await loadSignup(br).catch(() => null)
+    return s?.stripe?.paidAt ? { kind: 'received' } : { kind: 'failed' }
+  }
+  return { kind: 'received' }
+}
 
+export default async function Page({ searchParams }: { searchParams: Promise<{ br?: string }> }) {
+  const br = (await searchParams).br ?? ''
+  const v = await resolve(br)
+  const startLabel = v.start ? new Date(v.start + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) : null
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 pt-24">
       <div className="text-center max-w-md">
-        {state === 'loading' && <><Loader2 className="h-12 w-12 text-[#dc2626] mx-auto mb-4 animate-spin" /><p className="font-semibold">Confirming your membership…</p></>}
-        {state === 'done' && <>
+        {v.kind !== 'failed' ? <>
           <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold mb-2">Welcome to Forza Karate Club!</h1>
-          <p className="text-gray-500 text-sm">Your card payment for suit, licence and first month is complete, and your monthly Direct Debit is set up{start ? ` (from ${new Date(start + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })})` : ''}. GoCardless will email you a confirmation, and we&apos;ll be in touch about your first class as a member.</p>
+          <h1 className="text-2xl font-bold mb-2">{v.kind === 'confirmed' ? 'Welcome to Forza Karate Club!' : "You're all set!"}</h1>
+          <p className="text-gray-500 text-sm">
+            Your card payment and Direct Debit are received{startLabel ? `; monthly fees start ${startLabel}` : ''}.
+            {v.kind === 'confirmed'
+              ? ' GoCardless will email you a confirmation, and we\u2019ll be in touch about your first class as a member.'
+              : ' We\u2019re finishing your membership record and will email you to confirm. There\u2019s nothing more you need to do, and you won\u2019t be charged again.'}
+          </p>
+        </> : <>
+          <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+          <h1 className="text-xl font-bold mb-2">Your Direct Debit wasn&apos;t completed</h1>
+          <p className="text-gray-500 text-sm mb-4">If you already paid by card, you won&apos;t be charged again. Please get in touch and we&apos;ll sort it out with you.</p>
+          <a href={`/contact?subject=${encodeURIComponent('Membership sign-up' + (br ? ` (${br})` : ''))}`} className="inline-block rounded-xl bg-[#dc2626] text-white text-sm font-semibold px-5 py-3">Contact the club</a>
         </>}
-        {state === 'pending' && <><h1 className="text-xl font-bold mb-2">Nearly there</h1><p className="text-gray-500 text-sm">GoCardless is still confirming your Direct Debit. There&apos;s nothing more to do; we&apos;ll email you once it&apos;s confirmed.</p></>}
-        {state === 'error' && <><h1 className="text-xl font-bold mb-2">We couldn&apos;t confirm this yet</h1><p className="text-gray-500 text-sm mb-4">If you completed the Direct Debit, there&apos;s nothing more to do and we&apos;ll be in touch. Otherwise please try again.</p><Link href="/join/membership" className="text-[#dc2626] underline text-sm">Back to the form</Link></>}
       </div>
     </div>
   )
 }
-
-export default function Page() { return <Suspense><Done /></Suspense> }
