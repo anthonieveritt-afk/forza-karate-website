@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 // Never touch these (pre-fix test sign-ups; mandate since cancelled).
-const SKIP = new Set(['BRQ01M5N9Y05M4AE2YCQ99JT5F2FT'])
+import { SKIP_BILLING_REQUESTS as SKIP } from '@/lib/gocardless/fulfil'
 
 /**
  * Safety net (Vercel Cron): finishes any paid sign-up whose confirmation page was closed

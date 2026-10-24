@@ -81,6 +81,7 @@ async function handOffOnce(
         },
       }),
       cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
     })
     const j = await res.json().catch(() => ({}))
     if (!res.ok) return { ok: false, detail: `Club Honbu ${res.status}: ${String(j?.error ?? '').slice(0, 200)}` }
@@ -91,12 +92,14 @@ async function handOffOnce(
 }
 
 /** Hand-off with retries (Honbu is idempotent on billingRequestId, so repeats are safe). */
-export async function handOffToHonbu(...args: Parameters<typeof handOffOnce>) {
-  const waits = [0, 1500, 4000]
+export async function handOffToHonbu(...args: [...Parameters<typeof handOffOnce>, { waits?: number[] }?]) {
+  const opts = (args.length > 3 ? args[3] : undefined) as { waits?: number[] } | undefined
+  const waits = opts?.waits ?? [0, 1500, 4000]
+  const call = args.slice(0, 3) as Parameters<typeof handOffOnce>
   let last: Awaited<ReturnType<typeof handOffOnce>> = { ok: false, detail: 'not attempted' }
   for (const w of waits) {
     if (w) await new Promise(r => setTimeout(r, w))
-    last = await handOffOnce(...args)
+    last = await handOffOnce(...call)
     if (last.ok) return last
     // Config errors and 4xx (other than 408/429) won't fix themselves on retry.
     if (/not configured|Club Honbu 4(?!08|29)\d\d/.test(last.detail ?? '')) break
@@ -130,7 +133,15 @@ export type FulfilResult =
   | { state: 'pending'; status: string }
   | { state: 'unknown' }
 
-export async function processBillingRequest(brId: string): Promise<FulfilResult> {
+export const SKIP_BILLING_REQUESTS = new Set(['BRQ01M5N9Y05M4AE2YCQ99JT5F2FT'])
+
+/**
+ * Idempotent: GoCardless creates use idempotency keys (sub-${brId}) with 409 recovery,
+ * Honbu is idempotent on billingRequestId, and a saved outcome with honbu.ok short-circuits.
+ * `honbuWaits` lets the user-facing page do a quick single-shot hand-off (webhook/cron retry).
+ */
+export async function processBillingRequest(brId: string, opts: { honbuWaits?: number[] } = {}): Promise<FulfilResult> {
+  if (SKIP_BILLING_REQUESTS.has(brId)) return { state: 'unknown' }
   const existing = await loadOutcome(brId)
   if (existing && existing.honbu.ok) return { state: 'done', outcome: existing }
 
@@ -237,7 +248,7 @@ export async function processBillingRequest(brId: string): Promise<FulfilResult>
   const honbu = await handOffToHonbu(brId, signup, {
     customerId, mandateId, subscriptionId, firstPaymentId, extrasPaymentId,
     stripeSessionId, stripePaymentIntentId, stripeAmountPence,
-  })
+  }, { waits: opts.honbuWaits })
   let alertedAt = existing?.alertedAt ?? null
   if (!honbu.ok && !alertedAt) {
     if (await alertAdmin(brId, signup, honbu.detail ?? 'unknown')) alertedAt = new Date().toISOString()
@@ -251,4 +262,28 @@ export async function processBillingRequest(brId: string): Promise<FulfilResult>
   }
   await saveOutcome(brId, outcome)
   return { state: 'done', outcome }
+}
+
+/** GoCardless webhook events → same idempotent fulfilment. Returns BR ids processed. */
+export async function handleGcEvent(ev: { resource_type?: string; action?: string; links?: Record<string, string> }): Promise<string[]> {
+  if (ev.resource_type === 'billing_requests' && ev.action === 'fulfilled' && ev.links?.billing_request) {
+    const id = ev.links.billing_request
+    if (SKIP_BILLING_REQUESTS.has(id) || !(await loadSignup(id))) return []
+    await processBillingRequest(id)
+    return [id]
+  }
+  if (ev.resource_type === 'mandates' && (ev.action === 'created' || ev.action === 'active') && ev.links?.mandate) {
+    // Find the website billing request behind this mandate (only ones we have a saved signup for).
+    const { mandates: m } = await gc(`/mandates/${encodeURIComponent(ev.links.mandate)}`)
+    const { billing_requests: list } = await gc(`/billing_requests?customer=${encodeURIComponent(m.links.customer)}&status=fulfilled&limit=10`)
+    const done: string[] = []
+    for (const br of list ?? []) {
+      if (br.links?.mandate_request_mandate !== ev.links.mandate || SKIP_BILLING_REQUESTS.has(br.id)) continue
+      if (!(await loadSignup(br.id))) continue
+      await processBillingRequest(br.id)
+      done.push(br.id)
+    }
+    return done
+  }
+  return []
 }
