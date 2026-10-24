@@ -2,6 +2,7 @@
 // handler and from the GoCardless webhook; safe to call more than once).
 import 'server-only'
 import { gc, GcError } from './client'
+import { sendEmail, envAddresses } from '@/lib/email'
 import { honbuSignupUrl, honbuSecret } from '@/lib/honbu'
 import { loadSignup, loadOutcome, saveOutcome, type Outcome, type Signup } from './store'
 import { PLANS, DOJOS, proRataPence, proRataLabel, firstOfNextMonth, extrasLineItems } from './plans'
@@ -18,7 +19,7 @@ import { PLANS, DOJOS, proRataPence, proRataLabel, firstOfNextMonth, extrasLineI
  * URL/secret: lib/honbu.ts (CLUB_HONBU_SIGNUP_URL / CLUB_HONBU_SIGNUP_SECRET, falling back to the
  * Club Honbu URL and the CLUB_HONBU_WEBHOOK_SECRET the trial bookings already use).
  */
-export async function handOffToHonbu(
+async function handOffOnce(
   brId: string,
   s: Signup,
   g: {
@@ -73,6 +74,11 @@ export async function handOffToHonbu(
         extrasPence: s.extrasPence,
         // Explicit: one-off collected by card when stripe is present.
         oneOffCollectedVia: stripePayload ? 'stripe' : 'gocardless',
+        // Optional Honbu automations; OFF unless the env flag is exactly "1".
+        options: {
+          sendPortalAccess: process.env.MEMBERSHIP_AUTO_PORTAL_INVITE === '1',
+          enrolOnClass: process.env.MEMBERSHIP_AUTO_ENROL_CLASS === '1',
+        },
       }),
       cache: 'no-store',
     })
@@ -82,6 +88,41 @@ export async function handOffToHonbu(
   } catch (e) {
     return { ok: false, detail: 'Club Honbu unreachable' }
   }
+}
+
+/** Hand-off with retries (Honbu is idempotent on billingRequestId, so repeats are safe). */
+export async function handOffToHonbu(...args: Parameters<typeof handOffOnce>) {
+  const waits = [0, 1500, 4000]
+  let last: Awaited<ReturnType<typeof handOffOnce>> = { ok: false, detail: 'not attempted' }
+  for (const w of waits) {
+    if (w) await new Promise(r => setTimeout(r, w))
+    last = await handOffOnce(...args)
+    if (last.ok) return last
+    // Config errors and 4xx (other than 408/429) won't fix themselves on retry.
+    if (/not configured|Club Honbu 4(?!08|29)\d\d/.test(last.detail ?? '')) break
+  }
+  return last
+}
+
+async function alertAdmin(brId: string, s: Signup, detail: string) {
+  const to = envAddresses('MEMBERSHIP_ALERT_EMAILS').length ? envAddresses('MEMBERSHIP_ALERT_EMAILS') : envAddresses('CONTACT_TO_EMAIL')
+  if (!to.length) { console.error('membership honbu handoff failed (no alert recipients set)', brId, detail); return false }
+  const r = await sendEmail({
+    to,
+    subject: `Action needed: paid membership not added to Club Honbu (${brId})`,
+    text: [
+      'A membership join was paid (card + Direct Debit set up) but the member could not be created in Club Honbu after retries.',
+      `Billing request: ${brId}`,
+      `Account holder: ${s.parent.givenName} ${s.parent.familyName} <${s.parent.email}>`,
+      `Dojo / class: ${s.dojo} / ${s.classTime}`,
+      `Students: ${s.students.length}`,
+      `Error: ${detail}`,
+      '',
+      'It will retry automatically next time the confirmation page or GoCardless webhook runs. Otherwise add the member manually in Club Honbu.',
+    ].join('\n'),
+  })
+  if (!r.ok) console.error('membership alert email failed', brId, r)
+  return r.ok
 }
 
 export type FulfilResult =
@@ -197,8 +238,13 @@ export async function processBillingRequest(brId: string): Promise<FulfilResult>
     customerId, mandateId, subscriptionId, firstPaymentId, extrasPaymentId,
     stripeSessionId, stripePaymentIntentId, stripeAmountPence,
   })
+  let alertedAt = existing?.alertedAt ?? null
+  if (!honbu.ok && !alertedAt) {
+    if (await alertAdmin(brId, signup, honbu.detail ?? 'unknown')) alertedAt = new Date().toISOString()
+  }
   const outcome: Outcome = {
     billingRequestId: brId, customerId, mandateId, subscriptionId, subscriptionStart,
+    alertedAt,
     firstPaymentId, firstPaymentDate, extrasPaymentId,
     stripeSessionId, stripePaymentIntentId, stripeAmountPence,
     honbu, completedAt: new Date().toISOString(),

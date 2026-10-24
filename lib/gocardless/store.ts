@@ -60,6 +60,8 @@ export type Outcome = {
   stripePaymentIntentId?: string | null
   stripeAmountPence?: number | null
   honbu: { ok: boolean; detail?: string; memberIds?: number[] }
+  /** Set once an admin alert has been sent for a failed Honbu hand-off. */
+  alertedAt?: string | null
   completedAt: string
 }
 
@@ -135,3 +137,18 @@ export const saveSignup = (id: string, s: Signup) => save(id, 'signup', s)
 export const loadSignup = (id: string) => load<Signup>(id, 'signup')
 export const saveOutcome = (brId: string, o: Outcome) => save(brId, 'done', o)
 export const loadOutcome = (brId: string) => load<Outcome>(brId, 'done')
+
+/** BRQ ids that have a saved signup (exact-path blobs only), newest first, uploaded since `sinceMs`. */
+export async function listRecentBillingRequestIds(sinceMs: number): Promise<string[]> {
+  const ids: string[] = []
+  let cursor: string | undefined
+  do {
+    const page = await list({ prefix: `${PREFIX}/BRQ`, cursor })
+    for (const b of page.blobs) {
+      const m = /^membership-signups\/(BRQ[0-9A-Z]+)\.signup$/.exec(b.pathname)
+      if (m && +new Date(b.uploadedAt) >= sinceMs) ids.push(m[1])
+    }
+    cursor = page.hasMore ? page.cursor : undefined
+  } while (cursor)
+  return ids
+}

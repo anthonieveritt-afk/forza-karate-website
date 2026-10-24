@@ -55,9 +55,9 @@ function MembershipSignup() {
   const [photos, setPhotos] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  // Two steps: 1 = all signup details, 2 = pay one-off on Stripe then set up monthly DD.
-  const [step, setStep] = useState(1)
-  const totalSteps = 2
+  // One form page (details + live totals), then Stripe card, then GoCardless DD, then done.
+  const step = 1
+  const totalSteps = 3
 
   // Adult solo = one student who is not known under-18 (empty DOB → optimistic adult path).
   // Account-holder name is derived from the student (single source of truth).
@@ -118,6 +118,8 @@ function MembershipSignup() {
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    const msg = validateSignupStep()
+    if (msg) { setError(msg); return }
     if (students.some(st => !GI.sizes.includes(st.suitSize))) { setError('Please choose a suit size (by height) for each student. Every new member needs an Official Forza Karate Club Gi (£40).'); return }
     setBusy(true)
     try {
@@ -139,18 +141,18 @@ function MembershipSignup() {
     }
   }
 
-  const showSignup = step === 1
-  const showDd = step === 2
+  const showSignup = true
+  const showDd = true
 
   const contactFields = (
     <div className="grid sm:grid-cols-2 gap-4">
-      <div><label className={lbl}>Email</label><input required type="email" className={input} value={parent.email} onChange={e => setParent({ ...parent, email: e.target.value })} /></div>
-      <div><label className={lbl}>Mobile</label><input required type="tel" className={input} value={parent.phone} onChange={e => setParent({ ...parent, phone: e.target.value })} /></div>
-      <div className="sm:col-span-2"><label className={lbl}>Address</label><input required className={input} value={parent.address} onChange={e => setParent({ ...parent, address: e.target.value })} /></div>
-      <div><label className={lbl}>Town</label><input required className={input} value={parent.city} onChange={e => setParent({ ...parent, city: e.target.value })} /></div>
-      <div><label className={lbl}>Postcode</label><input required className={input} value={parent.postCode} onChange={e => setParent({ ...parent, postCode: e.target.value })} /></div>
-      <div><label className={lbl}>Emergency contact name</label><input required className={input} value={emergency.name} onChange={e => setEmergency({ ...emergency, name: e.target.value })} /></div>
-      <div><label className={lbl}>Emergency contact phone</label><input required type="tel" className={input} value={emergency.phone} onChange={e => setEmergency({ ...emergency, phone: e.target.value })} /></div>
+      <div><label className={lbl}>Email</label><input required type="email" autoComplete="email" inputMode="email" className={input} value={parent.email} onChange={e => setParent({ ...parent, email: e.target.value })} /></div>
+      <div><label className={lbl}>Mobile</label><input required type="tel" autoComplete="tel" className={input} value={parent.phone} onChange={e => setParent({ ...parent, phone: e.target.value })} /></div>
+      <div className="sm:col-span-2"><label className={lbl}>Address</label><input required autoComplete="street-address" className={input} value={parent.address} onChange={e => setParent({ ...parent, address: e.target.value })} /></div>
+      <div><label className={lbl}>Town</label><input required autoComplete="address-level2" className={input} value={parent.city} onChange={e => setParent({ ...parent, city: e.target.value })} /></div>
+      <div><label className={lbl}>Postcode</label><input required autoComplete="postal-code" className={input} value={parent.postCode} onChange={e => setParent({ ...parent, postCode: e.target.value.toUpperCase() })} /></div>
+      <div><label className={lbl}>Emergency contact name</label><input required autoComplete="off" className={input} value={emergency.name} onChange={e => setEmergency({ ...emergency, name: e.target.value })} /></div>
+      <div><label className={lbl}>Emergency contact phone</label><input required type="tel" autoComplete="off" className={input} value={emergency.phone} onChange={e => setEmergency({ ...emergency, phone: e.target.value })} /></div>
     </div>
   )
 
@@ -180,7 +182,7 @@ function MembershipSignup() {
               <span key={n} className={`flex-1 h-1 rounded-full ${step >= n ? 'bg-[#dc2626]' : 'bg-black/10'}`} />
             ))}
           </div>
-          <p className="text-xs text-gray-400">Step {step} of {totalSteps}</p>
+          <p className="text-xs text-gray-400">Step 1 of 3: your details · then card payment · then Direct Debit</p>
         </div>
 
         {showSignup && (
@@ -234,8 +236,8 @@ function MembershipSignup() {
                   {i > 0 && <button type="button" onClick={() => setStudents(s => s.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>}
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div><label className={lbl}>First name</label><input required className={input} value={st.firstName} onChange={e => setStudent(i, 'firstName', e.target.value)} /></div>
-                  <div><label className={lbl}>Surname</label><input required className={input} value={st.surname} onChange={e => setStudent(i, 'surname', e.target.value)} /></div>
+                  <div><label className={lbl}>First name</label><input required autoComplete={i === 0 && adultSolo ? 'given-name' : 'off'} className={input} value={st.firstName} onChange={e => setStudent(i, 'firstName', e.target.value)} /></div>
+                  <div><label className={lbl}>Surname</label><input required autoComplete={i === 0 && adultSolo ? 'family-name' : 'off'} className={input} value={st.surname} onChange={e => setStudent(i, 'surname', e.target.value)} /></div>
                   <div><label className={lbl}>Date of birth</label><DateInput required className={input} value={st.dateOfBirth} onChange={e => setStudent(i, 'dateOfBirth', e.target.value)} /></div>
                   <div><label className={lbl}>Current belt</label>
                     <select className={input} value={st.belt} onChange={e => setStudent(i, 'belt', e.target.value)}>{BELTS.map(b => <option key={b}>{b}</option>)}</select></div>
@@ -281,34 +283,26 @@ function MembershipSignup() {
               <h3 className="text-base font-semibold text-[#111111]">Parent or guardian (account holder)</h3>
               <p className="text-xs text-gray-500">This person pays by card for the one-off total and is the Direct Debit account holder for monthly fees. Student names are already above.</p>
               <div className="grid sm:grid-cols-2 gap-4">
-                <div><label className={lbl}>First name</label><input required className={input} value={parent.givenName} onChange={e => setParent({ ...parent, givenName: e.target.value })} /></div>
-                <div><label className={lbl}>Surname</label><input required className={input} value={parent.familyName} onChange={e => setParent({ ...parent, familyName: e.target.value })} /></div>
+                <div><label className={lbl}>First name</label><input required autoComplete="given-name" className={input} value={parent.givenName} onChange={e => setParent({ ...parent, givenName: e.target.value })} /></div>
+                <div><label className={lbl}>Surname</label><input required autoComplete="family-name" className={input} value={parent.familyName} onChange={e => setParent({ ...parent, familyName: e.target.value })} /></div>
               </div>
               {contactFields}
               {consentFields}
             </div>
           )}
 
-          <div className="flex flex-col gap-2">
-            <Button type="button" size="lg" className="w-full" onClick={() => {
-              const msg = validateSignupStep()
-              if (msg) { setError(msg); return }
-              setError(''); setStep(2)
-            }}>Continue to payment</Button>
-            {error && step === 1 && <p className="text-sm text-red-600">{error}</p>}
-          </div>
         </section>
         )}
 
         {showDd && (
         <section className="space-y-4">
-          <h2 className="text-lg font-bold">2. Pay now, then Direct Debit</h2>
+          <h2 className="text-lg font-bold">Your total</h2>
           <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-4">
             {(() => {
               const fee = PLANS[plan].price
               if (!trialDate) return <>
                 <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
-                <p className="text-xs text-gray-500">Enter your trial date on the previous step to see exact amounts.</p>
+                <p className="text-xs text-gray-500">Enter your trial date above to see exact amounts.</p>
               </>
               const start = membershipStart(trialDate)
               const pr = proRataPence(fee, start)
@@ -343,9 +337,6 @@ function MembershipSignup() {
           <Button type="submit" size="lg" className="w-full" disabled={busy}>
             {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opening card payment…</> : 'Pay now by card'}
           </Button>
-          <button type="button" onClick={() => { setError(''); setStep(1) }} className="w-full text-sm font-medium text-gray-500 hover:text-[#111111] transition-colors text-center py-2" disabled={busy}>
-            ← Previous
-          </button>
         </section>
         )}
       </form>
