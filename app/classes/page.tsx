@@ -35,18 +35,22 @@ const classes = [
   },
 ]
 
-const TIMETABLE: { dojo: string; rows: [string, string, string][] }[] = [
+const TIMETABLE: { dojo: string; rows: [string, string][] }[] = [
   { dojo: 'Upminster — Wednesday', rows: [
-    ['Wednesday', '4:00 – 4:30pm', 'Beginner infants (ages 4–6)'],
-    ['Wednesday', '4:30 – 5:00pm', 'Infants, all grades (ages 4–6)'],
-    ['Wednesday', '5:00 – 5:45pm', 'Juniors, all grades (ages 7–10)'],
-    ['Wednesday', '5:45 – 7:00pm', 'Seniors, all grades (ages 11+)'],
+    ['4:00 – 4:30pm', 'Beginner infants (ages 4–6)'],
+    ['4:30 – 5:00pm', 'Infants, all grades (ages 4–6)'],
+    ['5:00 – 5:45pm', 'Juniors, all grades (ages 7–10)'],
+    ['5:45 – 7:00pm', 'Seniors, all grades (ages 11+)'],
   ] },
-  { dojo: 'Rayleigh', rows: [
-    ['Tuesday', '6:15 – 7:00pm', 'Ages 4–10, all grades'],
-    ['Tuesday', '7:00 – 8:00pm', 'Ages 11+, all grades'],
-    ['Friday', '3:40 – 4:40pm', 'After-school club — Rayleigh Primary School pupils only'],
-    ['Saturday', '10:00 – 11:00am', 'Ages 4+, all grades'],
+  { dojo: 'Rayleigh — Tuesday', rows: [
+    ['6:15 – 7:00pm', 'Ages 4–10, all grades'],
+    ['7:00 – 8:00pm', 'Ages 11+, all grades'],
+  ] },
+  { dojo: 'Rayleigh — Friday', rows: [
+    ['3:40 – 4:40pm', 'After-school club — Rayleigh Primary School pupils only'],
+  ] },
+  { dojo: 'Rayleigh — Saturday', rows: [
+    ['10:00 – 11:00am', 'Ages 4+, all grades'],
   ] },
 ]
 
@@ -87,9 +91,9 @@ export default function ClassesPage() {
               <h2 className="text-xl font-bold text-[#111111] mb-4">{d.dojo}</h2>
               <ul className="divide-y divide-black/5 text-sm">
                 {d.rows.map((r) => (
-                  <li key={r[0] + r[1]} className="py-3 grid grid-cols-[6.5rem_1fr] gap-3">
-                    <span className="font-semibold text-[#111111]">{r[0]}<br /><span className="font-normal text-gray-500">{r[1]}</span></span>
-                    <span className="text-gray-500">{r[2]}</span>
+                  <li key={r[0]} className="py-3 grid grid-cols-[7rem_1fr] gap-3">
+                    <span className="font-semibold text-[#111111]">{r[0]}</span>
+                    <span className="text-gray-500">{r[1]}</span>
                   </li>
                 ))}
               </ul>
