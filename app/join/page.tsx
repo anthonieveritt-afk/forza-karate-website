@@ -41,6 +41,10 @@ const heardOptions = ['Google / Search', 'Social media', 'Friend or family', 'Sc
 
 export default function JoinPage() {
   const [dojo, setDojo] = useState('')
+  const [dob, setDob] = useState('')
+  const [showExtra, setShowExtra] = useState(false)
+  // Under 18 unless the date of birth says otherwise (most students are children).
+  const isAdult = (() => { if (!dob) return false; const d = new Date(dob), n = new Date(); let a = n.getFullYear() - d.getFullYear(); if (n.getMonth() < d.getMonth() || (n.getMonth() === d.getMonth() && n.getDate() < d.getDate())) a--; return a >= 18 })()
   const [membershipType, setMembershipType] = useState('single')
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [enrolMemberId, setEnrolMemberId] = useState<number | null>(null)
@@ -62,8 +66,8 @@ export default function JoinPage() {
         lastName: g('lastName'),
         dateOfBirth: g('dateOfBirth'),
         gender: g('gender'),
-        email: g('email'),
-        phone: g('phone'),
+        email: isAdult ? g('email') : g('parentEmail'),
+        phone: isAdult ? g('phone') : g('parentPhone'),
         addressLine1: g('addressLine1'),
         addressLine2: g('addressLine2') || undefined,
         town: g('town'),
@@ -73,9 +77,10 @@ export default function JoinPage() {
         parentEmail: g('parentEmail') || undefined,
         parentPhone: g('parentPhone') || undefined,
         parentRelationship: g('parentRelationship') || undefined,
-        emergencyName: g('emergencyName'),
-        emergencyPhone: g('emergencyPhone'),
-        emergencyRelationship: g('emergencyRelationship'),
+        // Child: parent/guardian is the emergency contact unless a second one is added.
+        emergencyName: g('emergencyName') || (isAdult ? '' : `${g('parentFirstName') ?? ''} ${g('parentLastName') ?? ''}`.trim()),
+        emergencyPhone: g('emergencyPhone') || (isAdult ? '' : g('parentPhone')),
+        emergencyRelationship: g('emergencyRelationship') || (isAdult ? '' : g('parentRelationship')),
         medicalConditions: g('medicalConditions') || undefined,
         dojo: g('dojo'),
         classTime: g('classTime'),
@@ -219,7 +224,7 @@ export default function JoinPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className={label}>Date of birth {req}</label>
-                  <input name="dateOfBirth" type="date" required min="1900-01-01" max={new Date().toISOString().split('T')[0]} className={input} />
+                  <input name="dateOfBirth" type="date" required value={dob} onChange={e => setDob(e.target.value)} min="1900-01-01" max={new Date().toISOString().split('T')[0]} className={input} />
                 </div>
                 <div>
                   <label className={label}>Gender</label>
@@ -232,6 +237,7 @@ export default function JoinPage() {
                 </div>
               </div>
 
+              {isAdult && (
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className={label}>Email {req}</label>
@@ -242,6 +248,7 @@ export default function JoinPage() {
                   <input name="phone" type="tel" required placeholder="07700 000000" className={input} />
                 </div>
               </div>
+              )}
 
               <div>
                 <label className={label}>Address line 1 {req}</label>
@@ -262,32 +269,33 @@ export default function JoinPage() {
                 </div>
               </div>
 
+              {!isAdult && (<>
               {/* ── Parent / Guardian ── */}
-              <p className={sectionTitle}>Parent / Guardian <span className="text-gray-400 font-normal text-sm">(if student is under 18)</span></p>
+              <p className={sectionTitle}>Parent / Guardian {req}</p>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className={label}>Parent first name</label>
-                  <input name="parentFirstName" type="text" placeholder="First name" className={input} />
+                  <label className={label}>Parent first name {req}</label>
+                  <input name="parentFirstName" required type="text" placeholder="First name" className={input} />
                 </div>
                 <div>
-                  <label className={label}>Parent last name</label>
-                  <input name="parentLastName" type="text" placeholder="Last name" className={input} />
+                  <label className={label}>Parent last name {req}</label>
+                  <input name="parentLastName" required type="text" placeholder="Last name" className={input} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className={label}>Parent email</label>
-                  <input name="parentEmail" type="email" placeholder="parent@example.com" className={input} />
+                  <label className={label}>Parent email {req}</label>
+                  <input name="parentEmail" required type="email" placeholder="parent@example.com" className={input} />
                 </div>
                 <div>
-                  <label className={label}>Parent phone</label>
-                  <input name="parentPhone" type="tel" placeholder="07700 000000" className={input} />
+                  <label className={label}>Parent phone {req}</label>
+                  <input name="parentPhone" required type="tel" placeholder="07700 000000" className={input} />
                 </div>
               </div>
               <div>
-                <label className={label}>Relationship to student</label>
-                <select name="parentRelationship" className={input}>
+                <label className={label}>Relationship to student {req}</label>
+                <select name="parentRelationship" required className={input}>
                   <option value="">Select</option>
                   <option value="mother">Mother</option>
                   <option value="father">Father</option>
@@ -295,7 +303,9 @@ export default function JoinPage() {
                   <option value="other">Other</option>
                 </select>
               </div>
+              </>)}
 
+              {isAdult ? (<>
               {/* ── Emergency contact ── */}
               <p className={sectionTitle}>Emergency contact {req}</p>
 
@@ -322,6 +332,41 @@ export default function JoinPage() {
                   <option value="other">Other</option>
                 </select>
               </div>
+              </>) : (
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-500">We&apos;ll use the parent or guardian above as the emergency contact — no need to repeat it.</p>
+                  {!showExtra ? (
+                    <button type="button" onClick={() => setShowExtra(true)} className="text-sm font-medium text-[#dc2626]">+ Add another emergency contact (optional, e.g. other parent or grandparent)</button>
+                  ) : (<>
+              {/* ── Second emergency contact <span className="text-gray-400 font-normal text-sm">(optional)</span> ── */}
+              <p className={sectionTitle}>Emergency contact</p>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={label}>Name</label>
+                  <input name="emergencyName" type="text" placeholder="Full name" className={input} />
+                </div>
+                <div>
+                  <label className={label}>Phone</label>
+                  <input name="emergencyPhone" type="tel" placeholder="07700 000000" className={input} />
+                </div>
+              </div>
+              <div>
+                <label className={label}>Relationship to student</label>
+                <select name="emergencyRelationship" className={input}>
+                  <option value="">Select</option>
+                  <option value="mother">Mother</option>
+                  <option value="father">Father</option>
+                  <option value="guardian">Guardian</option>
+                  <option value="spouse">Spouse / Partner</option>
+                  <option value="sibling">Sibling</option>
+                  <option value="friend">Friend</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+                  </>)}
+                </div>
+              )}
 
               {/* ── Medical ── */}
               <p className={sectionTitle}>Medical information</p>

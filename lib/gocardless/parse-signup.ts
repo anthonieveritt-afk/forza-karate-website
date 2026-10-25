@@ -49,8 +49,11 @@ export function parseMembershipBody(b: unknown): ParseOk | ParseErr {
   }
   if (!parent.givenName || !parent.familyName || !/^\S+@\S+\.\S+$/.test(parent.email) || !parent.phone || !parent.address || !parent.postCode)
     return { ok: false, error: 'Please complete the parent or guardian details.' }
-  const emergency = { name: s(body.emergency?.name, 80), phone: s(body.emergency?.phone, 30) }
-  if (!emergency.name || !emergency.phone) return { ok: false, error: 'Please add an emergency contact.' }
+  // Parent/guardian is the primary emergency contact by default; a second contact is optional.
+  const extra = { name: s(body.emergency?.name, 80), phone: s(body.emergency?.phone, 30), email: s(body.emergency?.email, 120).toLowerCase() }
+  if ((extra.name && !extra.phone) || (!extra.name && extra.phone)) return { ok: false, error: 'Please give both a name and phone for the extra emergency contact.' }
+  const emergency = extra.name ? { name: extra.name, phone: extra.phone } : { name: `${parent.givenName} ${parent.familyName}`.trim(), phone: parent.phone }
+  const emergency2 = extra.name ? extra : undefined
   if (!body.consent?.terms) return { ok: false, error: 'Please accept the club terms.' }
   if (students.some((x: any) => !x.suit)) return { ok: false, error: 'Please choose a suit size (by height) for each student.' }
 
@@ -62,7 +65,7 @@ export function parseMembershipBody(b: unknown): ParseOk | ParseErr {
     ok: true,
     signup: {
       plan, dojo, classTime: s(body.classTime, 120), trialDate, startDate,
-      students, parent, emergency, consent: { photos: !!body.consent?.photos, terms: true },
+      students, parent, emergency, ...(emergency2 ? { emergency2 } : {}), consent: { photos: !!body.consent?.photos, terms: true },
       extrasPence: extras, proRataPence: proRata,
     },
   }
