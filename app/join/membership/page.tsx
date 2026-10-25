@@ -50,7 +50,8 @@ function MembershipSignup() {
   const [trialDate, setTrialDate] = useState('')
   const [students, setStudents] = useState<Student[]>([blank()])
   const [parent, setParent] = useState({ givenName: '', familyName: '', email: '', phone: '', address: '', city: '', postCode: '' })
-  const [emergency, setEmergency] = useState({ name: '', phone: '' })
+  const [emergency, setEmergency] = useState({ name: '', phone: '', email: '' })
+  const [showExtra, setShowExtra] = useState(false)
   const [terms, setTerms] = useState(false)
   const [photos, setPhotos] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -93,7 +94,7 @@ function MembershipSignup() {
     setStudents(s => s.map((x, j) => (j === i ? { ...x, [k]: v } : x)))
 
   function contactIncomplete() {
-    return !parent.email || !parent.phone || !parent.address || !parent.city || !parent.postCode || !emergency.name || !emergency.phone
+    return !parent.email || !parent.phone || !parent.address || !parent.city || !parent.postCode || (adultSolo && (!emergency.name || !emergency.phone)) || (!adultSolo && !!emergency.name !== !!emergency.phone)
   }
 
   function validateSignupStep(): string | null {
@@ -108,7 +109,7 @@ function MembershipSignup() {
       if (contactIncomplete()) return 'Please complete your contact and emergency details.'
     } else {
       if (!parent.givenName || !parent.familyName || contactIncomplete()) {
-        return 'Please complete the parent or guardian contact and emergency details.'
+        return 'Please complete the parent or guardian contact details (and both name and phone for any extra emergency contact).'
       }
     }
     if (!terms) return 'Please agree to the club rules and privacy policy.'
@@ -151,8 +152,22 @@ function MembershipSignup() {
       <div className="sm:col-span-2"><label className={lbl}>Address</label><input required autoComplete="street-address" className={input} value={parent.address} onChange={e => setParent({ ...parent, address: e.target.value })} /></div>
       <div><label className={lbl}>Town</label><input required autoComplete="address-level2" className={input} value={parent.city} onChange={e => setParent({ ...parent, city: e.target.value })} /></div>
       <div><label className={lbl}>Postcode</label><input required autoComplete="postal-code" className={input} value={parent.postCode} onChange={e => setParent({ ...parent, postCode: e.target.value.toUpperCase() })} /></div>
+      {adultSolo ? (<>
       <div><label className={lbl}>Emergency contact name</label><input required autoComplete="off" className={input} value={emergency.name} onChange={e => setEmergency({ ...emergency, name: e.target.value })} /></div>
       <div><label className={lbl}>Emergency contact phone</label><input required type="tel" autoComplete="off" className={input} value={emergency.phone} onChange={e => setEmergency({ ...emergency, phone: e.target.value })} /></div>
+      </>) : (
+      <div className="sm:col-span-2 space-y-3">
+        <p className="text-xs text-gray-500">We&apos;ll use the parent or guardian above as the emergency contact — no need to repeat it.</p>
+        {!showExtra ? (
+          <button type="button" onClick={() => setShowExtra(true)} className="flex items-center gap-1.5 text-sm font-medium text-[#dc2626]"><Plus className="h-4 w-4" /> Add another emergency contact (optional)</button>
+        ) : (
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div><label className={lbl}>Second emergency contact name</label><input autoComplete="off" placeholder="e.g. other parent or grandparent" className={input} value={emergency.name} onChange={e => setEmergency({ ...emergency, name: e.target.value })} /></div>
+            <div><label className={lbl}>Their phone</label><input type="tel" autoComplete="off" className={input} value={emergency.phone} onChange={e => setEmergency({ ...emergency, phone: e.target.value })} /></div>
+            <div className="sm:col-span-2"><label className={lbl}>Their email (optional)</label><input type="email" autoComplete="off" className={input} value={emergency.email} onChange={e => setEmergency({ ...emergency, email: e.target.value })} /></div>
+          </div>
+        )}
+      </div>)}
     </div>
   )
 

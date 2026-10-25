@@ -35,6 +35,8 @@ export type Signup = {
   students: Student[]
   parent: { givenName: string; familyName: string; email: string; phone: string; address: string; city: string; postCode: string }
   emergency: { name: string; phone: string }
+  /** Optional second emergency contact (parent/guardian is primary by default). */
+  emergency2?: { name: string; phone: string; email?: string }
   consent: { photos: boolean; terms: boolean }
   extrasPence: number
   /** Pro-rata first month in pence (charged via Stripe with extras). */
