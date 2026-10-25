@@ -1,8 +1,9 @@
 /**
  * Inline PDF preview + Download for a member's EKNGB / FKA licence slip.
  * Shown under the members sidebar when a slip is on file (any student).
- * Half-size preview: h-[min(35vh,320px)] min-h-[240px] (PR #57).
+ * Preview renders as a fit-to-width image (phones, iPad, Android tablets, desktop).
  */
+import { FitDocumentPreview } from './FitDocumentPreview'
 export function LicenceSlipPreview({
   slipId,
   slipFileName,
@@ -25,11 +26,7 @@ export function LicenceSlipPreview({
         </a>
       </div>
       <div className="overflow-hidden rounded-xl border border-black/10 bg-gray-50">
-        <iframe
-          title="EKNGB / FKA licence certificate"
-          src={`/members/licence-slip/${slipId}`}
-          className="h-[min(35vh,320px)] min-h-[240px] w-full border-0"
-        />
+        <FitDocumentPreview title="EKNGB / FKA licence certificate" src={`/members/licence-slip/${slipId}`} />
       </div>
     </div>
   )

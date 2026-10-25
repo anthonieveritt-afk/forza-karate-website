@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useId, useRef, useState } from 'react'
+import { FitDocumentPreview } from './FitDocumentPreview'
 
 export function CertificateButtons({
   studentName,
@@ -121,13 +122,9 @@ export function CertificateButtons({
         <div className="overflow-hidden min-h-0">
           <div className="overflow-hidden rounded-xl border border-black/10 bg-gray-50">
             {previewUrl ? (
-              <iframe
-                title={`Grading certificate — ${toBelt}`}
-                src={previewUrl}
-                className="h-[min(70vh,560px)] min-h-[420px] w-full border-0"
-              />
+              <FitDocumentPreview title={`Grading certificate — ${toBelt}`} src={previewUrl} />
             ) : (
-              <div className="flex min-h-[420px] items-center justify-center text-sm text-gray-500">
+              <div className="flex aspect-[297/210] w-full items-center justify-center text-sm text-gray-500">
                 Preparing certificate…
               </div>
             )}
