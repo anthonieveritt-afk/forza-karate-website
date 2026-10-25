@@ -1,6 +1,7 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
+import { loadJoinPrefill } from '@/lib/joinPrefill'
 import { useSearchParams } from 'next/navigation'
 import { Loader2, Plus, Trash2, ShieldCheck, CreditCard } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -55,6 +56,22 @@ function MembershipSignup() {
   const [terms, setTerms] = useState(false)
   const [photos, setPhotos] = useState(false)
   const [busy, setBusy] = useState(false)
+  // Answers carried from the first /join form: dojo, class and student DOB are shown, not re-asked.
+  const [carried, setCarried] = useState({ classPick: false, dob: false })
+  const [editClass, setEditClass] = useState(false)
+  useEffect(() => {
+    const p = loadJoinPrefill()
+    /* eslint-disable react-hooks/set-state-in-effect -- one-time hydrate from localStorage after mount */
+    if (!p) return
+    const okClass = !!p.dojo && (CLASSES[p.dojo] ?? []).includes(p.classTime)
+    if (okClass) { setDojo(p.dojo); setClassTime(p.classTime) }
+    setStudents([{ ...blank(), firstName: p.firstName || '', surname: p.surname || '', dateOfBirth: p.dateOfBirth || '',
+      belt: BELTS.includes(p.belt) ? p.belt : 'White', medical: p.medical || '' }])
+    setParent(x => ({ ...x, ...p.parent }))
+    if (p.emergency?.name && p.emergency?.phone) { setEmergency(e => ({ ...e, ...p.emergency })); setShowExtra(true) }
+    setCarried({ classPick: okClass, dob: !!p.dateOfBirth })
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [])
   const [error, setError] = useState('')
   // One form page (details + live totals), then Stripe card, then GoCardless DD, then done.
   const step = 1
@@ -217,6 +234,12 @@ function MembershipSignup() {
               ))}
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
+              {carried.classPick && !editClass ? (
+              <div className="sm:col-span-2 rounded-xl bg-[#fafaf9] border border-black/8 px-4 py-3 text-sm flex items-center justify-between gap-3">
+                <span><span className="text-gray-500">Dojo &amp; class (from your enrolment):</span> <strong>{dojo === 'rayleigh' ? 'Rayleigh' : 'Upminster'}</strong> · {classTime}</span>
+                <button type="button" onClick={() => setEditClass(true)} className="text-xs font-semibold text-[#dc2626] underline shrink-0">Change</button>
+              </div>
+              ) : (<>
               <div>
                 <label className={lbl}>Dojo</label>
                 <select required className={input} value={dojo} onChange={e => { setDojo(e.target.value); setClassTime('') }}>
@@ -232,6 +255,7 @@ function MembershipSignup() {
                   {(CLASSES[dojo] ?? []).map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
+              </>)}
               <div>
                 <label className={lbl}>Date of trial class</label>
                 <DateInput required className={input} value={trialDate} onChange={e => setTrialDate(e.target.value)} />
@@ -243,17 +267,20 @@ function MembershipSignup() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-base font-semibold text-[#111111]">{adultSolo ? 'About you' : 'Student details'}</h3>
+            <h3 className="text-base font-semibold text-[#111111]">{adultSolo ? 'About you (the member and Direct Debit payer)' : 'Student details'}</h3>
+            {!adultSolo && <p className="text-xs text-gray-500 -mt-2">The child or children who will train. Parent or guardian details come further down.</p>}
             {students.map((st, i) => (
               <div key={i} className="rounded-2xl border border-black/10 p-4 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold text-sm">{adultSolo ? 'Your details' : `Student ${i + 1}`}</span>
+                  <span className="font-semibold text-sm">{adultSolo ? 'You (member)' : `Student ${i + 1}`}</span>
                   {i > 0 && <button type="button" onClick={() => setStudents(s => s.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>}
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div><label className={lbl}>First name</label><input required autoComplete={i === 0 && adultSolo ? 'given-name' : 'off'} className={input} value={st.firstName} onChange={e => setStudent(i, 'firstName', e.target.value)} /></div>
                   <div><label className={lbl}>Surname</label><input required autoComplete={i === 0 && adultSolo ? 'family-name' : 'off'} className={input} value={st.surname} onChange={e => setStudent(i, 'surname', e.target.value)} /></div>
-                  <div><label className={lbl}>Date of birth</label><DateInput required className={input} value={st.dateOfBirth} onChange={e => setStudent(i, 'dateOfBirth', e.target.value)} /></div>
+                  {i === 0 && carried.dob && st.dateOfBirth
+                    ? <div><label className={lbl}>Date of birth</label><div className={`${input} flex items-center justify-between bg-[#fafaf9]`}><span>{ukDate(st.dateOfBirth)}</span><button type="button" onClick={() => setCarried(c => ({ ...c, dob: false }))} className="text-xs font-semibold text-[#dc2626] underline">Change</button></div></div>
+                    : <div><label className={lbl}>Date of birth</label><DateInput required className={input} value={st.dateOfBirth} onChange={e => setStudent(i, 'dateOfBirth', e.target.value)} /></div>}
                   <div><label className={lbl}>Current belt</label>
                     <select className={input} value={st.belt} onChange={e => setStudent(i, 'belt', e.target.value)}>{BELTS.map(b => <option key={b}>{b}</option>)}</select></div>
                 </div>
@@ -288,14 +315,14 @@ function MembershipSignup() {
           {/* Adult solo: contact + consent once — name is the student name above, never re-asked */}
           {adultSolo ? (
             <div className="space-y-4 pt-2 border-t border-black/8">
-              <h3 className="text-base font-semibold text-[#111111]">Contact &amp; account holder</h3>
+              <h3 className="text-base font-semibold text-[#111111]">Your contact details (you are the Direct Debit payer)</h3>
               <p className="text-xs text-gray-500">Your name above is used for membership and as the Direct Debit account holder for monthly fees — we won&apos;t ask for it again.</p>
               {contactFields}
               {consentFields}
             </div>
           ) : (
             <div className="space-y-4 pt-2 border-t border-black/8">
-              <h3 className="text-base font-semibold text-[#111111]">Parent or guardian (account holder)</h3>
+              <h3 className="text-base font-semibold text-[#111111]">Parent or guardian (account holder and Direct Debit payer)</h3>
               <p className="text-xs text-gray-500">This person pays by card for the one-off total and is the Direct Debit account holder for monthly fees. Student names are already above.</p>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div><label className={lbl}>First name</label><input required autoComplete="given-name" className={input} value={parent.givenName} onChange={e => setParent({ ...parent, givenName: e.target.value })} /></div>
