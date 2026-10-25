@@ -5,6 +5,7 @@ import { CheckCircle, ArrowRight, ShoppingBag, CreditCard, Shield } from 'lucide
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { submitEnrolment } from '@/app/actions/enrolment'
+import { saveJoinPrefill } from '@/lib/joinPrefill'
 
 const rayleighClasses = [
   'Tuesday 6:15–7pm — Ages 4–10 (all grades)',
@@ -89,6 +90,16 @@ export default function JoinPage() {
         heardAboutUs: g('heardAboutUs') || undefined,
         discountCode: g('discountCode') || undefined,
       })
+      // Carry everything already answered to /join/membership so dojo, class, DOB etc. are not asked again.
+      saveJoinPrefill({
+        dojo: g('dojo'), classTime: g('classTime'),
+        firstName: g('firstName'), surname: g('lastName'), dateOfBirth: g('dateOfBirth'),
+        belt: g('currentBelt'), medical: g('medicalConditions') || '',
+        parent: isAdult
+          ? { givenName: g('firstName'), familyName: g('lastName'), email: g('email'), phone: g('phone'), address: [g('addressLine1'), g('addressLine2')].filter(Boolean).join(', '), city: g('town'), postCode: g('postcode') }
+          : { givenName: g('parentFirstName') || '', familyName: g('parentLastName') || '', email: g('parentEmail') || '', phone: g('parentPhone') || '', address: [g('addressLine1'), g('addressLine2')].filter(Boolean).join(', '), city: g('town'), postCode: g('postcode') },
+        emergency: { name: g('emergencyName') || '', phone: g('emergencyPhone') || '' },
+      })
       const mid = result.memberId || 0
       setEnrolMemberId(mid || null)
       if (mid > 0 && typeof window !== 'undefined') {
@@ -148,7 +159,7 @@ export default function JoinPage() {
               <h3 className="text-lg font-bold text-[#111111] mb-5">Complete your membership</h3>
               <div className="space-y-4">
                 {nextSteps.map((step, i) => (
-                  <a key={i} href={step.href} target="_blank" rel="noopener noreferrer"
+                  <a key={i} href={`${step.href}?from=join`}
                     className="flex items-start gap-4 p-5 rounded-2xl border border-black/8 hover:border-[#dc2626] hover:shadow-sm transition-all group">
                     <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
                       <step.icon className="h-5 w-5 text-[#dc2626]" />
