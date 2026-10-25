@@ -12,6 +12,18 @@ canvas{background:#87ceeb;max-width:100vw;max-height:100vh;aspect-ratio:16/9;wid
 .tb{pointer-events:auto;width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.35);border:3px solid rgba(255,255,255,.8);color:#fff;font-size:26px;font-weight:bold;display:flex;align-items:center;justify-content:center;text-shadow:0 2px 3px #000}
 #touch2{position:fixed;bottom:12px;left:0;right:0;display:none;justify-content:space-between;padding:0 8px;pointer-events:none}#touch2>div{display:flex;gap:6px}#touch2 .tb{width:56px;height:56px;font-size:20px}#touch2 .p2{border-color:#90caf9;background:rgba(30,136,229,.45)}
 #touchKM{position:fixed;bottom:12px;left:0;right:0;display:none;justify-content:space-between;padding:0 12px;pointer-events:none}#touchKM>div{display:flex;gap:10px}
+#touchPS{position:fixed;bottom:10px;left:0;right:0;display:none;justify-content:space-between;align-items:flex-end;padding:0 10px;pointer-events:none;z-index:15}
+#touchPS .ps-cluster{pointer-events:none;position:relative;width:170px;height:170px}
+#touchPS .ps-btn{pointer-events:auto;position:absolute;width:58px;height:58px;border-radius:50%;border:3px solid #fff;color:#fff;font:700 10px/1 system-ui,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center;text-shadow:0 1px 2px #000;box-shadow:0 2px 6px #0008;user-select:none;-webkit-user-select:none;touch-action:none}
+#touchPS .ps-btn.on{transform:scale(.92);filter:brightness(1.2)}
+#touchPS .ps-dpad .ps-btn{border-radius:12px;background:rgba(40,40,40,.78);font-size:20px}
+#touchPS .u,#touchPS .punch{left:56px;top:0}#touchPS .d,#touchPS .block{left:56px;bottom:0}#touchPS .l,#touchPS .sweep{left:0;top:56px}#touchPS .r,#touchPS .kick{right:0;top:56px}
+#touchPS .punch{background:rgba(46,125,50,.92)}#touchPS .kick{background:rgba(211,47,47,.92)}#touchPS .block{background:rgba(25,118,210,.92)}#touchPS .sweep{background:rgba(251,192,45,.96);color:#111;text-shadow:none}
+#touchPS-hint{position:fixed;left:50%;bottom:190px;transform:translateX(-50%);display:none;gap:8px;pointer-events:none;z-index:16}
+.ps-cue{width:36px;height:36px;border-radius:50%;border:2px solid #fff;opacity:.4}.ps-cue.next{opacity:1;box-shadow:0 0 0 3px #fff8}.ps-cue.done{opacity:.15}
+.ps-cue.punch{background:#2e7d32}.ps-cue.kick{background:#d32f2f}.ps-cue.block{background:#1976d2}.ps-cue.sweep{background:#fbc02d}
+#touchPS-hint.miss .ps-cue{animation:psmiss .25s}@keyframes psmiss{50%{transform:translateX(-4px)}}
+
 #touchFO{position:fixed;bottom:12px;left:0;right:0;display:none;justify-content:space-between;padding:0 12px;pointer-events:none}#touchFO>div{display:flex;gap:10px}.fb{pointer-events:auto;width:66px;height:66px;border-radius:14px;background:rgba(255,255,255,.35);border:3px solid #fff;color:#fff;font-size:26px;font-weight:bold;display:flex;align-items:center;justify-content:center;text-shadow:0 2px 3px #000}.fb.kick{width:84px;height:84px;border-radius:50%;background:rgba(255,23,68,.55)}
 .tb.on{background:rgba(255,215,0,.6)}
 #nameBox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6)}
@@ -26,6 +38,7 @@ canvas{background:#87ceeb;max-width:100vw;max-height:100vh;aspect-ratio:16/9;wid
 </style></head><body>
 <div id="wrap"><canvas id="c" width="960" height="540"></canvas></div>
 <a id="trial" href="https://forzakarate.co.uk/trial-class" target="_top">🥋 Ask a parent to book a £10 trial →</a>
+<div id="touchPS"><div class="ps-cluster ps-dpad"><div class="ps-btn u" data-k="u">▲</div><div class="ps-btn l" data-k="r">◀</div><div class="ps-btn r" data-k="l">▶</div><div class="ps-btn d" data-k="d">▼</div></div><div class="ps-cluster ps-face"><div class="ps-btn punch" data-move="punch">PUNCH</div><div class="ps-btn kick" data-move="kick">KICK</div><div class="ps-btn block" data-move="block">BLOCK</div><div class="ps-btn sweep" data-move="sweep">SWEEP</div></div></div><div id="touchPS-hint" aria-hidden="true"></div>
 <div id="touchKM"><div><div class="fb" data-k="r">◀</div><div class="fb" data-k="u">▲</div><div class="fb" data-k="d">▼</div><div class="fb" data-k="l">▶</div></div><div><div class="fb kick" data-k="a">🥊</div></div></div>
 <div id="touchFO"><div><div class="fb" data-d="left">◀</div><div class="fb" data-d="up">▲</div><div class="fb" data-d="down">▼</div><div class="fb" data-d="right">▶</div></div><div><div class="fb kick" data-d="kick">🥋</div></div></div>
 <div id="touch2"><div><div class="tb p2" data-p="1" data-k="left">◀</div><div class="tb p2" data-p="1" data-k="right">▶</div><div class="tb p2" data-p="1" data-k="kick">🥋</div><div class="tb p2" data-p="1" data-k="jump">▲</div></div><div><div class="tb" data-k="left">◀</div><div class="tb" data-k="right">▶</div><div class="tb" data-k="kick">🥋</div><div class="tb" data-k="jump">▲</div></div></div>
@@ -2858,14 +2871,27 @@ function drawFaceoff(){const F=FO;
 // ---------- WKF KUMITE (grading test from Orange Belt / 11th Kyu) ----------
 const KUMITE_FROM=GRADES.findIndex(G=>G.n==='Orange Belt');
 const KMKEYS={ArrowLeft:'r',KeyA:'r',ArrowRight:'l',KeyD:'l', /* v16: AO now on the right – ← is forward */ArrowUp:'u',KeyW:'u',ArrowDown:'d',KeyS:'d',KeyX:'a',Space:'a',KeyK:'a',KeyF:'a',KeyL:'a',Enter:'a'};
-const KMH={l:0,r:0,u:0,d:0};
+const KMH={l:0,r:0,u:0,d:0,blockHold:0};
+/* v17 PS pad: dedicated face moves + soft-gated combo prompts that grow 1->4 over fight time */
+const PS_MOVES=['punch','kick','block','sweep'];let PSQ={on:0,seq:[],i:0,len:1,nextAt:0,hits:0};
+function psPromptReset(){PSQ={on:isTouch?1:0,seq:[],i:0,len:1,nextAt:150,hits:0};psPromptPaint()}
+function psPromptFill(){PSQ.seq=[];for(let n=0;n<PSQ.len;n++)PSQ.seq.push(PS_MOVES[(Math.random()*4)|0]);PSQ.i=0;psPromptPaint()}
+function psPromptPaint(miss){const h=document.getElementById('touchPS-hint');if(!h)return;if(!PSQ.on||!PSQ.seq.length){h.style.display='none';return}h.innerHTML=PSQ.seq.map((m,j)=>'<div class="ps-cue '+m+(j<PSQ.i?' done':j===PSQ.i?' next':'')+'"></div>').join('');h.classList.toggle('miss',!!miss)}
+function psPromptTick(){if(!PSQ.on)return;if(!PSQ.seq.length){if(--PSQ.nextAt<=0)psPromptFill();return}
+ const want=Math.min(4,1+Math.floor(KM.t/900));if(want>PSQ.len&&PSQ.i===0){PSQ.len=want;psPromptFill()}} /* ramp: +1 cue every ~15s of fight, max 4 */
+function psPromptOnMove(move){if(!PSQ.on||!PSQ.seq.length)return; /* soft gate: never blocks the move itself */
+ if(PSQ.seq[PSQ.i]!==move){beep(160,.06);psPromptFill();psPromptPaint(1);return}
+ PSQ.i++;if(PSQ.i>=PSQ.seq.length){score+=25*PSQ.len;PSQ.hits++;beep(880,.08,'triangle');if(PSQ.hits%2===0&&PSQ.len<4)PSQ.len++;psPromptFill()}else psPromptPaint()}
+function kmFace(move){if(!KM||KM.ph!=='fight')return;psPromptOnMove(move);if(move==='block')return;
+ const f=KM.ao,o=KM.aka;if(o.act==='down'&&f.sweepWin>0){kmAttack(f,'gpunch');return}
+ kmAttack(f,move==='kick'?(KMH.u?'hkick':'bkick'):move)} /* hold ▲ + kick = head kick */
 const MOVES={punch:{s:7,a:6,r:10,reach:1.35,pts:1,nm:'Kizami-zuki'},bkick:{s:12,a:6,r:14,reach:1.65,pts:2,nm:'Chudan geri'},hkick:{s:16,a:6,r:18,reach:1.75,pts:3,nm:'Jodan geri'},sweep:{s:10,a:6,r:12,reach:1.45,pts:0,nm:'Ashi barai'},gpunch:{s:8,a:6,r:10,reach:1.6,pts:3,nm:'Ashi barai + tsuki'}};
 const PEN=['','Chui 1','Chui 2','Chui 3','Hansoku Chui','Hansoku'];
 const PTSNM={1:'Yuko',2:'Waza-ari',3:'Ippon'};
 const MX0=160,PXM=80,FY=432;
 let KM=null;
 function kmFighter(side){return{side,x:side?5:3,face:side?-1:1,act:'idle',t:0,mv:null,hitDone:0,score:0,pens:0,cd:0,sweepWin:0,walk:0,blockT:0}}
-function startKumite(lvl,practice){lvl=Math.max(KUMITE_FROM,Math.min(GRADES.length-1,lvl));const L=lvl-KUMITE_FROM;
+function startKumite(lvl,practice){PSQ.on=0;PSQ.seq=[];psPromptPaint();lvl=Math.max(KUMITE_FROM,Math.min(GRADES.length-1,lvl));const L=lvl-KUMITE_FROM;
  KM={lvl,practice,name:OPP[(lvl-1)%OPP.length],ao:kmFighter(0),aka:kmFighter(1),ref:{x:4,arm:null},time:75*60,ph:'stand',t:0,say:{text:'Line up – face the referee',t:90},senshu:null,winner:null,why:'',fb:null,
   ai:{block:Math.min(.8,.18+L*.05),aggr:.012+L*.0028,smart:Math.min(.97,.45+L*.045),combo:Math.min(.6,L*.05),hk:Math.min(.3,.06+L*.02),react:0}};
  state='kumite';for(const k in KMH)KMH[k]=0;beep(440,.15,'sine')}
@@ -2923,7 +2949,7 @@ function kmStep(f,o,isAI){
   if(f.t>m.s+m.a+m.r){f.act='idle';f.mv=null;f.t=0;f.cd=isAI?8:4}return}
  // movement / block
  let mvx=0;
- if(!isAI){if(KMH.d&&!KMH.l&&!KMH.r){f.act='block'}else{f.act='idle';if(KMH.r)mvx=.045;if(KMH.l)mvx=-.045}}
+ if(!isAI){if(KMH.blockHold||(KMH.d&&!KMH.l&&!KMH.r)){f.act='block'}else{f.act='idle';if(KMH.r)mvx=.045;if(KMH.l)mvx=-.045}}
  else{const A=KM.ai,d=f.x-o.x;f.act=f.blockT>0?'block':'idle';if(f.blockT>0)f.blockT--;
   if(o.mv&&o.t===1&&o.act!=='gpunch'&&Math.random()<A.block)f.blockT=o.mv.s+o.mv.a+2;
   if(f.blockT<=0){
@@ -2938,7 +2964,7 @@ function kmStep(f,o,isAI){
 function kmUpdate(){const K_=KM;K_.t++;if(K_.say&&--K_.say.t<=0)K_.say=null;if(K_.fb&&--K_.fb.t<=0)K_.fb=null;
  const seq={stand:['rei1',40,'Shushin ni rei!'],rei1:['turn',70,''],turn:['rei2',30,'Otagai ni rei!'],rei2:['yoi',70,'Yoi'],yoi:['hajime',55,'Shobu hajime!']}; // v16 ceremony: stand facing the referee, bow to the referee, turn, bow to each other, yoi (fudo dachi), Hajime
  if(seq[K_.ph]){if(K_.t>seq[K_.ph][1]){const n=seq[K_.ph];K_.ph=n[0];K_.t=0;if(n[2]){kmSay(n[2],n[0]==='hajime'?60:80);if(n[0]==='hajime'){refCall('Shobu hajime');crowdCheer(-1,.8)}else if(n[0]!=='yoi')beep(520,.08,'triangle')}}return}
- if(K_.ph==='hajime'){if(K_.t>55){K_.ph='fight';K_.t=0}return}
+ if(K_.ph==='hajime'){if(K_.t>55){K_.ph='fight';K_.t=0;if(!PSQ.on)psPromptReset()}return}
  if(K_.ph==='yame'){K_.ref.x+=(4-K_.ref.x)*.08;if(K_.kiai)K_.kiai.t++;
   for(const f of [K_.ao,K_.aka]){if(f.slide){const S_=f.slide;S_.t++;const k=EZ(Math.min(1,S_.t/26));f.x=LRP(S_.from,S_.to,k);if(S_.t>=26)f.slide=null} // v16: scorer slides back 2-3 steps (yori-ashi) while shouting the kiai
    if((K_.t===16&&f.act!=='down')||K_.t===40){f.act='idle';f.mv=null;f.t=0}
@@ -2946,6 +2972,7 @@ function kmUpdate(){const K_=KM;K_.t++;if(K_.say&&--K_.say.t<=0)K_.say=null;if(K
   if(K_.t===150){const a=K_.ao,b=K_.aka;if(a.pens>=5||b.pens>=5||Math.abs(a.score-b.score)>=8){kmFinish();return}kmReset();K_.ref.arm=null;K_.kiai=null;kmSay('Tsuzukete hajime!',60);refCall('Tsuzukete hajime');crowdCheer(-1,.5);K_.ph='hajime';K_.t=0}return}
  if(K_.ph==='end'){if(K_.t===60)kmSay(K_.winner===null?'Hikiwake':K_.winner?'Aka no kachi!':'Ao no kachi!',90);if(K_.t===150){kmReset();kmSay('Otagai ni rei',80)}if(K_.t>230){K_.ph='result';K_.t=0}return}
  if(K_.ph==='result')return;
+ psPromptTick();
  if(--K_.time<=0){kmFinish();return}
  if(K_.buf>0){K_.buf--;if(K_.ao.act==='idle'||K_.ao.act==='block'){if(K_.ao.cd>0)K_.ao.cd=0;kmPlayerAttack()}}
  kmStep(K_.aka,K_.ao,true);kmStep(K_.ao,K_.aka,false);
@@ -3357,8 +3384,13 @@ nick.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')docum
 let last=performance.now(),acc=0;
 const trialEl=document.getElementById('trial'),foPad=document.getElementById('touchFO'),t2El=document.getElementById('touch2');
 const kmPad=document.getElementById('touchKM');document.querySelectorAll('#touchKM .fb').forEach(b=>{const k=b.dataset.k,on=e=>{e.preventDefault();kmInput(k,1)},off=e=>{e.preventDefault();if(k!=='a')kmInput(k,0)};b.addEventListener('touchstart',on,{passive:false});b.addEventListener('touchend',off,{passive:false});b.addEventListener('touchcancel',off);b.addEventListener('mousedown',on);b.addEventListener('mouseup',off);b.addEventListener('mouseleave',off)});
+(function psBindPad(){const root=document.getElementById('touchPS');if(!root)return;
+ const bind=(b,on,off)=>{['touchstart','mousedown'].forEach(t=>b.addEventListener(t,e=>{e.preventDefault();b.classList.add('on');on()},{passive:false}));['touchend','touchcancel','mouseup','mouseleave'].forEach(t=>b.addEventListener(t,e=>{e.preventDefault();if(!b.classList.contains('on'))return;b.classList.remove('on');off()},{passive:false}))};
+ root.querySelectorAll('.ps-dpad .ps-btn').forEach(b=>{const k=b.dataset.k;bind(b,()=>kmInput(k,1),()=>kmInput(k,0))});
+ root.querySelectorAll('.ps-face .ps-btn').forEach(b=>{const mv=b.dataset.move;bind(b,()=>{if(!KM)return;if(KM.ph!=='fight'){kmInput('a',1);return}if(mv==='block')KMH.blockHold=1;kmFace(mv)},()=>{if(mv==='block')KMH.blockHold=0})})})();
+const psPad=document.getElementById('touchPS'),psHint=document.getElementById('touchPS-hint');
 document.querySelectorAll('#touchFO .fb').forEach(b=>{const h=e=>{e.preventDefault();foInput(b.dataset.d)};b.addEventListener('touchstart',h,{passive:false});b.addEventListener('mousedown',h)});
-function loop(t){if(isTouch){const fo=state==='faceoff',km=state==='kumite';foPad.style.display=fo?'flex':'none';kmPad.style.display=km?'flex':'none';const ti=state==='title';touchEl.style.display=fo||km||TWO||ti?'none':'flex';t2El.style.display=!fo&&!km&&TWO&&!ti?'flex':'none'} /* v14 tidy: no game pads over the menu */trialEl.style.display=(state==='over'||state==='win'||state==='dailydone')&&nb.style.display!=='flex'?'block':'none';acc+=Math.min(100,t-last);last=t;while(acc>=1000/60){update();acc-=1000/60}draw();requestAnimationFrame(loop)}
+function loop(t){if(isTouch){const fo=state==='faceoff',km=state==='kumite';foPad.style.display=fo?'flex':'none';kmPad.style.display='none';psPad.style.display=km?'flex':'none';if(!km||!KM||KM.ph!=='fight')psHint.style.display='none';else if(PSQ.seq.length)psHint.style.display='flex';const ti=state==='title';touchEl.style.display=fo||km||TWO||ti?'none':'flex';t2El.style.display=!fo&&!km&&TWO&&!ti?'flex':'none'} /* v14 tidy: no game pads over the menu */trialEl.style.display=(state==='over'||state==='win'||state==='dailydone')&&nb.style.display!=='flex'?'block':'none';acc+=Math.min(100,t-last);last=t;while(acc>=1000/60){update();acc-=1000/60}draw();requestAnimationFrame(loop)}
 addEventListener('keydown',e=>{if(state==='kumite'&&KM&&KM_CER.includes(KM.ph)&&!/INPUT|TEXTAREA/.test(e.target.tagName)&&e.code!=='KeyM'&&e.code!=='Escape'){e.preventDefault();kmSkipCeremony()}},true);cv.addEventListener('pointerdown',()=>{if(state==='kumite'&&KM)kmSkipCeremony()}); // v16: tap or any key skips the ceremony
 const muteBtn=document.getElementById('muteBtn');function muteSync(){muteBtn.textContent=MUTED?'🔇 Muted':'🔊 Sound'}muteSync();muteBtn.addEventListener('click',e=>{e.stopPropagation();MUTED=!MUTED;try{localStorage.setItem('dojoDash.mute',MUTED?'1':'0')}catch(_){}if(MUTED){try{speechSynthesis.cancel()}catch(_){}if(CROWD.au){CROWD.au.m.gain.setTargetAtTime(0,ac.currentTime,.05);CROWD.au.lvl=0}}muteSync()});['pointerdown','touchstart'].forEach(t=>muteBtn.addEventListener(t,e=>e.stopPropagation()));
 setInterval(crowdTick,250);
