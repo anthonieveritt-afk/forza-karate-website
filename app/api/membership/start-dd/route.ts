@@ -127,11 +127,10 @@ export async function POST(req: Request) {
               currency: 'GBP',
               description: `Forza Karate monthly membership — ${PLANS[signup.plan].label}`,
             },
+            // GoCardless allows at most 3 metadata keys (5 caused a 422 in production).
             metadata: {
-              source: 'forza-website-signup',
-              plan: signup.plan,
-              dojo: signup.dojo,
               signupId,
+              plan: signup.plan,
               stripeSessionId: session.id,
             },
           },
@@ -186,6 +185,6 @@ export async function POST(req: Request) {
     })
   } catch (e) {
     console.error('start-dd error', e instanceof GcError ? JSON.stringify(e.body).slice(0, 500) : e)
-    return NextResponse.json({ error: 'We could not start the Direct Debit set-up. Please try again.' }, { status: 502 })
+    return NextResponse.json({ error: 'Your card payment went through, but we could not open the Direct Debit form. Please try again, or contact the club and quote this reference: ' + signupId }, { status: 502 })
   }
 }
