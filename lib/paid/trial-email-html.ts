@@ -17,9 +17,9 @@ export function forzaShell(o: Shell): string {
 <div style="display:none;max-height:0;overflow:hidden">${esc(o.preheader)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF"><tr><td align="center" style="padding:16px 8px">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;background:#FAFAF8" bgcolor="#FAFAF8">
-<tr><td bgcolor="#FFFFFF" style="background:#FFFFFF"><img src="${SITE}/email/${o.header}-header.png" width="600" height="180" alt="${esc(o.alt)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;color:#FFFFFF;font-family:${HEAD};font-weight:900;font-size:22px"></td></tr>
+<tr><td bgcolor="#C41230" style="background:#C41230"><img src="${SITE}/email/${o.header}-header.png" width="600" height="180" alt="${esc(o.alt)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;color:#FFFFFF;font-family:${HEAD};font-weight:900;font-size:22px"></td></tr>
 <tr><td style="padding:32px 40px 8px;font-family:${HEAD};font-weight:900;font-size:36px;line-height:1.1;color:#111111">${esc(o.title)}</td></tr>
-<tr><td style="padding:8px 40px 0"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td width="100" height="6" bgcolor="#C41230" style="font-size:0;line-height:0">&nbsp;</td></tr></table></td></tr>
+<tr><td style="padding:8px 40px 0"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td width="100" height="6" bgcolor="#111111" style="font-size:0;line-height:0">&nbsp;</td></tr></table></td></tr>
 <tr><td style="padding:16px 40px 8px;font-family:${BODY};font-size:17px;line-height:1.6;color:#111111">${o.body}</td></tr>
 ${cta}
 <tr><td bgcolor="#111111" style="background:#111111;border-top:6px solid #C41230;padding:24px 40px;font-family:${BODY};font-size:13px;line-height:1.6;color:#FFFFFF"><div style="font-family:${HEAD};font-weight:900;font-size:15px;letter-spacing:1px">FORZA KARATE CLUB</div>${esc(o.footerLine)}<br><a href="${SITE}" style="color:#FFFFFF;text-decoration:none">forzakarate.co.uk</a> · <a href="mailto:hello@forzakarate.co.uk" style="color:#FFFFFF;text-decoration:none">hello@forzakarate.co.uk</a></td></tr>
