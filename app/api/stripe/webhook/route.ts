@@ -4,6 +4,7 @@ import { getForzaStripe } from '@/lib/paid/stripe'
 import { postTrialToHonbu } from '@/lib/paid/honbu-trial'
 import { emailConfigured, envAddresses, esc, sendEmail } from '@/lib/email'
 import { gbp } from '@/lib/paid/catalogue'
+import { closedWeek } from '@/lib/paid/closed-weeks'
 import { clubNotifyHtml, parentConfirmationHtml, type TrialInfo } from '@/lib/paid/trial-email-html'
 import { claimOnce, releaseOnce } from '@/lib/paid/once'
 import { recordCardPaid } from '@/lib/gocardless/fulfil'
@@ -42,13 +43,16 @@ async function handleTrial(s: Stripe.Checkout.Session) {
 
   // Confirmation to the customer (Stripe also sends its own receipt if enabled in the dashboard).
   const to = m.email || s.customer_details?.email
-  const info: TrialInfo = { parentName: m.parentName, childName: m.childName, age: m.age, email: m.email, phone: m.phone, dojo: m.dojo, ageGroup: m.ageGroup, message: m.message, amount: gbp(s.amount_total ?? 0), sessionId: s.id, test: !s.livemode, honbuOk: honbu.ok }
+  const info: TrialInfo = { parentName: m.parentName, childName: m.childName, age: m.age, email: m.email, phone: m.phone, dojo: m.dojo, ageGroup: m.ageGroup, message: m.message, amount: gbp(s.amount_total ?? 0), sessionId: s.id, test: !s.livemode, honbuOk: honbu.ok, closed: closedWeek(m.dojo) }
   if (to && emailConfigured()) {
     const lines = [
       `Hi ${(m.parentName || '').split(' ')[0] || 'there'},`,
       '',
       `Thanks for booking a trial class at Forza Karate${m.childName ? ` for ${m.childName}` : ''} — your ${gbp(s.amount_total ?? 0)} payment has gone through.`,
-      `Class: ${m.ageGroup} at ${m.dojo}. We'll be in touch within 72 hours to confirm the time.`,
+      `Class: ${m.ageGroup} at ${m.dojo}.`,
+      info.closed
+        ? `This week is ${info.closed.label}, so there are no classes. We'll confirm your trial for the week beginning ${info.closed.backMonday} — the first week back.`
+        : `We'll be in touch within 72 hours to confirm the time.`,
       'No kit needed — just wear something comfy. Come and try it out, then ask questions!',
       '',
       'Please note: the £10 is for the trial class only and is not taken off membership. If you decide to join, membership starts the week after your trial at the full monthly rate.',
@@ -61,6 +65,7 @@ async function handleTrial(s: Stripe.Checkout.Session) {
 
   await notifyClub(`Paid trial booked: ${m.childName || m.parentName} (${m.dojo})${s.livemode ? '' : ' [TEST]'}`, [
     `A ${gbp(s.amount_total ?? 0)} trial class has been paid for online.`,
+    info.closed ? `${info.closed.label.toUpperCase()} — first class next teaching week (w/c ${info.closed.backMonday}). Don't book mid-break.` : '',
     `Student: ${m.childName || m.parentName}${m.age ? ` (age ${m.age})` : ''}`,
     `Contact: ${m.parentName} · ${m.email} · ${m.phone}`,
     `Class: ${m.ageGroup} at ${m.dojo}`,
