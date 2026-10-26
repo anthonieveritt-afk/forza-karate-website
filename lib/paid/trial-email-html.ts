@@ -29,7 +29,7 @@ ${cta}
 const p = (s: string) => `<p style="margin:0 0 16px">${s}</p>`
 const row = (k: string, v: string) => `<tr><td style="padding:8px 12px 8px 0;font-family:${HEAD};font-weight:900;font-size:13px;text-transform:uppercase;color:#C41230;vertical-align:top;white-space:nowrap">${esc(k)}</td><td style="padding:8px 0;font-family:${BODY};font-size:16px;color:#111111;border-bottom:1px solid #EEEEEA">${esc(v)}</td></tr>`
 
-export type TrialInfo = { parentName?: string; childName?: string; age?: string; email?: string; phone?: string; dojo?: string; ageGroup?: string; message?: string; amount: string; sessionId: string; test: boolean; honbuOk: boolean }
+export type TrialInfo = { parentName?: string; childName?: string; age?: string; email?: string; phone?: string; dojo?: string; ageGroup?: string; message?: string; amount: string; sessionId: string; test: boolean; honbuOk: boolean; closed?: { label: string; backMonday: string } | null }
 
 export function parentConfirmationHtml(t: TrialInfo): string {
   const first = (t.parentName || '').split(' ')[0] || 'there'
@@ -37,7 +37,9 @@ export function parentConfirmationHtml(t: TrialInfo): string {
     p(`Hi ${esc(first)},`),
     p(`Thanks for booking a trial class at Forza Karate${t.childName ? ` for <strong>${esc(t.childName)}</strong>` : ''} — your <strong>${esc(t.amount)}</strong> payment has gone through.`),
     `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 16px">${row('Class', t.ageGroup || '')}${row('Dojo', t.dojo || '')}${row('Paid', t.amount)}</table>`,
-    p(`We'll be in touch <strong>within 72 hours</strong> to confirm the time.`),
+    t.closed
+      ? p(`This week is <strong>${esc(t.closed.label)}</strong>, so there are no classes. We'll confirm your trial for the <strong>week beginning ${esc(t.closed.backMonday)}</strong> — the first week back.`)
+      : p(`We'll be in touch <strong>within 72 hours</strong> to confirm the time.`),
     p(`<strong>No kit needed</strong> — just wear something comfy. Come and try it out, then ask questions!`),
     `<p style="margin:0 0 16px;padding:12px 16px;border-left:6px solid #C41230;background:#FFFFFF;font-size:15px;color:#555555">Please note: the £10 is for the trial class only and is not taken off membership. If you decide to join, membership starts the week after your trial at the full monthly rate.</p>`,
   ].join('')
@@ -47,6 +49,7 @@ export function parentConfirmationHtml(t: TrialInfo): string {
 export function clubNotifyHtml(t: TrialInfo): string {
   const body = [
     p(`A <strong>${esc(t.amount)}</strong> trial class has been paid for online.${t.test ? ' <strong style="color:#C41230">[TEST MODE]</strong>' : ''}`),
+    t.closed ? `<p style="margin:0 0 16px;padding:12px 16px;background:#C41230;color:#FFFFFF;font-weight:bold">${esc(t.closed.label.toUpperCase())} — first class next teaching week (w/c ${esc(t.closed.backMonday)}). Don't book mid-break.</p>` : '',
     `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 16px;width:100%">${row('Student', `${t.childName || t.parentName || ''}${t.age ? ` (age ${t.age})` : ''}`)}${row('Contact', t.parentName || '')}${row('Email', t.email || '')}${row('Phone', t.phone || '')}${row('Class', `${t.ageGroup || ''} at ${t.dojo || ''}`)}${t.message ? row('Notes', t.message) : ''}${row('Stripe', t.sessionId)}</table>`,
     t.honbuOk
       ? `<p style="margin:0 0 16px;padding:12px 16px;background:#111111;color:#FFFFFF;font-weight:bold">✓ Added to Club Honbu trial list.</p>`
