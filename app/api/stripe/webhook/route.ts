@@ -43,7 +43,7 @@ async function handleTrial(s: Stripe.Checkout.Session) {
 
   // Confirmation to the customer (Stripe also sends its own receipt if enabled in the dashboard).
   const to = m.email || s.customer_details?.email
-  const info: TrialInfo = { parentName: m.parentName, childName: m.childName, age: m.age, email: m.email, phone: m.phone, dojo: m.dojo, ageGroup: m.ageGroup, message: m.message, amount: gbp(s.amount_total ?? 0), sessionId: s.id, test: !s.livemode, honbuOk: honbu.ok, closed: closedWeek() }
+  const info: TrialInfo = { parentName: m.parentName, childName: m.childName, age: m.age, email: m.email, phone: m.phone, dojo: m.dojo, ageGroup: m.ageGroup, message: m.message, amount: gbp(s.amount_total ?? 0), sessionId: s.id, test: !s.livemode, honbuOk: honbu.ok, closed: closedWeek(m.dojo) }
   if (to && emailConfigured()) {
     const lines = [
       `Hi ${(m.parentName || '').split(' ')[0] || 'there'},`,
