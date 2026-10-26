@@ -17,12 +17,12 @@ export function forzaShell(o: Shell): string {
 <div style="display:none;max-height:0;overflow:hidden">${esc(o.preheader)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF"><tr><td align="center" style="padding:16px 8px">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;background:#FAFAF8" bgcolor="#FAFAF8">
-<tr><td bgcolor="#C41230" style="background:#C41230"><img src="${SITE}/email/${o.header}-header.png" width="600" height="180" alt="${esc(o.alt)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;color:#FFFFFF;font-family:${HEAD};font-weight:900;font-size:22px"></td></tr>
+<tr><td bgcolor="#FFFFFF" style="background:#FFFFFF"><img src="${SITE}/email/${o.header}-header.png" width="600" height="180" alt="${esc(o.alt)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;color:#FFFFFF;font-family:${HEAD};font-weight:900;font-size:22px"></td></tr>
 <tr><td style="padding:32px 40px 8px;font-family:${HEAD};font-weight:900;font-size:36px;line-height:1.1;color:#111111">${esc(o.title)}</td></tr>
-<tr><td style="padding:8px 40px 0"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td width="100" height="6" bgcolor="#FFCC00" style="font-size:0;line-height:0">&nbsp;</td></tr></table></td></tr>
+<tr><td style="padding:8px 40px 0"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td width="100" height="6" bgcolor="#C41230" style="font-size:0;line-height:0">&nbsp;</td></tr></table></td></tr>
 <tr><td style="padding:16px 40px 8px;font-family:${BODY};font-size:17px;line-height:1.6;color:#111111">${o.body}</td></tr>
 ${cta}
-<tr><td bgcolor="#111111" style="background:#111111;border-top:6px solid #C41230;padding:24px 40px;font-family:${BODY};font-size:13px;line-height:1.6;color:#FFFFFF"><div style="font-family:${HEAD};font-weight:900;font-size:15px;letter-spacing:1px">FORZA KARATE CLUB</div>${esc(o.footerLine)}<br><a href="${SITE}" style="color:#FFCC00;text-decoration:none">forzakarate.co.uk</a> · <a href="mailto:hello@forzakarate.co.uk" style="color:#FFCC00;text-decoration:none">hello@forzakarate.co.uk</a></td></tr>
+<tr><td bgcolor="#111111" style="background:#111111;border-top:6px solid #C41230;padding:24px 40px;font-family:${BODY};font-size:13px;line-height:1.6;color:#FFFFFF"><div style="font-family:${HEAD};font-weight:900;font-size:15px;letter-spacing:1px">FORZA KARATE CLUB</div>${esc(o.footerLine)}<br><a href="${SITE}" style="color:#FFFFFF;text-decoration:none">forzakarate.co.uk</a> · <a href="mailto:hello@forzakarate.co.uk" style="color:#FFFFFF;text-decoration:none">hello@forzakarate.co.uk</a></td></tr>
 </table></td></tr></table></body></html>`
 }
 
@@ -39,7 +39,7 @@ export function parentConfirmationHtml(t: TrialInfo): string {
     `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 16px">${row('Class', t.ageGroup || '')}${row('Dojo', t.dojo || '')}${row('Paid', t.amount)}</table>`,
     p(`We'll be in touch <strong>within 72 hours</strong> to confirm the time.`),
     p(`<strong>No kit needed</strong> — just wear something comfy. Come and try it out, then ask questions!`),
-    `<p style="margin:0 0 16px;padding:12px 16px;border-left:6px solid #FFCC00;background:#FFFFFF;font-size:15px;color:#555555">Please note: the £10 is for the trial class only and is not taken off membership. If you decide to join, membership starts the week after your trial at the full monthly rate.</p>`,
+    `<p style="margin:0 0 16px;padding:12px 16px;border-left:6px solid #C41230;background:#FFFFFF;font-size:15px;color:#555555">Please note: the £10 is for the trial class only and is not taken off membership. If you decide to join, membership starts the week after your trial at the full monthly rate.</p>`,
   ].join('')
   return forzaShell({ header: 'welcome', alt: 'Welcome to Forza — your £10 trial class is booked', title: "YOU'RE BOOKED IN!", preheader: `Your ${t.amount} Forza Karate trial class is booked.`, body, cta: { href: 'https://forzakarate.co.uk/trial-class', label: 'See trial class info' }, footerLine: "You're receiving this because you booked a £10 trial class." })
 }
