@@ -4,6 +4,7 @@ import { getForzaStripe } from '@/lib/paid/stripe'
 import { postTrialToHonbu } from '@/lib/paid/honbu-trial'
 import { emailConfigured, envAddresses, esc, sendEmail } from '@/lib/email'
 import { gbp } from '@/lib/paid/catalogue'
+import { clubNotifyHtml, parentConfirmationHtml, type TrialInfo } from '@/lib/paid/trial-email-html'
 import { claimOnce, releaseOnce } from '@/lib/paid/once'
 import { recordCardPaid } from '@/lib/gocardless/fulfil'
 
@@ -15,7 +16,7 @@ function clubInbox(): string[] {
   return own.length ? own : envAddresses('CONTACT_TO_EMAIL')
 }
 
-async function notifyClub(subject: string, lines: string[]) {
+async function notifyClub(subject: string, lines: string[], html?: string) {
   const to = clubInbox()
   if (!emailConfigured() || to.length === 0) {
     console.log('[stripe-webhook] email not configured; would have sent:', subject, lines.join(' / '))
@@ -23,7 +24,7 @@ async function notifyClub(subject: string, lines: string[]) {
   }
   const r = await sendEmail({
     to, subject, text: lines.join('\n'),
-    html: `<p>${lines.map(esc).join('<br/>')}</p>`,
+    html: html ?? `<p>${lines.map(esc).join('<br/>')}</p>`,
   })
   if (!r.ok) console.error('[stripe-webhook] club email failed:', r)
 }
@@ -41,6 +42,7 @@ async function handleTrial(s: Stripe.Checkout.Session) {
 
   // Confirmation to the customer (Stripe also sends its own receipt if enabled in the dashboard).
   const to = m.email || s.customer_details?.email
+  const info: TrialInfo = { parentName: m.parentName, childName: m.childName, age: m.age, email: m.email, phone: m.phone, dojo: m.dojo, ageGroup: m.ageGroup, message: m.message, amount: gbp(s.amount_total ?? 0), sessionId: s.id, test: !s.livemode, honbuOk: honbu.ok }
   if (to && emailConfigured()) {
     const lines = [
       `Hi ${(m.parentName || '').split(' ')[0] || 'there'},`,
@@ -53,7 +55,7 @@ async function handleTrial(s: Stripe.Checkout.Session) {
       '',
       'Forza Karate Club',
     ]
-    const r = await sendEmail({ to, subject: 'Your Forza Karate trial class is booked', text: lines.join('\n'), html: `<p>${lines.map(esc).join('<br/>')}</p>`, replyTo: 'hello@forzakarate.co.uk' })
+    const r = await sendEmail({ to, subject: 'Your Forza Karate trial class is booked', text: lines.join('\n'), html: parentConfirmationHtml(info), replyTo: 'hello@forzakarate.co.uk' })
     if (!r.ok) console.error('[stripe-webhook] customer email failed:', r)
   }
 
@@ -66,7 +68,7 @@ async function handleTrial(s: Stripe.Checkout.Session) {
     `Stripe session: ${s.id}`,
     'Pricing: the £10 is for the trial only (not deducted from membership). If they join, membership starts the week after at the full monthly rate.',
     honbu.ok ? 'Added to Club Honbu trial list.' : '⚠ Could NOT add to Club Honbu automatically — please add by hand.',
-  ].filter(Boolean))
+  ].filter(Boolean), clubNotifyHtml(info))
 }
 
 export async function POST(req: NextRequest) {
