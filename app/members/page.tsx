@@ -20,6 +20,29 @@ function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError]       = useState('')
   const [loading, setLoading]   = useState(false)
+  const [forgot, setForgot]     = useState(false)
+  const [notice, setNotice]     = useState('')
+
+  async function handleForgot(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    setNotice('')
+    try {
+      const res = await fetch('/api/members/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      const result = await res.json().catch(() => ({}))
+      if (result.success) setNotice(result.message ?? "If that email is registered, we've sent a new password.")
+      else setError(result.error ?? 'Something went wrong — please try again.')
+    } catch {
+      setError('Something went wrong — please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -47,6 +70,32 @@ function LoginForm() {
   }
 
   const input = 'w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition'
+
+  if (forgot) {
+    return (
+      <form onSubmit={handleForgot} className="space-y-4">
+        <p className="text-sm text-gray-600 text-center">
+          Enter your Forza email and we&apos;ll email you a new password. You&apos;ll be asked to change it after you log in.
+        </p>
+        {notice && (
+          <div className="p-3 rounded-xl bg-green-50 border border-green-100 text-green-800 text-sm text-center">{notice}</div>
+        )}
+        {error && (
+          <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm text-center">{error}</div>
+        )}
+        <div>
+          <label className="block text-sm font-medium text-[#111111] mb-1.5">Email</label>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoFocus placeholder="your@email.com" className={input} />
+        </div>
+        <Button type="submit" size="lg" className="w-full" disabled={loading}>
+          {loading ? 'Sending…' : 'Email me a new password'}
+        </Button>
+        <button type="button" onClick={() => { setForgot(false); setNotice(''); setError('') }} className="w-full text-sm text-gray-500 hover:text-[#111111] underline">
+          Back to log in
+        </button>
+      </form>
+    )
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -91,6 +140,9 @@ function LoginForm() {
       <Button type="submit" size="lg" className="w-full" disabled={loading}>
         {loading ? 'Checking…' : 'Enter members area'}
       </Button>
+      <button type="button" onClick={() => { setForgot(true); setError('') }} className="w-full text-sm text-gray-500 hover:text-[#111111] underline">
+        Forgot password?
+      </button>
     </form>
   )
 }
