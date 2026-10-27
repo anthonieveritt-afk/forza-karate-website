@@ -34,7 +34,8 @@ function LoginForm() {
       const result = await res.json()
       if (result.success) {
         // Cookie is now set — do a hard nav so middleware sees it
-        window.location.href = redirect
+        // Still on the emailed temporary password → choose a new one first.
+        window.location.href = result.mustChangePassword ? '/members/change-password' : redirect
       } else {
         setError(result.error ?? 'Invalid credentials.')
         setLoading(false)
