@@ -112,7 +112,7 @@ export default function MusicPlayer() {
       <div
         className={`
           fixed bottom-3 right-3 sm:bottom-6 sm:right-6 z-50
-          flex items-center gap-2
+          flex items-center gap-1.5 sm:gap-2
           transition-all duration-500
           ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
         `}
@@ -120,7 +120,7 @@ export default function MusicPlayer() {
         <button
           onClick={prev}
           aria-label="Previous track"
-          className="relative z-10 hidden sm:flex w-9 h-9 rounded-full bg-[#111111] border border-white/10 items-center justify-center hover:bg-white/10 transition-colors"
+          className="relative z-10 flex w-9 h-9 rounded-full bg-[#111111] border border-white/10 items-center justify-center hover:bg-white/10 transition-colors"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
             <polygon points="11,1 4,6 11,11" />
@@ -156,7 +156,7 @@ export default function MusicPlayer() {
         <button
           onClick={next}
           aria-label="Next track"
-          className="relative z-10 hidden sm:flex w-9 h-9 rounded-full bg-[#111111] border border-white/10 items-center justify-center hover:bg-white/10 transition-colors"
+          className="relative z-10 flex w-9 h-9 rounded-full bg-[#111111] border border-white/10 items-center justify-center hover:bg-white/10 transition-colors"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
             <polygon points="1,1 8,6 1,11" />
