@@ -11,7 +11,6 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
 export async function loginMembers(data: {
   email: string
   password: string
-  licenceNumber?: string
 }): Promise<{ success: boolean; name?: string; error?: string }> {
   try {
     const controller = new AbortController()
@@ -35,7 +34,7 @@ export async function loginMembers(data: {
     const body = await res.json()
 
     if (!res.ok || !body.success) {
-      return { success: false, error: body.error ?? 'Invalid credentials. Please check your email, password and licence number.' }
+      return { success: false, error: body.error ?? 'Invalid credentials. Please check your email and password.' }
     }
 
     // Verified — set our own session cookie
