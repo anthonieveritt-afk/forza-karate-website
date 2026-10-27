@@ -28,13 +28,18 @@ export function looksLikeLiveJwt(token: string | undefined | null, nowMs = Date.
 
 // Short per-instance cache so moving between members pages doesn't call Club Honbu every time.
 const CACHE_MS = 60_000
-const cache = new Map<string, number>()
+const cache = new Map<string, { until: number; mustChangePassword: boolean }>()
 
-export async function checkMemberSession(token: string | undefined | null, timeoutMs = 5000): Promise<SessionCheck> {
-  if (!looksLikeLiveJwt(token)) return 'invalid'
+export type SessionDetail = { status: SessionCheck; mustChangePassword: boolean }
+
+/** The page members must use while their emailed temporary password is still active. */
+export const CHANGE_PASSWORD_PATH = '/members/change-password'
+
+export async function checkMemberSessionDetail(token: string | undefined | null, timeoutMs = 5000): Promise<SessionDetail> {
+  if (!looksLikeLiveJwt(token)) return { status: 'invalid', mustChangePassword: false }
   const t = token as string
   const hit = cache.get(t)
-  if (hit && hit > Date.now()) return 'valid'
+  if (hit && hit.until > Date.now()) return { status: 'valid', mustChangePassword: hit.mustChangePassword }
 
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), timeoutMs)
@@ -45,17 +50,26 @@ export async function checkMemberSession(token: string | undefined | null, timeo
       signal: controller.signal,
     })
     if (res.ok) {
+      let mustChangePassword = false
+      try {
+        const body = (await res.json()) as { mustChangePassword?: unknown }
+        mustChangePassword = body?.mustChangePassword === true
+      } catch { /* older Club Honbu: no flag */ }
       if (cache.size > 500) cache.clear()
-      cache.set(t, Date.now() + CACHE_MS)
-      return 'valid'
+      cache.set(t, { until: Date.now() + CACHE_MS, mustChangePassword })
+      return { status: 'valid', mustChangePassword }
     }
-    if (res.status === 401 || res.status === 403 || res.status === 404) return 'invalid'
-    return 'unavailable'
+    if (res.status === 401 || res.status === 403 || res.status === 404) return { status: 'invalid', mustChangePassword: false }
+    return { status: 'unavailable', mustChangePassword: false }
   } catch {
-    return 'unavailable'
+    return { status: 'unavailable', mustChangePassword: false }
   } finally {
     clearTimeout(timer)
   }
+}
+
+export async function checkMemberSession(token: string | undefined | null, timeoutMs = 5000): Promise<SessionCheck> {
+  return (await checkMemberSessionDetail(token, timeoutMs)).status
 }
 
 /** Only allow redirects back into the members area, never to another site or a javascript: URL. */

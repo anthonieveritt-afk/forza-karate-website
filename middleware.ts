@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { checkMemberSession, MEMBERS_COOKIE } from '@/lib/members/session'
+import { checkMemberSessionDetail, CHANGE_PASSWORD_PATH, MEMBERS_COOKIE } from '@/lib/members/session'
 import { isMembersOnlyPath, legacyEventPaths } from '@/lib/members/links'
 
 function isDojoDashGamePath(pathname: string) {
@@ -70,7 +70,8 @@ export async function middleware(request: NextRequest) {
   // and the listed public pages) needs a genuine, unexpired Club Honbu portal session.
   if (isMembersOnlyPath(pathname)) {
     const token = request.cookies.get(MEMBERS_COOKIE)?.value
-    const check = await checkMemberSession(token)
+    const detail = await checkMemberSessionDetail(token)
+    const check = detail.status
     if (check !== 'valid') {
       // Form posts / server actions get a plain 401 instead of a redirect to the login page.
       if (request.method !== 'GET' && request.method !== 'HEAD') {
@@ -90,6 +91,20 @@ export async function middleware(request: NextRequest) {
       res.headers.set('Cache-Control', 'private, no-store, max-age=0')
       // A forged or expired cookie is removed so the login page starts clean.
       if (token && check === 'invalid') res.cookies.set(MEMBERS_COOKIE, '', { path: '/members', maxAge: 0 })
+      return res
+    }
+    // Still on the emailed temporary password: everything under /members goes to the change page
+    // (logout lives at /api/members/logout, outside this matcher, so it always works).
+    const p = pathname.replace(/\/+$/, '')
+    if (detail.mustChangePassword && p !== CHANGE_PASSWORD_PATH) {
+      if (request.method !== 'GET' && request.method !== 'HEAD') {
+        return NextResponse.json(
+          { error: 'Please choose a new password first.' },
+          { status: 403, headers: { 'Cache-Control': 'private, no-store, max-age=0' } },
+        )
+      }
+      const res = NextResponse.redirect(new URL(CHANGE_PASSWORD_PATH, request.url))
+      res.headers.set('Cache-Control', 'private, no-store, max-age=0')
       return res
     }
     // Logged-in members pages must never be served from a browser/back-button cache after logout.
