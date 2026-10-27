@@ -23,6 +23,9 @@ canvas{background:#87ceeb;max-width:100vw;max-height:100vh;aspect-ratio:16/9;wid
 .ps-cue{width:36px;height:36px;border-radius:50%;border:2px solid #fff;opacity:.4}.ps-cue.next{opacity:1;box-shadow:0 0 0 3px #fff8}.ps-cue.done{opacity:.15}
 .ps-cue.punch{background:#2e7d32}.ps-cue.kick{background:#d32f2f}.ps-cue.block{background:#1976d2}.ps-cue.sweep{background:#fbc02d}
 #touchPS-hint.miss .ps-cue{animation:psmiss .25s}@keyframes psmiss{50%{transform:translateX(-4px)}}
+/* v18 phone fit: on short landscape screens the pad shrinks and sits lower/softer so it covers less of the fighters and mat */
+#touchPS .ps-cluster{opacity:.82;transition:opacity .12s}#touchPS .ps-cluster:has(.on){opacity:1}
+@media (max-height:500px){#touchPS{bottom:4px;padding:0 4px}#touchPS .ps-cluster{width:136px;height:136px}#touchPS .ps-btn{width:46px;height:46px;border-width:2px;font-size:9px}#touchPS .ps-dpad .ps-btn{font-size:16px}#touchPS .u,#touchPS .punch,#touchPS .d,#touchPS .block{left:45px}#touchPS .l,#touchPS .sweep,#touchPS .r,#touchPS .kick{top:45px}#touchPS-hint{bottom:148px}.ps-cue{width:28px;height:28px}}
 
 #touchFO{position:fixed;bottom:12px;left:0;right:0;display:none;justify-content:space-between;padding:0 12px;pointer-events:none}#touchFO>div{display:flex;gap:10px}.fb{pointer-events:auto;width:66px;height:66px;border-radius:14px;background:rgba(255,255,255,.35);border:3px solid #fff;color:#fff;font-size:26px;font-weight:bold;display:flex;align-items:center;justify-content:center;text-shadow:0 2px 3px #000}.fb.kick{width:84px;height:84px;border-radius:50%;background:rgba(255,23,68,.55)}
 .tb.on{background:rgba(255,215,0,.6)}
@@ -3199,8 +3202,8 @@ function drawKumite(){const K_=KM,a=K_.ao,b=K_.aka;
  const sec=Math.ceil(Math.max(0,K_.time)/60);txt(Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'),W/2,70,40,sec<=15?'#ff5252':'#fff');
  txt(K_.practice?'Kumite practice · '+short(GRADES[K_.lvl]):'🎓 Kumite grading: '+short(GRADES[K_.lvl])+(K_.retry?' (retry)':''),W/2,96,14,'#ffe082');
  kmPens(b.pens,22,'left');kmPens(a.pens,W-22,'right');
- // legend
- rr(10,H-46,W-20,38,10,'rgba(0,0,0,.6)');txt('← step in · → step back · ↓ block · X/🥊 kizami/gyaku-zuki (1) · X+← body kick (2) · X+↑ head kick (3) · X+↓ sweep, then X (3) · win: 8-pt lead or most at time',W/2,H-21,13,'#fff');
+ // legend (v18: touch devices get a short centred touch legend between the pads; keyboard legend unchanged)
+ if(isTouch){rr(W/2-150,H-34,300,26,8,'rgba(0,0,0,.5)');txt('▲ + KICK = head kick · SWEEP, then PUNCH',W/2,H-16,12,'#fff')}else if(!isTouch){rr(10,H-46,W-20,38,10,'rgba(0,0,0,.6)');txt('← step in · → step back · ↓ block · X/🥊 kizami/gyaku-zuki (1) · X+← body kick (2) · X+↑ head kick (3) · X+↓ sweep, then X (3) · win: 8-pt lead or most at time',W/2,H-21,13,'#fff');}
  if(K_.say){txt(K_.say.text,W/2,236,K_.say.text.length>26?26:36,'#ffd600');const rx=VX(MX0+K_.ref.x*PXM);bubble(K_.say.text.split(' – ')[0].split(' · ')[0],rx,FY-158)} // v16: referee speech bubble
  if(K_.kiai&&K_.kiai.t<70){const f=K_.kiai.side?b:a,k=K_.kiai.t/70;g.globalAlpha=1-k*k;if(K_.kiai.t<26){const cx=VX(MX0+f.x*PXM+f.face*24),cy=FY-188,R0=10+K_.kiai.t*1.6;g.strokeStyle='#fff59d';g.lineWidth=3;g.lineCap='round';for(let i=0;i<7;i++){const an=-Math.PI/2+(i-3)*.32;g.beginPath();g.moveTo(cx+Math.cos(an)*R0,cy+Math.sin(an)*R0);g.lineTo(cx+Math.cos(an)*(R0+12),cy+Math.sin(an)*(R0+12));g.stroke()}}g.globalAlpha=1}
  if(K_.fb)txt(K_.fb.text,VX(MX0+K_.fb.x*PXM),FY-200,18,'#fff');
@@ -3389,12 +3392,14 @@ const kmPad=document.getElementById('touchKM');document.querySelectorAll('#touch
  root.querySelectorAll('.ps-dpad .ps-btn').forEach(b=>{const k=b.dataset.k;bind(b,()=>kmInput(k,1),()=>kmInput(k,0))});
  root.querySelectorAll('.ps-face .ps-btn').forEach(b=>{const mv=b.dataset.move;bind(b,()=>{if(!KM)return;if(KM.ph!=='fight'){kmInput('a',1);return}if(mv==='block')KMH.blockHold=1;kmFace(mv)},()=>{if(mv==='block')KMH.blockHold=0})})})();
 const psPad=document.getElementById('touchPS'),psHint=document.getElementById('touchPS-hint');
+function kmReleaseAll(){for(const k in KMH)KMH[k]=0;document.querySelectorAll('#touchPS .ps-btn.on,#touchKM .fb.on').forEach(b=>b.classList.remove('on'))} /* v18: no stuck walking/blocking if the app is switched, a call comes in or the window loses focus mid-hold */
+addEventListener('blur',kmReleaseAll);addEventListener('pagehide',kmReleaseAll);document.addEventListener('visibilitychange',()=>{if(document.hidden)kmReleaseAll()});
 document.querySelectorAll('#touchFO .fb').forEach(b=>{const h=e=>{e.preventDefault();foInput(b.dataset.d)};b.addEventListener('touchstart',h,{passive:false});b.addEventListener('mousedown',h)});
 function loop(t){if(isTouch){const fo=state==='faceoff',km=state==='kumite';foPad.style.display=fo?'flex':'none';kmPad.style.display='none';psPad.style.display=km?'flex':'none';if(!km||!KM||KM.ph!=='fight')psHint.style.display='none';else if(PSQ.seq.length)psHint.style.display='flex';const ti=state==='title';touchEl.style.display=fo||km||TWO||ti?'none':'flex';t2El.style.display=!fo&&!km&&TWO&&!ti?'flex':'none'} /* v14 tidy: no game pads over the menu */trialEl.style.display=(state==='over'||state==='win'||state==='dailydone')&&nb.style.display!=='flex'?'block':'none';acc+=Math.min(100,t-last);last=t;while(acc>=1000/60){update();acc-=1000/60}draw();requestAnimationFrame(loop)}
 addEventListener('keydown',e=>{if(state==='kumite'&&KM&&KM_CER.includes(KM.ph)&&!/INPUT|TEXTAREA/.test(e.target.tagName)&&e.code!=='KeyM'&&e.code!=='Escape'){e.preventDefault();kmSkipCeremony()}},true);cv.addEventListener('pointerdown',()=>{if(state==='kumite'&&KM)kmSkipCeremony()}); // v16: tap or any key skips the ceremony
 const muteBtn=document.getElementById('muteBtn');function muteSync(){muteBtn.textContent=MUTED?'🔇 Muted':'🔊 Sound'}muteSync();muteBtn.addEventListener('click',e=>{e.stopPropagation();MUTED=!MUTED;try{localStorage.setItem('dojoDash.mute',MUTED?'1':'0')}catch(_){}if(MUTED){try{speechSynthesis.cancel()}catch(_){}if(CROWD.au){CROWD.au.m.gain.setTargetAtTime(0,ac.currentTime,.05);CROWD.au.lvl=0}}muteSync()});['pointerdown','touchstart'].forEach(t=>muteBtn.addEventListener(t,e=>e.stopPropagation()));
 setInterval(crowdTick,250);
-window.__DD={kmAward:()=>kmAward(),startLevel:i=>startLevel(i),get state(){return state},setMode:v=>{mode=v},get stageIdx(){return stageIdx},get CROWD(){return CROWD},get MUTED(){return MUTED},get KIAI(){return KIAI_LOG},get KM(){return KM},startGiScene:()=>startGiScene(),get GS(){return GS},startKumite,kmScore,kmAttack,rigPose,kmGeo,kmZone,KUMITE_FROM,SPONSORS,setState:v=>{state=v}}; // v16 test hook (read-only helpers for headless tests)
+window.__DD={kmAward:()=>kmAward(),startLevel:i=>startLevel(i),get state(){return state},setMode:v=>{mode=v},get stageIdx(){return stageIdx},get CROWD(){return CROWD},get MUTED(){return MUTED},get KIAI(){return KIAI_LOG},get KM(){return KM},startGiScene:()=>startGiScene(),get GS(){return GS},startKumite,kmScore,kmAttack,rigPose,kmGeo,kmZone,KUMITE_FROM,SPONSORS,setState:v=>{state=v},get KMH(){return KMH},kmReleaseAll}; // v16 test hook (read-only helpers for headless tests)
 requestAnimationFrame(loop);
 })();
 </script></body></html>
