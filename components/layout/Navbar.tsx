@@ -14,7 +14,7 @@ const navLinks = [
   { href: '/team',     label: 'Team' },
   { href: '/gallery',  label: 'Gallery' },
   { href: '/shop',     label: 'Shop' },
-  { href: '/dojo-dash', label: 'Dojo Dash' },
+  { href: '/dojo-dash', label: 'Forza Game' },
   { href: '/downloads', label: 'Downloads' },
   { href: '/faq',      label: 'FAQ' },
 ]

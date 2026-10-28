@@ -111,9 +111,9 @@ export default function PrivacyPolicyPage() {
             </div>
 
             <div id="dojo-dash">
-              <h2 className="text-xl font-bold text-[#111111] mb-3">9. Dojo Dash game leaderboard</h2>
+              <h2 className="text-xl font-bold text-[#111111] mb-3">9. Forza Game game leaderboard</h2>
               <p className="mb-3">
-                Dojo Dash is our free karate game. When you finish a run, your score can go on a shared
+                Forza Game is our free karate game. When you finish a run, your score can go on a shared
                 leaderboard so you can see how you compare with other players. Here is exactly what that involves.
               </p>
               <p className="font-semibold text-[#111111] mb-1">What we store</p>

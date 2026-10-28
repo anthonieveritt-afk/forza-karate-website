@@ -3,9 +3,9 @@ import Link from 'next/link'
 import DojoDashGate from './DojoDashGate'
 
 export const metadata: Metadata = {
-  title: 'Dojo Dash — karate learning game for Forza junior members and families',
+  title: 'Forza Game — karate learning game for Forza junior members and families',
   description:
-    'Dojo Dash is a free Forza Karate Club learning game for junior members and families. Play on phone, tablet or computer. Parents can book a £10 trial class.',
+    'Forza Game is a free Forza Karate Club learning game for junior members and families. Play on phone, tablet or computer. Parents can book a £10 trial class.',
   alternates: { canonical: '/dojo-dash' },
 }
 
@@ -13,7 +13,7 @@ export default function DojoDashPage() {
   return (
     <main className="bg-white pt-24 pb-12">
       <div className="mx-auto max-w-5xl px-4">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Dojo Dash</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Forza Game</h1>
         <p className="mt-3 text-gray-700">
           A Forza Karate Club learning game for junior members and families. Dodge, jump and earn
           your belts. Works on phones, tablets and computers. Parents: want the real thing?{' '}
