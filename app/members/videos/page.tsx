@@ -42,7 +42,6 @@ export default async function VideosPage({ searchParams }: { searchParams: Promi
           {error === 'no-subscription' && <p className="text-sm text-red-600 mb-4">We couldn&apos;t find an active video membership for that link.</p>}
           <p className="text-gray-500 mb-8">Join the video membership for {gbp(VIDEO_MONTHLY_PENCE)} a month, or log in to the member portal.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
-            <Button asChild><Link href="/grading-guides#videos">Join the video membership</Link></Button>
             <Button asChild variant="outline"><Link href="/members?redirect=/members/videos">Member portal login</Link></Button>
           </div>
           <p className="text-sm text-gray-500 mb-3">Subscribed on another device?</p>
