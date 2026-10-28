@@ -28,10 +28,10 @@ const instructors = [
   {
     name: 'Sensei Scott Nicholls',
     grade: '4th Dan',
-    role: 'Senior Instructor',
+    role: 'Senior Instructor & Kumite Coach',
     dojo: 'Upminster',
     photo: '/instructors/scott-nicholls.jpg',
-    bio: '',
+    bio: '4th Dan Black Belt (Wado Ryu) | Senior Instructor & Kumite Coach\n\nSensei Scott Nicholls has been dedicated to the practice of Wado Ryu Karate since beginning his martial arts journey in July 1986. Demonstrating exceptional discipline and commitment, he earned his 1st Dan Black Belt in September 1989 and has since advanced to the rank of 4th Dan Black Belt, building a distinguished career as an international competitor, coach, and official. In his early karate days, Sensei Nicholls trained and competed alongside Sensei Anthoni Everitt, laying a strong foundation for a lifetime in the sport.\n\nThroughout his martial arts career, Sensei Nicholls has achieved extensive competitive success across all facets of the discipline, earning multiple local and national titles in both Kata and Kumite. A former squad member for the Shikon Karate Association, he has represented his club on the international stage and was a key member of the victorious Redbridge London Youth Games kumite teams.\n\nAs an instructor, Sensei Nicholls brings decades of top-tier competition and traditional Wado Ryu experience to training the next generation of martial artists. He serves as the Kumite Coach for Forza Karate Club and holds senior official roles within Forza as a Kumite and Kata Referee, as well as a Black Belt and Dan Grade Examiner.\n\nDeeply committed to student welfare, athletic development, and maintaining high standards within the martial arts community, Sensei Nicholls also serves as the Designated Safeguarding Lead for Forza.',
   },
   {
     name: 'Sensei Jade Honeywood',
