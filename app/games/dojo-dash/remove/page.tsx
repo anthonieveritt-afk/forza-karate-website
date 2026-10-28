@@ -3,8 +3,8 @@ import Link from 'next/link'
 import RemoveForm from './RemoveForm'
 
 export const metadata: Metadata = {
-  title: 'Dojo Dash: Request Score Removal',
-  description: 'Ask for a Dojo Dash leaderboard entry to be removed.',
+  title: 'Forza Game: Request Score Removal',
+  description: 'Ask for a Forza Game leaderboard entry to be removed.',
   robots: { index: false, follow: true },
 }
 
@@ -15,12 +15,12 @@ export default function DojoDashRemovePage() {
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-8 h-0.5 bg-[#dc2626]" />
-            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Dojo Dash</span>
+            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Forza Game</span>
           </div>
           <h1 className="text-4xl font-bold text-[#111111] mb-4">Remove a leaderboard score</h1>
           <p className="text-gray-600 text-sm leading-relaxed">
             <strong>Quickest way:</strong> on the device that saved the score, open{' '}
-            <Link href="/dojo-dash" className="text-[#dc2626] hover:underline">Dojo Dash</Link>, tap{' '}
+            <Link href="/dojo-dash" className="text-[#dc2626] hover:underline">Forza Game</Link>, tap{' '}
             <strong>🗑 My scores</strong> and choose <strong>Remove my score</strong>. It is deleted straight away.
           </p>
           <p className="text-gray-600 text-sm leading-relaxed mt-3">

@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>Dojo Dash – Get to Karate!</title>
+<title>Forza Game – Get to Karate!</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
 /* Forza Karate site palette: keep in sync with FZ in the script below */
@@ -3347,7 +3347,7 @@ function draw(){
  if(state==='giscene'&&GS){gsDraw();return}
  if(state==='title'||((state==='over'||state==='win')&&!world)){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,FZ.white);gr.addColorStop(1,'#f5f5f4');g.fillStyle=gr;g.fillRect(0,0,W,H);
   g.fillStyle=FZ.red;g.fillRect(0,0,W,6);g.fillStyle=FZ.ink;g.fillRect(0,H-46,W,46);
-  tx('DOJO DASH!',W/2,54,40,FZ.red,'center',800);tx('Forza Karate Club · school\'s out, get to class!',W/2,78,14,FZ.muted,'center');
+  tx('FORZA GAME!',W/2,54,40,FZ.red,'center',800);tx('Forza Karate Club · school\'s out, get to class!',W/2,78,14,FZ.muted,'center');
   MENU.forEach((m,i)=>{const lock=i===2&&!ST.dan,on=i===sel;rr(m.x,m.y,m.w,m.h,10,on?FZ.red:FZ.white);g.strokeStyle=on?FZ.redDark:FZ.line;g.lineWidth=1;g.stroke();
    tx(String(i+1),m.x+16,m.y+27,13,on?'#fff':FZ.faint,'left',600);
    tx(fitX(m.t,m.w-56,15,600),m.x+38,m.y+20,15,on?'#fff':lock?FZ.faint:FZ.ink,'left',600);

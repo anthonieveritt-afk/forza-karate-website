@@ -41,7 +41,7 @@ export default function DojoDashGate() {
             Playing with a parent or carer?
           </h2>
           <p className="mt-4 text-[#44403c] leading-relaxed">
-            Dojo Dash is a Forza learning game for junior members and families. Please play with a
+            Forza Game is a Forza learning game for junior members and families. Please play with a
             parent or carer nearby.
           </p>
           <div className="mt-8 flex flex-col items-center gap-3">
@@ -78,7 +78,7 @@ export default function DojoDashGate() {
     <div className="mt-6 w-full">
       <iframe
         src="/games/dojo-dash/index.html"
-        title="Dojo Dash karate learning game"
+        title="Forza Game karate learning game"
         className="block w-full border-0 bg-[#111111] h-[min(calc(56.25vw+140px),calc(100dvh-64px))] md:h-[min(85vh,900px)] md:min-h-[480px]"
         style={{ touchAction: 'manipulation' }}
         allow="fullscreen; autoplay"
