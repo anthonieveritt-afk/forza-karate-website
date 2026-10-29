@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getForzaStripe, SITE_URL, UNAVAILABLE_MSG } from '@/lib/paid/stripe'
 import { PLANS, pounds, proRataLabel, extrasLineItems } from '@/lib/gocardless/plans'
+import { verifyTrialJoinToken } from '@/lib/trialJoin'
 import { parseMembershipBody } from '@/lib/gocardless/parse-signup'
 import { newSignupId, saveSignup, type Signup } from '@/lib/gocardless/store'
 
@@ -27,6 +28,7 @@ export async function POST(req: Request) {
   const signup: Signup = {
     ...core,
     signupId,
+    trialMemberId: verifyTrialJoinToken(b?.trialToken),
     stripe: null,
     billingRequestId: null,
     createdAt: new Date().toISOString(),
