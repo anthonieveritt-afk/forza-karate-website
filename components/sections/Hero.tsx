@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/Button'
 import { ArrowRight } from 'lucide-react'
 import AnimatedWord from '@/components/ui/AnimatedWord'
 
-// Zoom past the cover crop so faces/bodies fill more of the frame (less ceiling/back wall).
-const HERO_ZOOM = 1.3
+// Stacked layout (photo first, copy below) on all screens. No zoom: photos shown whole.
+const HERO_ZOOM = 1.0
 
 const photos = [
   { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 30%' },
@@ -54,123 +54,80 @@ export default function Hero() {
       setCurrent((i) => (i + 1) % photos.length)
     }, 3000)
     return () => clearInterval(interval)
-  }, [])
+  }, [current])
 
   return (
     <section className="bg-white overflow-hidden">
-
-      {/* ── MOBILE: photo block above text ── */}
-      <div className="relative h-72 sm:h-96 md:hidden overflow-hidden">
-        {photos.map((photo, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={photo.src}
-            src={photo.src}
-            alt={photo.alt}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: photo.position,
-              transform: `scale(${(photo as { scale?: number }).scale ?? HERO_ZOOM})`,
-              transformOrigin: photo.position,
-              opacity: i === current ? 1 : 0,
-              transition: 'opacity 0.8s ease-in-out',
-            }}
-          />
-        ))}
-      </div>
-
-      {/* ── DESKTOP: full-background photo behind content ── */}
-      <div className="relative min-h-screen hidden md:flex items-center overflow-hidden">
-        {photos.map((photo, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={photo.src}
-            src={photo.src}
-            alt={photo.alt}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: photo.position,
-              transform: `scale(${(photo as { scale?: number }).scale ?? HERO_ZOOM})`,
-              transformOrigin: photo.position,
-              opacity: i === current ? 1 : 0,
-              transition: 'opacity 0.8s ease-in-out',
-              zIndex: i === current ? 1 : 0,
-            }}
-          />
-        ))}
-        {/* White fade right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-white" style={{ zIndex: 2 }} />
-        <div className="relative z-10 ml-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="ml-auto max-w-lg py-24">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-0.5 bg-[#dc2626]" />
-              <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Forza Karate Club</span>
-            </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#111111] leading-[1.05] tracking-tight mb-6">
-              This is where<br />our students{' '}<AnimatedWord />
-            </h1>
-            <p className="text-lg text-gray-600 leading-relaxed mb-10">
-              Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster.
-              Term-time classes, real progression, and a community that lasts.
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              <Button asChild size="lg" className="w-full justify-center">
-                <Link href="/trial-class">Book a £10 Trial</Link>
-              </Button>
-              <Button asChild size="lg" className="w-full justify-center bg-white text-[#dc2626] hover:bg-gray-50 border-2 border-[#dc2626]">
-                <Link href="/join">Join Now</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="w-full justify-center">
-                <Link href="/classes">View Classes</Link>
-              </Button>
-              <Link href="/safeguarding" className="inline-flex items-center justify-center gap-2 px-4 h-12 rounded-2xl border border-black/12 bg-white/80 hover:bg-white hover:border-black/25 transition-colors text-sm font-medium">
-                <Image src="/safeguarding-code-logo.webp" alt="Safeguarding Code" width={28} height={28} className="w-7 h-7 object-contain flex-shrink-0" />
-                <span className="text-[#111111] leading-tight">Safeguarding Code</span>
-              </Link>
-            </div>
-          </div>
+      {/* ── Photo first (all screens), shown whole: object-contain, no zoom ── */}
+      <div className="mx-auto w-full max-w-[1280px] md:px-6 md:pt-6">
+        <div className="relative w-full aspect-[4/3] md:aspect-video bg-white overflow-hidden md:rounded-2xl">
+          {photos.map((photo, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={photo.src}
+              src={photo.src}
+              alt={photo.alt}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: '50% 40%',
+                transform: `scale(${HERO_ZOOM})`,
+                opacity: i === current ? 1 : 0,
+                transition: 'opacity 0.8s ease-in-out',
+              }}
+            />
+          ))}
+        </div>
+        {/* Carousel controls under the image */}
+        <div className="flex flex-wrap justify-center gap-1.5 py-3 px-4" aria-label="Choose photo">
+          {photos.map((photo, i) => (
+            <button
+              key={photo.src}
+              type="button"
+              onClick={() => setCurrent(i)}
+              aria-label={`Show photo ${i + 1}`}
+              aria-current={i === current}
+              className={`h-2 rounded-full transition-all ${i === current ? 'w-6 bg-[#C41230]' : 'w-2 bg-black/20 hover:bg-black/40'}`}
+            />
+          ))}
         </div>
       </div>
 
-      {/* ── MOBILE: text below photo ── */}
-      <div className="md:hidden px-5 py-10 bg-white">
-        <div className="max-w-lg">
+      {/* ── Copy + CTAs underneath ── */}
+      <div className="mx-auto w-full max-w-[1280px] px-5 md:px-6 pt-4 pb-12 md:pb-16">
+        <div className="max-w-3xl">
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-0.5 bg-[#dc2626]" />
-            <span className="text-sm font-medium text-[#dc2626] uppercase tracking-wider">Forza Karate Club</span>
+            <div className="w-8 h-0.5 bg-[#C41230]" />
+            <span className="text-sm font-medium text-[#C41230] uppercase tracking-wider">Forza Karate Club</span>
           </div>
-          <h1 className="text-4xl font-bold text-[#111111] leading-[1.1] tracking-tight mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold text-[#111111] leading-[1.1] tracking-tight mb-4 md:mb-6">
             This is where<br />our students{' '}<AnimatedWord />
           </h1>
-          <p className="text-base text-gray-600 leading-relaxed mb-8">
+          <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-8">
             Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster.
+            <span className="hidden md:inline"> Term-time classes, real progression, and a community that lasts.</span>
           </p>
-          <div className="grid grid-cols-2 gap-3">
-            <Button asChild size="lg" className="w-full justify-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Button asChild size="lg" className="w-full justify-center bg-[#C41230] hover:bg-[#a30f28] text-white">
               <Link href="/trial-class">Book a £10 Trial</Link>
             </Button>
-            <Button asChild size="lg" className="w-full justify-center bg-white text-[#dc2626] hover:bg-gray-50 border-2 border-[#dc2626]">
+            <Button asChild size="lg" className="w-full justify-center bg-white text-[#C41230] hover:bg-gray-50 border-2 border-[#C41230]">
               <Link href="/join">Join Now</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="w-full justify-center">
               <Link href="/classes">View Classes</Link>
             </Button>
-            <Link href="/safeguarding" className="inline-flex items-center justify-center gap-2 px-4 h-12 rounded-2xl border border-black/12 bg-white/80 hover:bg-white hover:border-black/25 transition-colors text-sm font-medium">
+            <Link href="/safeguarding" className="inline-flex items-center justify-center gap-2 px-4 h-12 rounded-2xl border border-black/12 bg-white hover:border-black/25 transition-colors text-sm font-medium">
               <Image src="/safeguarding-code-logo.webp" alt="Safeguarding Code" width={28} height={28} className="w-7 h-7 object-contain flex-shrink-0" />
               <span className="text-[#111111] leading-tight">Safeguarding Code</span>
             </Link>
           </div>
         </div>
       </div>
-
     </section>
   )
 }
