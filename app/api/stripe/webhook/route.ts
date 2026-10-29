@@ -8,6 +8,7 @@ import { closedWeek } from '@/lib/paid/closed-weeks'
 import { clubNotifyHtml, parentConfirmationHtml, type TrialInfo } from '@/lib/paid/trial-email-html'
 import { claimOnce, releaseOnce } from '@/lib/paid/once'
 import { recordCardPaid } from '@/lib/gocardless/fulfil'
+import { postPaidGradingToHonbu } from '@/lib/paid/honbu-grading'
 
 // Stripe → POST /api/stripe/webhook, event: checkout.session.completed
 // Signing secret: FORZA_STRIPE_WEBHOOK_SECRET (whsec_…)
@@ -95,7 +96,7 @@ export async function POST(req: NextRequest) {
     const s = event.data.object as Stripe.Checkout.Session
     const kind = s.metadata?.kind
     if (s.payment_status !== 'paid' && kind !== 'video') return NextResponse.json({ received: true, skipped: 'unpaid' })
-    if (kind !== 'trial' && kind !== 'guide' && kind !== 'video' && kind !== 'membership') return NextResponse.json({ received: true, skipped: 'not ours' })
+    if (kind !== 'trial' && kind !== 'guide' && kind !== 'video' && kind !== 'membership' && kind !== 'grading') return NextResponse.json({ received: true, skipped: 'not ours' })
 
     // Idempotency: one checkout session = one set of emails, however often Stripe delivers it.
     const onceKey = `checkout-${s.id}`
@@ -105,6 +106,15 @@ export async function POST(req: NextRequest) {
 
     try {
       if (kind === 'trial') await handleTrial(s)
+      else if (kind === 'grading') {
+        const m = (s.metadata ?? {}) as Record<string, string>
+        const h = await postPaidGradingToHonbu(m, s.id, s.amount_total ?? 0)
+        if (!h.ok) throw new Error(`Club Honbu grading hand-off failed: ${h.status ?? ''} ${h.detail ?? ''}`)
+        await notifyClub(`Grading paid: ${m.memberName} — ${m.grade}${s.livemode ? '' : ' [TEST]'}`, [
+          `${gbp(s.amount_total ?? 0)} grading fee paid online for ${m.memberName} (${m.grade}).`,
+          `${m.gradingName} · ${m.venue} · ${m.email}`, `Stripe session: ${s.id}`, 'Saved in Club Honbu as Paid.',
+        ])
+      }
       else if (kind === 'guide') {
         await notifyClub(`Grading guide sold: ${s.metadata?.guides}`, [
           `${gbp(s.amount_total ?? 0)} — ${s.metadata?.guides} — ${s.customer_details?.email || ''}`, `Stripe session: ${s.id}`,

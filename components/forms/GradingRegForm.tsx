@@ -63,44 +63,24 @@ export default function GradingRegForm() {
 
     const form = e.currentTarget
     const data = new FormData(form)
-    const belt = data.get('currentBelt') as string
-    const fee = gradingFee(belt)
-    const venue = data.get('venue') as string
-    const dojo = GRADING_VENUES.find(v => v.value === venue)?.dojo ?? ''
-    const userNotes = (data.get('notes') as string) || ''
-    // Fee and venue are also written into notes so they reach the instructor email even if the API ignores the extra fields.
-    const notes = [`Venue: ${venue}`, fee != null ? `Grading fee: £${fee}` : '', userNotes].filter(Boolean).join('\n')
-
+    // Stripe only: the registration is created in Club Honbu once the grading fee is paid.
     try {
-      const res = await fetch(`${HONBU_API}/public/grading-request`, {
+      const res = await fetch('/api/grading-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          memberName: data.get('memberName') as string,
-          parentName: (data.get('parentName') as string) || undefined,
-          email: data.get('email') as string,
-          currentBelt: belt,
-          dojo,
-          venue,
-          gradingFee: fee,
-          gradingName: data.get('gradingName') as string,
-          notes,
+          memberName: data.get('memberName'), parentName: data.get('parentName') || '', email: data.get('email'),
+          currentBelt: data.get('currentBelt'), venue: data.get('venue'), gradingName: data.get('gradingName'),
+          notes: data.get('notes') || '',
         }),
       })
-
       const result = await res.json()
-
-      if (res.ok && result.success) {
-        setStatus('success')
-        form.reset()
-        setGrade('')
-      } else {
-        setStatus('error')
-        setErrorMsg(result.error || 'Something went wrong.')
-      }
+      if (res.ok && result.url) { window.location.href = result.url; return }
+      setStatus('error')
+      setErrorMsg(result.error || 'Something went wrong.')
     } catch {
       setStatus('error')
-      setErrorMsg('Could not submit. Please try again.')
+      setErrorMsg('Could not start payment. Please try again.')
     }
   }
 
@@ -249,7 +229,7 @@ export default function GradingRegForm() {
         disabled={status === 'loading' || eventsLoading || gradingEvents.length === 0}
         className="w-full"
       >
-        {status === 'loading' ? 'Submitting…' : 'Register for Grading'}
+        {status === 'loading' ? 'Opening secure payment…' : `Pay${selectedFee != null ? ` £${selectedFee}` : ''} & register`}
       </Button>
     </form>
   )
