@@ -60,7 +60,7 @@ export default function Hero() {
     <section className="bg-white overflow-hidden">
       {/* ── Photo first (all screens), shown whole: object-contain, no zoom ── */}
       <div className="mx-auto w-full max-w-[1280px] md:px-6 md:pt-6">
-        <div className="relative w-full aspect-[4/3] md:aspect-video bg-[#111111] overflow-hidden md:rounded-2xl">
+        <div className="relative w-full aspect-[4/3] md:aspect-video bg-white overflow-hidden md:rounded-2xl">
           {photos.map((photo, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -73,8 +73,8 @@ export default function Hero() {
                 inset: 0,
                 width: '100%',
                 height: '100%',
-                objectFit: 'contain',
-                objectPosition: '50% 50%',
+                objectFit: 'cover',
+                objectPosition: '50% 40%',
                 transform: `scale(${HERO_ZOOM})`,
                 opacity: i === current ? 1 : 0,
                 transition: 'opacity 0.8s ease-in-out',
