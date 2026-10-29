@@ -53,7 +53,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ b
           <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
           <h1 className="text-xl font-bold mb-2">Your Direct Debit wasn&apos;t completed</h1>
           <p className="text-gray-500 text-sm mb-4">If you already paid by card, you won&apos;t be charged again. Please get in touch and we&apos;ll sort it out with you.</p>
-          <a href={`/contact?subject=${encodeURIComponent('Membership sign-up' + (br ? ` (${br})` : ''))}`} className="inline-block rounded-xl bg-[#dc2626] text-white text-sm font-semibold px-5 py-3">Contact the club</a>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="/join/membership?cancelled=1" className="inline-block rounded-xl bg-[#dc2626] text-white text-sm font-semibold px-5 py-3">Try the Direct Debit again</a>
+            <a href={`/contact?subject=${encodeURIComponent('Membership sign-up' + (br ? ` (${br})` : ''))}`} className="inline-block rounded-xl border border-black/15 text-sm font-semibold px-5 py-3">Contact the club</a>
+          </div>
+          <p className="text-gray-500 text-xs mt-4">Or email <a className="underline" href={`mailto:sensei.everitt@forzakarate.co.uk?subject=${encodeURIComponent('Direct Debit help' + (br ? ` (${br})` : ''))}`}>sensei.everitt@forzakarate.co.uk</a> and we&apos;ll set it up with you.</p>
         </>}
       </div>
     </div>

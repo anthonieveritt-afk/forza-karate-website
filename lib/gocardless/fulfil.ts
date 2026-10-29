@@ -45,6 +45,7 @@ export function honbuBody(brId: string | null, s: Signup, g: HonbuGc | null) {
     clubName: DOJOS[s.dojo],
     classTime: s.classTime,
     trialDate: s.trialDate,
+    ...(s.trialMemberId ? { trialMemberId: s.trialMemberId } : {}),
     startDate: s.startDate,
     ...(g?.subscriptionStart ? { directDebitStart: g.subscriptionStart } : {}),
     students: s.students,

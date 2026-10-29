@@ -44,7 +44,10 @@ function knownUnder18(dob: string): boolean {
 }
 
 function MembershipSignup() {
-  const cancelled = useSearchParams().get('cancelled') === '1'
+  const sp = useSearchParams()
+  const cancelled = sp.get('cancelled') === '1'
+  const trialToken = sp.get('t') || ''
+  const [trialNote, setTrialNote] = useState('')
   const [planChoice, setPlanChoice] = useState<PlanKey | null>(null)
   const [dojo, setDojo] = useState('')
   const [classTime, setClassTime] = useState('')
@@ -72,6 +75,19 @@ function MembershipSignup() {
     setCarried({ classPick: okClass, dob: !!p.dateOfBirth })
     /* eslint-enable react-hooks/set-state-in-effect */
   }, [])
+  // Signed post-trial Join now link: prefill from the Honbu trial row (matched by trial id).
+  useEffect(() => {
+    if (!trialToken) return
+    try { sessionStorage.setItem('forzaTrialToken', trialToken) } catch {}
+    fetch(`/api/membership/trial-prefill?t=${encodeURIComponent(trialToken)}`).then(r => r.json().then(d => ({ ok: r.ok, d }))).then(({ ok, d }) => {
+      if (!ok) { setTrialNote(d.error || ''); return }
+      if (d.dojo && CLASSES[d.dojo]) setDojo(d.dojo)
+      if (d.trialDate) setTrialDate(d.trialDate)
+      setStudents(s => [{ ...s[0], firstName: d.student?.firstName || s[0].firstName, surname: d.student?.surname || s[0].surname, dateOfBirth: d.student?.dateOfBirth || s[0].dateOfBirth }, ...s.slice(1)])
+      setParent(p => ({ ...p, email: p.email || d.email || '', phone: p.phone || d.phone || '' }))
+      setTrialNote('Thanks for coming to your trial! We\u2019ve filled in what we already know. Please check it and complete the rest.')
+    }).catch(() => {})
+  }, [trialToken])
   const [error, setError] = useState('')
   // One form page (details + live totals), then Stripe card, then GoCardless DD, then done.
   const step = 1
@@ -146,6 +162,7 @@ function MembershipSignup() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, dojo, classTime, trialDate, parent: account, emergency, consent: { terms, photos },
+          trialToken: trialToken || (() => { try { return sessionStorage.getItem('forzaTrialToken') || '' } catch { return '' } })(),
           students: students.map(st => ({ ...st, suit: { key: REQUIRED_SUIT_KEY, size: st.suitSize }, licence: { type: 'first_time' } })) }),
       })
       const d = await res.json()
@@ -199,6 +216,7 @@ function MembershipSignup() {
     <div className="min-h-screen bg-[#fafaf9] pt-28 pb-20 px-4">
       <form onSubmit={submit} className="max-w-2xl mx-auto bg-white rounded-3xl border border-black/8 p-6 sm:p-10 space-y-10">
         <header>
+          {trialNote && <p className="mb-4 text-sm text-gray-700 bg-gray-50 border border-black/10 rounded-xl px-3 py-2">{trialNote}</p>}
           {cancelled && <p className="mb-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">Card payment was cancelled — nothing was charged. You can try again when ready.</p>}
           <p className="text-xs font-semibold uppercase tracking-widest text-[#dc2626] mb-2">Forza Karate Club</p>
           <h1 className="text-3xl font-bold text-[#111111]">Become a member</h1>
