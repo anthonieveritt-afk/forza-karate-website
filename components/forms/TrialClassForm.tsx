@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getUtm, track } from '@/lib/tracking'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { CheckCircle, AlertCircle } from 'lucide-react'
@@ -19,13 +20,16 @@ export default function TrialClassForm() {
   const [errorMsg, setErrorMsg] = useState('')
   const [dob, setDob] = useState('')
 
+  useEffect(() => { track('ViewContent', { content_name: 'Trial class', content_category: 'trial' }) }, [])
+
   const cancelled = useSearchParams().get('cancelled') === '1'
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setStatus('loading')
     setErrorMsg('')
-    const data = Object.fromEntries(new FormData(e.currentTarget).entries())
+    const data = { ...Object.fromEntries(new FormData(e.currentTarget).entries()), ...getUtm() }
+    track('InitiateCheckout', { content_name: 'Trial class', value: 10, currency: 'GBP' })
     try {
       const res = await fetch('/api/trial-checkout', {
         method: 'POST',
