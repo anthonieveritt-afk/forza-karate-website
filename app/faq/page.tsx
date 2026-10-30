@@ -106,6 +106,59 @@ const faqs: { group: string; items: Faq[] }[] = [
     ],
   },
   {
+    group: 'Members portal',
+    items: [
+      {
+        q: 'How do I use the portal?',
+        text:
+          'Log in: go to forzakarate.co.uk/members, enter the email address you enrolled with and your password, then tap Enter members area. Use Forgot password? if you need a new one. Menu: tap the ☰ menu to reach My portal, Register to Grade and Renew your licence. Log out when you finish on a shared device. My portal shows your licence number and expiry date, with a green ACTIVE bar when your licence is current. Use Update my licence details to correct your details and Download licence certificate to save a copy. Belt journey: use View certificate or Download for each grade. To grade, open Register to Grade, fill in the form and tap Pay & register. Renewing: renew at forzakarate.co.uk/members/licence (this is separate from Update my licence details), then tap Pay for Licence to pay securely with Stripe. The fee is shown on the portal. Need help? If you cannot log in, have not received an email, your details are wrong or a certificate is missing, speak to your instructor or email sensei.everitt@forzakarate.co.uk. Stay safe: never share your password. The club will never ask for it by email or phone.',
+        a: (
+          <>
+            <p className="font-semibold text-[#111111]">1. Log in</p>
+            <p>
+              Go to <Link href="/members" className={link}>forzakarate.co.uk/members</Link>, enter your email and password, then
+              tap <strong>Enter members area</strong>. Use the email address you gave when you enrolled. If you need a new
+              password, tap <strong>Forgot password?</strong>
+            </p>
+            <p className="mt-4 font-semibold text-[#111111]">2. Find your way around</p>
+            <p>
+              Tap the <span aria-label="menu">☰</span> menu to reach <strong>My portal</strong>, <strong>Register to Grade</strong> and{' '}
+              <strong>Renew your licence</strong>. Always <strong>Log out</strong> when you finish on a shared device.
+            </p>
+            <p className="mt-4 font-semibold text-[#111111]">3. My portal</p>
+            <p>
+              See your licence number and expiry date. A green <strong>ACTIVE</strong> bar means your licence is current. Use{' '}
+              <strong>Update my licence details</strong> to correct your details, and <strong>Download licence certificate</strong> to
+              save a copy.
+            </p>
+            <p className="mt-4 font-semibold text-[#111111]">4. Belt journey and gradings</p>
+            <p>
+              Use <strong>View certificate</strong> or <strong>Download</strong> for each grade. To grade, open{' '}
+              <strong>Register to Grade</strong>, fill in the form, then tap <strong>Pay &amp; register</strong>.
+            </p>
+            <p className="mt-4 font-semibold text-[#111111]">5. Renew your licence</p>
+            <p>
+              Renew at <Link href="/members/licence" className={link}>forzakarate.co.uk/members/licence</Link>. This is separate from
+              Update my licence details. Tap <strong>Pay for Licence</strong> to pay securely with Stripe. The fee is shown on the portal.
+            </p>
+            <p className="mt-4 font-semibold text-[#111111]">6. Need help?</p>
+            <p>
+              Can&apos;t log in, haven&apos;t received an email, details wrong or a certificate missing? Speak to your instructor or email{' '}
+              <a href="mailto:sensei.everitt@forzakarate.co.uk" className={link}>sensei.everitt@forzakarate.co.uk</a>.
+            </p>
+            <p className="mt-4 font-semibold text-[#111111]">7. Stay safe</p>
+            <p>Never share your password. The club will never ask for it by email or phone.</p>
+            <p className="mt-4">
+              <a href="/guides/members-portal-guide.pdf" className={link} target="_blank" rel="noopener">
+                Download the full guide with screenshots (PDF)
+              </a>
+            </p>
+          </>
+        ),
+      },
+    ],
+  },
+  {
     group: 'Uniform and trial classes',
     items: [
       {
