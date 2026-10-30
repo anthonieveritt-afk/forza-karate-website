@@ -2,36 +2,99 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight } from 'lucide-react'
 import AnimatedWord from '@/components/ui/AnimatedWord'
 
-// Hero media: 1-minute new-student promo video (replaces photo carousel).
-const HERO_VIDEO = '/videos/forza-new-students-1min.mp4'
-const HERO_POSTER = '/videos/forza-new-students-poster.jpg'
+// Stacked layout (photo first, copy below) on all screens. No zoom: photos shown whole.
+const HERO_ZOOM = 1.0
+
+const photos = [
+  { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 30%' },
+  { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 30%' },
+  { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 35%' },
+  { src: '/hero5.jpg',                      alt: 'Forza Karate Club competition victory', position: '50% 30%' },
+  { src: '/hero6.webp',                     alt: 'Forza Karate Club',                  position: '50% 30%' },
+  { src: '/hero7.jpg',                      alt: 'Forza Karate Club',                  position: '50% 30%' },
+  { src: '/hero18.jpg',                     alt: 'Forza Karate Club young student',    position: '50% 30%' },
+  { src: '/hero9.jpg',                      alt: 'Forza Karate Club',                  position: '50% 30%' },
+  { src: '/hero12.jpg',                     alt: 'Forza Karate Club',                  position: '50% 30%' },
+  { src: '/hero14.jpg',                     alt: 'Forza Karate Club',                  position: '50% 30%' },
+  { src: '/team/team-01.jpg',               alt: 'Forza Karate squad',                 position: '50% 30%' },
+  { src: '/team/team-02.jpg',               alt: 'Forza Karate squad',                 position: '50% 30%' },
+  { src: '/team/team-03.jpg',               alt: 'Forza Karate squad',                 position: '50% 30%' },
+  { src: '/team/team-04.jpg',               alt: 'Forza Karate squad',                 position: '50% 30%' },
+  { src: '/team/team-05.jpg',               alt: 'Forza Karate squad',                 position: '50% 30%' },
+  { src: '/team/team-group.jpg',            alt: 'Forza Karate squad group',           position: '50% 30%' },
+  { src: '/team/team-competition-01.jpg',   alt: 'Forza Karate competition',           position: '50% 30%' },
+  { src: '/hero16.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
+  { src: '/hero19.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
+  { src: '/hero20.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
+  { src: '/hero21.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
+  { src: '/hero27.jpg',                     alt: 'Forza Karate class training',        position: '50% 35%' },
+  { src: '/hero28.jpg',                     alt: 'Forza Karate class',                 position: '50% 35%' },
+  { src: '/hero29.jpg',                     alt: 'Forza Karate class group',           position: '50% 30%' },
+  { src: '/hero30.jpg',                     alt: 'BKF Four Nations medals',            position: '50% 30%' },
+  { src: '/hero31.jpg',                     alt: 'Forza Karate competition action',    position: '50% 30%' },
+  { src: '/hero32.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
+  { src: '/hero33.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
+  { src: '/hero34.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
+  { src: '/hero35.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
+  { src: '/hero36.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
+  { src: '/hero37.jpg',                     alt: 'Forza Karate kata competition',      position: '50% 30%' },
+  { src: '/hero38.jpg',                     alt: 'Forza Karate Club group',            position: '50% 30%' },
+]
 
 export default function Hero() {
+  const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((i) => (i + 1) % photos.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [current])
+
   return (
     <section className="bg-white overflow-hidden">
-      {/* ── Promo video first (all screens) ── */}
+      {/* ── Photo first (all screens), shown whole: object-contain, no zoom ── */}
       <div className="mx-auto w-full max-w-[1280px] md:px-6 md:pt-6">
-        <div className="relative w-full aspect-video bg-black overflow-hidden md:rounded-2xl">
-          <video
-            className="absolute inset-0 w-full h-full object-cover"
-            src={HERO_VIDEO}
-            poster={HERO_POSTER}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-label="Forza Karate Club new students promo video"
-          />
+        <div className="relative w-full aspect-[4/3] md:aspect-video bg-white overflow-hidden md:rounded-2xl">
+          {photos.map((photo, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={photo.src}
+              src={photo.src}
+              alt={photo.alt}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: '50% 40%',
+                transform: `scale(${HERO_ZOOM})`,
+                opacity: i === current ? 1 : 0,
+                transition: 'opacity 0.8s ease-in-out',
+              }}
+            />
+          ))}
         </div>
-        <p className="text-[10px] text-gray-400 text-right px-4 md:px-0 pt-1">
-          Music: &ldquo;Volatile Reaction&rdquo; Kevin MacLeod (incompetech.com), licensed under{' '}
-          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" className="underline">CC BY 4.0</a>
-        </p>
+        {/* Carousel controls under the image */}
+        <div className="flex flex-wrap justify-center gap-1.5 py-3 px-4" aria-label="Choose photo">
+          {photos.map((photo, i) => (
+            <button
+              key={photo.src}
+              type="button"
+              onClick={() => setCurrent(i)}
+              aria-label={`Show photo ${i + 1}`}
+              aria-current={i === current}
+              className={`h-2 rounded-full transition-all ${i === current ? 'w-6 bg-[#C41230]' : 'w-2 bg-black/20 hover:bg-black/40'}`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* ── Copy + CTAs underneath ── */}
