@@ -289,6 +289,7 @@ export function ApplyLicenceForm({ forceRenewal = false, embedded = false }: App
             </div>
           </div>
 
+          {!renewMode && (
           <div>
             <label className="block text-sm font-semibold text-[#111111] mb-2">Current Belt Level *</label>
             <select
@@ -310,6 +311,7 @@ export function ApplyLicenceForm({ forceRenewal = false, embedded = false }: App
               <option value="black">Black Belt</option>
             </select>
           </div>
+          )}
 
           {renewMode ? (
             <div>
