@@ -11,9 +11,6 @@ const HERO_VIDEO = '/videos/forza-new-students-1min.mp4'
 const HERO_POSTER = '/videos/forza-new-students-poster.jpg'
 
 export default function Hero() {
-  return () => clearInterval(interval)
-  }, [current])
-
   return (
     <section className="bg-white overflow-hidden">
       {/* ── Promo video first (all screens) ── */}
