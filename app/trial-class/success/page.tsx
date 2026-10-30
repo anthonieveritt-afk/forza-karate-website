@@ -4,6 +4,7 @@ import { CheckCircle, AlertCircle } from 'lucide-react'
 import { getForzaStripe } from '@/lib/paid/stripe'
 import { gbp } from '@/lib/paid/catalogue'
 import { Button } from '@/components/ui/Button'
+import TrackEvent from '@/components/tracking/TrackEvent'
 
 export const metadata: Metadata = { title: 'Trial Class Booked — Forza Karate', robots: { index: false } }
 export const dynamic = 'force-dynamic'
@@ -23,6 +24,10 @@ export default async function TrialSuccessPage({ searchParams }: { searchParams:
   }
   return (
     <div className="bg-white min-h-screen px-4 py-20">
+      {paid && session_id && <>
+        <TrackEvent event="Purchase" params={{ value: 10, currency: 'GBP', content_name: 'Trial class' }} eventID={session_id} />
+        <TrackEvent event="CompleteRegistration" params={{ content_name: 'Trial class' }} eventID={`reg_${session_id}`} />
+      </>}
       <div className="max-w-lg mx-auto text-center">
         {paid ? (
           <>

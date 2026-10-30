@@ -37,6 +37,7 @@ async function handleTrial(s: Stripe.Checkout.Session) {
   const honbu = await postTrialToHonbu({
     parentName: m.parentName || '', childName: m.childName, age: m.age, email: m.email || s.customer_details?.email || '',
     phone: m.phone || '', dateOfBirth: m.dateOfBirth, dojo: m.dojo || '', ageGroup: m.ageGroup || '', message: m.message,
+    utm: { utm_source: m.utm_source, utm_medium: m.utm_medium, utm_campaign: m.utm_campaign, utm_content: m.utm_content },
   }, paid)
   // Club Honbu is the record of the booking. If it can't be reached, fail so Stripe retries
   // (the once-marker is released, so the retry runs in full; Club Honbu skips duplicate trials).

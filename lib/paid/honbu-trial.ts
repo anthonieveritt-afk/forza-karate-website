@@ -11,6 +11,12 @@ export type TrialDetails = {
   dojo: string
   ageGroup: string
   message?: string
+  utm?: Record<string, string | undefined>
+}
+
+/** "utm_source=facebook|utm_medium=paid|…" or "" when the visit had no UTMs. */
+export function utmString(u?: Record<string, string | undefined>): string {
+  return Object.entries(u || {}).filter(([, v]) => v).map(([k, v]) => `${k}=${v}`).join('|')
 }
 
 function splitName(full: string): { first: string; last: string } {
@@ -32,7 +38,8 @@ export async function postTrialToHonbu(d: TrialDetails, paidNote?: string): Prom
 
   const student = (d.childName || '').trim() || d.parentName
   const { first, last } = splitName(student)
-  const notes = [paidNote, d.age ? `Age: ${d.age}` : '', d.message || ''].filter(Boolean).join(' | ')
+  const utm = utmString(d.utm)
+  const notes = [paidNote, utm ? `Source: ${utm}` : 'Source: website (direct/organic)', d.age ? `Age: ${d.age}` : '', d.message || ''].filter(Boolean).join(' | ')
 
   const res = await fetch(`${honbuUrl}/api/webhooks/formsmarts/trial?token=${encodeURIComponent(secret)}`, {
     method: 'POST',
@@ -48,7 +55,7 @@ export async function postTrialToHonbu(d: TrialDetails, paidNote?: string): Prom
       'Parent Name': d.parentName,
       'How did you hear': notes,
       Medical: d.message || '',
-      Source: 'Forza website trial form',
+      Source: utm ? `Forza website trial form | ${utm}` : 'Forza website trial form',
     }),
     cache: 'no-store',
   })

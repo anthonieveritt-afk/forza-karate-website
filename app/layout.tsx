@@ -7,6 +7,7 @@ import MusicPlayer from '@/components/layout/MusicPlayer'
 import { CartProvider } from '@/lib/cart-context'
 import { SITE_URL, orgSchema } from '@/lib/seo'
 import { Analytics } from '@vercel/analytics/next'
+import MetaPixel from '@/components/tracking/MetaPixel'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -50,6 +51,7 @@ export default function RootLayout({
           <MusicPlayer />
         </CartProvider>
         <Analytics />
+        <MetaPixel />
       </body>
     </html>
   )

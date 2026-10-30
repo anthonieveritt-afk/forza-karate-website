@@ -25,6 +25,10 @@ export async function POST(req: NextRequest) {
     dojo: clip(body.preferredDojo, 20),
     message: clip(body.message, 400),
   }
+  const utm = {
+    utm_source: clip(body.utm_source, 80), utm_medium: clip(body.utm_medium, 80),
+    utm_campaign: clip(body.utm_campaign, 80), utm_content: clip(body.utm_content, 80),
+  }
   if (!d.parentName || !d.phone || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)) {
     return NextResponse.json({ error: 'Please fill in your name, a valid email and your phone number.' }, { status: 400 })
   }
@@ -57,6 +61,7 @@ export async function POST(req: NextRequest) {
         source: 'forza-karate-website', kind: 'trial',
         parentName: d.parentName, childName: d.childName, age: d.age, email: d.email, phone: d.phone,
         dateOfBirth: d.dateOfBirth, ageGroup: AGE_GROUPS[d.ageGroup], dojo: DOJOS[d.dojo], message: d.message,
+        ...utm,
       },
       custom_text: { submit: { message: 'The £10 is for the trial class only and is not taken off membership. If you join, membership starts the week after at the full monthly rate.' } },
       success_url: `${SITE_URL}/trial-class/success?session_id={CHECKOUT_SESSION_ID}`,
