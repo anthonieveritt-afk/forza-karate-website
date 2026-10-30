@@ -99,7 +99,8 @@ export default function Hero() {
 
       {/* ── Copy + CTAs underneath ── */}
       <div className="mx-auto w-full max-w-[1280px] px-5 md:px-6 pt-4 pb-12 md:pb-16">
-        <div className="max-w-3xl">
+        <div className="flex flex-col md:flex-row md:items-center gap-8 md:gap-10">
+          <div className="md:flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-0.5 bg-[#C41230]" />
             <span className="text-sm font-medium text-[#C41230] uppercase tracking-wider">Forza Karate Club</span>
@@ -107,11 +108,13 @@ export default function Hero() {
           <h1 className="text-4xl md:text-6xl font-bold text-[#111111] leading-[1.1] tracking-tight mb-4 md:mb-6">
             This is where<br />our students{' '}<AnimatedWord />
           </h1>
-          <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-8">
+          <p className="text-base md:text-lg text-gray-600 leading-relaxed">
             Traditional Wado Ryu karate for all ages. Two dojos across Essex — Rayleigh and Upminster.
             <span className="hidden md:inline"> Term-time classes, real progression, and a community that lasts.</span>
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          </div>
+          {/* 2×2 CTA grid: below copy on mobile, to the right of the rotating text on tablet/desktop */}
+          <div className="grid grid-cols-2 gap-3 w-full md:w-[22rem] lg:w-[26rem] md:flex-shrink-0">
             <Button asChild size="lg" className="w-full justify-center bg-[#C41230] hover:bg-[#a30f28] text-white">
               <Link href="/trial-class">Book a £10 Trial</Link>
             </Button>
