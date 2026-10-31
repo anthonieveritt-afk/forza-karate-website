@@ -46,12 +46,23 @@ const photos = [
   { src: '/hero38.jpg',                     alt: 'Forza Karate Club group',            position: '50% 30%' },
 ]
 
+type Slide =
+  | { kind: 'photo'; key: string; src: string; alt: string }
+  | { kind: 'ad'; key: string; href: string; eyebrow: string; title: string; sub: string; cta: string; variant: 'dark' | 'red' }
+
+const adTrial: Slide = { kind: 'ad', key: 'ad-trial', href: '/trial-class', eyebrow: 'Forza Karate Club', title: 'Beginners welcome — click here for a trial', sub: 'New to karate? All ages, no experience needed.', cta: 'Book a Trial', variant: 'dark' }
+const adJoin: Slide = { kind: 'ad', key: 'ad-join', href: '/join', eyebrow: 'Rayleigh · Upminster', title: 'Enrol / Join now', sub: 'Ready to train with us? Start your membership today.', cta: 'Join Now', variant: 'red' }
+
+const photoSlides: Slide[] = photos.map((p) => ({ kind: 'photo', key: p.src, src: p.src, alt: p.alt }))
+// Order: 3 photos → trial ad → 4 photos → join ad → remaining photos → loop
+const slides: Slide[] = [...photoSlides.slice(0, 3), adTrial, ...photoSlides.slice(3, 7), adJoin, ...photoSlides.slice(7)]
+
 export default function Hero() {
   const [current, setCurrent] = useState(0)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrent((i) => (i + 1) % photos.length)
+      setCurrent((i) => (i + 1) % slides.length)
     }, 3000)
     return () => clearInterval(interval)
   }, [current])
@@ -61,35 +72,51 @@ export default function Hero() {
       {/* ── Photo first (all screens), shown whole: object-contain, no zoom ── */}
       <div className="mx-auto w-full max-w-[1280px] md:px-6 md:pt-6">
         <div className="relative w-full aspect-[4/3] md:aspect-video bg-white overflow-hidden md:rounded-2xl">
-          {photos.map((photo, i) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={photo.src}
-              src={photo.src}
-              alt={photo.alt}
-              loading={i === 0 ? 'eager' : 'lazy'}
-              style={{
-                position: 'absolute',
-                inset: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: '50% 40%',
-                transform: `scale(${HERO_ZOOM})`,
-                opacity: i === current ? 1 : 0,
-                transition: 'opacity 0.8s ease-in-out',
-              }}
-            />
-          ))}
+          {slides.map((slide, i) =>
+            slide.kind === 'photo' ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={slide.key}
+                src={slide.src}
+                alt={slide.alt}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                aria-hidden={i !== current}
+                style={{
+                  position: 'absolute', inset: 0, width: '100%', height: '100%',
+                  objectFit: 'cover', objectPosition: '50% 40%',
+                  transform: `scale(${HERO_ZOOM})`,
+                  opacity: i === current ? 1 : 0,
+                  transition: 'opacity 0.8s ease-in-out',
+                }}
+              />
+            ) : (
+              <Link
+                key={slide.key}
+                href={slide.href}
+                aria-label={`${slide.title} — ${slide.cta}`}
+                aria-hidden={i !== current}
+                tabIndex={i === current ? 0 : -1}
+                className={`absolute inset-0 flex flex-col items-center justify-center text-center px-6 md:px-16 text-white ${slide.variant === 'dark' ? 'bg-gradient-to-br from-[#111111] via-[#1a0a0d] to-[#C41230]' : 'bg-gradient-to-br from-[#C41230] via-[#8f0d23] to-[#111111]'}`}
+                style={{ opacity: i === current ? 1 : 0, pointerEvents: i === current ? 'auto' : 'none', transition: 'opacity 0.8s ease-in-out' }}
+              >
+                <span className="text-xs md:text-sm font-semibold uppercase tracking-[0.2em] text-white/80 mb-3 md:mb-4">{slide.eyebrow}</span>
+                <span className="block text-3xl sm:text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight max-w-[14ch] md:max-w-[18ch]">{slide.title}</span>
+                <span className="hidden sm:block mt-3 md:mt-5 text-sm md:text-lg text-white/85 max-w-[40ch]">{slide.sub}</span>
+                <span className={`mt-5 md:mt-8 inline-flex items-center gap-2 rounded-xl px-5 md:px-7 h-11 md:h-14 text-sm md:text-base font-bold uppercase tracking-wide shadow-lg ${slide.variant === 'dark' ? 'bg-[#C41230] text-white' : 'bg-white text-[#C41230]'}`}>
+                  {slide.cta} <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+                </span>
+              </Link>
+            )
+          )}
         </div>
         {/* Carousel controls under the image */}
         <div className="flex flex-wrap justify-center gap-1.5 py-3 px-4" aria-label="Choose photo">
-          {photos.map((photo, i) => (
+          {slides.map((slide, i) => (
             <button
-              key={photo.src}
+              key={slide.key}
               type="button"
               onClick={() => setCurrent(i)}
-              aria-label={`Show photo ${i + 1}`}
+              aria-label={slide.kind === 'ad' ? `Show ${slide.cta} slide` : `Show slide ${i + 1}`}
               aria-current={i === current}
               className={`h-2 rounded-full transition-all ${i === current ? 'w-6 bg-[#C41230]' : 'w-2 bg-black/20 hover:bg-black/40'}`}
             />
