@@ -86,6 +86,8 @@ export default function Hero() {
                   objectFit: 'cover', objectPosition: '50% 40%',
                   transform: `scale(${HERO_ZOOM})`,
                   opacity: i === current ? 1 : 0,
+                  zIndex: i === current ? 2 : 1,
+                  pointerEvents: 'none',
                   transition: 'opacity 0.8s ease-in-out',
                 }}
               />
@@ -97,10 +99,10 @@ export default function Hero() {
                 aria-hidden={i !== current}
                 tabIndex={i === current ? 0 : -1}
                 className="absolute inset-0 block bg-[#111111]"
-                style={{ opacity: i === current ? 1 : 0, pointerEvents: i === current ? 'auto' : 'none', transition: 'opacity 0.8s ease-in-out' }}
+                style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 3 : 0, cursor: 'pointer', pointerEvents: i === current ? 'auto' : 'none', transition: 'opacity 0.8s ease-in-out' }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={slide.img} alt={`${slide.title} — ${slide.cta}`} loading="lazy" className="w-full h-full object-cover" />
+                <img src={slide.img} alt={`${slide.title} — ${slide.cta}`} loading="lazy" className="w-full h-full object-cover pointer-events-none" draggable={false} />
               </Link>
             )
           )}
