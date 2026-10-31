@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 // Upbeat tracks: HoliznaCC0, CC0 1.0 (see public/music/CREDITS.md)
 const tracks = [
   { src: '/music/upbeat-retro-synths.mp3', label: 'Retro Synths' },
+  { src: '/music/upbeat-50-over-the-speed-limit.mp3', label: '50 Over The Speed Limit' },
   { src: '/music/upbeat-love-love-love.mp3', label: 'Love Love Love' },
   { src: '/music/upbeat-mutant-club.mp3', label: 'Mutant Club' },
   { src: '/music/upbeat-dear-mr-super-computer.mp3', label: 'Dear Mr Super Computer' },
