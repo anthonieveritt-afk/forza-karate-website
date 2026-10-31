@@ -48,10 +48,10 @@ const photos = [
 
 type Slide =
   | { kind: 'photo'; key: string; src: string; alt: string }
-  | { kind: 'ad'; key: string; href: string; eyebrow: string; title: string; sub: string; cta: string; variant: 'dark' | 'red' }
+  | { kind: 'ad'; key: string; href: string; eyebrow: string; title: string; sub: string; cta: string; img: string }
 
-const adTrial: Slide = { kind: 'ad', key: 'ad-trial', href: '/trial-class', eyebrow: 'Forza Karate Club', title: 'Beginners welcome — click here for a trial', sub: 'New to karate? All ages, no experience needed.', cta: 'Book a Trial', variant: 'dark' }
-const adJoin: Slide = { kind: 'ad', key: 'ad-join', href: '/join', eyebrow: 'Rayleigh · Upminster', title: 'Enrol / Join now', sub: 'Ready to train with us? Start your membership today.', cta: 'Join Now', variant: 'red' }
+const adTrial: Slide = { kind: 'ad', key: 'ad-trial', href: '/trial-class', eyebrow: 'Forza Karate Club', title: 'Beginners welcome — click here for a trial', sub: 'New to karate? All ages, no experience needed.', cta: 'Book a Trial', img: '/hero-ad-trial.webp' }
+const adJoin: Slide = { kind: 'ad', key: 'ad-join', href: '/join', eyebrow: 'Rayleigh · Upminster', title: 'Enrol / Join now', sub: 'Ready to train with us? Start your membership today.', cta: 'Join Now', img: '/hero-ad-join.webp' }
 
 const photoSlides: Slide[] = photos.map((p) => ({ kind: 'photo', key: p.src, src: p.src, alt: p.alt }))
 // Order: 3 photos → trial ad → 4 photos → join ad → remaining photos → loop
@@ -96,15 +96,11 @@ export default function Hero() {
                 aria-label={`${slide.title} — ${slide.cta}`}
                 aria-hidden={i !== current}
                 tabIndex={i === current ? 0 : -1}
-                className={`absolute inset-0 flex flex-col items-center justify-center text-center px-6 md:px-16 text-white ${slide.variant === 'dark' ? 'bg-gradient-to-br from-[#111111] via-[#1a0a0d] to-[#C41230]' : 'bg-gradient-to-br from-[#C41230] via-[#8f0d23] to-[#111111]'}`}
+                className="absolute inset-0 block bg-[#111111]"
                 style={{ opacity: i === current ? 1 : 0, pointerEvents: i === current ? 'auto' : 'none', transition: 'opacity 0.8s ease-in-out' }}
               >
-                <span className="text-xs md:text-sm font-semibold uppercase tracking-[0.2em] text-white/80 mb-3 md:mb-4">{slide.eyebrow}</span>
-                <span className="block text-3xl sm:text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight max-w-[14ch] md:max-w-[18ch]">{slide.title}</span>
-                <span className="hidden sm:block mt-3 md:mt-5 text-sm md:text-lg text-white/85 max-w-[40ch]">{slide.sub}</span>
-                <span className={`mt-5 md:mt-8 inline-flex items-center gap-2 rounded-xl px-5 md:px-7 h-11 md:h-14 text-sm md:text-base font-bold uppercase tracking-wide shadow-lg ${slide.variant === 'dark' ? 'bg-[#C41230] text-white' : 'bg-white text-[#C41230]'}`}>
-                  {slide.cta} <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
-                </span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={slide.img} alt={`${slide.title} — ${slide.cta}`} loading="lazy" className="w-full h-full object-contain md:object-cover" />
               </Link>
             )
           )}
