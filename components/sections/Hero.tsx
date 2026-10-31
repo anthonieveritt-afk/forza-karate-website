@@ -100,7 +100,7 @@ export default function Hero() {
                 style={{ opacity: i === current ? 1 : 0, pointerEvents: i === current ? 'auto' : 'none', transition: 'opacity 0.8s ease-in-out' }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={slide.img} alt={`${slide.title} — ${slide.cta}`} loading="lazy" className="w-full h-full object-contain md:object-cover" />
+                <img src={slide.img} alt={`${slide.title} — ${slide.cta}`} loading="lazy" className="w-full h-full object-cover" />
               </Link>
             )
           )}
