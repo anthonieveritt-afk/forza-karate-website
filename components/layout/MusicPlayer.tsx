@@ -99,7 +99,7 @@ export default function MusicPlayer() {
 
       <div
         className={`
-          fixed bottom-[3.75rem] right-3 sm:bottom-[4.5rem] sm:right-6 z-50
+          fixed bottom-[4.5rem] right-3 sm:bottom-[5.75rem] sm:right-6 z-50
           bg-[#111111] text-white text-xs font-medium
           px-3 py-1.5 rounded-full
           transition-all duration-300 pointer-events-none whitespace-nowrap
@@ -112,7 +112,7 @@ export default function MusicPlayer() {
       <div
         className={`
           fixed bottom-3 right-3 sm:bottom-6 sm:right-6 z-50
-          flex flex-nowrap items-center gap-1.5 sm:gap-2 isolate overflow-visible
+          flex flex-nowrap items-center gap-1.5 sm:gap-2 isolate p-1 rounded-full bg-[#111111] border border-white/10 shadow-lg shadow-black/40
           transition-opacity duration-500
           ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}
         `}
@@ -120,7 +120,7 @@ export default function MusicPlayer() {
         <button
           onClick={prev}
           aria-label="Previous track"
-          className="relative z-10 flex shrink-0 w-9 h-9 rounded-full bg-[#111111] border border-white/10 items-center justify-center hover:bg-white/10 transition-colors"
+          className="relative z-20 flex shrink-0 w-9 h-9 transform-gpu [transform:translateZ(0)] rounded-full bg-[#111111] border border-white/10 items-center justify-center hover:bg-[#2a2a2a] hover:opacity-100 transition-colors"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
             <polygon points="11,1 4,6 11,11" />
@@ -128,11 +128,11 @@ export default function MusicPlayer() {
           </svg>
         </button>
 
-        <div className="relative z-10 w-10 h-10 sm:w-12 sm:h-12 shrink-0">
+        <div className="relative z-0 w-10 h-10 sm:w-12 sm:h-12 shrink-0 overflow-hidden rounded-full">
           {playing && (
             <span
               aria-hidden
-              className="absolute -inset-1 rounded-full border-2 border-[#dc2626]/50 animate-pulse pointer-events-none"
+              className="absolute inset-0 rounded-full border-2 border-[#dc2626]/50 animate-pulse pointer-events-none"
             />
           )}
           <button
@@ -156,7 +156,7 @@ export default function MusicPlayer() {
         <button
           onClick={next}
           aria-label="Next track"
-          className="relative z-10 flex shrink-0 w-9 h-9 rounded-full bg-[#111111] border border-white/10 items-center justify-center hover:bg-white/10 transition-colors"
+          className="relative z-20 flex shrink-0 w-9 h-9 transform-gpu [transform:translateZ(0)] rounded-full bg-[#111111] border border-white/10 items-center justify-center hover:bg-[#2a2a2a] hover:opacity-100 transition-colors"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
             <polygon points="1,1 8,6 1,11" />
