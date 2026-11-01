@@ -17,3 +17,17 @@ Re-encoded to 128 kbps MP3, metadata stripped.
 | upbeat-back-in-the-80s.mp3 | Back In The 80s | HoliznaCC0 | https://freemusicarchive.org/music/holiznacc0/power-pop/back-in-the-80s/ | CC0 1.0 |
 
 Existing tracks track-1..3 (80s Champion, Taiko Groove, Eastern Flow) predate this file; track-4.mp3 duplicated background-music.mp3 and was removed from the playlist.
+# Music credits — new candidate tracks (listen pack, 31 Oct / 01 Nov 2026)
+
+Artist HoliznaCC0, album "Power Pop!" (2022), licence CC0 1.0 Universal (public domain dedication, https://creativecommons.org/publicdomain/zero/1.0/). Commercial use allowed, no attribution required. Source album: https://freemusicarchive.org/music/holiznacc0/power-pop
+
+These four tracks were unused on the live Forza MusicPlayer (the five kept live tracks are Retro Synths, Love Love Love, Mutant Club, Dear Mr Super Computer, Back In The 80s). Delivered for Anthoni to listen before path A/B/C.
+
+Re-encoded to 128 kbps MP3, metadata stripped.
+
+| File | Title | Artist | Source URL | Licence |
+|---|---|---|---|---|
+| upbeat-transcendental-earth-people.mp3 | transcendental earth people | HoliznaCC0 | https://freemusicarchive.org/music/holiznacc0/power-pop/transcendental-earth-people/ | CC0 1.0 |
+| upbeat-a-small-town-on-pluto.mp3 | A Small Town On Pluto | HoliznaCC0 | https://freemusicarchive.org/music/holiznacc0/power-pop/a-small-town-on-pluto/ | CC0 1.0 |
+| upbeat-drama.mp3 | Drama | HoliznaCC0 | https://freemusicarchive.org/music/holiznacc0/power-pop/drama/ | CC0 1.0 |
+| upbeat-day-dreams.mp3 | Day Dreams | HoliznaCC0 | https://freemusicarchive.org/music/holiznacc0/power-pop/day-dreams/ | CC0 1.0 |

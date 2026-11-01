@@ -10,6 +10,10 @@ const tracks = [
   { src: '/music/upbeat-mutant-club.mp3', label: 'Mutant Club' },
   { src: '/music/upbeat-dear-mr-super-computer.mp3', label: 'Dear Mr Super Computer' },
   { src: '/music/upbeat-back-in-the-80s.mp3', label: 'Back In The 80s' },
+  { src: '/music/upbeat-transcendental-earth-people.mp3', label: 'Transcendental Earth People' },
+  { src: '/music/upbeat-a-small-town-on-pluto.mp3', label: 'A Small Town On Pluto' },
+  { src: '/music/upbeat-drama.mp3', label: 'Drama' },
+  { src: '/music/upbeat-day-dreams.mp3', label: 'Day Dreams' },
 ]
 
 export default function MusicPlayer() {
