@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     const s = event.data.object as Stripe.Checkout.Session
     const kind = s.metadata?.kind
     if (s.payment_status !== 'paid' && kind !== 'video') return NextResponse.json({ received: true, skipped: 'unpaid' })
-    if (kind !== 'trial' && kind !== 'guide' && kind !== 'video' && kind !== 'membership' && kind !== 'grading') return NextResponse.json({ received: true, skipped: 'not ours' })
+    if (kind !== 'trial' && kind !== 'guide' && kind !== 'video' && kind !== 'membership' && kind !== 'grading' && kind !== 'sporting') return NextResponse.json({ received: true, skipped: 'not ours' })
 
     // Idempotency: one checkout session = one set of emails, however often Stripe delivers it.
     const onceKey = `checkout-${s.id}`
@@ -114,6 +114,14 @@ export async function POST(req: NextRequest) {
         await notifyClub(`Grading paid: ${m.memberName} — ${m.grade}${s.livemode ? '' : ' [TEST]'}`, [
           `${gbp(s.amount_total ?? 0)} grading fee paid online for ${m.memberName} (${m.grade}).`,
           `${m.gradingName} · ${m.venue} · ${m.email}`, `Stripe session: ${s.id}`, 'Saved in Club Honbu as Paid.',
+        ])
+      }
+      else if (kind === 'sporting') {
+        const m = (s.metadata ?? {}) as Record<string, string>
+        await notifyClub(`Sporting licence paid: ${m.memberName}${s.livemode ? '' : ' [TEST]'}`, [
+          `${gbp(s.amount_total ?? 0)} Sporting licence (Sport:80) paid online for ${m.memberName} (Honbu member ${m.memberId}).`,
+          `EKNGB licence ${m.ekngbLicence || '-'} valid to ${m.ekngbExpiry || '-'} · ${m.email}`, `Stripe session: ${s.id}`,
+          'Please issue the Sporting licence and attach the Sporting slip in Office.',
         ])
       }
       else if (kind === 'guide') {
