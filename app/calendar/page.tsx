@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Calendar, MapPin, Clock, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
 import { EVENTS, CATEGORY_COLOURS, formatEventDate, groupByMonth, type EventCategory } from '@/lib/events'
 
-const CATEGORIES: EventCategory[] = ['Competition', 'Coaching', 'Super Champs', 'Grading', 'Para Karate']
+const CATEGORIES: EventCategory[] = ['Competition', 'Coaching', 'Super Champs', 'Grading', 'Para Karate', 'Club Social']
 
 const CATEGORY_ICONS: Record<EventCategory, string> = {
   Competition:    '🏆',
@@ -13,6 +13,7 @@ const CATEGORY_ICONS: Record<EventCategory, string> = {
   'Super Champs': '⭐',
   Grading:        '🎽',
   'Para Karate':  '💪',
+  'Club Social':  '🎄',
 }
 
 export default function CalendarPage() {

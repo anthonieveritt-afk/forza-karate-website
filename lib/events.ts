@@ -1,4 +1,4 @@
-export type EventCategory = 'Competition' | 'Coaching' | 'Super Champs' | 'Grading' | 'Para Karate'
+export type EventCategory = 'Competition' | 'Coaching' | 'Super Champs' | 'Grading' | 'Para Karate' | 'Club Social'
 
 export interface ClubEvent {
   id: string
@@ -111,6 +111,7 @@ export const EVENTS: ClubEvent[] = [
   { id: 'grad-nov-w',   title: 'November Grading — Belts Awarded',            date: '2026-11-02', dateEnd: '2026-11-06', venue: 'Rayleigh & Upminster',           category: 'Grading' },
   { id: 'cw',           title: 'Commonwealth Club Championships',              date: '2026-11-07', dateEnd: '2026-11-08', venue: 'Emirates Arena, Glasgow',        category: 'Competition', eligibility: 'Selected squad only' },
   { id: 'sc-nov',       title: 'Saturday Super Champs',                        date: '2026-11-14', time: '2:00pm',  venue: 'Rayleigh',                             category: 'Super Champs' },
+  { id: 'awards-xmas-2026', title: 'Awards Evening & Christmas Party', date: '2026-11-27', time: '6:00pm', venue: 'Rayleigh Dojo – Rayleigh Primary School', category: 'Club Social', eligibility: 'Forza families', notes: 'Tickets £5 per group', registrationHref: '/events/awards-christmas-2026' },
   { id: 'kata-nov',     title: 'Kata Training (End of Year)',                  date: '2026-11-14', time: '3:00pm',  venue: 'Rayleigh',                             category: 'Coaching',   eligibility: 'All ages' },
 
   // ── DECEMBER ──
@@ -127,6 +128,7 @@ export const CATEGORY_COLOURS: Record<EventCategory, { bg: string; text: string;
   'Super Champs':{ bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
   Grading:       { bg: 'bg-red-50',    text: 'text-[#dc2626]',  border: 'border-red-200' },
   'Para Karate': { bg: 'bg-green-50',  text: 'text-green-700',  border: 'border-green-200' },
+  'Club Social': { bg: 'bg-yellow-50', text: 'text-yellow-800', border: 'border-yellow-200' },
 }
 
 export function formatEventDate(date: string, dateEnd?: string): string {
