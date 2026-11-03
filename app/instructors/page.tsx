@@ -27,7 +27,7 @@ const instructors = [
   },
   {
     name: 'Sensei Scott Nicholls',
-    grade: '4th Dan (Wado Ryu)',
+    grade: '4th Dan',
     role: 'Senior Instructor',
     dojo: 'Upminster',
     photo: '/instructors/scott-nicholls.jpg',
