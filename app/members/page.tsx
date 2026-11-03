@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { Lock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { safeMembersRedirect } from '@/lib/members/session'
+import { switchProfile, type FamilyProfile } from '@/components/members/ProfileSwitcher'
 // loginMembers server action replaced with direct API route for reliability
 
 function LoginForm() {
@@ -22,6 +23,7 @@ function LoginForm() {
   const [loading, setLoading]   = useState(false)
   const [forgot, setForgot]     = useState(false)
   const [notice, setNotice]     = useState('')
+  const [profiles, setProfiles] = useState<FamilyProfile[]>([])
 
   async function handleForgot(e: React.FormEvent) {
     e.preventDefault()
@@ -58,7 +60,15 @@ function LoginForm() {
       if (result.success) {
         // Cookie is now set — do a hard nav so middleware sees it
         // Still on the emailed temporary password → choose a new one first.
-        window.location.href = result.mustChangePassword ? '/members/change-password' : redirect
+        if (result.mustChangePassword) {
+          window.location.href = '/members/change-password'
+        } else if (Array.isArray(result.profiles) && result.profiles.length > 1) {
+          // Family login (parent + children on one email): ask who's viewing first.
+          setProfiles(result.profiles)
+          setLoading(false)
+        } else {
+          window.location.href = redirect
+        }
       } else {
         setError(result.error ?? 'Invalid credentials.')
         setLoading(false)
@@ -70,6 +80,43 @@ function LoginForm() {
   }
 
   const input = 'w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition'
+
+  async function pickProfile(id: number) {
+    setLoading(true)
+    setError('')
+    if (await switchProfile(id)) window.location.assign(redirect)
+    else {
+      setError('Could not open that profile — please try again.')
+      setLoading(false)
+    }
+  }
+
+  if (profiles.length > 1) {
+    return (
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-lg font-bold text-[#111111]">Who&apos;s viewing?</h2>
+          <p className="text-sm text-gray-500">This login covers more than one member. Choose a profile — you can switch any time from the Viewing menu.</p>
+        </div>
+        <ul className="space-y-2">
+          {profiles.map((p) => (
+            <li key={p.id}>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => pickProfile(p.id)}
+                className="w-full min-h-[48px] rounded-xl border border-black/12 bg-white px-4 py-2 text-left text-sm font-semibold text-[#111111] hover:border-[#dc2626] hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dc2626] disabled:opacity-60"
+              >
+                {p.firstName} {p.surname}
+                <span className="ml-2 text-xs font-normal text-gray-500">{p.isAdult ? 'Adult' : 'Child'}{p.belt ? ` · ${p.belt} belt` : ''}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        {error && <p className="text-sm text-red-600">{error}</p>}
+      </div>
+    )
+  }
 
   if (forgot) {
     return (

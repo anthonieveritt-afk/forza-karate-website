@@ -1,4 +1,5 @@
 import MembersSidebar from '@/components/members/MembersSidebar'
+import ProfileSwitcher from '@/components/members/ProfileSwitcher'
 
 /**
  * Layout for logged-in members pages: content on the left, the Members sidebar on the right.
@@ -22,6 +23,7 @@ export default function MembersArea({
             wideAside ? 'lg:w-80' : 'lg:w-72'
           }`}
         >
+          <ProfileSwitcher />
           <MembersSidebar />
           {asideExtra}
         </aside>

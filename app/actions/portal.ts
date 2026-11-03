@@ -74,6 +74,16 @@ export type LicenceSlipMeta = {
   startDate: string | null
   expiryDate: string | null
   status: string | null
+  /** Sport:80 Sporting licence slip, if one is on file (separate from EKNGB). */
+  sporting?: SportingSlipMeta | null
+}
+
+export type SportingSlipMeta = {
+  slipId: number
+  fileName: string | null
+  licenceNumber: string | null
+  expiryDate: string | null
+  status: string | null
 }
 
 /** Latest Sport:80 / EKNGB slip for the logged-in member (from Club Honbu). */
@@ -89,10 +99,29 @@ export async function getMemberLicenceSlipMeta(): Promise<LicenceSlipMeta | null
     })
     if (!res.ok) return null
     const data = await res.json()
+    const slips: Array<{ id?: number; fileName?: string; kind?: string }> = Array.isArray(data?.slips) ? data.slips : []
+    const str = (v: unknown) => (typeof v === 'string' ? v : null)
+    const spId = data?.sporting?.slipId
+    const sporting: SportingSlipMeta | null =
+      typeof spId === 'number' && Number.isInteger(spId) && spId > 0
+        ? {
+            slipId: spId,
+            fileName: str(slips.find((s) => s.id === spId)?.fileName),
+            licenceNumber: str(data.sporting.licenceNumber),
+            expiryDate: str(data.sporting.expiryDate),
+            status: str(data.sporting.status),
+          }
+        : null
     const slipId = data?.current?.slipId
-    if (typeof slipId !== 'number' || !Number.isInteger(slipId) || slipId <= 0) return null
-    const latest = Array.isArray(data?.slips) ? data.slips[0] : null
+    if (typeof slipId !== 'number' || !Number.isInteger(slipId) || slipId <= 0) {
+      // No EKNGB slip yet, but a Sporting one may still be on file.
+      return sporting
+        ? { slipId: 0, fileName: null, licenceNumber: null, startDate: null, expiryDate: null, status: null, sporting }
+        : null
+    }
+    const latest = slips.find((s) => s.id === slipId) ?? null
     return {
+      sporting,
       slipId,
       fileName: typeof latest?.fileName === 'string' ? latest.fileName : null,
       licenceNumber: typeof data?.current?.licenceNumber === 'string' ? data.current.licenceNumber : null,

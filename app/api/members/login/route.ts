@@ -33,7 +33,18 @@ export async function POST(req: NextRequest) {
     }
 
     const token = body.token ?? ''
-    const res = NextResponse.json({ success: true, name: body.name, mustChangePassword: body.mustChangePassword === true })
+    const profiles = Array.isArray(body.profiles)
+      ? body.profiles.map((p: { id: number; firstName: string; surname: string; isAdult: boolean; belt: string | null }) => ({
+          id: p.id, firstName: p.firstName, surname: p.surname, isAdult: !!p.isAdult, belt: p.belt ?? null,
+        }))
+      : []
+    const res = NextResponse.json({
+      success: true,
+      name: body.name,
+      mustChangePassword: body.mustChangePassword === true,
+      activeMemberId: body.activeMemberId ?? null,
+      profiles,
+    })
     res.cookies.set(COOKIE_NAME, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
