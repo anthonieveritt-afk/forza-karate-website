@@ -51,8 +51,17 @@ export default async function MembersPortalPage() {
     <div className="min-h-screen bg-[#fafaf9]">
       <MembersArea
         asideExtra={
-          typeof slip?.slipId === 'number' && slip.slipId > 0 ? (
-            <LicenceSlipPreview slipId={slip.slipId} slipFileName={slip.fileName} />
+          slip && (slip.slipId > 0 || slip.sporting) ? (
+            <>
+              {slip.slipId > 0 && <LicenceSlipPreview slipId={slip.slipId} slipFileName={slip.fileName} />}
+              {slip.sporting && (
+                <LicenceSlipPreview
+                  slipId={slip.sporting.slipId}
+                  slipFileName={slip.sporting.fileName}
+                  title="Sporting licence (Sport:80)"
+                />
+              )}
+            </>
           ) : null
         }
       >
