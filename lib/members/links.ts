@@ -25,6 +25,7 @@ export const FIKC_URL = 'https://www.fikc.co.uk'
 export const INVITATIONAL_PATHS = ['/register/invitational', '/members/events/invitational']
 
 export const membersEventLinks: MembersLink[] = [
+  { href: '/events/awards-christmas-2026', label: 'Awards Evening & Christmas Party' },
   { href: '/members/events/super-champs', label: 'Register for Super Champs' },
   { href: '/members/events/prep-training', label: 'Register for Preparation Training' },
   { href: '/members/events/championships', label: 'Register for Club Championships' },
