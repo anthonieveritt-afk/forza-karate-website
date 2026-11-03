@@ -12,20 +12,22 @@ canvas{background:#87ceeb;max-width:100vw;max-height:100vh;aspect-ratio:16/9;wid
 .tb{pointer-events:auto;width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.35);border:3px solid rgba(255,255,255,.8);color:#fff;font-size:26px;font-weight:bold;display:flex;align-items:center;justify-content:center;text-shadow:0 2px 3px #000}
 #touch2{position:fixed;bottom:12px;left:0;right:0;display:none;justify-content:space-between;padding:0 8px;pointer-events:none}#touch2>div{display:flex;gap:6px}#touch2 .tb{width:56px;height:56px;font-size:20px}#touch2 .p2{border-color:#90caf9;background:rgba(30,136,229,.45)}
 #touchKM{position:fixed;bottom:12px;left:0;right:0;display:none;justify-content:space-between;padding:0 12px;pointer-events:none}#touchKM>div{display:flex;gap:10px}
+#touchPS2{position:fixed;top:10px;left:0;right:0;display:none;justify-content:space-between;align-items:flex-end;padding:0 10px;pointer-events:none;z-index:15;transform:rotate(180deg)}
+#touchPS2 .ps-btn{border-color:#ffcdd2}
 #touchPS{position:fixed;bottom:10px;left:0;right:0;display:none;justify-content:space-between;align-items:flex-end;padding:0 10px;pointer-events:none;z-index:15}
-#touchPS .ps-cluster{pointer-events:none;position:relative;width:170px;height:170px}
-#touchPS .ps-btn{pointer-events:auto;position:absolute;width:58px;height:58px;border-radius:50%;border:3px solid #fff;color:#fff;font:700 10px/1 system-ui,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center;text-shadow:0 1px 2px #000;box-shadow:0 2px 6px #0008;user-select:none;-webkit-user-select:none;touch-action:none}
-#touchPS .ps-btn.on{transform:scale(.92);filter:brightness(1.2)}
-#touchPS .ps-dpad .ps-btn{border-radius:12px;background:rgba(40,40,40,.78);font-size:20px}
-#touchPS .u,#touchPS .punch{left:56px;top:0}#touchPS .d,#touchPS .block{left:56px;bottom:0}#touchPS .l,#touchPS .sweep{left:0;top:56px}#touchPS .r,#touchPS .kick{right:0;top:56px}
-#touchPS .punch{background:rgba(46,125,50,.92)}#touchPS .kick{background:rgba(211,47,47,.92)}#touchPS .block{background:rgba(25,118,210,.92)}#touchPS .sweep{background:rgba(251,192,45,.96);color:#111;text-shadow:none}
+.pspad .ps-cluster{pointer-events:none;position:relative;width:170px;height:170px}
+.pspad .ps-btn{pointer-events:auto;position:absolute;width:58px;height:58px;border-radius:50%;border:3px solid #fff;color:#fff;font:700 10px/1 system-ui,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center;text-shadow:0 1px 2px #000;box-shadow:0 2px 6px #0008;user-select:none;-webkit-user-select:none;touch-action:none}
+.pspad .ps-btn.on{transform:scale(.92);filter:brightness(1.2)}
+.pspad .ps-dpad .ps-btn{border-radius:12px;background:rgba(40,40,40,.78);font-size:20px}
+.pspad .u,.pspad .punch{left:56px;top:0}.pspad .d,.pspad .block{left:56px;bottom:0}.pspad .l,.pspad .sweep{left:0;top:56px}.pspad .r,.pspad .kick{right:0;top:56px}
+.pspad .punch{background:rgba(46,125,50,.92)}.pspad .kick{background:rgba(211,47,47,.92)}.pspad .block{background:rgba(25,118,210,.92)}.pspad .sweep{background:rgba(251,192,45,.96);color:#111;text-shadow:none}
 #touchPS-hint{position:fixed;left:50%;bottom:190px;transform:translateX(-50%);display:none;gap:8px;pointer-events:none;z-index:16}
 .ps-cue{width:36px;height:36px;border-radius:50%;border:2px solid #fff;opacity:.4}.ps-cue.next{opacity:1;box-shadow:0 0 0 3px #fff8}.ps-cue.done{opacity:.15}
 .ps-cue.punch{background:#2e7d32}.ps-cue.kick{background:#d32f2f}.ps-cue.block{background:#1976d2}.ps-cue.sweep{background:#fbc02d}
 #touchPS-hint.miss .ps-cue{animation:psmiss .25s}@keyframes psmiss{50%{transform:translateX(-4px)}}
 /* v18 phone fit: on short landscape screens the pad shrinks and sits lower/softer so it covers less of the fighters and mat */
-#touchPS .ps-cluster{opacity:.82;transition:opacity .12s}#touchPS .ps-cluster:has(.on){opacity:1}
-@media (max-height:500px){#touchPS{bottom:4px;padding:0 4px}#touchPS .ps-cluster{width:136px;height:136px}#touchPS .ps-btn{width:46px;height:46px;border-width:2px;font-size:9px}#touchPS .ps-dpad .ps-btn{font-size:16px}#touchPS .u,#touchPS .punch,#touchPS .d,#touchPS .block{left:45px}#touchPS .l,#touchPS .sweep,#touchPS .r,#touchPS .kick{top:45px}#touchPS-hint{bottom:148px}.ps-cue{width:28px;height:28px}}
+.pspad .ps-cluster{opacity:.82;transition:opacity .12s}.pspad .ps-cluster:has(.on){opacity:1}
+@media (max-height:500px){#touchPS{bottom:4px;padding:0 4px}.pspad .ps-cluster{width:136px;height:136px}.pspad .ps-btn{width:46px;height:46px;border-width:2px;font-size:9px}.pspad .ps-dpad .ps-btn{font-size:16px}.pspad .u,.pspad .punch,.pspad .d,.pspad .block{left:45px}.pspad .l,.pspad .sweep,.pspad .r,.pspad .kick{top:45px}#touchPS-hint{bottom:148px}.ps-cue{width:28px;height:28px}}
 
 #touchFO{position:fixed;bottom:12px;left:0;right:0;display:none;justify-content:space-between;padding:0 12px;pointer-events:none}#touchFO>div{display:flex;gap:10px}.fb{pointer-events:auto;width:66px;height:66px;border-radius:14px;background:rgba(255,255,255,.35);border:3px solid #fff;color:#fff;font-size:26px;font-weight:bold;display:flex;align-items:center;justify-content:center;text-shadow:0 2px 3px #000}.fb.kick{width:84px;height:84px;border-radius:50%;background:rgba(255,23,68,.55)}
 .tb.on{background:rgba(255,215,0,.6)}
@@ -41,7 +43,7 @@ canvas{background:#87ceeb;max-width:100vw;max-height:100vh;aspect-ratio:16/9;wid
 </style></head><body>
 <div id="wrap"><canvas id="c" width="960" height="540"></canvas></div>
 <a id="trial" href="https://forzakarate.co.uk/trial-class" target="_top">🥋 Ask a parent to book a £10 trial →</a>
-<div id="touchPS"><div class="ps-cluster ps-dpad"><div class="ps-btn u" data-k="u">▲</div><div class="ps-btn l" data-k="r">◀</div><div class="ps-btn r" data-k="l">▶</div><div class="ps-btn d" data-k="d">▼</div></div><div class="ps-cluster ps-face"><div class="ps-btn punch" data-move="punch">PUNCH</div><div class="ps-btn kick" data-move="kick">KICK</div><div class="ps-btn block" data-move="block">BLOCK</div><div class="ps-btn sweep" data-move="sweep">SWEEP</div></div></div><div id="touchPS-hint" aria-hidden="true"></div>
+<div id="touchPS" class="pspad"><div class="ps-cluster ps-dpad"><div class="ps-btn u" data-k="u">▲</div><div class="ps-btn l" data-k="r">◀</div><div class="ps-btn r" data-k="l">▶</div><div class="ps-btn d" data-k="d">▼</div></div><div class="ps-cluster ps-face"><div class="ps-btn punch" data-move="punch">PUNCH</div><div class="ps-btn kick" data-move="kick">KICK</div><div class="ps-btn block" data-move="block">BLOCK</div><div class="ps-btn sweep" data-move="sweep">SWEEP</div></div></div><div id="touchPS2" class="pspad"><div class="ps-cluster ps-dpad"><div class="ps-btn u" data-k="u">▲</div><div class="ps-btn l" data-k="r">◀</div><div class="ps-btn r" data-k="l">▶</div><div class="ps-btn d" data-k="d">▼</div></div><div class="ps-cluster ps-face"><div class="ps-btn punch" data-move="punch">PUNCH</div><div class="ps-btn kick" data-move="kick">KICK</div><div class="ps-btn block" data-move="block">BLOCK</div><div class="ps-btn sweep" data-move="sweep">SWEEP</div></div></div><div id="touchPS-hint" aria-hidden="true"></div>
 <div id="touchKM"><div><div class="fb" data-k="r">◀</div><div class="fb" data-k="u">▲</div><div class="fb" data-k="d">▼</div><div class="fb" data-k="l">▶</div></div><div><div class="fb kick" data-k="a">🥊</div></div></div>
 <div id="touchFO"><div><div class="fb" data-d="left">◀</div><div class="fb" data-d="up">▲</div><div class="fb" data-d="down">▼</div><div class="fb" data-d="right">▶</div></div><div><div class="fb kick" data-d="kick">🥋</div></div></div>
 <div id="touch2"><div><div class="tb p2" data-p="1" data-k="left">◀</div><div class="tb p2" data-p="1" data-k="right">▶</div><div class="tb p2" data-p="1" data-k="kick">🥋</div><div class="tb p2" data-p="1" data-k="jump">▲</div></div><div><div class="tb" data-k="left">◀</div><div class="tb" data-k="right">▶</div><div class="tb" data-k="kick">🥋</div><div class="tb" data-k="jump">▲</div></div></div>
@@ -2443,8 +2445,8 @@ const isTouch=('ontouchstart' in window||navigator.maxTouchPoints>0);
 const map={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',ArrowUp:'jump',KeyW:'jump',Space:'jump',KeyX:'kick',KeyK:'kick',KeyL:'kick'};
 const mapA={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'jump',KeyL:'kick',KeyX:'kick'},mapB={KeyA:'left',KeyD:'right',KeyW:'jump',KeyF:'kick'};
 function keyOf(c){if(TWO&&state!=='title'){if(mapA[c])return[K,mapA[c]];if(mapB[c])return[K2,mapB[c]];return null}return map[c]?[K,map[c]]:null}
-addEventListener('keydown',e=>{if(document.getElementById('nameBox').style.display==='flex'||rmOpen())return;if(state==='kumite'){const k=KMKEYS[e.code];if(k){e.preventDefault();if(!e.repeat)kmInput(k,1)}else if(e.code==='KeyM'||e.code==='Escape')kmQuit();return}if(state==='faceoff'){const d=FOKEYS[e.code];if(d){e.preventDefault();if(!e.repeat)foInput(d)}else if(e.code==='KeyM'||e.code==='Escape')foQuit();return}const m=keyOf(e.code);if(m){e.preventDefault();const[T,k]=m;if(!T[k]){if(k=='jump')T.jp=1;if(k=='kick')T.kp=1}T[k]=1}if(state==='title'&&(e.code==='KeyB'||(badgePanel&&e.code==='Escape'))){badgePanel=e.code==='KeyB'?!badgePanel:false;return}if(state==='title'&&badgePanel)return;if(state==='title'){if(/^Digit[1-6]$/.test(e.code)){sel=+e.code[5]-1;anyPressed=1;return}if(e.code==='ArrowDown'||e.code==='KeyS'){sel=(sel+1)%6;return}if(e.code==='ArrowUp'){sel=(sel+5)%6;return}}if(e.code==='Enter'||e.code==='Space')anyPressed=1;if(e.code==='KeyP'&&state==='play')paused=!paused});
-addEventListener('keyup',e=>{if(state==='kumite'){const k=KMKEYS[e.code];if(k&&k!=='a')kmInput(k,0)}const m=keyOf(e.code);if(m)m[0][m[1]]=0;if(TWO){const a=mapA[e.code],b=mapB[e.code];if(a)K[a]=0;if(b)K2[b]=0}const c=map[e.code];if(c)K[c]=0});
+addEventListener('keydown',e=>{if(document.getElementById('nameBox').style.display==='flex'||rmOpen())return;if(state==='kumite'&&KM&&KM.two){const k1=KMKEYS1[e.code],k2=KMKEYS2[e.code];if(k1||k2){e.preventDefault();if(!e.repeat)kmInput(k1||k2,1,k2?1:0)}else if(e.code==='KeyM'||e.code==='Escape')kmQuit();return}if(state==='kumite'){const k=KMKEYS[e.code];if(k){e.preventDefault();if(!e.repeat)kmInput(k,1)}else if(e.code==='KeyM'||e.code==='Escape')kmQuit();return}if(state==='faceoff'){const d=FOKEYS[e.code];if(d){e.preventDefault();if(!e.repeat)foInput(d)}else if(e.code==='KeyM'||e.code==='Escape')foQuit();return}const m=keyOf(e.code);if(m){e.preventDefault();const[T,k]=m;if(!T[k]){if(k=='jump')T.jp=1;if(k=='kick')T.kp=1}T[k]=1}if(state==='title'&&(e.code==='KeyB'||(badgePanel&&e.code==='Escape'))){badgePanel=e.code==='KeyB'?!badgePanel:false;return}if(state==='title'&&badgePanel)return;if(state==='title'){if(/^Digit[1-7]$/.test(e.code)){sel=+e.code[5]-1;anyPressed=1;return}if(e.code==='ArrowDown'||e.code==='KeyS'){sel=(sel+1)%MENU.length;return}if(e.code==='ArrowUp'){sel=(sel+MENU.length-1)%MENU.length;return}}if(e.code==='Enter'||e.code==='Space')anyPressed=1;if(e.code==='KeyP'&&state==='play')paused=!paused});
+addEventListener('keyup',e=>{if(state==='kumite'&&KM&&KM.two){const k1=KMKEYS1[e.code],k2=KMKEYS2[e.code];if((k1||k2)&&(k1||k2)!=='a')kmInput(k1||k2,0,k2?1:0)}else if(state==='kumite'){const k=KMKEYS[e.code];if(k&&k!=='a')kmInput(k,0)}const m=keyOf(e.code);if(m)m[0][m[1]]=0;if(TWO){const a=mapA[e.code],b=mapB[e.code];if(a)K[a]=0;if(b)K2[b]=0}const c=map[e.code];if(c)K[c]=0});
 const touchEl=document.getElementById('touch');
 if('ontouchstart' in window||navigator.maxTouchPoints>0)touchEl.style.display='flex';
 document.querySelectorAll('.tb').forEach(b=>{const k=b.dataset.k,T=b.dataset.p==='1'?K2:K;const on=e=>{e.preventDefault();if(!T[k]){if(k=='jump')T.jp=1;if(k=='kick')T.kp=1}T[k]=1;anyPressed=1;b.classList.add('on')};const off=e=>{e.preventDefault();T[k]=0;b.classList.remove('on')};b.addEventListener('touchstart',on,{passive:false});b.addEventListener('touchend',off,{passive:false});b.addEventListener('touchcancel',off);b.addEventListener('mousedown',on);b.addEventListener('mouseup',off);b.addEventListener('mouseleave',off)});
@@ -2653,7 +2655,7 @@ function startDaily(){resetRun();mode='daily';grade=ST.best;bestGrade=ST.best;sc
  setupLevel({name:'📅 Daily Challenge '+TODAY,sub:TWIST.ico+' '+TWIST.nm+' – '+TWIST.d,sky:T.sky,len:4200,ground:T.gr,theme:T.t,daily:1},10,DSEED,TWIST.id)}
 function startMastery(m){mode='mastery';mlvl=m;grade=GRADES.length-1;bestGrade=grade;stageIdx=0;const T=THEMES[(m+WK.w)%THEMES.length];
  setupLevel({name:'👑 Mastery Level '+m+': '+T.nm,sub:'Black Belt Mastery – it only gets harder!',sky:T.sky,len:3800+Math.min(m,20)*150,ground:T.gr,theme:T.t},20+m*2,hashStr('mastery-'+m+'-'+WEEKKEY),null)}
-function beginMode(k){if(k===2&&!ST.dan){beep(150,.2);return}if(k===5){TWO=0;mode='kumite';resetRun();score=0;totalTime=0;lives=3;world=null;anyPressed=0;startKumite(KUMITE_FROM,true);return}if(k===4){TWO=0;mode='faceoff';resetRun();score=0;totalTime=0;lives=3;world=null;anyPressed=0;startFaceoff(1,true);return}TWO=k===3?1:0;if(isTouch){touchEl.style.display=TWO?'none':'flex';document.getElementById('touch2').style.display=TWO?'flex':'none'}anyPressed=0;beep(660,.12);if(k===0||k===3){mode='career';newGame()}else if(k===1)startDaily();else{resetRun();score=0;totalTime=0;lives=3;startMastery(1)}}
+function beginMode(k){if(k===2&&!ST.dan){beep(150,.2);return}if(k===6){TWO=0;mode='kumite2p';resetRun();score=0;totalTime=0;lives=3;world=null;anyPressed=0;startKumite(KUMITE_FROM,true,true);return}if(k===5){TWO=0;mode='kumite';resetRun();score=0;totalTime=0;lives=3;world=null;anyPressed=0;startKumite(KUMITE_FROM,true);return}if(k===4){TWO=0;mode='faceoff';resetRun();score=0;totalTime=0;lives=3;world=null;anyPressed=0;startFaceoff(1,true);return}TWO=k===3?1:0;if(isTouch){touchEl.style.display=TWO?'none':'flex';document.getElementById('touch2').style.display=TWO?'flex':'none'}anyPressed=0;beep(660,.12);if(k===0||k===3){mode='career';newGame()}else if(k===1)startDaily();else{resetRun();score=0;totalTime=0;lives=3;startMastery(1)}}
 function dailyComplete(){if(ST.lastDaily!==TODAY){ST.streak=ST.lastDaily===YESTERDAY?ST.streak+1:1;ST.lastDaily=TODAY}if(!ST.dailyDone.includes(TODAY))ST.dailyDone.push(TODAY);ST.dailyDone=ST.dailyDone.slice(-60)}
 function resetRun(){CH=[[],[]];runDelivered=0}
 function newGame(){resetRun();grade=0;bestGrade=0;score=0;totalTime=0;lives=3;startLevel(0)}
@@ -2874,7 +2876,8 @@ function drawFaceoff(){const F=FO;
 // ---------- WKF KUMITE (grading test from Orange Belt / 11th Kyu) ----------
 const KUMITE_FROM=GRADES.findIndex(G=>G.n==='Orange Belt');
 const KMKEYS={ArrowLeft:'r',KeyA:'r',ArrowRight:'l',KeyD:'l', /* v16: AO now on the right – ← is forward */ArrowUp:'u',KeyW:'u',ArrowDown:'d',KeyS:'d',KeyX:'a',Space:'a',KeyK:'a',KeyF:'a',KeyL:'a',Enter:'a'};
-const KMH={l:0,r:0,u:0,d:0,blockHold:0};
+const KMH={l:0,r:0,u:0,d:0,blockHold:0},KMH2={l:0,r:0,u:0,d:0,blockHold:0};
+const KMKEYS1={ArrowLeft:'r',ArrowRight:'l',ArrowUp:'u',ArrowDown:'d',KeyL:'a',KeyK:'a',Enter:'a',Space:'a'},KMKEYS2={KeyD:'r',KeyA:'l',KeyW:'u',KeyS:'d',KeyF:'a',KeyG:'a'}; /* 2P split: P1 arrows+L, P2 WASD+F (AKA on screen-left, D = forward) */
 /* v17 PS pad: dedicated face moves + soft-gated combo prompts that grow 1->4 over fight time */
 const PS_MOVES=['punch','kick','block','sweep'];let PSQ={on:0,seq:[],i:0,len:1,nextAt:0,hits:0};
 function psPromptReset(){PSQ={on:isTouch?1:0,seq:[],i:0,len:1,nextAt:150,hits:0};psPromptPaint()}
@@ -2885,19 +2888,19 @@ function psPromptTick(){if(!PSQ.on)return;if(!PSQ.seq.length){if(--PSQ.nextAt<=0
 function psPromptOnMove(move){if(!PSQ.on||!PSQ.seq.length)return; /* soft gate: never blocks the move itself */
  if(PSQ.seq[PSQ.i]!==move){beep(160,.06);psPromptFill();psPromptPaint(1);return}
  PSQ.i++;if(PSQ.i>=PSQ.seq.length){score+=25*PSQ.len;PSQ.hits++;beep(880,.08,'triangle');if(PSQ.hits%2===0&&PSQ.len<4)PSQ.len++;psPromptFill()}else psPromptPaint()}
-function kmFace(move){if(!KM||KM.ph!=='fight')return;psPromptOnMove(move);if(move==='block')return;
- const f=KM.ao,o=KM.aka;if(o.act==='down'&&f.sweepWin>0){kmAttack(f,'gpunch');return}
- kmAttack(f,move==='kick'?(KMH.u?'hkick':'bkick'):move)} /* hold ▲ + kick = head kick */
+function kmFace(move,side){if(!KM||KM.ph!=='fight')return;if(!side)psPromptOnMove(move);if(move==='block')return;
+ const f=side?KM.aka:KM.ao,o=side?KM.ao:KM.aka,H=side?KMH2:KMH;if(o.act==='down'&&f.sweepWin>0){kmAttack(f,'gpunch');return}
+ kmAttack(f,move==='kick'?(H.u?'hkick':'bkick'):move)} /* hold ▲ + kick = head kick */
 const MOVES={punch:{s:7,a:6,r:10,reach:1.35,pts:1,nm:'Kizami-zuki'},bkick:{s:12,a:6,r:14,reach:1.65,pts:2,nm:'Chudan geri'},hkick:{s:16,a:6,r:18,reach:1.75,pts:3,nm:'Jodan geri'},sweep:{s:10,a:6,r:12,reach:1.45,pts:0,nm:'Ashi barai'},gpunch:{s:8,a:6,r:10,reach:1.6,pts:3,nm:'Ashi barai + tsuki'}};
 const PEN=['','Chui 1','Chui 2','Chui 3','Hansoku Chui','Hansoku'];
 const PTSNM={1:'Yuko',2:'Waza-ari',3:'Ippon'};
 const MX0=160,PXM=80,FY=432;
 let KM=null;
 function kmFighter(side){return{side,x:side?5:3,face:side?-1:1,act:'idle',t:0,mv:null,hitDone:0,score:0,pens:0,cd:0,sweepWin:0,walk:0,blockT:0}}
-function startKumite(lvl,practice){PSQ.on=0;PSQ.seq=[];psPromptPaint();lvl=Math.max(KUMITE_FROM,Math.min(GRADES.length-1,lvl));const L=lvl-KUMITE_FROM;
- KM={lvl,practice,name:OPP[(lvl-1)%OPP.length],ao:kmFighter(0),aka:kmFighter(1),ref:{x:4,arm:null},time:75*60,ph:'stand',t:0,say:{text:'Line up – face the referee',t:90},senshu:null,winner:null,why:'',fb:null,
+function startKumite(lvl,practice,two){PSQ.on=0;PSQ.seq=[];psPromptPaint();lvl=Math.max(KUMITE_FROM,Math.min(GRADES.length-1,lvl));const L=lvl-KUMITE_FROM;
+ KM={lvl,practice,two:!!two,name:two?'Player 2':OPP[(lvl-1)%OPP.length],ao:kmFighter(0),aka:kmFighter(1),ref:{x:4,arm:null},time:75*60,ph:'stand',t:0,say:{text:'Line up – face the referee',t:90},senshu:null,winner:null,why:'',fb:null,
   ai:{block:Math.min(.8,.18+L*.05),aggr:.012+L*.0028,smart:Math.min(.97,.45+L*.045),combo:Math.min(.6,L*.05),hk:Math.min(.3,.06+L*.02),react:0}};
- state='kumite';for(const k in KMH)KMH[k]=0;beep(440,.15,'sine')}
+ state='kumite';for(const k in KMH)KMH[k]=0;for(const k in KMH2)KMH2[k]=0;beep(440,.15,'sine')}
 function kmSay(text,t=70){KM.say={text,t}}
 // v16: referee voice (Japanese voice if the device has one, otherwise a two-tone call) and a WebAudio kiai shout
 function refCall(text){if(MUTED)return;beep(660,.1,'triangle');setTimeout(()=>beep(880,.14,'triangle'),110);try{if(!window.speechSynthesis)return;const u=new SpeechSynthesisUtterance(text.replace(/!/g,''));if(jaVoice){u.voice=jaVoice;u.lang=jaVoice.lang}else u.lang='ja-JP';u.rate=1;u.pitch=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
@@ -2914,10 +2917,10 @@ function kmSkipCeremony(){const K_=KM;if(!K_||!KM_CER.includes(K_.ph))return fal
 function kmReset(){const K_=KM;for(const f of [K_.ao,K_.aka]){f.x=f.side?5:3;f.act='idle';f.t=0;f.mv=null;f.cd=10;f.sweepWin=0;f.blockT=0}K_.ref.x=4}
 const KMR={punch:[.95,1.25],bkick:[1.15,1.55],hkick:[1.05,1.25],sweep:[.9,1.4]}; // v14: ranges where the fist/instep can land
 function kmAttack(f,mv){if(KM.ph!=='fight'||['punch','bkick','hkick','sweep','gpunch','hit','down'].includes(f.act)||f.cd>0){if(!f.side&&KM.ph==='fight'){KM.buf=12}return false}KM.buf=0;f.act=mv;f.mv=MOVES[mv];f.t=0;f.hitDone=0;{const o=f.side?KM.ao:KM.aka,ad=Math.abs(o.x-f.x),r=KMR[mv];f.lunge=r&&ad>r[1]&&ad<r[1]+.5?(ad-(r[0]+r[1])/2)/f.mv.s:0} /* step in (yori-ashi) during the set-up so techniques start from a realistic distance */if(mv==='punch'){f.gyaku=!f.gyaku}beep(mv==='punch'?520:mv==='sweep'?300:420,.05);return true}
-function kmPlayerAttack(){const o=KM.aka,f=KM.ao;if(o.act==='down'&&f.sweepWin>0)return kmAttack(f,'gpunch');kmAttack(f,KMH.u?'hkick':KMH.d?'sweep':KMH.r?'bkick':'punch')}
+function kmPlayerAttack(side){const f=side?KM.aka:KM.ao,o=side?KM.ao:KM.aka,H=side?KMH2:KMH;if(o.act==='down'&&f.sweepWin>0)return kmAttack(f,'gpunch');kmAttack(f,H.u?'hkick':H.d?'sweep':H.r?'bkick':'punch')}
 function kmScore(f,pts,how){const K_=KM;K_.flash={x:MX0+f.x*PXM+f.face*72,y:FY-(pts>=3?150:pts==2?105:125),t:0,pts};f.score+=pts;if(K_.senshu===null)K_.senshu=f.side;K_.ph='yame';K_.t=0;f.slide={from:f.x,to:Math.max(.4,Math.min(7.6,f.x-f.face*1.1)),t:0};K_.kiai={side:f.side,t:0};K_.kiai.word=Math.random()<.5?'Eiii':'Ear';setTimeout(()=>kiaiVoice(f.side,K_.kiai.word),60);setTimeout(()=>refCall('Yame'),700);crowdCheer(f.side,1);setTimeout(crowdHush,1500);K_.ref.arm={side:f.side,pts};
  kmSay('Yame! '+(f.side?'AKA':'AO')+' – '+how+' · '+PTSNM[pts]+' ('+pts+')',90);beep(f.side?220:880,.15);
- if(!f.side&&pts===3)ST.kmIppon=1}
+ if(!f.side&&pts===3&&!K_.two)ST.kmIppon=1}
 function kmJogai(f){const K_=KM;f.pens++;K_.ph='yame';K_.t=0;K_.ref.arm={side:f.side,pen:1};refCall('Yame');crowdHush();kmSay('Yame! Jogai – '+(f.side?'AKA':'AO')+' '+PEN[Math.min(5,f.pens)],90);beep(180,.2,'sawtooth');f.x=Math.max(.2,Math.min(7.8,f.x))}
 function kmFinish(){const K_=KM,a=K_.ao,b=K_.aka;let w=null;
  if(a.pens>=5){w=1;K_.why='AO Hansoku'}else if(b.pens>=5){w=0;K_.why='AKA Hansoku'}
@@ -2925,7 +2928,7 @@ function kmFinish(){const K_=KM,a=K_.ao,b=K_.aka;let w=null;
  else if(a.score!==b.score){w=a.score>b.score?0:1;K_.why='Time – higher score'}
  else if(K_.senshu!==null){w=K_.senshu;K_.why='Tie – Senshu (first score)'}else{w=null;K_.why='Hikiwake (draw) – try again'}
  K_.winner=w;K_.ph='end';if(w!==null)crowdCheer(w,1.1);K_.t=0;kmSay('Yame!',60);
- if(w===0){ST.kmWins=(ST.kmWins||0)+1;if(a.pens===0)ST.kmClean=1}checkBadges()}
+ if(w===0&&!K_.two){ST.kmWins=(ST.kmWins||0)+1;if(a.pens===0)ST.kmClean=1}checkBadges()}
 // v14: contact geometry (same rig as the drawing). Kicks score only with the instep, punches only with the fist (knuckles).
 function kmGeo(f){if(!f.var)return null;const P=rigPose(f),hip=P.hip,S=[hip[0]+Math.sin(P.lean)*RIG.torso,hip[1]-Math.cos(P.lean)*RIG.torso],TN=P.turn||0,px=MX0+f.x*PXM,W_=p=>[px+f.face*p[0],FY+p[1]];
  const hipF=[hip[0]+5+15*TN,hip[1]-12*TN],[kf,ff]=ikH(hipF,P.ff,RIG.thigh,RIG.shin,P.kfH),sd=[ff[0]-kf[0],ff[1]-kf[1]],sl=Math.hypot(sd[0],sd[1])||1,inst=[ff[0]+sd[0]/sl*9,ff[1]+sd[1]/sl*9];
@@ -2952,7 +2955,7 @@ function kmStep(f,o,isAI){
   if(f.t>m.s+m.a+m.r){f.act='idle';f.mv=null;f.t=0;f.cd=isAI?8:4}return}
  // movement / block
  let mvx=0;
- if(!isAI){if(KMH.blockHold||(KMH.d&&!KMH.l&&!KMH.r)){f.act='block'}else{f.act='idle';if(KMH.r)mvx=.045;if(KMH.l)mvx=-.045}}
+ if(!isAI){const H=f.side?KMH2:KMH;if(H.blockHold||(H.d&&!H.l&&!H.r)){f.act='block'}else{f.act='idle';if(H.r)mvx=.045*f.face;if(H.l)mvx=-.045*f.face}}
  else{const A=KM.ai,d=f.x-o.x;f.act=f.blockT>0?'block':'idle';if(f.blockT>0)f.blockT--;
   if(o.mv&&o.t===1&&o.act!=='gpunch'&&Math.random()<A.block)f.blockT=o.mv.s+o.mv.a+2;
   if(f.blockT<=0){
@@ -2967,7 +2970,7 @@ function kmStep(f,o,isAI){
 function kmUpdate(){const K_=KM;K_.t++;if(K_.say&&--K_.say.t<=0)K_.say=null;if(K_.fb&&--K_.fb.t<=0)K_.fb=null;
  const seq={stand:['rei1',40,'Shushin ni rei!'],rei1:['turn',70,''],turn:['rei2',30,'Otagai ni rei!'],rei2:['yoi',70,'Yoi'],yoi:['hajime',55,'Shobu hajime!']}; // v16 ceremony: stand facing the referee, bow to the referee, turn, bow to each other, yoi (fudo dachi), Hajime
  if(seq[K_.ph]){if(K_.t>seq[K_.ph][1]){const n=seq[K_.ph];K_.ph=n[0];K_.t=0;if(n[2]){kmSay(n[2],n[0]==='hajime'?60:80);if(n[0]==='hajime'){refCall('Shobu hajime');crowdCheer(-1,.8)}else if(n[0]!=='yoi')beep(520,.08,'triangle')}}return}
- if(K_.ph==='hajime'){if(K_.t>55){K_.ph='fight';K_.t=0;if(!PSQ.on)psPromptReset()}return}
+ if(K_.ph==='hajime'){if(K_.t>55){K_.ph='fight';K_.t=0;if(!PSQ.on&&!K_.two)psPromptReset()}return}
  if(K_.ph==='yame'){K_.ref.x+=(4-K_.ref.x)*.08;if(K_.kiai)K_.kiai.t++;
   for(const f of [K_.ao,K_.aka]){if(f.slide){const S_=f.slide;S_.t++;const k=EZ(Math.min(1,S_.t/26));f.x=LRP(S_.from,S_.to,k);if(S_.t>=26)f.slide=null} // v16: scorer slides back 2-3 steps (yori-ashi) while shouting the kiai
    if((K_.t===16&&f.act!=='down')||K_.t===40){f.act='idle';f.mv=null;f.t=0}
@@ -2978,15 +2981,15 @@ function kmUpdate(){const K_=KM;K_.t++;if(K_.say&&--K_.say.t<=0)K_.say=null;if(K
  psPromptTick();
  if(--K_.time<=0){kmFinish();return}
  if(K_.buf>0){K_.buf--;if(K_.ao.act==='idle'||K_.ao.act==='block'){if(K_.ao.cd>0)K_.ao.cd=0;kmPlayerAttack()}}
- kmStep(K_.aka,K_.ao,true);kmStep(K_.ao,K_.aka,false);
+ kmStep(K_.aka,K_.ao,!K_.two);kmStep(K_.ao,K_.aka,false);
  if(K_.ph!=='fight')return;
  for(const f of [K_.ao,K_.aka])if(f.x<0||f.x>8){kmJogai(f);return}
  K_.ref.x+=((K_.ao.x+K_.aka.x)/2-K_.ref.x)*.02}
-function kmInput(k,down){const K_=KM;if(!K_)return;if(KM_CER.includes(K_.ph)){if(down)kmSkipCeremony();return} /* v16: input locked during the ceremony; any key/tap skips */
- if(k==='a'&&down){if(K_.ph==='result'){if(K_.t<25)return;if(K_.winner===0){if(K_.practice)startKumite(Math.min(GRADES.length-1,K_.lvl+1),true);else kmAward()}else{startKumite(K_.lvl,K_.practice);KM.retry=1}return}kmPlayerAttack();return}
- if(k!=='a')KMH[k]=down?1:0}
+function kmInput(k,down,side){const K_=KM;side=side?1:0;if(!K_)return;if(KM_CER.includes(K_.ph)){if(down)kmSkipCeremony();return} /* v16: input locked during the ceremony; any key/tap skips */
+ if(k==='a'&&down){if(K_.ph==='result'){if(K_.t<25)return;if(K_.two){startKumite(K_.lvl,true,true);return}if(K_.winner===0){if(K_.practice)startKumite(Math.min(GRADES.length-1,K_.lvl+1),true);else kmAward()}else{startKumite(K_.lvl,K_.practice);KM.retry=1}return}kmPlayerAttack(side);return}
+ if(k!=='a')(side?KMH2:KMH)[k]=down?1:0}
 function kmAward(){grade=KM.lvl;bestGrade=grade;ST.best=Math.max(ST.best,grade);if(grade==GRADES.length-1)ST.dan=1;score+=KM.ao.score*150;checkBadges();state='stageclear';msg=msg||{};msg.t=260}
-function kmQuit(){if(KM.practice){state='title';sel=5}else{state='over';checkBadges();setTimeout(askName,600)}}
+function kmQuit(){if(KM.two){state='title';sel=6;return}if(KM.practice){state='title';sel=5}else{state='over';checkBadges();setTimeout(askName,600)}}
 // ---- drawing ----
 // ---- Human kumite rig (v11): FK + 2-bone IK, eased keyframes, modelled on the WKF reference bout (blue fighter) ----
 const EZ=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,LRP=(a,b,k)=>a+(b-a)*k,L2=(p,q,k)=>[LRP(p[0],q[0],k),LRP(p[1],q[1],k)],CL=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -3340,7 +3343,7 @@ function drawBadgePanel(){g.fillStyle='rgba(17,17,17,.55)';g.fillRect(0,0,W,H);c
  BADGES.forEach((b,i)=>{const cw=132,ch=64,bx=px+28+(i%5)*(cw+8),by=py+62+(i/5|0)*(ch+8),on=ST.badges[b[0]];rr(bx,by,cw,ch,10,on?FZ.redTint:FZ.paper);g.strokeStyle=on?FZ.red:FZ.line;g.lineWidth=1;g.stroke();
   g.globalAlpha=on?1:.4;tx(b[1],bx+12,by+30,20,'#000','left');g.globalAlpha=1;tx(fitX(b[2],cw-48,12,600),bx+42,by+27,12,on?FZ.ink:FZ.muted,'left',600);tx(fitX(b[3]||'',cw-48,10),bx+42,by+44,10,FZ.faint,'left')});
  tx('Tap anywhere to close',W/2,py+ph-14,11,FZ.faint,'center')}
-const MENU=[{t:'▶ Career: 20 grades to 1st Dan',s:()=>'Best: '+short(ST.best>0?GRADES[ST.best]:ST.gi?WHITE_P:GRADES[0])},{t:'📅 Daily Challenge',s:()=>TODAY+' · '+TWIST.ico+' '+TWIST.nm},{t:'👑 Black Belt Mastery',s:()=>'Endless, ever harder · Best level '+ST.mastery},{t:'🥋 Dojo Face-off practice',s:()=>'Punch-Out style sparring · beaten: '+(ST.foWins||0)},{t:'🥊 WKF Kumite practice',s:()=>'FIKC.co.uk competition style · AO vs AKA · wins: '+(ST.kmWins||0)},{t:'👥 2-Player Team (same screen)',s:()=>isTouch?'Split touch pads: P2 left (blue), P1 right':'P1: ← → ↑ + L/X kick · P2: A D W + F kick'}];MENU_FIX();
+const MENU=[{t:'▶ Career: 20 grades to 1st Dan',s:()=>'Best: '+short(ST.best>0?GRADES[ST.best]:ST.gi?WHITE_P:GRADES[0])},{t:'📅 Daily Challenge',s:()=>TODAY+' · '+TWIST.ico+' '+TWIST.nm},{t:'👑 Black Belt Mastery',s:()=>'Endless, ever harder · Best level '+ST.mastery},{t:'🥋 Dojo Face-off practice',s:()=>'Punch-Out style sparring · beaten: '+(ST.foWins||0)},{t:'🥊 WKF Kumite practice',s:()=>'FIKC.co.uk competition style · AO vs AKA · wins: '+(ST.kmWins||0)},{t:'👥 2-Player Team (same screen)',s:()=>isTouch?'Split touch pads: P2 left (blue), P1 right':'P1: ← → ↑ + L/X kick · P2: A D W + F kick'}];MENU_FIX();MENU.push({t:'🆚 2-Player Kumite (opposite seats)',s:()=>isTouch?'Tablet flat between you: P1 bottom pad, P2 top pad':'Pads top/bottom · keys P1 arrows+L, P2 WASD+F'});MENU.forEach((m,i)=>Object.assign(m,{x:32,w:440,y:96+i*48,h:42}));
 function drawToasts(){toasts.slice(0,3).forEach((o,i)=>{const y=150+i*70,b=o.b;g.globalAlpha=Math.min(1,o.t/30);rr(W/2-200,y,400,60,16,FZ.white);g.strokeStyle=FZ.red;g.lineWidth=3;g.stroke();rr(W/2-200,y,10,60,[16,0,0,16],FZ.red);txt(b[1],W/2-160,y+42,30,'#fff','center',FZ.clear);txt('Badge unlocked: '+b[2],W/2-130,y+26,18,FZ.ink,'left',FZ.clear);txt(b[3],W/2-130,y+48,13,FZ.muted,'left',FZ.clear);g.globalAlpha=1})}
 function kidDemo(x,y){drawKid(x,y,{anim:frame*.2,on:1,face:1,kick:frame%90<15?12:0,inv:0,belt:0,laces:0,heavy:0,slow:0,stun:0,trip:0})}
 function draw(){
@@ -3352,12 +3355,12 @@ function draw(){
    tx(String(i+1),m.x+16,m.y+27,13,on?'#fff':FZ.faint,'left',600);
    tx(fitX(m.t,m.w-56,15,600),m.x+38,m.y+20,15,on?'#fff':lock?FZ.faint:FZ.ink,'left',600);
    tx(fitX(lock?'🔒 Earn 1st Dan in Career to unlock':m.s(),m.w-56,11),m.x+38,m.y+36,11,on?FZ.redTint:lock?FZ.faint:FZ.muted,'left')});
-  {const bm=['career','daily','mastery','team','career','career'][sel],bl=lbList(lbKey(bm)),bph=62+Math.max(2,bl.length)*25+8,bs=Math.min(.9,198/bph);g.save();g.translate(496+(423-470*bs)/2,100);g.scale(bs,bs);board(0,bm,235);g.restore()}
+  {const bm=['career','daily','mastery','team','career','career','career'][sel],bl=lbList(lbKey(bm)),bph=62+Math.max(2,bl.length)*25+8,bs=Math.min(.9,198/bph);g.save();g.translate(496+(423-470*bs)/2,100);g.scale(bs,bs);board(0,bm,235);g.restore()}
   {const wy=308;rr(496,wy,423,40,10,FZ.white);g.strokeStyle=FZ.line;g.lineWidth=1;g.stroke();tx('This week',512,wy+25,11,FZ.muted,'left',600);tx(fitX(WEEK.ico+' '+WEEK.nm+'  ·  '+WEEKKEY,300,13,500),580,wy+26,13,FZ.ink,'left',500);
    const got=BADGES.filter(b=>ST.badges[b[0]]).length,B=BADGE_BTN;rr(B.x,B.y,B.w,B.h,10,FZ.white);g.strokeStyle=FZ.line;g.stroke();tx('🏅 Badges',B.x+16,B.y+27,13,FZ.ink,'left',600);tx(got+'/'+BADGES.length,B.x+96,B.y+27,13,FZ.red,'left',700);
    BADGES.slice(0,20).forEach((b,i)=>{if(i<12){g.globalAlpha=ST.badges[b[0]]?1:.3;tx(b[1],B.x+142+i*20,B.y+27,12,'#000','left');g.globalAlpha=1}});if(ST.streak)tx('🔥 '+ST.streak,B.x+B.w-40,B.y+27,12,FZ.ink,'right',600);tx('›',B.x+B.w-16,B.y+28,18,FZ.muted,'right',500)}
   tx('←→ / A D run · ↑ W Space jump · X kick · P pause · ↑↓ choose · B badges',W/2,H-27,11,'#a8a29e','center');
-  tx('Press 1–6, Enter or tap a mode',W/2,H-10,13,frame%60<40?'#ffffff':'#fca5a5','center',600);if(badgePanel)drawBadgePanel();drawToasts();return}
+  tx('Press 1–7, Enter or tap a mode',W/2,H-10,13,frame%60<40?'#ffffff':'#fca5a5','center',600);if(badgePanel)drawBadgePanel();drawToasts();return}
  if(state==='kumite'){drawKumite();if(!['fight'].includes(KM.ph))drawToasts();return}
  if(state==='faceoff'){drawFaceoff();if(!['tele','win','gap'].includes(FO.ph))drawToasts();return}
  drawBg();drawWorld();hud();
@@ -3387,15 +3390,16 @@ nick.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')docum
 let last=performance.now(),acc=0;
 const trialEl=document.getElementById('trial'),foPad=document.getElementById('touchFO'),t2El=document.getElementById('touch2');
 const kmPad=document.getElementById('touchKM');document.querySelectorAll('#touchKM .fb').forEach(b=>{const k=b.dataset.k,on=e=>{e.preventDefault();kmInput(k,1)},off=e=>{e.preventDefault();if(k!=='a')kmInput(k,0)};b.addEventListener('touchstart',on,{passive:false});b.addEventListener('touchend',off,{passive:false});b.addEventListener('touchcancel',off);b.addEventListener('mousedown',on);b.addEventListener('mouseup',off);b.addEventListener('mouseleave',off)});
-(function psBindPad(){const root=document.getElementById('touchPS');if(!root)return;
+function psBindPad(id,side){const root=document.getElementById(id);if(!root)return;
  const bind=(b,on,off)=>{['touchstart','mousedown'].forEach(t=>b.addEventListener(t,e=>{e.preventDefault();b.classList.add('on');on()},{passive:false}));['touchend','touchcancel','mouseup','mouseleave'].forEach(t=>b.addEventListener(t,e=>{e.preventDefault();if(!b.classList.contains('on'))return;b.classList.remove('on');off()},{passive:false}))};
- root.querySelectorAll('.ps-dpad .ps-btn').forEach(b=>{const k=b.dataset.k;bind(b,()=>kmInput(k,1),()=>kmInput(k,0))});
- root.querySelectorAll('.ps-face .ps-btn').forEach(b=>{const mv=b.dataset.move;bind(b,()=>{if(!KM)return;if(KM.ph!=='fight'){kmInput('a',1);return}if(mv==='block')KMH.blockHold=1;kmFace(mv)},()=>{if(mv==='block')KMH.blockHold=0})})})();
-const psPad=document.getElementById('touchPS'),psHint=document.getElementById('touchPS-hint');
-function kmReleaseAll(){for(const k in KMH)KMH[k]=0;document.querySelectorAll('#touchPS .ps-btn.on,#touchKM .fb.on').forEach(b=>b.classList.remove('on'))} /* v18: no stuck walking/blocking if the app is switched, a call comes in or the window loses focus mid-hold */
+ root.querySelectorAll('.ps-dpad .ps-btn').forEach(b=>{const k=b.dataset.k;bind(b,()=>kmInput(k,1,side),()=>kmInput(k,0,side))});
+ root.querySelectorAll('.ps-face .ps-btn').forEach(b=>{const mv=b.dataset.move;bind(b,()=>{if(!KM)return;if(KM.ph!=='fight'){kmInput('a',1,side);return}if(mv==='block')(side?KMH2:KMH).blockHold=1;kmFace(mv,side)},()=>{if(mv==='block')(side?KMH2:KMH).blockHold=0})})}
+psBindPad('touchPS',0);psBindPad('touchPS2',1);
+const psPad2=document.getElementById('touchPS2'),psPad=document.getElementById('touchPS'),psHint=document.getElementById('touchPS-hint');
+function kmReleaseAll(){for(const k in KMH)KMH[k]=0;for(const k in KMH2)KMH2[k]=0;document.querySelectorAll('.pspad .ps-btn.on,#touchKM .fb.on').forEach(b=>b.classList.remove('on'))} /* v18: no stuck walking/blocking if the app is switched, a call comes in or the window loses focus mid-hold */
 addEventListener('blur',kmReleaseAll);addEventListener('pagehide',kmReleaseAll);document.addEventListener('visibilitychange',()=>{if(document.hidden)kmReleaseAll()});
 document.querySelectorAll('#touchFO .fb').forEach(b=>{const h=e=>{e.preventDefault();foInput(b.dataset.d)};b.addEventListener('touchstart',h,{passive:false});b.addEventListener('mousedown',h)});
-function loop(t){if(isTouch){const fo=state==='faceoff',km=state==='kumite';foPad.style.display=fo?'flex':'none';kmPad.style.display='none';psPad.style.display=km?'flex':'none';if(!km||!KM||KM.ph!=='fight')psHint.style.display='none';else if(PSQ.seq.length)psHint.style.display='flex';const ti=state==='title';touchEl.style.display=fo||km||TWO||ti?'none':'flex';t2El.style.display=!fo&&!km&&TWO&&!ti?'flex':'none'} /* v14 tidy: no game pads over the menu */trialEl.style.display=(state==='over'||state==='win'||state==='dailydone')&&nb.style.display!=='flex'?'block':'none';acc+=Math.min(100,t-last);last=t;while(acc>=1000/60){update();acc-=1000/60}draw();requestAnimationFrame(loop)}
+function loop(t){if(isTouch){const fo=state==='faceoff',km=state==='kumite';foPad.style.display=fo?'flex':'none';kmPad.style.display='none';psPad.style.display=km?'flex':'none';if(!km||!KM||KM.ph!=='fight')psHint.style.display='none';else if(PSQ.seq.length)psHint.style.display='flex';const ti=state==='title';touchEl.style.display=fo||km||TWO||ti?'none':'flex';t2El.style.display=!fo&&!km&&TWO&&!ti?'flex':'none'} /* v14 tidy: no game pads over the menu */{const two=state==='kumite'&&KM&&KM.two;psPad2.style.display=two?'flex':'none';if(!isTouch)psPad.style.display=two?'flex':'none';if(two)psHint.style.display='none'}trialEl.style.display=(state==='over'||state==='win'||state==='dailydone')&&nb.style.display!=='flex'?'block':'none';acc+=Math.min(100,t-last);last=t;while(acc>=1000/60){update();acc-=1000/60}draw();requestAnimationFrame(loop)}
 addEventListener('keydown',e=>{if(state==='kumite'&&KM&&KM_CER.includes(KM.ph)&&!/INPUT|TEXTAREA/.test(e.target.tagName)&&e.code!=='KeyM'&&e.code!=='Escape'){e.preventDefault();kmSkipCeremony()}},true);cv.addEventListener('pointerdown',()=>{if(state==='kumite'&&KM)kmSkipCeremony()}); // v16: tap or any key skips the ceremony
 const muteBtn=document.getElementById('muteBtn');function muteSync(){muteBtn.textContent=MUTED?'🔇 Muted':'🔊 Sound'}muteSync();muteBtn.addEventListener('click',e=>{e.stopPropagation();MUTED=!MUTED;try{localStorage.setItem('dojoDash.mute',MUTED?'1':'0')}catch(_){}if(MUTED){try{speechSynthesis.cancel()}catch(_){}if(CROWD.au){CROWD.au.m.gain.setTargetAtTime(0,ac.currentTime,.05);CROWD.au.lvl=0}}muteSync()});['pointerdown','touchstart'].forEach(t=>muteBtn.addEventListener(t,e=>e.stopPropagation()));
 setInterval(crowdTick,250);
