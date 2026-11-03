@@ -56,8 +56,6 @@ export default function JoinPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    // Trials are paid (£10) and booked only via /trial-class, never through this form.
-    if (membershipType === 'trial') { window.location.href = '/trial-class'; return }
     setStatus('loading')
     const f = new FormData(e.currentTarget)
     const g = (k: string) => f.get(k) as string
@@ -127,20 +125,8 @@ export default function JoinPage() {
           </div>
           <h1 className="text-5xl font-bold text-[#111111] mb-4">Join Forza Karate Club</h1>
           <p className="text-xl text-gray-500 max-w-2xl">
-            Start with a £10 trial class (trial only — if you join, membership starts the week after at the full monthly rate), or enrol directly. Fill in your details below and we&apos;ll be in touch to confirm your place.
+            Ready to join? Fill in your details below to enrol and we&apos;ll be in touch to confirm your place, class and start date.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button asChild size="lg">
-              <Link href="/trial-class">
-                Book Your £10 Trial
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href="/join/membership">Had your trial? Become a member</Link>
-            </Button>
-            <span className="text-sm text-gray-500">Come and try it out first, then ask us anything.</span>
-          </div>
         </div>
       </section>
 
@@ -193,14 +179,6 @@ export default function JoinPage() {
               {/* ── Membership type ── */}
               <div>
                 <p className={label}>Membership type {req}</p>
-                <Link href="/trial-class"
-                  className="flex items-center justify-between gap-3 p-3.5 mb-3 rounded-xl border border-dashed border-[#dc2626]/40 hover:border-[#dc2626] hover:bg-red-50 transition-all">
-                  <span className="flex flex-col gap-0.5">
-                    <span className="text-sm font-semibold text-[#111111]">Not sure yet? Book a £10 trial class</span>
-                    <span className="text-xs text-gray-400">Book and pay on the trial page. The £10 covers the trial only.</span>
-                  </span>
-                  <ArrowRight className="h-4 w-4 text-[#dc2626] shrink-0" />
-                </Link>
                 <div className="grid grid-cols-2 gap-3">
                   {[
                     { value: 'single',     label: 'Single — £50/mo',        sub: '1 student · 12 monthly payments' },
