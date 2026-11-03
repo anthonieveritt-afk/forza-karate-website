@@ -50,6 +50,7 @@ export default function PrivacyPolicyPage() {
               <ul className="list-disc pl-5 space-y-1">
                 <li>Manage your membership and class bookings</li>
                 <li>Process membership payments (card payment when joining, then monthly Direct Debit)</li>
+                <li>Find your trial class booking when you join: we match the email address and mobile number you enter against our class records and email a one-time 6-digit code to that address. The code is stored only in scrambled form and expires after 10 minutes; the student names, dates of birth and trial date then come from our records</li>
                 <li>Communicate about classes, gradings, and club events</li>
                 <li>Maintain safety records (DBS, first aid, safeguarding)</li>
                 <li>Comply with legal obligations</li>
