@@ -29,9 +29,26 @@ export function LicenceSlipPreview({
         >
           {isPass ? 'Open pass' : 'Download'}
         </a>
+        {isPass && (
+          <a
+            href={`/members/licence-slip/${slipId}/image?download=1`}
+            className="inline-flex items-center rounded-lg border border-[#111111]/15 bg-white px-3 py-1.5 text-sm font-semibold text-[#111111] hover:bg-gray-50"
+            download={`sporting-licence-${slipId}.png`}
+          >
+            Download image
+          </a>
+        )}
       </div>
       {isPass ? (
-        <p className="text-xs text-gray-500">Wallet pass only (no PDF). Open on iPhone to add to Apple Wallet.</p>
+        <div className="space-y-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`/members/licence-slip/${slipId}/image`}
+            alt={title}
+            className="mx-auto w-full max-w-xs rounded-xl border border-black/10"
+          />
+          <p className="text-xs text-gray-500">Open pass adds it to Apple Wallet on iPhone. Download image saves a picture you can show on any phone.</p>
+        </div>
       ) : (
       <div className="overflow-hidden rounded-xl border border-black/10 bg-gray-50">
         <FitDocumentPreview title={title} src={`/members/licence-slip/${slipId}`} />
