@@ -49,22 +49,7 @@ export default async function MembersPortalPage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9]">
-      <MembersArea
-        asideExtra={
-          slip && (slip.slipId > 0 || slip.sporting) ? (
-            <>
-              {slip.slipId > 0 && <LicenceSlipPreview slipId={slip.slipId} slipFileName={slip.fileName} />}
-              {slip.sporting && (
-                <LicenceSlipPreview
-                  slipId={slip.sporting.slipId}
-                  slipFileName={slip.sporting.fileName}
-                  title="Sporting licence (Sport:80)"
-                />
-              )}
-            </>
-          ) : null
-        }
-      >
+      <MembersArea>
         <div className="space-y-8">
 
           {/* Profile card */}
@@ -105,6 +90,20 @@ export default async function MembersPortalPage() {
             licenceStartDate={profile.licenceStartDate}
             licenceExpiryDate={profile.licenceExpiryDate}
           />
+
+          {/* Licence slips (in main flow so the mobile menu doesn't cover them) */}
+          {slip && (slip.slipId > 0 || slip.sporting) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {slip.slipId > 0 && <LicenceSlipPreview slipId={slip.slipId} slipFileName={slip.fileName} />}
+              {slip.sporting && (
+                <LicenceSlipPreview
+                  slipId={slip.sporting.slipId}
+                  slipFileName={slip.sporting.fileName}
+                  title="Sporting licence (Sport:80)"
+                />
+              )}
+            </div>
+          )}
 
           {/* Belt journey */}
           <div className="bg-white rounded-2xl border border-black/8 p-8 shadow-sm">
