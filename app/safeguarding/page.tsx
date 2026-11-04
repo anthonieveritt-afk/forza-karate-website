@@ -10,8 +10,8 @@ export const metadata: Metadata = pageMeta({
 })
 
 const documents = [
-  { label: 'FKC Safeguarding Policy – Children (2023)', href: '/safeguarding/children-policy.pdf' },
-  { label: 'FKC Safeguarding Policy – Adults (2023)', href: '/safeguarding/adults-policy.pdf' },
+  { label: 'FKC Safeguarding Policy – Children (2026)', href: '/safeguarding/children-policy.pdf' },
+  { label: 'FKC Safeguarding Policy – Adults (2026)', href: '/safeguarding/adults-policy.pdf' },
   { label: 'FKC Safeguarding Statement', href: '/safeguarding/statement.pdf' },
   { label: 'FKC Safe Practice Policy', href: '/safeguarding/safe-practice-policy.pdf' },
   { label: 'FKC Safeguarding Flowchart – Children', href: '/safeguarding/children-flowchart.png' },
