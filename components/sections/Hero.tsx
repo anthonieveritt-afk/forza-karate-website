@@ -44,6 +44,7 @@ const photos = [
   { src: '/hero36.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
   { src: '/hero37.jpg',                     alt: 'Forza Karate kata competition',      position: '50% 30%' },
   { src: '/hero38.jpg',                     alt: 'Forza Karate Club group',            position: '50% 30%' },
+  { src: '/hero39.jpg',                     alt: 'Forza Karate Club competitors with medals', position: '50% 30%' },
 ]
 
 type Slide =
