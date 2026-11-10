@@ -10,52 +10,33 @@ import AnimatedWord from '@/components/ui/AnimatedWord'
 // Stacked layout (photo first, copy below) on all screens. No zoom: photos shown whole.
 const HERO_ZOOM = 1.0
 
+// Homepage carousel trimmed 10 Nov 2026 to the live-site positions Anthoni asked to keep.
+// Live order was 35 slides (photos + two inserted ads). Kept display positions:
+// 1, 2, 3, 4 (Book a Trial ad), 5, 7, 8, 18, 19, 22, 23 and 35 (last).
+// Image files for removed slides are left in public/; only this list changed.
 const photos = [
-  { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 30%' },
-  { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 30%' },
-  { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 35%' },
-  { src: '/hero5.jpg',                      alt: 'Forza Karate Club competition victory', position: '50% 30%' },
-  { src: '/hero6.webp',                     alt: 'Forza Karate Club',                  position: '50% 30%' },
-  { src: '/hero7.jpg',                      alt: 'Forza Karate Club',                  position: '50% 30%' },
-  { src: '/hero18.jpg',                     alt: 'Forza Karate Club young student',    position: '50% 30%' },
-  { src: '/hero9.jpg',                      alt: 'Forza Karate Club',                  position: '50% 30%' },
-  { src: '/hero12.jpg',                     alt: 'Forza Karate Club',                  position: '50% 30%' },
-  { src: '/hero14.jpg',                     alt: 'Forza Karate Club',                  position: '50% 30%' },
-  { src: '/team/team-01.jpg',               alt: 'Forza Karate squad',                 position: '50% 30%' },
-  { src: '/team/team-02.jpg',               alt: 'Forza Karate squad',                 position: '50% 30%' },
-  { src: '/team/team-03.jpg',               alt: 'Forza Karate squad',                 position: '50% 30%' },
-  { src: '/team/team-04.jpg',               alt: 'Forza Karate squad',                 position: '50% 30%' },
-  { src: '/team/team-05.jpg',               alt: 'Forza Karate squad',                 position: '50% 30%' },
-  { src: '/team/team-group.jpg',            alt: 'Forza Karate squad group',           position: '50% 30%' },
-  { src: '/team/team-competition-01.jpg',   alt: 'Forza Karate competition',           position: '50% 30%' },
-  { src: '/hero16.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
-  { src: '/hero19.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
-  { src: '/hero20.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
-  { src: '/hero21.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
-  { src: '/hero27.jpg',                     alt: 'Forza Karate class training',        position: '50% 35%' },
-  { src: '/hero28.jpg',                     alt: 'Forza Karate class',                 position: '50% 35%' },
-  { src: '/hero29.jpg',                     alt: 'Forza Karate class group',           position: '50% 30%' },
-  { src: '/hero30.jpg',                     alt: 'BKF Four Nations medals',            position: '50% 30%' },
-  { src: '/hero31.jpg',                     alt: 'Forza Karate competition action',    position: '50% 30%' },
-  { src: '/hero32.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
-  { src: '/hero33.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
-  { src: '/hero34.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
-  { src: '/hero35.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
-  { src: '/hero36.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' },
-  { src: '/hero37.jpg',                     alt: 'Forza Karate kata competition',      position: '50% 30%' },
-  { src: '/hero38.jpg',                     alt: 'Forza Karate Club group',            position: '50% 30%' },
+  { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 30%' }, // live 1
+  { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 30%' }, // live 2
+  { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 35%' }, // live 3
+  { src: '/hero5.jpg',                      alt: 'Forza Karate Club competition victory', position: '50% 30%' }, // live 5
+  { src: '/hero7.jpg',                      alt: 'Forza Karate Club',                  position: '50% 30%' }, // live 7
+  { src: '/hero18.jpg',                     alt: 'Forza Karate Club young student',    position: '50% 30%' }, // live 8
+  { src: '/team/team-group.jpg',            alt: 'Forza Karate squad group',           position: '50% 30%' }, // live 18
+  { src: '/team/team-competition-01.jpg',   alt: 'Forza Karate competition',           position: '50% 30%' }, // live 19
+  { src: '/hero20.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' }, // live 22
+  { src: '/hero21.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' }, // live 23
+  { src: '/hero38.jpg',                     alt: 'Forza Karate Club group',            position: '50% 30%' }, // live 35 (last)
 ]
 
 type Slide =
   | { kind: 'photo'; key: string; src: string; alt: string }
   | { kind: 'ad'; key: string; href: string; eyebrow: string; title: string; sub: string; cta: string; img: string }
 
-const adTrial: Slide = { kind: 'ad', key: 'ad-trial', href: '/trial-class', eyebrow: 'Forza Karate Club', title: 'Beginners welcome — click here for a trial', sub: 'New to karate? All ages, no experience needed.', cta: 'Book a Trial', img: '/hero-ad-trial.webp' }
-const adJoin: Slide = { kind: 'ad', key: 'ad-join', href: '/join', eyebrow: 'Rayleigh · Upminster', title: 'Enrol / Join now', sub: 'Ready to train with us? Start your membership today.', cta: 'Join Now', img: '/hero-ad-join.webp' }
+const adTrial: Slide = { kind: 'ad', key: 'ad-trial', href: '/trial-class', eyebrow: 'Forza Karate Club', title: 'Beginners welcome — click here for a trial', sub: 'New to karate? All ages, no experience needed.', cta: 'Book a Trial', img: '/hero-ad-trial.webp' } // live 4
 
 const photoSlides: Slide[] = photos.map((p) => ({ kind: 'photo', key: p.src, src: p.src, alt: p.alt }))
-// Order: 3 photos → trial ad → 4 photos → join ad → remaining photos → loop
-const slides: Slide[] = [...photoSlides.slice(0, 3), adTrial, ...photoSlides.slice(3, 7), adJoin, ...photoSlides.slice(7)]
+// Display order matches kept live positions: 1–3, trial ad (4), then 5, 7, 8, 18, 19, 22, 23, 35.
+const slides: Slide[] = [...photoSlides.slice(0, 3), adTrial, ...photoSlides.slice(3)]
 
 export default function Hero() {
   const [current, setCurrent] = useState(0)
