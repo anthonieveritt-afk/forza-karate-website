@@ -35,4 +35,13 @@ describe('Commonwealth Elite 2026 Male U21 −60kg news post', () => {
     expect(raw.imageAlt.toLowerCase()).not.toContain('kobe')
     expect(raw.imageAlt.toLowerCase()).not.toContain('ethan')
   })
+
+  it('maps the story to Commonwealth Elite gallery album 16 and links to production gallery', () => {
+    const map = JSON.parse(readFileSync('content/news-gallery-map.json', 'utf8'))
+    expect(map.posts['commonwealth-elite-2026-male-u21-60kg-results']).toEqual([16])
+    const page = readFileSync('app/news/[slug]/page.tsx', 'utf8')
+    expect(page).toContain('https://forzakarate.co.uk/gallery')
+    expect(page).not.toContain('vercel.app')
+    expect(page).not.toMatch(/href=\{\`\/gallery\?album=/)
+  })
 })
