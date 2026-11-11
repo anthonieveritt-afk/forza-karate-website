@@ -5,10 +5,14 @@ import { getPost } from '@/lib/news'
 describe('Commonwealth Elite 2026 Male U21 −60kg news post', () => {
   const slug = 'commonwealth-elite-2026-male-u21-60kg-results'
 
-  it('is published as the latest news post with podium image', () => {
+  it('is published as the latest news post with podium image and Anthoni\'s congratulations', () => {
     const post = getPost(slug)
     expect(post).toBeTruthy()
     expect(post!.title).toMatch(/Commonwealth Elite 2026/i)
+    expect(post!.title).toMatch(/Kobe Yogarajah/i)
+    expect(post!.body).toContain('Congratulations to Kobe Yogarajah')
+    expect(post!.body).toContain('England Karate Team')
+    expect(post!.body).toContain('Male U21 −60kg')
     expect(post!.image).toBe('/news/commonwealth-elite-2026-male-u21-60kg-podium.webp')
     expect(existsSync('public/news/commonwealth-elite-2026-male-u21-60kg-podium.webp')).toBe(true)
   })
