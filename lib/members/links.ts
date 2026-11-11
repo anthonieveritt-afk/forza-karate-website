@@ -13,6 +13,7 @@ export type MembersLink = {
 
 export const membersCoreLinks: MembersLink[] = [
   { href: '/members', label: '🔐 Members Login', sidebar: { href: '/members/portal', label: 'My portal' } },
+  { href: '/calendar', label: 'Calendar' },
   { href: '/members/grading', label: 'Register to Grade' },
   // Syllabus hidden for now (Anthoni, Oct 2026) — re-add: { href: '/members/syllabus', label: 'Syllabus' },
   { href: '/members/licence', label: 'Renew your licence' },

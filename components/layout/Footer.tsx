@@ -69,7 +69,6 @@ export default function Footer() {
               <li><Link href="/classes/juniors" className="hover:text-white transition-colors">Forza Juniors</Link></li>
               <li><Link href="/classes/seniors" className="hover:text-white transition-colors">Forza Club</Link></li>
               <li><Link href="/gradings" className="hover:text-white transition-colors">Gradings</Link></li>
-              <li><Link href="/calendar" className="hover:text-white transition-colors">Calendar</Link></li>
             </ul>
           </div>
 
