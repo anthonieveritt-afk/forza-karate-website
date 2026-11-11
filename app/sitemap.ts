@@ -14,6 +14,7 @@ const routes = [
   '/karate-rayleigh',
   '/karate-upminster',
   '/gradings',
+  '/syllabus/stances',
   '/team',
   '/gallery',
   '/shop',
