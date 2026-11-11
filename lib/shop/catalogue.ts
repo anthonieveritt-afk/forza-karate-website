@@ -2,7 +2,8 @@
 //
 // The shop page imports this to show products, and app/api/checkout/route.ts
 // imports it to price the order on the server. The browser only ever sends a
-// product key, a size and a quantity; it never decides the price.
+// product key, a size, a colour when the product requires one, and a quantity;
+// it never decides the price.
 
 // ─── PRICES ── edit here to update shop prices ──────────────────────────────
 export const PRICES: Record<string, number> = {
@@ -47,11 +48,18 @@ export const SIZE_PRICES: Record<string, Record<string, number>> = {
 /** Shop category for the WKF approved competition suits. */
 export const WKF_CATEGORY = 'WKF Competition Suits'
 
+/** Required Red/Blue choice on pad products (hand pads and both shin/instep pads). */
+export const PAD_COLOURS = ['Red', 'Blue'] as const
+export type PadColour = (typeof PAD_COLOURS)[number]
+
 export type Product = {
   key: string
   name: string
   category: string
+  /** Fixed colour label when the customer does not choose a colour. */
   colour?: string
+  /** When set, the customer must pick one of these colours before adding to the cart. */
+  colours?: readonly string[]
   sizes: string[]
   img: string
   badge?: string
@@ -64,7 +72,7 @@ export const products: Product[] = [
     key: 'smai-shin-red',
     name: 'SMAI WKF Shin & Instep Guards',
     category: 'Equipment',
-    colour: 'Red',
+    colours: PAD_COLOURS,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     img: '/shop/smai-shin-red.jpg',
     badge: 'WKF Approved',
@@ -89,7 +97,7 @@ export const products: Product[] = [
     key: 'smai-mitts',
     name: 'SMAI WKF Kumite Mitts',
     category: 'Equipment',
-    colour: 'Red & Blue pair',
+    colours: PAD_COLOURS,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     img: '/shop/smai-mitts.jpg',
     badge: 'WKF Approved',
@@ -105,7 +113,7 @@ export const products: Product[] = [
     key: 'blitz-shin-blue',
     name: 'Blitz Shin & Instep Guards',
     category: 'Equipment',
-    colour: 'Blue',
+    colours: PAD_COLOURS,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     img: '/shop/blitz-shin-blue.jpg',
   },
@@ -307,4 +315,23 @@ export function orderName(product: Product): string {
 
 export function getProduct(productKey: string): Product | undefined {
   return products.find(p => p.key === productKey)
+}
+
+/** True when the customer must choose a colour for this catalogue product. */
+export function requiresColour(productKey: string): boolean {
+  return Boolean(getProduct(productKey)?.colours?.length)
+}
+
+/** Accepted colour for a product, or null if it is missing or not allowed. */
+export function getChosenColour(productKey: string, colour: string | undefined): string | null {
+  const product = getProduct(productKey)
+  if (!product?.colours?.length) return null
+  if (!colour || !product.colours.includes(colour)) return null
+  return colour
+}
+
+/** Name shown in the basket, on Stripe line items and on receipts. */
+export function lineDescription(product: Product, size: string, colour?: string): string {
+  const base = `${orderName(product)} — ${size}`
+  return colour ? `${base} — ${colour}` : base
 }

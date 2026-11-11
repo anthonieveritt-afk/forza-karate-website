@@ -33,6 +33,7 @@ export default function CartDrawer({ open, onClose }: Props) {
           items: items.map(i => ({
             productKey: i.productKey ?? productKeyFromId(i.id, i.size),
             size: i.size,
+            ...(i.colour ? { colour: i.colour } : {}),
             quantity: i.quantity,
           })),
         }),
@@ -90,7 +91,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-[#111111] leading-tight">{item.name}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{item.size}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{item.colour ? `${item.size} · ${item.colour}` : item.size}</p>
                     <div className="flex items-center justify-between mt-2">
                       <div className="flex items-center gap-2">
                         <button

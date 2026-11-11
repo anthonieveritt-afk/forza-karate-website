@@ -16,6 +16,7 @@ function priceLabel(pence: number) {
 export default function ShopPage() {
   const [active, setActive] = useState('All')
   const [selected, setSelected] = useState<Record<string, string>>({})
+  const [selectedColour, setSelectedColour] = useState<Record<string, string>>({})
   const [added, setAdded] = useState<Record<string, boolean>>({})
   const [cartOpen, setCartOpen] = useState(false)
   const { addItem, count } = useCart()
@@ -29,14 +30,17 @@ export default function ShopPage() {
 
   const handleAdd = (product: Product) => {
     const size = selected[product.key]
+    const colour = product.colours?.length ? selectedColour[product.key] : undefined
     if (!size || product.priceOnRequest) return
+    if (product.colours?.length && !colour) return
     const price = getEffectivePrice(product.key, size)
     if (price == null) return
     addItem({
-      id: `${product.key}-${size}`,
+      id: colour ? `${product.key}-${size}-${colour}` : `${product.key}-${size}`,
       productKey: product.key,
       name: orderName(product),
       size,
+      ...(colour ? { colour } : {}),
       price,
       priceLabel: priceLabel(price),
       img: product.img,
@@ -110,7 +114,19 @@ export default function ShopPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {filtered.map(product => {
               const size = selected[product.key]
+              const colour = selectedColour[product.key]
+              const needsColour = Boolean(product.colours?.length)
+              const canAdd = Boolean(size) && (!needsColour || Boolean(colour))
               const isAdded = added[product.key]
+              const addLabel = product.priceOnRequest
+                ? 'Contact us'
+                : isAdded
+                ? '✓ Added'
+                : !size
+                ? 'Pick size'
+                : needsColour && !colour
+                ? 'Pick colour'
+                : 'Add to Cart'
               return (
                 <div
                   key={product.key}
@@ -139,15 +155,38 @@ export default function ShopPage() {
                   {/* Info */}
                   <div className="p-3 flex flex-col flex-1">
                     <p className="text-sm font-semibold text-[#111111] leading-tight mb-1">{product.name}</p>
-                    {'colour' in product && product.colour && (
+                    {!needsColour && 'colour' in product && product.colour && (
                       <p className="text-xs text-gray-400 mb-1">{product.colour}</p>
                     )}
                     {product.desc && (
                       <p className="text-xs text-gray-400 leading-relaxed mb-1">{product.desc}</p>
                     )}
 
+                    {/* Colour picker (required on pad products) */}
+                    {needsColour && (
+                      <div className="my-2">
+                        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1">Colour</p>
+                        <div className="flex flex-wrap gap-1">
+                          {product.colours!.map(c => (
+                            <button
+                              key={c}
+                              type="button"
+                              onClick={() => setSelectedColour(prev => ({ ...prev, [product.key]: c }))}
+                              className={`text-[10px] font-medium px-2 py-0.5 rounded-full border transition-colors ${
+                                colour === c
+                                  ? 'bg-[#111111] text-white border-[#111111]'
+                                  : 'bg-white text-gray-600 border-black/12 hover:border-black/30'
+                              }`}
+                            >
+                              {c}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Size picker */}
-                    <div className="flex flex-wrap gap-1 my-2">
+                    <div className={`flex flex-wrap gap-1 ${needsColour ? 'mb-2' : 'my-2'}`}>
                       {product.sizes.map(s => (
                         <button
                           key={s}
@@ -183,18 +222,18 @@ export default function ShopPage() {
                       )}
                       <button
                         onClick={() => handleAdd(product)}
-                        disabled={!size || !!product.priceOnRequest}
+                        disabled={!canAdd || !!product.priceOnRequest}
                         className={`whitespace-nowrap text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
                           product.priceOnRequest
                             ? 'bg-black/5 text-gray-400 cursor-not-allowed'
                             : isAdded
                             ? 'bg-green-500 text-white'
-                            : size
+                            : canAdd
                             ? 'bg-[#dc2626] hover:bg-[#b91c1c] text-white'
                             : 'bg-black/5 text-gray-400 cursor-not-allowed'
                         }`}
                       >
-                        {product.priceOnRequest ? 'Contact us' : isAdded ? '✓ Added' : size ? 'Add to Cart' : 'Pick size'}
+                        {addLabel}
                       </button>
                     </div>
                   </div>

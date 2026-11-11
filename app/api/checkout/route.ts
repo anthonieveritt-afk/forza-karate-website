@@ -1,51 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { getProduct, getUnitPrice, orderName } from '@/lib/shop/catalogue'
+import { getProduct, getUnitPrice } from '@/lib/shop/catalogue'
+import { parseItems, sessionItemsSummary, stripeProductMetadata, stripeProductName } from '@/lib/shop/checkout'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://forza-karate-website.vercel.app'
 
-// Limits on what one checkout can contain.
-const MAX_LINES = 20
-const MAX_QTY_PER_LINE = 10
-
 type LineItem = NonNullable<Stripe.Checkout.SessionCreateParams['line_items']>[number]
-type RequestedItem = { productKey: string; size: string; quantity: number }
 
 function badRequest(error: string) {
   return NextResponse.json({ error }, { status: 400 })
-}
-
-/**
- * Checks the basket sent by the browser. It may only contain a product key,
- * a size and a quantity; any price it sends is ignored. Returns an error
- * message, or the cleaned items with duplicate lines merged.
- */
-function parseItems(body: unknown): { error: string } | { items: RequestedItem[] } {
-  const raw = (body as { items?: unknown } | null)?.items
-  if (!Array.isArray(raw) || raw.length === 0) return { error: 'Your basket is empty.' }
-  if (raw.length > MAX_LINES) return { error: `Please order no more than ${MAX_LINES} different items at once.` }
-
-  const merged = new Map<string, RequestedItem>()
-  for (const entry of raw) {
-    const { productKey, size, quantity } = (entry ?? {}) as Record<string, unknown>
-    if (typeof productKey !== 'string' || typeof size !== 'string') {
-      return { error: 'Your basket contains an item we don’t recognise. Please clear it and try again.' }
-    }
-    if (typeof quantity !== 'number' || !Number.isInteger(quantity) || quantity < 1) {
-      return { error: 'Please check the quantities in your basket.' }
-    }
-    if (getUnitPrice(productKey, size) == null) {
-      return { error: 'Your basket contains an item that is no longer available. Please clear it and try again.' }
-    }
-    const id = `${productKey}|${size}`
-    const existing = merged.get(id)
-    const total = (existing?.quantity ?? 0) + quantity
-    if (total > MAX_QTY_PER_LINE) {
-      return { error: `Please order no more than ${MAX_QTY_PER_LINE} of any one item.` }
-    }
-    merged.set(id, { productKey, size, quantity: total })
-  }
-  return { items: [...merged.values()] }
 }
 
 export async function POST(req: NextRequest) {
@@ -67,9 +30,9 @@ export async function POST(req: NextRequest) {
       price_data: {
         currency: 'gbp',
         product_data: {
-          name: `${orderName(product)} — ${item.size}`,
+          name: stripeProductName(item),
           images: [new URL(product.img, SITE_URL).toString()],
-          metadata: { productKey: item.productKey, size: item.size },
+          metadata: stripeProductMetadata(item),
         },
         unit_amount: unitAmount,
       },
@@ -87,6 +50,7 @@ export async function POST(req: NextRequest) {
       cancel_url: `${SITE_URL}/shop`,
       metadata: {
         source: 'forza-karate-website',
+        items: sessionItemsSummary(parsed.items),
       },
     })
 

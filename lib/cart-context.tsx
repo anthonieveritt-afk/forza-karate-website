@@ -1,13 +1,14 @@
 'use client'
 
-import { REMOVED_PRODUCT_KEYS } from '@/lib/shop/catalogue'
+import { REMOVED_PRODUCT_KEYS, requiresColour } from '@/lib/shop/catalogue'
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 
 export interface CartItem {
-  id: string          // e.g. "smai-shin-red-M"
+  id: string          // e.g. "smai-shin-red-M-Red"
   productKey?: string // catalogue key, e.g. "smai-shin-red" (missing on baskets saved before this field existed)
   name: string
   size: string
+  colour?: string     // required on pad products (Red or Blue)
   price: number       // pence, for display only: checkout re-prices on the server
   priceLabel: string  // e.g. "£65.00"
   img: string
@@ -35,8 +36,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const saved = localStorage.getItem('forza_cart')
       if (saved) {
         const parsed: CartItem[] = JSON.parse(saved)
-        // Drop products no longer sold (e.g. the old £35 and WKF gis)
-        setItems(Array.isArray(parsed) ? parsed.filter(i => !REMOVED_PRODUCT_KEYS.some(k => i.productKey === k || (!i.productKey && i.id?.startsWith(k + '-')))) : [])
+        // Drop products no longer sold, and pad lines that pre-date the colour choice
+        setItems(Array.isArray(parsed) ? parsed.filter(i => {
+          if (REMOVED_PRODUCT_KEYS.some(k => i.productKey === k || (!i.productKey && i.id?.startsWith(k + '-')))) return false
+          const key = i.productKey
+          if (key && requiresColour(key) && !i.colour) return false
+          return true
+        }) : [])
       }
     } catch {}
   }, [])
