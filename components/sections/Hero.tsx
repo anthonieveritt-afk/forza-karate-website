@@ -15,26 +15,33 @@ const HERO_ZOOM = 1.0
 // 1, 2, 3, 4 (Book a Trial ad), 5, 7, 8, 18, 19, 22, 23 and 35 (last).
 // Image files for removed slides are left in public/; only this list changed.
 const photos = [
-  { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 30%' }, // live 1
-  { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 30%' }, // live 2
-  { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 35%' }, // live 3
-  { src: '/hero5.jpg',                      alt: 'Forza Karate Club competition victory', position: '50% 30%' }, // live 5
-  { src: '/hero7.jpg',                      alt: 'Forza Karate Club',                  position: '50% 30%' }, // live 7
-  { src: '/hero18.jpg',                     alt: 'Forza Karate Club young student',    position: '50% 30%' }, // live 8
-  { src: '/team/team-group.jpg',            alt: 'Forza Karate squad group',           position: '50% 30%' }, // live 18
-  { src: '/team/team-competition-01.jpg',   alt: 'Forza Karate competition',           position: '50% 30%' }, // live 19
-  { src: '/hero20.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' }, // live 22
-  { src: '/hero21.jpg',                     alt: 'Forza Karate',                       position: '50% 30%' }, // live 23
-  { src: '/hero38.jpg',                     alt: 'Forza Karate Club group',            position: '50% 30%' }, // live 35 (last)
+  { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 40%' }, // live 1
+  { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 40%' }, // live 2
+  { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 40%' }, // live 3
+  { src: '/hero5.jpg',                      alt: 'Forza Karate Club competition victory', position: '50% 40%' }, // live 5
+  { src: '/hero7.jpg',                      alt: 'Forza Karate Club',                  position: '50% 40%' }, // live 7
+  { src: '/hero18.jpg',                     alt: 'Forza Karate Club young student',    position: '50% 40%' }, // live 8
+  { src: '/team/team-group.jpg',            alt: 'Forza Karate squad group',           position: '50% 40%' }, // live 18
+  { src: '/team/team-competition-01.jpg',   alt: 'Forza Karate competition',           position: '50% 40%' }, // live 19
+  { src: '/hero20.jpg',                     alt: 'Forza Karate',                       position: '50% 40%' }, // live 22
+  { src: '/hero21.jpg',                     alt: 'Forza Karate',                       position: '50% 40%' }, // live 23
+  { src: '/hero38.jpg',                     alt: 'Forza Karate Club group',            position: '50% 40%' }, // live 35 (last)
+  // Commonwealth Elite Karate Championships 2026 (Glasgow) — appended 12 Nov 2026. Existing slides unchanged.
+  { src: '/hero-commonwealth-2026-team.webp',       alt: 'Forza Karate Club team at the Commonwealth Elite Karate Championships 2026 in Glasgow', position: '50% 72%' },
+  { src: '/hero-commonwealth-2026-kobe-kick.webp',  alt: 'Kobe Yogarajah competing for Forza Karate at the Commonwealth Elite Karate Championships 2026 in Glasgow', position: '50% 45%' },
+  { src: '/hero-commonwealth-2026-medallists.webp', alt: 'Forza Karate Club medallists at the Commonwealth Elite Karate Championships 2026 in Glasgow', position: '50% 70%' },
+  { src: '/hero-commonwealth-2026-coaches.webp',    alt: 'Forza Karate Club coaches and officials at the Commonwealth Elite Karate Championships 2026 in Glasgow', position: '50% 42%' },
+  // 0-unseen.heic is a club dojo class photo (juniors with belts), not a Glasgow/Commonwealth image.
+  { src: '/hero-club-juniors-belts.webp',           alt: 'Forza Karate Club junior students celebrating with belts in the dojo', position: '50% 48%' },
 ]
 
 type Slide =
-  | { kind: 'photo'; key: string; src: string; alt: string }
+  | { kind: 'photo'; key: string; src: string; alt: string; position: string }
   | { kind: 'ad'; key: string; href: string; eyebrow: string; title: string; sub: string; cta: string; img: string }
 
 const adTrial: Slide = { kind: 'ad', key: 'ad-trial', href: '/trial-class', eyebrow: 'Forza Karate Club', title: 'Beginners welcome — click here for a trial', sub: 'New to karate? All ages, no experience needed.', cta: 'Book a Trial', img: '/hero-ad-trial.webp' } // live 4
 
-const photoSlides: Slide[] = photos.map((p) => ({ kind: 'photo', key: p.src, src: p.src, alt: p.alt }))
+const photoSlides: Slide[] = photos.map((p) => ({ kind: 'photo', key: p.src, src: p.src, alt: p.alt, position: p.position }))
 // Display order matches kept live positions: 1–3, trial ad (4), then 5, 7, 8, 18, 19, 22, 23, 35.
 const slides: Slide[] = [...photoSlides.slice(0, 3), adTrial, ...photoSlides.slice(3)]
 
@@ -64,7 +71,7 @@ export default function Hero() {
                 aria-hidden={i !== current}
                 style={{
                   position: 'absolute', inset: 0, width: '100%', height: '100%',
-                  objectFit: 'cover', objectPosition: '50% 40%',
+                  objectFit: 'cover', objectPosition: slide.position || '50% 40%',
                   transform: `scale(${HERO_ZOOM})`,
                   opacity: i === current ? 1 : 0,
                   zIndex: i === current ? 2 : 1,
