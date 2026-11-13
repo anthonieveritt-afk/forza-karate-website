@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CheckCircle, ArrowRight, ShoppingBag, CreditCard, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
-import { submitEnrolment } from '@/app/actions/enrolment'
+import { getEnrolmentToken, submitEnrolment } from '@/app/actions/enrolment'
+import { HONEYPOT_FIELD } from '@/lib/enrolment-guard'
 import { saveJoinPrefill } from '@/lib/joinPrefill'
 
 const rayleighClasses = [
@@ -49,6 +50,13 @@ export default function JoinPage() {
   const [membershipType, setMembershipType] = useState('single')
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [enrolMemberId, setEnrolMemberId] = useState<number | null>(null)
+  const [enrolmentToken, setEnrolmentToken] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+    getEnrolmentToken().then((tok) => { if (!cancelled) setEnrolmentToken(tok) }).catch(() => {})
+    return () => { cancelled = true }
+  }, [])
 
   const classes = dojo === 'rayleigh' ? rayleighClasses : dojo === 'upminster' ? upminsterClasses : []
 
@@ -87,6 +95,8 @@ export default function JoinPage() {
         membershipType: g('membershipType'),
         heardAboutUs: g('heardAboutUs') || undefined,
         discountCode: g('discountCode') || undefined,
+        enrolmentToken: g('enrolmentToken') || enrolmentToken,
+        companyUrl: g(HONEYPOT_FIELD) || '',
       })
       // Carry everything already answered to /join/membership so dojo, class, DOB etc. are not asked again.
       saveJoinPrefill({
@@ -169,6 +179,11 @@ export default function JoinPage() {
 
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
+              <input type="hidden" name="enrolmentToken" value={enrolmentToken} />
+              <div aria-hidden="true" className="absolute -left-[10000px] h-0 w-0 overflow-hidden" tabIndex={-1}>
+                <label htmlFor={HONEYPOT_FIELD}>Company website</label>
+                <input id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
+              </div>
 
               {status === 'error' && (
                 <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm text-center">

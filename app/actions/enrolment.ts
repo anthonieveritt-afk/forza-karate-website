@@ -1,5 +1,7 @@
 'use server'
 
+import { enrolmentGuardDecision, enrolmentSecret, issueEnrolmentToken } from '@/lib/enrolment-guard'
+
 export interface EnrolmentData {
   firstName: string
   lastName: string
@@ -26,15 +28,25 @@ export interface EnrolmentData {
   membershipType: string
   heardAboutUs?: string
   discountCode?: string
+  enrolmentToken?: string
+  companyUrl?: string
 }
 
 const DEFAULT_HONBU = 'https://forza-club-honbu-production.up.railway.app'
 const CONTACT = 'hello@forzakarate.co.uk'
 
+export async function getEnrolmentToken(): Promise<string> {
+  const secret = enrolmentSecret()
+  if (!secret) throw new Error('Enrolment is not available just now.')
+  return issueEnrolmentToken(secret)
+}
+
 export async function submitEnrolment(data: EnrolmentData): Promise<{ memberId: number }> {
   const honbuUrl = (process.env.CLUB_HONBU_URL || DEFAULT_HONBU).replace(/\/$/, '')
   const honbuSecret = process.env.CLUB_HONBU_WEBHOOK_SECRET?.trim()
-
+  if ((data.companyUrl ?? '').trim()) {
+    return { memberId: 0 }
+  }
   if (!honbuSecret) {
     console.error(
       'Enrolment: CLUB_HONBU_WEBHOOK_SECRET is not set in Vercel. Enrolment NOT submitted to Club Honbu.',
@@ -42,6 +54,17 @@ export async function submitEnrolment(data: EnrolmentData): Promise<{ memberId: 
     throw new Error(
       `Sorry, online enrolment isn't available just now. Please email ${CONTACT} or speak to your instructor.`,
     )
+  }
+  const decision = enrolmentGuardDecision({
+    honeypot: data.companyUrl,
+    token: data.enrolmentToken,
+    secret: enrolmentSecret(),
+  })
+  if (decision === 'silent_drop') {
+    return { memberId: 0 }
+  }
+  if (decision === 'refresh') {
+    throw new Error('Please refresh the page and try again.')
   }
 
   const res = await fetch(`${honbuUrl}/api/webhooks/formsmarts/licence?token=${encodeURIComponent(honbuSecret)}`, {
@@ -66,6 +89,7 @@ export async function submitEnrolment(data: EnrolmentData): Promise<{ memberId: 
       'Preferred Class': data.classTime || '',
       'Licence Type': data.membershipType || 'Student',
       Source: 'Forza website join form',
+      'Join Flow': 'website',
       'Discount Code': data.discountCode || '',
     }),
   })
