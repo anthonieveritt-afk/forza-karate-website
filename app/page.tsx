@@ -8,8 +8,11 @@ import ClassCard from '@/components/sections/ClassCard'
 import BeltJourney from '@/components/sections/BeltJourney'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, Shield, Heart, Zap, Users } from 'lucide-react'
-import { allPosts, formatDate, cardThumbnail } from '@/lib/news'
+import { formatDate, cardThumbnail } from '@/lib/news'
+import { getAllPosts } from '@/lib/honbu-news'
 import NewsCardImage from '@/components/news/NewsCardImage'
+
+export const revalidate = 300
 
 export const metadata: Metadata = pageMeta({
   path: '/',
@@ -52,7 +55,8 @@ const whyPoints = [
   { icon: Users, title: 'Community', desc: 'A club that actually feels like one. People look out for each other here.' },
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
+  const posts = await getAllPosts()
   return (
     <>
       <Hero />
@@ -138,7 +142,7 @@ export default function HomePage() {
             <Link href="/news" className="text-sm font-medium text-[#dc2626] whitespace-nowrap">All news →</Link>
           </div>
           <div className="grid gap-6 sm:grid-cols-3">
-            {allPosts.slice(0, 3).map((p) => (
+            {posts.slice(0, 3).map((p) => (
               <Link key={p.slug} href={`/news/${p.slug}`} className="group rounded-2xl border border-black/5 overflow-hidden hover:shadow-md transition-shadow">
                 <NewsCardImage thumb={cardThumbnail(p)} />
                 <div className="p-5">

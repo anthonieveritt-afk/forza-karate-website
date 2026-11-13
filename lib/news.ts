@@ -15,6 +15,9 @@ export type NewsPost = {
   cardImageAlt?: string
   body: string
   images: string[]
+  /** Present on posts written in Forza Club Honbu (and the preview demo). */
+  photos?: { url: string; caption?: string | null; isCover?: boolean }[]
+  source?: 'honbu' | 'json'
 }
 
 export type NewsCardThumbnail = { src: string; alt: string; contain: boolean }
@@ -43,15 +46,16 @@ export const HIDDEN_SLUGS = new Set([
   'glasgow-inter-club-training-session',
 ])
 
+/** JSON posts only (hidden slugs removed). Pages that merge Forza Club Honbu posts should use getAllPosts(). */
 export const allPosts: NewsPost[] = (posts as NewsPost[]).filter((p) => !HIDDEN_SLUGS.has(p.slug)).slice().sort((a, b) => b.date.localeCompare(a.date))
 
 export function getPost(slug: string) {
   return allPosts.find((p) => p.slug === slug)
 }
 
-export function allCategories() {
+export function categoriesFromPosts(posts: NewsPost[]) {
   const m = new Map<string, { name: string; slug: string; count: number }>()
-  for (const p of allPosts) for (const c of p.categories) {
+  for (const p of posts) for (const c of p.categories) {
     const e = m.get(c.slug) ?? { ...c, count: 0 }
     e.count++
     m.set(c.slug, e)
@@ -65,4 +69,8 @@ export function formatDate(d: string) {
 
 export function isGradingPost(p: NewsPost) {
   return p.categories.some((c) => /grading/i.test(c.slug)) || /\bgrad(e|ing|es)\b|belt/i.test(p.title)
+}
+
+export function allCategories() {
+  return categoriesFromPosts(allPosts)
 }
