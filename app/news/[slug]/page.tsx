@@ -81,7 +81,7 @@ export default async function NewsStory({ params }: { params: Promise<{ slug: st
                       <img key={ph.id} src={ph.url} alt={ph.caption ?? album.name} loading="lazy" className="aspect-square w-full object-cover rounded-lg" />
                     ))}
                   </div>
-                  <a href="https://forzakarate.co.uk/gallery" className="mt-3 inline-block text-sm font-medium text-[#dc2626]">View the gallery →</a>
+                  <a href={`https://forzakarate.co.uk/gallery?album=${album.id}`} className="mt-3 inline-block text-sm font-medium text-[#dc2626]">View the gallery →</a>
                 </div>
               ))}
               {!albumPhotos.some((x) => x.photos.length) && ownImages.length > 0 && (

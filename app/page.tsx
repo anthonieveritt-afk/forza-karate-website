@@ -8,7 +8,8 @@ import ClassCard from '@/components/sections/ClassCard'
 import BeltJourney from '@/components/sections/BeltJourney'
 import { Button } from '@/components/ui/Button'
 import { ArrowRight, Shield, Heart, Zap, Users } from 'lucide-react'
-import { allPosts, formatDate } from '@/lib/news'
+import { allPosts, formatDate, cardThumbnail } from '@/lib/news'
+import NewsCardImage from '@/components/news/NewsCardImage'
 
 export const metadata: Metadata = pageMeta({
   path: '/',
@@ -139,12 +140,7 @@ export default function HomePage() {
           <div className="grid gap-6 sm:grid-cols-3">
             {allPosts.slice(0, 3).map((p) => (
               <Link key={p.slug} href={`/news/${p.slug}`} className="group rounded-2xl border border-black/5 overflow-hidden hover:shadow-md transition-shadow">
-                <div className="aspect-[16/10] bg-[#fafaf9] overflow-hidden">
-                  {p.image && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.image} alt={p.imageAlt} loading="lazy" className="h-full w-full object-cover" />
-                  )}
-                </div>
+                <NewsCardImage thumb={cardThumbnail(p)} />
                 <div className="p-5">
                   <p className="text-xs text-gray-400 mb-2">{formatDate(p.date)}</p>
                   <h3 className="font-bold text-[#111111] leading-snug group-hover:text-[#dc2626]">{p.title}</h3>
