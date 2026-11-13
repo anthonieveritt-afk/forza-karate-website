@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { allPosts, allCategories, formatDate } from '@/lib/news'
+import { allPosts, allCategories, formatDate, cardThumbnail } from '@/lib/news'
+import NewsCardImage from '@/components/news/NewsCardImage'
 
 export const metadata: Metadata = {
   title: 'News',
@@ -70,12 +71,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
             {shown.map((p) => (
               <article key={p.slug} className="group rounded-2xl border border-black/5 overflow-hidden bg-white hover:shadow-md transition-shadow">
                 <Link href={`/news/${p.slug}`} className="block">
-                  <div className="aspect-[16/10] bg-[#fafaf9] overflow-hidden">
-                    {p.image ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.image} alt={p.imageAlt} loading="lazy" className="h-full w-full object-cover group-hover:scale-[1.02] transition-transform" />
-                    ) : <div className="h-full w-full flex items-center justify-center text-[#dc2626] font-bold">FORZA</div>}
-                  </div>
+                  <NewsCardImage thumb={cardThumbnail(p)} hoverZoom />
                   <div className="p-5">
                     <p className="text-xs text-gray-400 mb-2"><time dateTime={p.date}>{formatDate(p.date)}</time>{p.categories[0] ? ` · ${p.categories[0].name}` : ''}</p>
                     <h2 className="font-bold text-[#111111] leading-snug mb-2 group-hover:text-[#dc2626]">{p.title}</h2>

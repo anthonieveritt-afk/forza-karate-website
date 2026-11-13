@@ -10,8 +10,24 @@ export type NewsPost = {
   tags: string[]
   image: string | null
   imageAlt: string
+  /** Optional listing-card thumbnail. Falls back to `image` when omitted. */
+  cardImage?: string | null
+  cardImageAlt?: string
   body: string
   images: string[]
+}
+
+export type NewsCardThumbnail = { src: string; alt: string; contain: boolean }
+
+/** Image for news listing cards (homepage + /news). Article pages and OG still use `image`. */
+export function cardThumbnail(p: NewsPost): NewsCardThumbnail | null {
+  if (p.cardImage) {
+    return { src: p.cardImage, alt: p.cardImageAlt || p.imageAlt, contain: true }
+  }
+  if (p.image) {
+    return { src: p.image, alt: p.imageAlt, contain: false }
+  }
+  return null
 }
 
 // Imported from the old WordPress site (public REST API), newest first.
