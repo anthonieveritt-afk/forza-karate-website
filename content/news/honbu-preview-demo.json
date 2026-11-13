@@ -1,0 +1,23 @@
+{
+  "slug": "preview-honbu-office-news-demo",
+  "title": "Preview: a Forza Club Honbu news post with several photos",
+  "date": "2026-11-13T12:00:00",
+  "excerpt": "This preview-only demo shows how a post written in Forza Club Honbu will look on the club website, including a cover photo and a photo gallery.",
+  "categories": [{ "name": "Club news", "slug": "club-news" }],
+  "tags": ["preview"],
+  "image": "/hero-new1.jpg",
+  "imageAlt": "Forza Karate Club training photo used as the article hero",
+  "cardImage": "/news/commonwealth-elite-2026-england-badge.webp",
+  "cardImageAlt": "Example cover image shown uncropped on the news card",
+  "images": [
+    "/hero-new1.jpg",
+    "/news/commonwealth-elite-2026-male-u21-60kg-podium.webp",
+    "/news/commonwealth-elite-2026-england-badge.webp"
+  ],
+  "photos": [
+    { "url": "/hero-new1.jpg", "caption": "Hero photo at the top of the article", "isCover": true },
+    { "url": "/news/commonwealth-elite-2026-male-u21-60kg-podium.webp", "caption": "A second photo in the article gallery", "isCover": false },
+    { "url": "/news/commonwealth-elite-2026-england-badge.webp", "caption": "A third photo — add as many as you like from Office", "isCover": false }
+  ],
+  "body": "<p>This is a preview-only sample so you can see the layout before go-live. It is not shown on the live forzakarate.co.uk site.</p><p>On a real post, the cover photo appears uncropped on the news card (the same way as the Kobe badge). The first photo is the article hero, and the rest open in a gallery you can tap through.</p><p>Write and publish posts from Forza Club Honbu Office, under News. You can select several photos at once, add more later, reorder them, choose the cover, and add captions.</p>"
+}

@@ -1,19 +1,22 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { allPosts, getPost, formatDate, isGradingPost } from '@/lib/news'
+import { formatDate, isGradingPost } from '@/lib/news'
+import { getAllPosts, getPostBySlug } from '@/lib/honbu-news'
 import { getAlbums, getAlbumPhotos, matchAlbums } from '@/lib/news-gallery'
+import NewsPhotoGallery from '@/components/news/NewsPhotoGallery'
 
-export const revalidate = 3600
+export const revalidate = 300
 
-export const dynamicParams = false
+export const dynamicParams = true
 
-export function generateStaticParams() {
-  return allPosts.map((p) => ({ slug: p.slug }))
+export async function generateStaticParams() {
+  const posts = await getAllPosts()
+  return posts.map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const p = getPost((await params).slug)
+  const p = await getPostBySlug((await params).slug)
   if (!p) return {}
   return {
     title: p.title,
@@ -24,17 +27,23 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function NewsStory({ params }: { params: Promise<{ slug: string }> }) {
-  const post = getPost((await params).slug)
+  const { slug } = await params
+  const posts = await getAllPosts()
+  const post = posts.find((p) => p.slug === slug)
   if (!post) notFound()
   const albums = matchAlbums(post, await getAlbums())
   const albumPhotos = await Promise.all(albums.map(async (a) => ({ album: a, photos: (await getAlbumPhotos(a.id)).slice(0, 6) })))
   const grading = isGradingPost(post)
-  const ownImages = post.images.filter((i) => i !== post.image).slice(0, 6)
+  const hasHonbuGallery = !!(post.photos && post.photos.length > 1)
+  const ownImages = hasHonbuGallery ? [] : post.images.filter((i) => i !== post.image).slice(0, 6)
   const showSidebar = albumPhotos.some((x) => x.photos.length) || ownImages.length > 0 || grading
-  const showHero = !!post.image && !post.images.includes(post.image)
-  const idx = allPosts.findIndex((p) => p.slug === post.slug)
-  const newer = allPosts[idx - 1]
-  const older = allPosts[idx + 1]
+  const showHero = post.photos?.length ? !!post.image : !!post.image && !post.images.includes(post.image)
+  const idx = posts.findIndex((p) => p.slug === post.slug)
+  const newer = posts[idx - 1]
+  const older = posts[idx + 1]
+  const galleryPhotos = (post.photos && post.photos.length > 1)
+    ? post.photos.filter((ph) => ph.url !== post.image)
+    : []
   const jsonLd = {
     '@context': 'https://schema.org', '@type': 'NewsArticle', headline: post.title, datePublished: post.date,
     image: post.image ? [post.image] : undefined, author: { '@type': 'Organization', name: 'Forza Karate Club' },
@@ -64,6 +73,7 @@ export default async function NewsStory({ params }: { params: Promise<{ slug: st
               <img src={post.image} alt={post.imageAlt} className="w-full rounded-2xl mb-8" />
             )}
             <div className="news-body" dangerouslySetInnerHTML={{ __html: post.body }} />
+            {galleryPhotos.length > 0 && <NewsPhotoGallery photos={galleryPhotos} />}
             <nav className="mt-12 pt-6 border-t border-black/5 grid gap-4 sm:grid-cols-2 text-sm">
               {older ? <Link href={`/news/${older.slug}`} className="hover:text-[#dc2626]">← {older.title}</Link> : <span />}
               {newer && <Link href={`/news/${newer.slug}`} className="sm:text-right hover:text-[#dc2626]">{newer.title} →</Link>}

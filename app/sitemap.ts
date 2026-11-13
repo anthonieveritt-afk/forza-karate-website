@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { allPosts } from '@/lib/news'
+import { getAllPosts } from '@/lib/honbu-news'
 import { SITE_URL as BASE } from '@/lib/seo'
 
 const routes = [
@@ -32,8 +32,9 @@ const routes = [
   '/dojo-dash',
 ]
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
+  const posts = await getAllPosts()
   return [
     ...routes.map((path) => ({
       url: `${BASE}${path}`,
@@ -41,7 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: (path === '/' || path === '/news' ? 'weekly' : 'monthly') as 'weekly' | 'monthly',
       priority: path === '/' ? 1 : 0.7,
     })),
-    ...allPosts.map((p) => ({
+    ...posts.map((p) => ({
       url: `${BASE}/news/${p.slug}`,
       lastModified: new Date(p.date),
       changeFrequency: 'yearly' as const,

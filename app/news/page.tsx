@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { allPosts, allCategories, formatDate, cardThumbnail } from '@/lib/news'
+import { categoriesFromPosts, formatDate, cardThumbnail } from '@/lib/news'
+import { getAllPosts } from '@/lib/honbu-news'
 import NewsCardImage from '@/components/news/NewsCardImage'
+
+export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'News',
@@ -13,13 +16,14 @@ export const metadata: Metadata = {
 const PER_PAGE = 12
 
 export default async function NewsPage({ searchParams }: { searchParams: Promise<{ category?: string; page?: string }> }) {
+  const posts = await getAllPosts()
   const sp = await searchParams
   // Old duplicate WordPress category merged into 'preparation-training'.
   const ALIASES: Record<string, string> = { 'preparation-training-2': 'preparation-training' }
   if (sp.category && ALIASES[sp.category]) redirect(`/news?category=${ALIASES[sp.category]}${sp.page ? `&page=${sp.page}` : ''}`)
-  const cats = allCategories()
+  const cats = categoriesFromPosts(posts)
   const active = cats.find((c) => c.slug === sp.category)
-  const list = active ? allPosts.filter((p) => p.categories.some((c) => c.slug === active.slug)) : allPosts
+  const list = active ? posts.filter((p) => p.categories.some((c) => c.slug === active.slug)) : posts
   const pages = Math.max(1, Math.ceil(list.length / PER_PAGE))
   const page = Math.min(pages, Math.max(1, parseInt(sp.page ?? '1', 10) || 1))
   const shown = list.slice((page - 1) * PER_PAGE, page * PER_PAGE)
@@ -36,7 +40,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
   const item = (on: boolean) => (on ? 'text-[#111111] font-medium' : 'hover:text-[#111111]')
   const catList = (
     <ul className="space-y-1.5">
-      <li><Link href="/news" className={item(!active)} aria-current={!active ? 'page' : undefined}>All <span className="text-gray-400">({allPosts.length})</span></Link></li>
+      <li><Link href="/news" className={item(!active)} aria-current={!active ? 'page' : undefined}>All <span className="text-gray-400">({posts.length})</span></Link></li>
       {cats.filter((c) => c.count >= 3).map((c) => (
         <li key={c.slug}>
           <Link href={href(1, c.slug)} className={item(active?.slug === c.slug)} aria-current={active?.slug === c.slug ? 'page' : undefined}>
