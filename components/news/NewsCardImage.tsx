@@ -1,6 +1,6 @@
 import type { NewsCardThumbnail } from '@/lib/news'
 
-/** Listing-card thumbnail. Badges/logos use object-contain on white so they are not cropped. */
+/** Listing-card thumbnail. Badges/logos use object-contain on white so the whole mark stays visible. */
 export default function NewsCardImage({
   thumb,
   hoverZoom = false,
@@ -8,8 +8,13 @@ export default function NewsCardImage({
   thumb: NewsCardThumbnail | null
   hoverZoom?: boolean
 }) {
+  const contain = !!thumb?.contain
   return (
-    <div className={`aspect-[16/10] overflow-hidden ${thumb?.contain ? 'bg-white' : 'bg-[#fafaf9]'}`}>
+    <div
+      className={`aspect-[16/10] overflow-hidden ${
+        contain ? 'bg-white p-4 sm:p-5 box-border' : 'bg-[#fafaf9]'
+      }`}
+    >
       {thumb ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -17,8 +22,8 @@ export default function NewsCardImage({
           alt={thumb.alt}
           loading="lazy"
           className={
-            thumb.contain
-              ? 'h-full w-full object-contain p-3'
+            contain
+              ? 'h-full w-full object-contain object-center'
               : `h-full w-full object-cover${hoverZoom ? ' group-hover:scale-[1.02] transition-transform' : ''}`
           }
         />

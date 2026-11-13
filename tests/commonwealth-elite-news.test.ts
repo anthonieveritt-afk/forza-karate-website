@@ -75,9 +75,10 @@ describe('Commonwealth Elite 2026 Male U21 −60kg news post', () => {
     expect(list).toContain('NewsCardImage')
 
     const card = readFileSync('components/news/NewsCardImage.tsx', 'utf8')
-    expect(card).toContain('object-contain')
-    expect(card).toContain('bg-white')
+    expect(card).toContain('bg-white p-4 sm:p-5')
+    expect(card).toContain('h-full w-full object-contain object-center')
     expect(card).toContain('object-cover')
+    expect(card).not.toMatch(/object-contain[^'\n]*object-cover/)
   })
 
   it('maps the story to Commonwealth Elite gallery album 16 and links to that album', () => {
