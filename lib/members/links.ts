@@ -17,6 +17,7 @@ export const membersCoreLinks: MembersLink[] = [
   // Syllabus hidden for now (Anthoni, Oct 2026) — re-add: { href: '/members/syllabus', label: 'Syllabus' },
   { href: '/members/licence', label: 'Renew your licence' },
   { href: '/members/sporting-licence', label: 'Sporting licence' },
+  { href: '/members/vote', label: 'Vote: Karate-ka of the Year' },
 ]
 
 export const FIKC_URL = 'https://www.fikc.co.uk'
