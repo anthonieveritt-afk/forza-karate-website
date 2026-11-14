@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
-import { getMemberPortalData, getMemberLicenceSlipMeta } from '@/app/actions/portal'
+import { getMemberPortalData, getMemberLicenceSlipMeta, getMemberAwards } from '@/app/actions/portal'
+import { AwardsWon } from '@/components/members/AwardsWon'
 import MembersArea from '@/components/members/MembersArea'
 import { LicenceCard } from '@/components/members/LicenceCard'
 import { LicenceSlipPreview } from '@/components/members/LicenceSlipPreview'
@@ -45,7 +46,7 @@ export default async function MembersPortalPage() {
   if (!data) redirect('/members')
 
   const { profile, gradings, attendance, competitions, courses } = data
-  const slip = await getMemberLicenceSlipMeta()
+  const [slip, awards] = await Promise.all([getMemberLicenceSlipMeta(), getMemberAwards()])
 
   return (
     <div className="min-h-screen bg-[#fafaf9]">
@@ -83,6 +84,9 @@ export default async function MembersPortalPage() {
               </div>
             </div>
           </div>
+
+          {/* Awards won (only released certificates) */}
+          <AwardsWon awards={awards} />
 
           {/* Licence */}
           <LicenceCard
