@@ -3,11 +3,18 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { FitDocumentPreview } from './FitDocumentPreview'
 import { ShareCertificate } from './ShareCertificate'
-import { awardFileBase, awardHeadline, awardShareText, awardsEmptyText, formatAwardDay, type PortalAward, type UpcomingRelease } from '@/lib/members/awards'
+import { COMMONWEALTH_AWARD_TYPE, awardFileBase, awardHeadline, awardShareText, awardsEmptyText, formatAwardDay, type PortalAward, type UpcomingRelease } from '@/lib/members/awards'
 
 const RING: Record<string, string> = { '1st': 'ring-amber-400', '2nd': 'ring-gray-300', '3rd': 'ring-orange-600' }
 
 async function makePdf(a: PortalAward): Promise<Blob> {
+  if (a.awardType === COMMONWEALTH_AWARD_TYPE) {
+    const [{ buildCommonwealthCertificatesPdf }, { loadCommonwealthAssets }] = await Promise.all([
+      import('@/lib/commonwealth-certificate'),
+      import('@/lib/award-certificate-assets'),
+    ])
+    return buildCommonwealthCertificatesPdf(await loadCommonwealthAssets(), [a.studentName]).output('blob')
+  }
   const [{ buildAwardCertificatesPdf, DESIGN_CITATION }, { loadAwardAssets }] = await Promise.all([
     import('@/lib/award-certificate'),
     import('@/lib/award-certificate-assets'),
