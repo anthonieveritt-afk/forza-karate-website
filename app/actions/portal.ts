@@ -33,6 +33,28 @@ export async function getMemberPortalData() {
   }
 }
 
+/** Awards won: only certificates already released by the club (Forza Club Honbu enforces the release time),
+ *  plus the next event's release time for the empty state. */
+export async function getMemberAwards() {
+  const empty = { awards: [], upcoming: null }
+  const cookieStore = await cookies()
+  const token = cookieStore.get(COOKIE_NAME)?.value
+  if (!token) return empty
+  try {
+    const res = await fetch(`${HONBU_API}/portal/awards`, {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
+    })
+    if (!res.ok) return empty
+    const { normaliseAwards, normaliseUpcoming } = await import('@/lib/members/awards')
+    const d = await res.json()
+    return { awards: normaliseAwards(d), upcoming: normaliseUpcoming(d) }
+  } catch {
+    return empty
+  }
+}
+
 export type LicenceUpdate = {
   licenceNumber: string | null
   licenceStartDate: string | null

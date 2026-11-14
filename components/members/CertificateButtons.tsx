@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from 'react'
 import { FitDocumentPreview } from './FitDocumentPreview'
+import { ShareCertificate } from './ShareCertificate'
+import { gradingShareText } from '@/lib/members/awards'
 
 export function CertificateButtons({
   studentName,
@@ -84,6 +86,20 @@ export function CertificateButtons({
     }
   }
 
+  async function shareImage(): Promise<Blob> {
+    const { generateCertificateBlobUrl } = await import('@/lib/certificate')
+    const { pdfToPng } = await import('@/lib/members/share-image')
+    // Own blob URL so sharing never revokes the preview.
+    const url = await generateCertificateBlobUrl(studentName, toBelt, gradingDate)
+    try {
+      return await pdfToPng(await (await fetch(url)).blob())
+    } finally {
+      URL.revokeObjectURL(url)
+    }
+  }
+
+  const shareBase = `forza-grading-${toBelt}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')
+
   const btn =
     'inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-colors disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dc2626]/50'
 
@@ -110,6 +126,7 @@ export function CertificateButtons({
         >
           {busy === 'download' ? 'Preparing…' : 'Download'}
         </button>
+        <ShareCertificate getImage={shareImage} filename={shareBase} defaultText={gradingShareText(toBelt)} label={`${toBelt} grading certificate`} />
       </div>
 
       <div
