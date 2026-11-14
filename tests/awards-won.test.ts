@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { awardsEmptyText, normaliseUpcoming, normaliseAwards, awardHeadline, awardShareText, gradingShareText, shareLinks, awardFileBase, formatAwardDay, SHARE_URL } from '@/lib/members/awards'
+import { COMMONWEALTH_SHARE_TEXT, awardsEmptyText, normaliseUpcoming, normaliseAwards, awardHeadline, awardShareText, gradingShareText, shareLinks, awardFileBase, formatAwardDay, SHARE_URL } from '@/lib/members/awards'
 
 const award = { awardTitle: 'Student of the Year', place: '1st', club: '', certificateDate: '2026-11-27' }
 
@@ -34,6 +34,13 @@ describe('awards won', () => {
     expect(l.facebook.startsWith('https://www.facebook.com/sharer/sharer.php?u=')).toBe(true)
     expect(decodeURIComponent(l.whatsapp)).toContain('Proud to receive Gold – Student of the Year 2026 at Forza Karate Club! 🥋 https://www.forzakarate.co.uk')
     expect(decodeURIComponent(l.x)).not.toContain('www.forzakarate.co.uk&url') // link is passed once, as url=
+  })
+  it('Commonwealth Championships 2026: own headline and post text', () => {
+    const cw = { awardType: 'commonwealth-2026', awardTitle: 'Commonwealth Karate Championships 2026', place: '', club: '', certificateDate: '2026-11-08' }
+    expect(awardHeadline(cw)).toBe('Commonwealth Karate Championships 2026')
+    expect(awardShareText(cw)).toBe('Proud to have competed at the 12th Commonwealth Karate Championships 2026 in Glasgow, representing Forza Karate Club! 🥋 www.forzakarate.co.uk')
+    expect(awardShareText(cw)).toBe(COMMONWEALTH_SHARE_TEXT)
+    expect(awardFileBase({ studentName: 'Kobe Yogarajah', awardTitle: cw.awardTitle, place: '' })).toBe('forza-commonwealth-karate-championships-2026-kobe-yogarajah')
   })
   it('file names and dates', () => {
     expect(awardFileBase({ studentName: 'Ann Able', awardTitle: 'Student of the Year', place: '1st' })).toBe('forza-student-of-the-year-1st-ann-able')

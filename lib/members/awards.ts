@@ -52,7 +52,7 @@ export function awardYear(a: Pick<PortalAward, 'certificateDate'>): string {
   return /^\d{4}/.exec(a.certificateDate)?.[0] ?? ''
 }
 
-/** "Gold – Student of the Year 2026" / "Bronze – Best Attendance (Rayleigh) 2026" / "Most Improved 2026". */
+/** "Gold – Student of the Year 2026" / "Bronze – Best Attendance · Rayleigh 2026" / "Most Improved 2026". */
 export function awardHeadline(a: Pick<PortalAward, 'awardTitle' | 'place' | 'club' | 'certificateDate'>): string {
   const metal = PLACE_METAL[a.place]
   const title = `${a.awardTitle}${a.club ? ` · ${a.club}` : ''}`
@@ -60,8 +60,14 @@ export function awardHeadline(a: Pick<PortalAward, 'awardTitle' | 'place' | 'clu
   return `${metal ? `${metal} – ` : ''}${title}${year && !title.includes(year) ? ` ${year}` : ''}`
 }
 
+/** Commonwealth Karate Championships 2026 participation (kept in sync with lib/commonwealth-certificate.ts). */
+export const COMMONWEALTH_AWARD_TYPE = 'commonwealth-2026'
+export const COMMONWEALTH_SHARE_TEXT =
+  'Proud to have competed at the 12th Commonwealth Karate Championships 2026 in Glasgow, representing Forza Karate Club! 🥋 www.forzakarate.co.uk'
+
 /** Pre-written post text. The link is always the club website, never a preview/vercel URL. */
-export function awardShareText(a: Pick<PortalAward, 'awardTitle' | 'place' | 'club' | 'certificateDate'>): string {
+export function awardShareText(a: Pick<PortalAward, 'awardTitle' | 'place' | 'club' | 'certificateDate'> & { awardType?: string }): string {
+  if (a.awardType === COMMONWEALTH_AWARD_TYPE) return COMMONWEALTH_SHARE_TEXT
   return `Proud to receive ${awardHeadline(a)} at ${CLUB_NAME}! 🥋 www.forzakarate.co.uk`
 }
 

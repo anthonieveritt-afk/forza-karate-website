@@ -1,5 +1,6 @@
 // Browser loader for the award certificate assets in /public/awards (Forza design only).
 import { AWARD_FONT_FILES, AWARD_IMAGE_FILES, type AwardAssets } from './award-certificate'
+import { COMMONWEALTH_2026, type CommonwealthAssets } from './commonwealth-certificate'
 
 const BASE = '/awards'
 
@@ -50,4 +51,23 @@ export function loadAwardAssets(): Promise<AwardAssets> {
     })
   }
   return cached
+}
+
+let cwCached: Promise<CommonwealthAssets> | null = null
+
+/** Background photo + Gelasio Bold for the Commonwealth Championships 2026 certificate. */
+export function loadCommonwealthAssets(): Promise<CommonwealthAssets> {
+  if (!cwCached) {
+    cwCached = (async () => {
+      const [background, font] = await Promise.all([
+        (async () => blobToDataUrl(await (await fetchOk(`${BASE}/${COMMONWEALTH_2026.background}`)).blob()))(),
+        (async () => bufferToBase64(await (await fetchOk(`${BASE}/fonts/${COMMONWEALTH_2026.fontFile}`)).arrayBuffer()))(),
+      ])
+      return { background, font }
+    })().catch((err) => {
+      cwCached = null
+      throw err
+    })
+  }
+  return cwCached
 }
