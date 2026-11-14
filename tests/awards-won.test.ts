@@ -17,7 +17,9 @@ describe('awards won', () => {
   it('writes the headline and the post text from the brief', () => {
     expect(awardHeadline(award)).toBe('Gold – Student of the Year 2026')
     expect(awardShareText(award)).toBe('Proud to receive Gold – Student of the Year 2026 at Forza Karate Club! 🥋 www.forzakarate.co.uk')
-    expect(awardHeadline({ ...award, awardTitle: 'Best Attendance', place: '3rd', club: 'Rayleigh' })).toBe('Bronze – Best Attendance (Rayleigh) 2026')
+    expect(awardHeadline({ ...award, awardTitle: 'Best Attendance', place: '3rd', club: 'Rayleigh' })).toBe('Bronze – Best Attendance · Rayleigh 2026')
+    expect(awardShareText({ ...award, awardTitle: 'Best Male', club: 'Rayleigh' })).toBe('Proud to receive Gold – Best Male · Rayleigh 2026 at Forza Karate Club! 🥋 www.forzakarate.co.uk')
+    expect(awardHeadline({ ...award, awardTitle: 'Best Female', place: '1st', club: 'Upminster' })).toBe('Gold – Best Female · Upminster 2026')
     expect(awardHeadline({ ...award, awardTitle: 'Most Improved', place: '' })).toBe('Most Improved 2026')
     expect(gradingShareText('Orange')).toBe('Proud to have graded to Orange belt at Forza Karate Club! 🥋 www.forzakarate.co.uk')
     expect(gradingShareText('Orange belt (10th Kyu)')).toBe('Proud to have graded to Orange belt (10th Kyu) at Forza Karate Club! 🥋 www.forzakarate.co.uk')

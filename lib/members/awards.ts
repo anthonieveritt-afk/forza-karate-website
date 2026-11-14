@@ -55,7 +55,7 @@ export function awardYear(a: Pick<PortalAward, 'certificateDate'>): string {
 /** "Gold – Student of the Year 2026" / "Bronze – Best Attendance (Rayleigh) 2026" / "Most Improved 2026". */
 export function awardHeadline(a: Pick<PortalAward, 'awardTitle' | 'place' | 'club' | 'certificateDate'>): string {
   const metal = PLACE_METAL[a.place]
-  const title = `${a.awardTitle}${a.club ? ` (${a.club})` : ''}`
+  const title = `${a.awardTitle}${a.club ? ` · ${a.club}` : ''}`
   const year = awardYear(a)
   return `${metal ? `${metal} – ` : ''}${title}${year && !title.includes(year) ? ` ${year}` : ''}`
 }

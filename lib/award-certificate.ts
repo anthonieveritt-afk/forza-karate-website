@@ -31,6 +31,8 @@ export interface AwardType {
   citation: string;
   /** Short help text for the Office page */
   hint?: string;
+  /** Per-club award: bulk mode shows one block per club (1st/2nd/3rd each); the club is printed on the award line. */
+  perClub?: boolean;
 }
 
 /**
@@ -49,6 +51,12 @@ export const AWARD_TYPES: AwardType[] = [
   { id: "best-attendance", title: "Best Attendance", audience: "club",
     citation: "for outstanding commitment and attendance at Forza Karate {club}",
     hint: "Choose the club first. The club name is printed on the certificate." },
+  { id: "best-male", title: "Best Male", audience: "club", perClub: true,
+    citation: "for outstanding achievement as Best Male at Forza Karate {club}",
+    hint: "One per club. The club name is printed on the certificate." },
+  { id: "best-female", title: "Best Female", audience: "club", perClub: true,
+    citation: "for outstanding achievement as Best Female at Forza Karate {club}",
+    hint: "One per club. The club name is printed on the certificate." },
   { id: "instructor-of-the-year", title: "Instructor of the Year", audience: "instructors",
     citation: "in recognition of outstanding teaching, leadership and dedication to the club",
     hint: "Instructors and staff are listed first, then all members." },
