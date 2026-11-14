@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normaliseAwards, awardHeadline, awardShareText, gradingShareText, shareLinks, awardFileBase, formatAwardDay, SHARE_URL } from '@/lib/members/awards'
+import { awardsEmptyText, normaliseUpcoming, normaliseAwards, awardHeadline, awardShareText, gradingShareText, shareLinks, awardFileBase, formatAwardDay, SHARE_URL } from '@/lib/members/awards'
 
 const award = { awardTitle: 'Student of the Year', place: '1st', club: '', certificateDate: '2026-11-27' }
 
@@ -36,5 +36,17 @@ describe('awards won', () => {
   it('file names and dates', () => {
     expect(awardFileBase({ studentName: 'Ann Able', awardTitle: 'Student of the Year', place: '1st' })).toBe('forza-student-of-the-year-1st-ann-able')
     expect(formatAwardDay('2026-11-27')).toBe('27 November 2026')
+  })
+})
+
+describe('awards won empty state', () => {
+  it('names the next presentation and its UK release time', () => {
+    const up = normaliseUpcoming({ upcoming: { eventName: 'End of Year Presentation 2026', releaseAt: '2026-11-27T21:00:00.000Z' } })
+    expect(awardsEmptyText(up)).toBe('No awards yet — certificates from the End of Year Presentation will appear here after 9pm on Fri 27 Nov 2026.')
+    expect(awardsEmptyText(normaliseUpcoming({ upcoming: { eventName: 'Summer Awards', releaseAt: '2027-06-01T18:30:00.000Z' } }))).toBe('No awards yet — certificates from the Summer Awards will appear here after 7:30pm on Tue 1 Jun 2027.')
+  })
+  it('falls back to generic text', () => {
+    expect(normaliseUpcoming({ upcoming: null })).toBe(null)
+    expect(awardsEmptyText(null)).toBe('No awards yet — certificates the club awards you will appear here.')
   })
 })

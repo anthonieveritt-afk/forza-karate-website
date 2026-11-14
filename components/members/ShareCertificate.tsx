@@ -89,8 +89,12 @@ export function ShareCertificate({
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-controls={panelId}
-        className="inline-flex items-center gap-1 rounded-lg border border-black/10 bg-white px-2.5 py-1 text-xs font-semibold text-[#111111] hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dc2626]/50"
+        aria-label={open ? `Close sharing for ${label}` : `Share ${label}`}
+        className="inline-flex items-center gap-1 rounded-lg border border-[#111111] bg-[#111111] px-2.5 py-1 text-xs font-semibold text-white hover:bg-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dc2626]/50"
       >
+        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" />
+        </svg>
         {open ? 'Close share' : 'Share'}
       </button>
       {open && (

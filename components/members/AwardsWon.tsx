@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { FitDocumentPreview } from './FitDocumentPreview'
 import { ShareCertificate } from './ShareCertificate'
-import { awardFileBase, awardHeadline, awardShareText, formatAwardDay, type PortalAward } from '@/lib/members/awards'
+import { awardFileBase, awardHeadline, awardShareText, awardsEmptyText, formatAwardDay, type PortalAward, type UpcomingRelease } from '@/lib/members/awards'
 
 const RING: Record<string, string> = { '1st': 'ring-amber-400', '2nd': 'ring-gray-300', '3rd': 'ring-orange-600' }
 
@@ -131,19 +131,25 @@ function AwardCard({ a }: { a: PortalAward }) {
 }
 
 /** Portal: certificates the club has released to this profile. */
-export function AwardsWon({ awards }: { awards: PortalAward[] }) {
-  if (!awards.length) return null
+export function AwardsWon({ awards, upcoming }: { awards: PortalAward[]; upcoming: UpcomingRelease | null }) {
   return (
     <div className="rounded-2xl border border-black/8 bg-white p-6 shadow-sm sm:p-8" id="awards-won">
       <div className="mb-4 flex items-center gap-2">
         <div className="h-0.5 w-6 bg-[#dc2626]" />
         <h2 className="text-lg font-bold text-[#111111]">Awards won</h2>
       </div>
-      <ul className="grid gap-3 md:grid-cols-2">
-        {awards.map((a) => (
-          <AwardCard key={a.id} a={a} />
-        ))}
-      </ul>
+      {awards.length ? (
+        <ul className="grid gap-3 md:grid-cols-2">
+          {awards.map((a) => (
+            <AwardCard key={a.id} a={a} />
+          ))}
+        </ul>
+      ) : (
+        <p className="rounded-xl border border-dashed border-black/15 bg-gray-50 p-4 text-sm text-gray-600">
+          <span aria-hidden="true">🏆 </span>
+          {awardsEmptyText(upcoming)}
+        </p>
+      )}
     </div>
   )
 }

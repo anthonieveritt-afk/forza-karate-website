@@ -46,7 +46,7 @@ export default async function MembersPortalPage() {
   if (!data) redirect('/members')
 
   const { profile, gradings, attendance, competitions, courses } = data
-  const [slip, awards] = await Promise.all([getMemberLicenceSlipMeta(), getMemberAwards()])
+  const [slip, awardsData] = await Promise.all([getMemberLicenceSlipMeta(), getMemberAwards()])
 
   return (
     <div className="min-h-screen bg-[#fafaf9]">
@@ -85,8 +85,8 @@ export default async function MembersPortalPage() {
             </div>
           </div>
 
-          {/* Awards won (only released certificates) */}
-          <AwardsWon awards={awards} />
+          {/* Awards won: always shown; only released certificates are listed */}
+          <AwardsWon awards={awardsData.awards} upcoming={awardsData.upcoming} />
 
           {/* Licence */}
           <LicenceCard

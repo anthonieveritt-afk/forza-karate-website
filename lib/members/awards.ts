@@ -92,3 +92,34 @@ export function formatAwardDay(iso: string): string {
   if (!m) return iso
   return new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]))).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
 }
+
+export type UpcomingRelease = { eventName: string; releaseAt: string }
+
+export function normaliseUpcoming(d: unknown): UpcomingRelease | null {
+  const u = (d as { upcoming?: unknown })?.upcoming as Record<string, unknown> | null | undefined
+  if (!u || typeof u.eventName !== 'string' || typeof u.releaseAt !== 'string' || Number.isNaN(Date.parse(u.releaseAt))) return null
+  return { eventName: u.eventName, releaseAt: u.releaseAt }
+}
+
+/** "9pm" / "9:30pm" and "Fri 27 Nov 2026", in UK time. */
+function ukTimeAndDay(iso: string): { time: string; day: string } {
+  const d = new Date(iso)
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hourCycle: 'h23', hour: '2-digit', minute: '2-digit', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+      .formatToParts(d)
+      .map((p) => [p.type, p.value]),
+  ) as Record<string, string>
+  const h = Number(parts.hour)
+  const m = parts.minute
+  const h12 = h % 12 === 0 ? 12 : h % 12
+  const time = `${h12}${m === '00' ? '' : `:${m}`}${h < 12 ? 'am' : 'pm'}`
+  return { time, day: `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}` }
+}
+
+/** Empty-state line for Awards won. */
+export function awardsEmptyText(upcoming: UpcomingRelease | null): string {
+  if (!upcoming) return 'No awards yet — certificates the club awards you will appear here.'
+  const name = upcoming.eventName.replace(/\s+\d{4}$/, '').trim() || 'the next presentation'
+  const { time, day } = ukTimeAndDay(upcoming.releaseAt)
+  return `No awards yet — certificates from the ${name} will appear here after ${time} on ${day}.`
+}
