@@ -1,28 +1,41 @@
 'use client'
 
-import { useState, useSyncExternalStore } from 'react'
+import { Component, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { Timer, ChevronDown, ChevronUp, History } from 'lucide-react'
 import { GRADINGS } from '@/lib/gradings'
-import { registrationMode, defaultEmergencyClosesOn, ukDateLabel } from '@/lib/grading-registration-window'
+import { registrationMode, defaultEmergencyClosesOn, ukDateLabel, type RegistrationMode } from '@/lib/grading-registration-window'
+import { createTickingClock } from '@/lib/ticking-clock'
 
-function subscribe(onStoreChange: () => void) {
-  const id = setInterval(onStoreChange, 1000)
-  return () => clearInterval(id)
-}
-function getClientNow() {
-  return Date.now()
-}
-function getServerNow() {
-  return 0 // stable server snapshot — client-only UI uses useMounted first
-}
+// Cached once-a-second snapshot (see lib/ticking-clock.ts for why).
+const clock = createTickingClock(1000)
 function useMounted() {
   return useSyncExternalStore(() => () => {}, () => true, () => false)
 }
 function useNow() {
   const mounted = useMounted()
-  const tick = useSyncExternalStore(subscribe, getClientNow, getServerNow)
+  const tick = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getServerSnapshot)
   if (!mounted) return null
   return new Date(tick)
+}
+
+type Grading = typeof GRADINGS[number]
+
+/** Never throws: bad or missing dates fall back to the plain register-by check. */
+function safeMode(g: Grading, now: Date): RegistrationMode {
+  try {
+    return registrationMode({ registerBy: g.registerByLocal, awardStart: g.awardStart }, now)
+  } catch {
+    const t = g.registerBy instanceof Date ? g.registerBy.getTime() : NaN
+    return Number.isFinite(t) && t > now.getTime() ? 'normal' : 'closed'
+  }
+}
+
+function safeEmergencyUntil(g: Grading): string {
+  try {
+    return ukDateLabel(defaultEmergencyClosesOn(g.awardStart))
+  } catch {
+    return 'the day before belts are handed out'
+  }
 }
 
 function getCountdown(target: Date, now: Date) {
@@ -57,10 +70,10 @@ function GradingCard({ grading, isNext, now }: {
   now: Date
 }) {
   const countdown  = getCountdown(grading.registerBy, now)
-  const mode = registrationMode({ registerBy: grading.registerByLocal, awardStart: grading.awardStart }, now)
+  const mode = safeMode(grading, now)
   const regClosed  = mode === 'closed'
   const emergency  = mode === 'emergency'
-  const emergencyUntil = ukDateLabel(defaultEmergencyClosesOn(grading.awardStart))
+  const emergencyUntil = safeEmergencyUntil(grading)
 
   return (
     <div className={`rounded-2xl border p-5 flex flex-col gap-3 transition-all bg-white ${
@@ -121,7 +134,7 @@ function GradingCard({ grading, isNext, now }: {
   )
 }
 
-export default function GradingCountdown() {
+function GradingCountdownInner() {
   const now      = useNow()
   const [showHistory, setShowHistory] = useState(false)
 
@@ -142,8 +155,9 @@ export default function GradingCountdown() {
     )
   }
 
-  const upcoming = GRADINGS.filter(g => registrationMode({ registerBy: g.registerByLocal, awardStart: g.awardStart }, now) !== 'closed')
-  const past     = GRADINGS.filter(g => registrationMode({ registerBy: g.registerByLocal, awardStart: g.awardStart }, now) === 'closed')
+  const modes    = GRADINGS.map(g => safeMode(g, now))
+  const upcoming = GRADINGS.filter((_, i) => modes[i] !== 'closed')
+  const past     = GRADINGS.filter((_, i) => modes[i] === 'closed')
   const nextIdx  = 0 // first upcoming is always next
 
   return (
@@ -201,5 +215,41 @@ export default function GradingCountdown() {
         </div>
       )}
     </div>
+  )
+}
+
+function CalendarFallback() {
+  return (
+    <div className="bg-[#fafaf9] rounded-2xl border border-black/8 p-6">
+      <h3 className="font-bold text-[#111111]">Grading Calendar 2026</h3>
+      <ul className="mt-3 space-y-1 text-sm text-gray-600">
+        {GRADINGS.map(g => (
+          <li key={g.name}>
+            <span className="font-semibold text-[#111111]">{g.name}</span> — register by {g.registerDeadlineLabel}; belts awarded {g.awardLabel}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+class CalendarBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  componentDidCatch(err: unknown) {
+    console.error('Grading calendar failed to render', err)
+  }
+  render() {
+    return this.state.failed ? <CalendarFallback /> : this.props.children
+  }
+}
+
+export default function GradingCountdown() {
+  return (
+    <CalendarBoundary>
+      <GradingCountdownInner />
+    </CalendarBoundary>
   )
 }
