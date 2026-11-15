@@ -31,7 +31,7 @@ describe('resolveGradingCharge', () => {
       expect(r.fee).toBe(55)
       expect(r.baseFee).toBe(35)
       expect(r.lineItemName).toBe('Emergency grading fee')
-      expect(r.wording).toBe('Emergency grading fee: £55 (includes £20 late registration)')
+      expect(r.wording).toBe('Emergency grading fee: £55')
       expect(r.wording?.toLowerCase()).not.toContain('surcharge')
     }
   })

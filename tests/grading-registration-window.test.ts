@@ -4,6 +4,7 @@ import {
   defaultEmergencyClosesOn,
   effectiveEmergencyClosesOn,
   emergencyFeeWording,
+  emergencyTotalWording,
   instantFromLondonLocal,
   londonYmd,
   payableFeePounds,
@@ -74,6 +75,8 @@ describe('wording', () => {
   it('calls it an emergency grading fee and never a surcharge', () => {
     const text = emergencyFeeWording(55)
     expect(text).toBe('Emergency grading fee: £55 (includes £20 late registration)')
+    expect(emergencyTotalWording(55)).toBe('Emergency grading fee: £55')
+    expect(emergencyTotalWording(55).toLowerCase()).not.toContain('surcharge')
     expect(EMERGENCY_GRADING_FEE_POUNDS).toBe(20)
     expect(text.toLowerCase()).not.toContain('surcharge')
   })

@@ -1,6 +1,6 @@
 import { gradingFee, GRADINGS } from '@/lib/gradings'
 import {
-  emergencyFeeWording,
+  emergencyTotalWording,
   registrationMode,
   payableFeePounds,
   type RegistrationMode,
@@ -106,7 +106,7 @@ export function resolveGradingCharge(input: {
   }
   const fee = payableFeePounds(baseFee, mode)
   if (fee == null) return { ok: false, error: 'Registration for this grading has now closed. The next grading will open for registration in the usual way.' }
-  const wording = mode === 'emergency' ? emergencyFeeWording(fee) : null
+  const wording = mode === 'emergency' ? emergencyTotalWording(fee) : null
   const lineItemName = mode === 'emergency' ? 'Emergency grading fee' : `Grading fee — ${input.grade.split('–')[0].trim()}`
   return { ok: true, event: ev, mode, baseFee, fee, wording, lineItemName }
 }

@@ -100,6 +100,11 @@ export function emergencyFeeWording(totalPounds: number): string {
   return `Emergency grading fee: £${totalPounds} (includes £${EMERGENCY_GRADING_FEE_POUNDS} late registration)`;
 }
 
+/** Single-total label shown on the form and as the Stripe line amount description. */
+export function emergencyTotalWording(totalPounds: number): string {
+  return `Emergency grading fee: £${totalPounds}`;
+}
+
 export const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 export const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 

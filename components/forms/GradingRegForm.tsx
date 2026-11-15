@@ -7,7 +7,7 @@ import { gradingFee, GRADING_VENUES } from '@/lib/gradings'
 import {
   defaultEmergencyClosesOn,
   EMERGENCY_GRADING_FEE_POUNDS,
-  emergencyFeeWording,
+  emergencyTotalWording,
   ukDateLabel,
   type RegistrationMode,
 } from '@/lib/grading-registration-window'
@@ -43,9 +43,49 @@ function previewHostAllowed(): boolean {
   return h !== 'forzakarate.co.uk' && h !== 'www.forzakarate.co.uk'
 }
 
-function readPreviewWindow(): PreviewWindow | null {
+function readPreviewWindow(previewDefault?: PreviewWindow): PreviewWindow | null {
   if (!previewHostAllowed()) return null
   return parsePreviewWindow(new URLSearchParams(window.location.search).get('previewWindow'))
+    ?? previewDefault
+    ?? 'emergency'
+}
+
+function setPreviewWindowInUrl(next: PreviewWindow) {
+  if (typeof window === 'undefined') return
+  const url = new URL(window.location.href)
+  url.searchParams.set('previewWindow', next)
+  window.history.replaceState({}, '', url)
+}
+
+function PreviewWindowToggle({ value, onChange }: { value: PreviewWindow; onChange: (v: PreviewWindow) => void }) {
+  const opts: { id: PreviewWindow; label: string }[] = [
+    { id: 'normal', label: 'Normal' },
+    { id: 'emergency', label: 'Emergency' },
+    { id: 'closed', label: 'Closed' },
+  ]
+  return (
+    <div className="space-y-2" data-testid="preview-window-toggle">
+      <p className="text-xs font-medium text-amber-800">Preview only — not the live dates. This toggle shows how the form looks in each state.</p>
+      <div className="flex rounded-xl border border-amber-200 bg-amber-50 p-1">
+        {opts.map((o) => {
+          const on = value === o.id
+          return (
+            <button
+              key={o.id}
+              type="button"
+              aria-pressed={on}
+              onClick={() => onChange(o.id)}
+              className={`flex-1 min-h-11 rounded-lg px-2 text-sm font-semibold transition ${
+                on ? 'bg-[#dc2626] text-white shadow-sm' : 'text-amber-950 hover:bg-white/70'
+              }`}
+            >
+              {o.label}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 function mergeEvents(fromHonbu: PublicGradingEvent[]): PublicGradingEvent[] {
@@ -69,23 +109,23 @@ function feeLine(mode: RegistrationMode, baseFee: number): { total: number; text
   const total = mode === 'emergency' ? baseFee + EMERGENCY_GRADING_FEE_POUNDS : baseFee
   return {
     total,
-    text: mode === 'emergency' ? emergencyFeeWording(total) : `Grading fee: £${total}`,
+    text: mode === 'emergency' ? emergencyTotalWording(total) : `Grading fee: £${total}`,
   }
 }
 
-export default function GradingRegForm() {
+export default function GradingRegForm({ previewDefault }: { previewDefault?: PreviewWindow } = {}) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [gradingEvents, setGradingEvents] = useState<PublicGradingEvent[]>(() => localEvents())
   const [eventsLoading, setEventsLoading] = useState(false)
   const [grade, setGrade] = useState('')
   const [gradingName, setGradingName] = useState('')
-  const [previewWindow, setPreviewWindow] = useState<PreviewWindow | null>(null)
+  const [previewWindow, setPreviewWindow] = useState<PreviewWindow | null>(previewDefault ?? null)
   const [now] = useState(() => new Date())
   const selectedFee = grade ? gradingFee(grade) : null
 
   useEffect(() => {
-    setPreviewWindow(readPreviewWindow())
+    setPreviewWindow(readPreviewWindow(previewDefault))
     fetch(`${HONBU_API}/public/grading-events`)
       .then(r => r.json())
       .then((data: PublicGradingEvent[]) => {
@@ -96,7 +136,7 @@ export default function GradingRegForm() {
         setGradingEvents(mergeEvents([]))
         setEventsLoading(false)
       })
-  }, [])
+  }, [previewDefault])
 
   const openEvents = useMemo(() => {
     const list = gradingEvents.filter((g) => eventMode(g, now, previewWindow) !== 'closed')
@@ -108,9 +148,19 @@ export default function GradingRegForm() {
     return list
   }, [gradingEvents, now, previewWindow])
 
+  useEffect(() => {
+    if (!gradingName && openEvents.length === 1) setGradingName(openEvents[0].name)
+  }, [openEvents, gradingName])
+
   const selectedEvent = openEvents.find((g) => g.name === gradingName) ?? null
   const selectedMode: RegistrationMode | null = selectedEvent ? eventMode(selectedEvent, now, previewWindow) : null
   const allClosed = !eventsLoading && (previewWindow === 'closed' || openEvents.length === 0)
+
+  function choosePreviewWindow(next: PreviewWindow) {
+    setPreviewWindow(next)
+    setPreviewWindowInUrl(next)
+  }
+
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -155,10 +205,8 @@ export default function GradingRegForm() {
 
   if (allClosed) {
     return (
-      <div className="py-6" data-testid="grading-closed">
-        {previewWindow && (
-          <p className="mb-4 text-xs font-medium text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">Preview only — this is the closed state, not the live dates.</p>
-        )}
+      <div className="py-6 space-y-5" data-testid="grading-closed">
+        {previewWindow && <PreviewWindowToggle value={previewWindow} onChange={choosePreviewWindow} />}
         <div className="flex items-start gap-3 p-5 rounded-xl bg-[#fafaf9] border border-black/8">
           <AlertCircle className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
           <div>
@@ -179,11 +227,7 @@ export default function GradingRegForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5" data-testid="grading-reg-form">
-      {previewWindow && (
-        <p className="text-xs font-medium text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
-          Preview only — showing the {previewWindow} registration state, not the live dates.
-        </p>
-      )}
+      {previewWindow && <PreviewWindowToggle value={previewWindow} onChange={choosePreviewWindow} />}
 
       {status === 'error' && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm">
@@ -198,8 +242,7 @@ export default function GradingRegForm() {
           <p>
             The usual registration deadline for {selectedEvent.name} has passed. You can still register until{' '}
             <span className="font-semibold">{closeLabel || 'the day before belts are handed out'}</span>
-            {' '}(the day before belts are handed out).{' '}
-            {fee ? <span className="font-semibold">{fee.text}</span> : 'The fee is the usual grading fee plus £20 late registration.'}
+            {' '}(the day before belts are handed out).
           </p>
         </div>
       )}
@@ -257,13 +300,14 @@ export default function GradingRegForm() {
             className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
           >
             <option value="">Select the grade being taken</option>
-            {belts.map((belt) => (
-              <option key={belt} value={belt}>{belt} (£{gradingFee(belt)})</option>
-            ))}
+            {belts.map((belt) => {
+              const base = gradingFee(belt)
+              const shown = base != null && selectedMode === 'emergency' ? base + EMERGENCY_GRADING_FEE_POUNDS : base
+              return (
+                <option key={belt} value={belt}>{shown != null ? `${belt} (£${shown})` : belt}</option>
+              )
+            })}
           </select>
-          {fee && (
-            <p className="mt-1.5 text-sm font-medium text-[#111111]" data-testid="grading-fee">{fee.text}</p>
-          )}
         </div>
 
         <div>
@@ -329,14 +373,31 @@ export default function GradingRegForm() {
         />
       </div>
 
+      {fee && selectedMode === 'emergency' && (
+        <div className="rounded-2xl border-2 border-[#dc2626] bg-red-50 px-5 py-6" data-testid="grading-fee-box">
+          <p className="text-center text-[1.65rem] leading-tight font-bold text-[#dc2626]" data-testid="grading-fee">
+            {fee.text}
+          </p>
+        </div>
+      )}
+      {fee && selectedMode === 'normal' && (
+        <p className="text-base font-semibold text-[#111111]" data-testid="grading-fee">{fee.text}</p>
+      )}
+
+      <div data-testid="grading-pay-block">
       <Button
         type="submit"
         size="lg"
         disabled={status === 'loading' || eventsLoading || openEvents.length === 0}
         className="w-full"
       >
-        {status === 'loading' ? 'Opening secure payment…' : `Pay${fee ? ` £${fee.total}` : ''} & register`}
+        {status === 'loading'
+          ? 'Opening secure payment…'
+          : fee && selectedMode === 'emergency'
+            ? `Pay £${fee.total}`
+            : `Pay${fee ? ` £${fee.total}` : ''} & register`}
       </Button>
+      </div>
     </form>
   )
 }
