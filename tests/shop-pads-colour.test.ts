@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getChosenColour, getProduct, getUnitPrice, lineDescription, orderName, PAD_COLOURS, requiresColour } from '@/lib/shop/catalogue'
+import { getChosenColour, getProduct, getUnitPrice, lineDescription, orderName, PAD_COLOUR_NOTE, PAD_COLOURS, PAD_PAIR_DESC, requiresColour } from '@/lib/shop/catalogue'
 import { parseItems, sessionItemsSummary, stripeProductMetadata, stripeProductName } from '@/lib/shop/checkout'
 
 const PAD_KEYS = ['smai-shin-red', 'smai-mitts', 'blitz-shin-blue'] as const
@@ -32,6 +32,16 @@ describe('Pad colour options', () => {
     expect(getChosenColour('smai-mitts', 'Blue')).toBe('Blue')
     expect(getChosenColour('smai-mitts', 'Green')).toBeNull()
     expect(getChosenColour('forza-tshirt', 'Red')).toBeNull()
+  })
+
+  it('makes clear each pad product is sold as one pair in one colour, not both', () => {
+    for (const key of PAD_KEYS) {
+      expect(getProduct(key)!.desc, key).toBe(PAD_PAIR_DESC)
+    }
+    expect(PAD_PAIR_DESC).toBe('Sold as a single pair (1 × red or 1 × blue)')
+    expect(PAD_COLOUR_NOTE).toBe('Price is for one pair — choose red or blue')
+    expect(getProduct('forza-tshirt')!.desc).toBeUndefined()
+    expect(getProduct('chest-guard')!.desc).toBeUndefined()
   })
 })
 

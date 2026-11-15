@@ -51,6 +51,10 @@ export const WKF_CATEGORY = 'WKF Competition Suits'
 /** Required Red/Blue choice on pad products (hand pads and both shin/instep pads). */
 export const PAD_COLOURS = ['Red', 'Blue'] as const
 export type PadColour = (typeof PAD_COLOURS)[number]
+/** Shown next to the colour picker so it is clear the price is for one pair, not both colours. */
+export const PAD_COLOUR_NOTE = 'Price is for one pair — choose red or blue'
+/** Product description for pad products sold as a single pair in one colour. */
+export const PAD_PAIR_DESC = 'Sold as a single pair (1 × red or 1 × blue)'
 
 export type Product = {
   key: string
@@ -76,6 +80,7 @@ export const products: Product[] = [
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     img: '/shop/smai-shin-red.jpg',
     badge: 'WKF Approved',
+    desc: PAD_PAIR_DESC,
   },
   {
     key: 'chest-guard',
@@ -101,6 +106,7 @@ export const products: Product[] = [
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     img: '/shop/smai-mitts.jpg',
     badge: 'WKF Approved',
+    desc: PAD_PAIR_DESC,
   },
   {
     key: 'forza-tshirt',
@@ -116,6 +122,7 @@ export const products: Product[] = [
     colours: PAD_COLOURS,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     img: '/shop/blitz-shin-blue.jpg',
+    desc: PAD_PAIR_DESC,
   },
   {
     key: 'blitz-gi',
