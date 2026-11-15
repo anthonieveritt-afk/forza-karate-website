@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import SmartImage from "@/components/media/SmartImage"
 
 type Photo = { url: string; caption?: string | null }
 
@@ -36,8 +37,9 @@ export default function NewsPhotoGallery({ photos }: { photos: Photo[] }) {
             onClick={() => setOpen(i)}
             className="block rounded-xl overflow-hidden border border-black/5 bg-[#fafaf9] text-left"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={ph.url} alt={ph.caption || ""} className="aspect-square w-full object-contain bg-white" />
+            <span className="relative block aspect-square bg-white">
+              <SmartImage src={ph.url} alt={ph.caption || ""} fill className="object-contain" sizes="(max-width: 640px) 50vw, 33vw" />
+            </span>
             {ph.caption && <span className="block p-2 text-xs text-gray-500">{ph.caption}</span>}
           </button>
         ))}
@@ -75,8 +77,9 @@ export default function NewsPhotoGallery({ photos }: { photos: Photo[] }) {
             </>
           )}
           <figure className="max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={current.url} alt={current.caption || ""} className="max-h-[80vh] w-full object-contain mx-auto" />
+            <span className="relative block w-full h-[80vh]">
+              <SmartImage src={current.url} alt={current.caption || ""} fill className="object-contain" sizes="(max-width: 1024px) 100vw, 1024px" priority />
+            </span>
             {current.caption && <figcaption className="mt-3 text-center text-sm text-white/80">{current.caption}</figcaption>}
           </figure>
         </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 const photos = [
   { src: '/team/team-01.jpg', alt: 'Team Forza' },
@@ -45,15 +46,14 @@ export default function TeamBanner() {
         className="absolute inset-0 transition-opacity duration-700"
         style={{ opacity: fading ? 0 : 1 }}
       >
-        <img
+        <Image
           key={photos[current].src}
           src={photos[current].src}
           alt={photos[current].alt}
+          fill
+          sizes="100vw"
+          priority={current === 0}
           style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
             objectFit: 'cover',
             objectPosition: 'center top',
           }}

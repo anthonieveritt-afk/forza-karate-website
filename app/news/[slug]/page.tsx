@@ -5,6 +5,7 @@ import { formatDate, isGradingPost } from '@/lib/news'
 import { getAllPosts, getPostBySlug } from '@/lib/honbu-news'
 import { getAlbums, getAlbumPhotos, matchAlbums } from '@/lib/news-gallery'
 import NewsPhotoGallery from '@/components/news/NewsPhotoGallery'
+import SmartImage from '@/components/media/SmartImage'
 
 export const revalidate = 300
 
@@ -69,8 +70,7 @@ export default async function NewsStory({ params }: { params: Promise<{ slug: st
         <div className={`max-w-7xl mx-auto grid gap-12 ${showSidebar ? 'lg:grid-cols-[minmax(0,1fr)_320px]' : ''}`}>
           <article className="min-w-0 max-w-3xl">
             {showHero && post.image && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={post.image} alt={post.imageAlt} className="w-full rounded-2xl mb-8" />
+              <SmartImage src={post.image} alt={post.imageAlt} width={1600} height={1000} className="w-full h-auto rounded-2xl mb-8" sizes="(max-width: 768px) 100vw, 768px" priority />
             )}
             <div className="news-body" dangerouslySetInnerHTML={{ __html: post.body }} />
             {galleryPhotos.length > 0 && <NewsPhotoGallery photos={galleryPhotos} />}
@@ -87,8 +87,9 @@ export default async function NewsStory({ params }: { params: Promise<{ slug: st
                   <h2 className="font-bold text-[#111111] mb-3">{album.name}</h2>
                   <div className="grid grid-cols-2 gap-2">
                     {photos.map((ph) => (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img key={ph.id} src={ph.url} alt={ph.caption ?? album.name} loading="lazy" className="aspect-square w-full object-cover rounded-lg" />
+                      <span key={ph.id} className="relative aspect-square w-full overflow-hidden rounded-lg">
+                        <SmartImage src={ph.url} alt={ph.caption ?? album.name} fill className="object-cover" sizes="(max-width: 1024px) 50vw, 160px" />
+                      </span>
                     ))}
                   </div>
                   <a href={`https://forzakarate.co.uk/gallery?album=${album.id}`} className="mt-3 inline-block text-sm font-medium text-[#dc2626]">View the gallery →</a>
@@ -99,8 +100,9 @@ export default async function NewsStory({ params }: { params: Promise<{ slug: st
                   <h2 className="font-bold text-[#111111] mb-3">Photos from this story</h2>
                   <div className="grid grid-cols-2 gap-2">
                     {ownImages.map((src) => (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img key={src} src={src} alt="" loading="lazy" className="aspect-square w-full object-cover rounded-lg" />
+                      <span key={src} className="relative aspect-square w-full overflow-hidden rounded-lg">
+                        <SmartImage src={src} alt="" fill className="object-cover" sizes="(max-width: 1024px) 50vw, 160px" />
+                      </span>
                     ))}
                   </div>
                 </div>

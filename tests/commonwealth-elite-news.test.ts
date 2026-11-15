@@ -63,7 +63,8 @@ describe('Commonwealth Elite 2026 Male U21 −60kg news post', () => {
 
     const article = readFileSync('app/news/[slug]/page.tsx', 'utf8')
     expect(article).toContain('images: p.image ? [p.image] : undefined')
-    expect(article).toContain('<img src={post.image} alt={post.imageAlt}')
+    expect(article).toContain('src={post.image}')
+    expect(article).toContain("import SmartImage from '@/components/media/SmartImage'")
     expect(article).not.toContain('cardImage')
     expect(article).not.toContain('cardThumbnail')
 
@@ -76,8 +77,9 @@ describe('Commonwealth Elite 2026 Male U21 −60kg news post', () => {
 
     const card = readFileSync('components/news/NewsCardImage.tsx', 'utf8')
     expect(card).toContain('bg-white p-4 sm:p-5')
-    expect(card).toContain('h-full w-full object-contain object-center')
+    expect(card).toContain('object-contain object-center')
     expect(card).toContain('object-cover')
+    expect(card).toContain('SmartImage')
     expect(card).not.toMatch(/object-contain[^'\n]*object-cover/)
   })
 
