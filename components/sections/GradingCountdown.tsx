@@ -3,6 +3,7 @@
 import { useState, useSyncExternalStore } from 'react'
 import { Timer, ChevronDown, ChevronUp, History } from 'lucide-react'
 import { GRADINGS } from '@/lib/gradings'
+import { registrationMode, defaultEmergencyClosesOn, ukDateLabel } from '@/lib/grading-registration-window'
 
 function subscribe(onStoreChange: () => void) {
   const id = setInterval(onStoreChange, 1000)
@@ -56,7 +57,10 @@ function GradingCard({ grading, isNext, now }: {
   now: Date
 }) {
   const countdown  = getCountdown(grading.registerBy, now)
-  const regClosed  = grading.registerBy < now
+  const mode = registrationMode({ registerBy: grading.registerByLocal, awardStart: grading.awardStart }, now)
+  const regClosed  = mode === 'closed'
+  const emergency  = mode === 'emergency'
+  const emergencyUntil = ukDateLabel(defaultEmergencyClosesOn(grading.awardStart))
 
   return (
     <div className={`rounded-2xl border p-5 flex flex-col gap-3 transition-all bg-white ${
@@ -76,6 +80,11 @@ function GradingCard({ grading, isNext, now }: {
             Belts awarded: <span className="font-semibold text-[#111111]">{grading.awardLabel}</span>
           </p>
         </div>
+        {emergency && (
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shrink-0">
+            Emergency registration
+          </span>
+        )}
         {regClosed && (
           <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200 shrink-0">
             Reg. closed
@@ -100,6 +109,11 @@ function GradingCard({ grading, isNext, now }: {
         </div>
       )}
 
+      {emergency && (
+        <p className="text-xs text-gray-500">
+          Usual deadline has passed. Emergency registration is open until <span className="font-semibold text-[#111111]">{emergencyUntil}</span> (the day before belts are handed out). The usual fee plus a £20 emergency grading fee applies.
+        </p>
+      )}
       {regClosed && (
         <p className="text-xs text-gray-400">Registration closed — belts awarded during grading week.</p>
       )}
@@ -128,8 +142,8 @@ export default function GradingCountdown() {
     )
   }
 
-  const upcoming = GRADINGS.filter(g => g.registerBy > now)
-  const past     = GRADINGS.filter(g => g.registerBy <= now)
+  const upcoming = GRADINGS.filter(g => registrationMode({ registerBy: g.registerByLocal, awardStart: g.awardStart }, now) !== 'closed')
+  const past     = GRADINGS.filter(g => registrationMode({ registerBy: g.registerByLocal, awardStart: g.awardStart }, now) === 'closed')
   const nextIdx  = 0 // first upcoming is always next
 
   return (

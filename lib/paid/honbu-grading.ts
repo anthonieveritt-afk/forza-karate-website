@@ -14,6 +14,7 @@ export async function postPaidGradingToHonbu(d: Record<string, string>, stripeSe
       currentBelt: d.grade, dojo: d.dojo, gradingName: d.gradingName,
       notes: [`Venue: ${d.venue}`, d.notes || ''].filter(Boolean).join('\n'),
       stripeSessionId, amountPence,
+      isEmergency: d.isEmergency === 'true',
     }),
     cache: 'no-store',
   })

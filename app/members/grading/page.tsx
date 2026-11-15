@@ -24,7 +24,7 @@ export default async function MembersGradingPage() {
             </div>
             <h1 className="text-4xl font-bold text-[#111111] mb-2">Register for grading</h1>
             <p className="text-gray-500">
-              Submit your grading registration below. Your instructor will confirm your place.
+              Submit your grading registration below and pay the grading fee online. After the usual deadline, emergency registration stays open until the day before belts are handed out, with a £20 emergency grading fee added.
             </p>
           </div>
 
