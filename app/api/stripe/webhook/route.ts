@@ -111,8 +111,10 @@ export async function POST(req: NextRequest) {
         const m = (s.metadata ?? {}) as Record<string, string>
         const h = await postPaidGradingToHonbu(m, s.id, s.amount_total ?? 0)
         if (!h.ok) throw new Error(`Club Honbu grading hand-off failed: ${h.status ?? ''} ${h.detail ?? ''}`)
+        const emergency = m.isEmergency === 'true'
+        const feeName = emergency ? 'emergency grading fee' : 'grading fee'
         await notifyClub(`Grading paid: ${m.memberName} — ${m.grade}${s.livemode ? '' : ' [TEST]'}`, [
-          `${gbp(s.amount_total ?? 0)} grading fee paid online for ${m.memberName} (${m.grade}).`,
+          `${gbp(s.amount_total ?? 0)} ${feeName} paid online for ${m.memberName} (${m.grade}).`,
           `${m.gradingName} · ${m.venue} · ${m.email}`, `Stripe session: ${s.id}`, 'Saved in Club Honbu as Paid.',
         ])
       }

@@ -1,14 +1,22 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/Button'
 import { CheckCircle, AlertCircle } from 'lucide-react'
 import { gradingFee, GRADING_VENUES } from '@/lib/gradings'
+import {
+  defaultEmergencyClosesOn,
+  EMERGENCY_GRADING_FEE_POUNDS,
+  emergencyTotalWording,
+  ukDateLabel,
+  type RegistrationMode,
+} from '@/lib/grading-registration-window'
+import { eventMode, localEvents, parsePreviewWindow, type PreviewWindow, type PublicGradingEvent } from '@/lib/grading-checkout'
 
 const HONBU_API = process.env.NEXT_PUBLIC_CLUB_HONBU_API ?? 'https://forza-club-honbu-production.up.railway.app/api'
 
 // Grades a student can grade FOR (17th to 1st Kyu). White Belt is not a grade; it comes with the gi.
-// and the public /gradings belt chart. Values are what Club Honbu stores as currentBelt.
+// and the public /gradings belt chart. Values are what Forza Club Honbu stores as currentBelt.
 const belts = [
   '17th Kyu – White Belt / Red Stripe',
   '16th Kyu – White Belt / Yellow Stripe',
@@ -29,32 +37,130 @@ const belts = [
   '1st Kyu – Brown Belt / Two Stripe',
 ]
 
-interface GradingEvent {
-  name: string
-  registerBy: string
-  awardLabel: string
-  registerDeadlineLabel: string
+function previewHostAllowed(): boolean {
+  if (typeof window === 'undefined') return false
+  const h = window.location.hostname
+  return h !== 'forzakarate.co.uk' && h !== 'www.forzakarate.co.uk'
 }
 
-export default function GradingRegForm() {
+function readPreviewWindow(previewDefault?: PreviewWindow): PreviewWindow | null {
+  if (!previewHostAllowed()) return null
+  return parsePreviewWindow(new URLSearchParams(window.location.search).get('previewWindow'))
+    ?? previewDefault
+    ?? 'emergency'
+}
+
+function setPreviewWindowInUrl(next: PreviewWindow) {
+  if (typeof window === 'undefined') return
+  const url = new URL(window.location.href)
+  url.searchParams.set('previewWindow', next)
+  window.history.replaceState({}, '', url)
+}
+
+function PreviewWindowToggle({ value, onChange }: { value: PreviewWindow; onChange: (v: PreviewWindow) => void }) {
+  const opts: { id: PreviewWindow; label: string }[] = [
+    { id: 'normal', label: 'Normal' },
+    { id: 'emergency', label: 'Emergency' },
+    { id: 'closed', label: 'Closed' },
+  ]
+  return (
+    <div className="space-y-2" data-testid="preview-window-toggle">
+      <p className="text-xs font-medium text-amber-800">Preview only — not the live dates. This toggle shows how the form looks in each state.</p>
+      <div className="flex rounded-xl border border-amber-200 bg-amber-50 p-1">
+        {opts.map((o) => {
+          const on = value === o.id
+          return (
+            <button
+              key={o.id}
+              type="button"
+              aria-pressed={on}
+              onClick={() => onChange(o.id)}
+              className={`flex-1 min-h-11 rounded-lg px-2 text-sm font-semibold transition ${
+                on ? 'bg-[#dc2626] text-white shadow-sm' : 'text-amber-950 hover:bg-white/70'
+              }`}
+            >
+              {o.label}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function mergeEvents(fromHonbu: PublicGradingEvent[]): PublicGradingEvent[] {
+  const byName = new Map<string, PublicGradingEvent>()
+  for (const g of localEvents()) byName.set(g.name.toLowerCase(), { ...g })
+  for (const e of fromHonbu) {
+    const key = e.name.toLowerCase()
+    const prev = byName.get(key)
+    byName.set(key, {
+      ...prev,
+      ...e,
+      awardStart: e.awardStart || prev?.awardStart,
+      awardEnd: e.awardEnd || prev?.awardEnd,
+      registerBy: e.registerBy || prev?.registerBy || '',
+    })
+  }
+  return [...byName.values()]
+}
+
+function feeLine(mode: RegistrationMode, baseFee: number): { total: number; text: string } {
+  const total = mode === 'emergency' ? baseFee + EMERGENCY_GRADING_FEE_POUNDS : baseFee
+  return {
+    total,
+    text: mode === 'emergency' ? emergencyTotalWording(total) : `Grading fee: £${total}`,
+  }
+}
+
+export default function GradingRegForm({ previewDefault }: { previewDefault?: PreviewWindow } = {}) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
-  const [gradingEvents, setGradingEvents] = useState<GradingEvent[]>([])
-  const [eventsLoading, setEventsLoading] = useState(true)
+  const [gradingEvents, setGradingEvents] = useState<PublicGradingEvent[]>(() => localEvents())
+  const [eventsLoading, setEventsLoading] = useState(false)
   const [grade, setGrade] = useState('')
+  const [gradingName, setGradingName] = useState('')
+  const [previewWindow, setPreviewWindow] = useState<PreviewWindow | null>(previewDefault ?? null)
+  const [now] = useState(() => new Date())
   const selectedFee = grade ? gradingFee(grade) : null
 
   useEffect(() => {
+    setPreviewWindow(readPreviewWindow(previewDefault))
     fetch(`${HONBU_API}/public/grading-events`)
       .then(r => r.json())
-      .then((data: GradingEvent[]) => {
-        setGradingEvents(data)
+      .then((data: PublicGradingEvent[]) => {
+        setGradingEvents(mergeEvents(Array.isArray(data) ? data : []))
         setEventsLoading(false)
       })
       .catch(() => {
+        setGradingEvents(mergeEvents([]))
         setEventsLoading(false)
       })
-  }, [])
+  }, [previewDefault])
+
+  const openEvents = useMemo(() => {
+    const list = gradingEvents.filter((g) => eventMode(g, now, previewWindow) !== 'closed')
+    // On the preview-only page, show December (the next live grading) rather than every past event forced open.
+    if (previewWindow && previewWindow !== 'closed') {
+      const dec = list.filter((g) => /december/i.test(g.name))
+      if (dec.length) return dec
+    }
+    return list
+  }, [gradingEvents, now, previewWindow])
+
+  useEffect(() => {
+    if (!gradingName && openEvents.length === 1) setGradingName(openEvents[0].name)
+  }, [openEvents, gradingName])
+
+  const selectedEvent = openEvents.find((g) => g.name === gradingName) ?? null
+  const selectedMode: RegistrationMode | null = selectedEvent ? eventMode(selectedEvent, now, previewWindow) : null
+  const allClosed = !eventsLoading && (previewWindow === 'closed' || openEvents.length === 0)
+
+  function choosePreviewWindow(next: PreviewWindow) {
+    setPreviewWindow(next)
+    setPreviewWindowInUrl(next)
+  }
+
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -63,7 +169,7 @@ export default function GradingRegForm() {
 
     const form = e.currentTarget
     const data = new FormData(form)
-    // Stripe only: the registration is created in Club Honbu once the grading fee is paid.
+    // Stripe only: the registration is created in Forza Club Honbu once the grading fee is paid.
     try {
       const res = await fetch('/api/grading-checkout', {
         method: 'POST',
@@ -72,6 +178,7 @@ export default function GradingRegForm() {
           memberName: data.get('memberName'), parentName: data.get('parentName') || '', email: data.get('email'),
           currentBelt: data.get('currentBelt'), venue: data.get('venue'), gradingName: data.get('gradingName'),
           notes: data.get('notes') || '',
+          previewWindow,
         }),
       })
       const result = await res.json()
@@ -96,12 +203,47 @@ export default function GradingRegForm() {
     )
   }
 
+  if (allClosed) {
+    return (
+      <div className="py-6 space-y-5" data-testid="grading-closed">
+        {previewWindow && <PreviewWindowToggle value={previewWindow} onChange={choosePreviewWindow} />}
+        <div className="flex items-start gap-3 p-5 rounded-xl bg-[#fafaf9] border border-black/8">
+          <AlertCircle className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <h3 className="text-lg font-bold text-[#111111] mb-1">Registration has closed</h3>
+            <p className="text-sm text-gray-500 leading-relaxed">
+              The usual deadline has passed, and emergency registration (available until the day before belts are handed out) has also closed.
+              The next grading will open for registration in the usual way. If you need help, please get in touch via{' '}
+              <a href="https://forzakarate.co.uk/contact" className="text-[#dc2626] underline">forzakarate.co.uk/contact</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const fee = selectedFee != null && selectedMode ? feeLine(selectedMode, selectedFee) : null
+  const closeLabel = selectedEvent ? emergencyCloseLabel(selectedEvent) : ''
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5" data-testid="grading-reg-form">
+      {previewWindow && <PreviewWindowToggle value={previewWindow} onChange={choosePreviewWindow} />}
+
       {status === 'error' && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm">
           <AlertCircle className="h-4 w-4 flex-shrink-0" />
           {errorMsg}
+        </div>
+      )}
+
+      {selectedMode === 'emergency' && selectedEvent && (
+        <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-950" data-testid="emergency-grading-banner">
+          <p className="font-semibold mb-1">Emergency registration</p>
+          <p>
+            The usual registration deadline for {selectedEvent.name} has passed. You can still register until{' '}
+            <span className="font-semibold">{closeLabel || 'the day before belts are handed out'}</span>
+            {' '}(the day before belts are handed out).
+          </p>
         </div>
       )}
 
@@ -158,13 +300,14 @@ export default function GradingRegForm() {
             className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
           >
             <option value="">Select the grade being taken</option>
-            {belts.map((belt) => (
-              <option key={belt} value={belt}>{belt} (£{gradingFee(belt)})</option>
-            ))}
+            {belts.map((belt) => {
+              const base = gradingFee(belt)
+              const shown = base != null && selectedMode === 'emergency' ? base + EMERGENCY_GRADING_FEE_POUNDS : base
+              return (
+                <option key={belt} value={belt}>{shown != null ? `${belt} (£${shown})` : belt}</option>
+              )
+            })}
           </select>
-          {selectedFee != null && (
-            <p className="mt-1.5 text-sm font-medium text-[#111111]" data-testid="grading-fee">Grading fee: £{selectedFee}</p>
-          )}
         </div>
 
         <div>
@@ -191,21 +334,28 @@ export default function GradingRegForm() {
         <select
           name="gradingName"
           required
+          value={gradingName}
+          onChange={(e) => setGradingName(e.target.value)}
           className="w-full h-11 px-4 rounded-xl border border-black/12 bg-white text-[#111111] text-sm focus:outline-none focus:ring-2 focus:ring-[#dc2626] focus:border-transparent transition"
           disabled={eventsLoading}
         >
           {eventsLoading ? (
             <option value="">Loading dates…</option>
-          ) : gradingEvents.length === 0 ? (
+          ) : openEvents.length === 0 ? (
             <option value="">No upcoming gradings scheduled</option>
           ) : (
             <>
               <option value="">Select grading</option>
-              {gradingEvents.map((g) => (
-                <option key={g.name} value={g.name}>
-                  {g.name} — awards {g.awardLabel} (register by {g.registerDeadlineLabel})
-                </option>
-              ))}
+              {openEvents.map((g) => {
+                const mode = eventMode(g, now, previewWindow)
+                const close = emergencyCloseLabel(g)
+                const label = mode === 'emergency'
+                  ? `${g.name} — emergency registration until ${close || 'the day before belts are handed out'}`
+                  : `${g.name} — awards ${g.awardLabel} (register by ${g.registerDeadlineLabel})`
+                return (
+                  <option key={g.name} value={g.name}>{label}</option>
+                )
+              })}
             </>
           )}
         </select>
@@ -223,14 +373,38 @@ export default function GradingRegForm() {
         />
       </div>
 
+      {fee && selectedMode === 'emergency' && (
+        <div className="rounded-2xl border-2 border-[#dc2626] bg-red-50 px-5 py-6" data-testid="grading-fee-box">
+          <p className="text-center text-[1.65rem] leading-tight font-bold text-[#dc2626]" data-testid="grading-fee">
+            {fee.text}
+          </p>
+        </div>
+      )}
+      {fee && selectedMode === 'normal' && (
+        <p className="text-base font-semibold text-[#111111]" data-testid="grading-fee">{fee.text}</p>
+      )}
+
+      <div data-testid="grading-pay-block">
       <Button
         type="submit"
         size="lg"
-        disabled={status === 'loading' || eventsLoading || gradingEvents.length === 0}
+        disabled={status === 'loading' || eventsLoading || openEvents.length === 0}
         className="w-full"
       >
-        {status === 'loading' ? 'Opening secure payment…' : `Pay${selectedFee != null ? ` £${selectedFee}` : ''} & register`}
+        {status === 'loading'
+          ? 'Opening secure payment…'
+          : fee && selectedMode === 'emergency'
+            ? `Pay £${fee.total}`
+            : `Pay${fee ? ` £${fee.total}` : ''} & register`}
       </Button>
+      </div>
     </form>
   )
+}
+
+function emergencyCloseLabel(ev: PublicGradingEvent): string {
+  if (ev.emergencyClosesLabel) return ev.emergencyClosesLabel
+  const start = ev.awardStart || localEvents().find((g) => g.name === ev.name)?.awardStart
+  const ymd = ev.emergencyClosesOn || (start ? defaultEmergencyClosesOn(start) : '')
+  return ymd ? ukDateLabel(ymd) : ''
 }
