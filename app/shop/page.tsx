@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { ShoppingBag, ShoppingCart } from 'lucide-react'
 import { useCart } from '@/lib/cart-context'
 import CartDrawer from '@/components/shop/CartDrawer'
-import { PRICES, SIZE_PRICES, WKF_CATEGORY, getPriceRange, orderName, products, type Product } from '@/lib/shop/catalogue'
+import { PAD_COLOUR_NOTE, PRICES, SIZE_PRICES, WKF_CATEGORY, getPriceRange, orderName, products, type Product } from '@/lib/shop/catalogue'
 
 const categories = ['All', 'Clothing', 'Equipment', WKF_CATEGORY]
 
@@ -182,6 +182,7 @@ export default function ShopPage() {
                             </button>
                           ))}
                         </div>
+                        <p className="text-xs text-gray-500 mt-1.5 leading-relaxed" data-testid="pad-colour-note">{PAD_COLOUR_NOTE}</p>
                       </div>
                     )}
 
