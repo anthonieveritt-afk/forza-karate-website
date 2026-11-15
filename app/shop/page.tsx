@@ -64,6 +64,9 @@ export default function ShopPage() {
             <p className="text-xl text-gray-500 max-w-2xl">
               Official Forza Karate kit, uniforms, and equipment.
             </p>
+            <p className="mt-3 text-sm text-gray-500" data-testid="shop-klarna-note">
+              Pay in 3 with Klarna available at checkout.
+            </p>
           </div>
           {/* Cart button */}
           <button
