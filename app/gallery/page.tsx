@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+import SmartImage from '@/components/media/SmartImage'
 import { useState, useEffect } from 'react'
 
 interface Album {
@@ -150,13 +150,12 @@ export default function GalleryPage() {
                   {/* Cover photo */}
                   <div className="relative aspect-video bg-gray-100 overflow-hidden">
                     {album.coverPhotoUrl ? (
-                      <Image
+                      <SmartImage
                         src={album.coverPhotoUrl}
                         alt={album.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        unoptimized
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
@@ -235,13 +234,12 @@ export default function GalleryPage() {
                       style={{ aspectRatio: i === 0 ? '4/3' : '1/1' }}
                       onClick={() => setLightbox(photo)}
                     >
-                      <Image
+                      <SmartImage
                         src={photo.url}
                         alt={photo.caption ?? photo.filename}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 640px) 50vw, 25vw"
-                        unoptimized
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                       {photo.caption && (
@@ -276,13 +274,12 @@ export default function GalleryPage() {
             </p>
           )}
           <div className="relative max-w-5xl max-h-[90vh] w-full h-full">
-            <Image
+            <SmartImage
               src={lightbox.url}
               alt={lightbox.caption ?? lightbox.filename}
               fill
               className="object-contain"
-              sizes="100vw"
-              unoptimized
+              sizes="(max-width: 1280px) 100vw, 1280px"
             />
           </div>
         </div>

@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
-import { ArrowRight } from 'lucide-react'
 import AnimatedWord from '@/components/ui/AnimatedWord'
+import { nearbySlideIndices } from '@/lib/opt-image'
 
 // Stacked layout (photo first, copy below) on all screens. No zoom: photos shown whole.
 const HERO_ZOOM = 1.0
@@ -38,8 +38,11 @@ const photoSlides: Slide[] = photos.map((p) => ({ kind: 'photo', key: p.src, src
 // Display order matches kept live positions: 1–3, trial ad (4), then 5, 7, 8, 18, 19, 22, 23, 35.
 const slides: Slide[] = [...photoSlides.slice(0, 3), adTrial, ...photoSlides.slice(3)]
 
+const HERO_SIZES = '(max-width: 1280px) 100vw, 1280px'
+
 export default function Hero() {
   const [current, setCurrent] = useState(0)
+  const mounted = useMemo(() => nearbySlideIndices(current, slides.length), [current])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -53,23 +56,31 @@ export default function Hero() {
       {/* ── Photo first (all screens), shown whole: object-contain, no zoom ── */}
       <div className="mx-auto w-full max-w-[1280px] md:px-6 md:pt-6">
         <div className="relative w-full aspect-[4/3] md:aspect-video bg-white overflow-hidden md:rounded-2xl">
-          {slides.map((slide, i) =>
-            slide.kind === 'photo' ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+          {slides.map((slide, i) => {
+            if (!mounted.has(i)) return null
+            const visible = i === current
+            const frame = {
+              opacity: visible ? 1 : 0,
+              zIndex: visible ? 2 : 1,
+              pointerEvents: (visible ? 'auto' : 'none') as 'auto' | 'none',
+              transition: 'opacity 0.8s ease-in-out',
+            }
+            return slide.kind === 'photo' ? (
+              <Image
                 key={slide.key}
                 src={slide.src}
                 alt={slide.alt}
-                loading={i === 0 ? 'eager' : 'lazy'}
-                aria-hidden={i !== current}
+                fill
+                sizes={HERO_SIZES}
+                priority={i === 0}
+                aria-hidden={!visible}
                 style={{
-                  position: 'absolute', inset: 0, width: '100%', height: '100%',
-                  objectFit: 'cover', objectPosition: '50% 40%',
+                  objectFit: 'cover',
+                  objectPosition: '50% 40%',
                   transform: `scale(${HERO_ZOOM})`,
-                  opacity: i === current ? 1 : 0,
-                  zIndex: i === current ? 2 : 1,
+                  ...frame,
                   pointerEvents: 'none',
-                  transition: 'opacity 0.8s ease-in-out',
+                  zIndex: visible ? 2 : 1,
                 }}
               />
             ) : (
@@ -77,16 +88,22 @@ export default function Hero() {
                 key={slide.key}
                 href={slide.href}
                 aria-label={`${slide.title} — ${slide.cta}`}
-                aria-hidden={i !== current}
-                tabIndex={i === current ? 0 : -1}
+                aria-hidden={!visible}
+                tabIndex={visible ? 0 : -1}
                 className="absolute inset-0 block bg-[#111111]"
-                style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 3 : 0, cursor: 'pointer', pointerEvents: i === current ? 'auto' : 'none', transition: 'opacity 0.8s ease-in-out' }}
+                style={{ ...frame, zIndex: visible ? 3 : 0, cursor: 'pointer' }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={slide.img} alt={`${slide.title} — ${slide.cta}`} loading="lazy" className="w-full h-full object-cover pointer-events-none" draggable={false} />
+                <Image
+                  src={slide.img}
+                  alt={`${slide.title} — ${slide.cta}`}
+                  fill
+                  sizes={HERO_SIZES}
+                  className="object-cover pointer-events-none"
+                  draggable={false}
+                />
               </Link>
             )
-          )}
+          })}
         </div>
         {/* Carousel controls under the image */}
         <div className="flex flex-wrap justify-center gap-1.5 py-3 px-4" aria-label="Choose photo">
