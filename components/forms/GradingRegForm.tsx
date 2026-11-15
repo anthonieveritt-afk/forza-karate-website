@@ -76,8 +76,8 @@ function feeLine(mode: RegistrationMode, baseFee: number): { total: number; text
 export default function GradingRegForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
-  const [gradingEvents, setGradingEvents] = useState<PublicGradingEvent[]>([])
-  const [eventsLoading, setEventsLoading] = useState(true)
+  const [gradingEvents, setGradingEvents] = useState<PublicGradingEvent[]>(() => localEvents())
+  const [eventsLoading, setEventsLoading] = useState(false)
   const [grade, setGrade] = useState('')
   const [gradingName, setGradingName] = useState('')
   const [previewWindow, setPreviewWindow] = useState<PreviewWindow | null>(null)
@@ -99,7 +99,13 @@ export default function GradingRegForm() {
   }, [])
 
   const openEvents = useMemo(() => {
-    return gradingEvents.filter((g) => eventMode(g, now, previewWindow) !== 'closed')
+    const list = gradingEvents.filter((g) => eventMode(g, now, previewWindow) !== 'closed')
+    // On the preview-only page, show December (the next live grading) rather than every past event forced open.
+    if (previewWindow && previewWindow !== 'closed') {
+      const dec = list.filter((g) => /december/i.test(g.name))
+      if (dec.length) return dec
+    }
+    return list
   }, [gradingEvents, now, previewWindow])
 
   const selectedEvent = openEvents.find((g) => g.name === gradingName) ?? null
