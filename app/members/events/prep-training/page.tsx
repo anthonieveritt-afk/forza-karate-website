@@ -39,8 +39,15 @@ const sessions = [
   { value: '2026-11-01-rayleigh-kum-u12',  label: 'Sun 1st Nov — Rayleigh — Kumite (12 & below) 11:00am' },
   { value: '2026-11-01-rayleigh-kum-s',    label: 'Sun 1st Nov — Rayleigh — Kumite (13+) 1:00pm' },
   { value: '2026-12-05-chingford-kata',    label: 'Sat 5th Dec — Chingford — Kata (all ages) 3:00pm' },
-  { value: '2026-12-20-chingford-kum',     label: 'Sun 20th Dec — Chingford — Kumite (all ages) 2:00pm' },
+  { value: '2026-12-20-chingford-kum',     label: 'Sun 20th Dec — Chingford — Kumite (12 & below) 2:00pm' },
 ]
+
+const PROVISIONAL_NOTE =
+  'Session details are provisional and will be confirmed once the booking link is available.'
+
+function todayUk(): string {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/London' })
+}
 
 export default async function PrepTrainingRegPage() {
   await requireMemberPage('/members/events/prep-training')
@@ -61,10 +68,28 @@ export default async function PrepTrainingRegPage() {
       </section>
       <section className="pt-8">
         <div className="max-w-2xl">
+          <div className="mb-8 rounded-2xl border border-black/8 bg-white p-5">
+            <h2 className="text-lg font-semibold text-[#111111]">Kumite Training Preparation 2026/27</h2>
+            <p className="mt-1 text-sm text-gray-500">12 years and below</p>
+            <ul className="mt-4 space-y-3">
+              <li className="text-sm text-[#111111]">
+                Sunday 20th December 2026 (Chingford) 2:00pm start
+                <span className="mt-0.5 block text-gray-500">Booking is open — choose this date in the form below.</span>
+              </li>
+              <li className="text-sm text-[#111111]">
+                Sunday 10th January 2027 (Rayleigh) 11:00am start
+                <span className="mt-0.5 block text-gray-500">{PROVISIONAL_NOTE}</span>
+              </li>
+              <li className="text-sm text-[#111111]">
+                Sunday 14th February 2027 (Chingford) 11:00am start
+                <span className="mt-0.5 block text-gray-500">{PROVISIONAL_NOTE}</span>
+              </li>
+            </ul>
+          </div>
           <EventRegForm
             event="prep-training"
             eventLabel="Preparation Training"
-            sessions={sessions}
+            sessions={sessions.filter((s) => s.value.slice(0, 10) >= todayUk())}
             showAgeGroup
           />
         </div>

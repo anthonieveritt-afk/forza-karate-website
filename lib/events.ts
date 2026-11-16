@@ -119,8 +119,15 @@ export const EVENTS: ClubEvent[] = [
   { id: 'sc-dec',       title: 'Saturday Super Champs',                        date: '2026-12-05', time: '2:00pm',  venue: 'Chingford',                            category: 'Super Champs' },
   { id: 'kata-dec',     title: 'Kata Coaching (End of Year)',                  date: '2026-12-05', time: '3:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
   { id: 'grad-dec-w',   title: 'December Grading — Belts Awarded',            date: '2026-12-14', dateEnd: '2026-12-18', venue: 'Rayleigh & Upminster',           category: 'Grading' },
-  { id: 'kum-dec',      title: 'Kumite Coaching (End of Year)',                date: '2026-12-20', time: '2:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: 'All ages' },
+  { id: 'kum-dec',      title: 'Kumite Training Preparation',                  date: '2026-12-20', time: '2:00pm',  venue: 'Chingford',                            category: 'Coaching',   eligibility: '12 years & below', registrationHref: '/members/events/prep-training' },
+
+  // ── JANUARY 2027 ──
+  { id: 'kum-u12-jan-2027', title: 'Kumite Training Preparation', date: '2027-01-10', time: '11:00am', venue: 'Rayleigh',  category: 'Coaching', eligibility: '12 years & below', notes: 'Session details are provisional and will be confirmed once the booking link is available.' },
+
+  // ── FEBRUARY 2027 ──
+  { id: 'kum-u12-feb-2027', title: 'Kumite Training Preparation', date: '2027-02-14', time: '11:00am', venue: 'Chingford', category: 'Coaching', eligibility: '12 years & below', notes: 'Session details are provisional and will be confirmed once the booking link is available.' },
 ]
+
 
 export const CATEGORY_COLOURS: Record<EventCategory, { bg: string; text: string; border: string }> = {
   Competition:   { bg: 'bg-blue-50',   text: 'text-blue-700',   border: 'border-blue-200' },
