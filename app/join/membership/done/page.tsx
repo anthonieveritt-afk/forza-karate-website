@@ -33,8 +33,21 @@ async function resolve(br: string): Promise<View> {
   return { kind: 'received' }
 }
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ br?: string }> }) {
-  const br = (await searchParams).br ?? ''
+export default async function Page({ searchParams }: { searchParams: Promise<{ br?: string; free?: string }> }) {
+  const sp = await searchParams
+  if (sp.free === '1') {
+    // 100% access code: no monthly fee, so no Direct Debit. The card payment (suit + licence) completed the sign-up.
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-4 pt-24">
+        <div className="text-center max-w-md">
+          <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold mb-2">You&apos;re all set!</h1>
+          <p className="text-gray-500 text-sm">Your card payment is received. With your access code there is no monthly membership fee, so there is no Direct Debit to set up. We&apos;ll be in touch about your first class as a member.</p>
+        </div>
+      </div>
+    )
+  }
+  const br = sp.br ?? ''
   const v = await resolve(br)
   const startLabel = v.start ? new Date(v.start + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) : null
   return (

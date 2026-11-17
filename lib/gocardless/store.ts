@@ -45,6 +45,8 @@ export type Signup = {
   stripe?: StripePayment | null
   /** Linked once the GoCardless billing request is created after Stripe. */
   billingRequestId?: string | null
+  /** Access code applied at checkout. Always re-validated on the server; amounts are computed here, never taken from the browser. */
+  discount?: { code: string; percent: number; fullMonthlyPence: number; monthlyPence: number } | null
   /** Honbu trial_members.id from a verified signed Join now link (converts by id, not name). */
   trialMemberId?: number | null
   createdAt: string

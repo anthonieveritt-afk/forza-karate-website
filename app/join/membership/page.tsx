@@ -7,7 +7,8 @@ import { Loader2, Plus, Trash2, ShieldCheck, CreditCard } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DateInput } from '@/components/DateInput'
 import { HeightGuide } from '@/components/HeightGuide'
-import { PLANS, pounds, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, REQUIRED_SUIT_KEY, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, ageOn, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
+import { validateDiscountCode } from '@/app/actions/enrolment'
+import { PLANS, pounds, discountedMonthlyPence, membershipStart, proRataPence, proRataLabel, firstOfNextMonth, suitOptions, REQUIRED_SUIT_KEY, planAllowed, licenceFeePence, LICENCE_TYPES, LICENCE_ADULT_AGE, ageOn, type PlanKey, type LicenceType } from '@/lib/gocardless/plans'
 
 const CLASSES: Record<string, string[]> = {
   rayleigh: [
@@ -62,6 +63,10 @@ function MembershipSignup() {
   // Answers carried from the first /join form: dojo, class and student DOB are shown, not re-asked.
   const [carried, setCarried] = useState({ classPick: false, dob: false })
   const [editClass, setEditClass] = useState(false)
+  // Access code carried from /join. Shown here for the price only; the server re-validates and recomputes at checkout.
+  const [code, setCode] = useState('')
+  const [codeInfo, setCodeInfo] = useState<{ percent: number; label: string } | null>(null)
+  const [codeNote, setCodeNote] = useState('')
   useEffect(() => {
     const p = loadJoinPrefill()
     /* eslint-disable react-hooks/set-state-in-effect -- one-time hydrate from localStorage after mount */
@@ -73,6 +78,7 @@ function MembershipSignup() {
     setParent(x => ({ ...x, ...p.parent }))
     if (p.emergency?.name && p.emergency?.phone) { setEmergency(e => ({ ...e, ...p.emergency })); setShowExtra(true) }
     setCarried({ classPick: okClass, dob: !!p.dateOfBirth })
+    if (p.discountCode) setCode(p.discountCode)
     /* eslint-enable react-hooks/set-state-in-effect */
   }, [])
   // Signed post-trial Join now link: prefill from the Honbu trial row (matched by trial id).
@@ -149,6 +155,17 @@ function MembershipSignup() {
     return null
   }
 
+  useEffect(() => {
+    if (!code) return
+    let cancelled = false
+    validateDiscountCode(code).then(r => {
+      if (cancelled) return
+      if (r.valid && typeof r.discountPercent === 'number') { setCodeInfo({ percent: r.discountPercent, label: r.discountLabel ?? `${r.discountPercent}% off` }); setCodeNote('') }
+      else { setCodeInfo(null); setCodeNote(r.message || "That code isn't valid") }
+    }).catch(() => { if (!cancelled) setCodeNote("We couldn't check your code just now, so the full price is shown. Your code is checked again at payment.") })
+    return () => { cancelled = true }
+  }, [code])
+
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
@@ -161,7 +178,7 @@ function MembershipSignup() {
       const res = await fetch('/api/membership/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, dojo, classTime, trialDate, parent: account, emergency, consent: { terms, photos },
+        body: JSON.stringify({ plan, dojo, classTime, trialDate, discountCode: codeInfo ? code : undefined, parent: account, emergency, consent: { terms, photos },
           trialToken: trialToken || (() => { try { return sessionStorage.getItem('forzaTrialToken') || '' } catch { return '' } })(),
           students: students.map(st => ({ ...st, suit: { key: REQUIRED_SUIT_KEY, size: st.suitSize }, licence: { type: 'first_time' } })) }),
       })
@@ -359,7 +376,7 @@ function MembershipSignup() {
           <h2 className="text-lg font-bold">Your total</h2>
           <div className="rounded-2xl bg-[#fafaf9] border border-black/8 p-4 text-sm space-y-4">
             {(() => {
-              const fee = PLANS[plan].price
+              const fee = codeInfo ? discountedMonthlyPence(PLANS[plan].price, codeInfo.percent) : PLANS[plan].price
               if (!trialDate) return <>
                 <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
                 <p className="text-xs text-gray-500">Enter your trial date above to see exact amounts.</p>
@@ -371,6 +388,8 @@ function MembershipSignup() {
               const oneOff = pr + suits + lic
               return <>
                 <div className="flex justify-between"><span className="text-gray-500">Package</span><strong>{PLAN_LABEL[plan]}</strong></div>
+                {codeInfo && <div className="flex justify-between text-green-700"><span>Access code {code} ({codeInfo.label} the monthly fee)</span><strong>{pounds(PLANS[plan].price)} → {pounds(fee)}/mo</strong></div>}
+                {codeNote && <p className="text-xs text-amber-700">{codeNote}</p>}
 
                 <div className="rounded-xl bg-white border border-black/8 p-3 space-y-2">
                   <p className="text-xs font-semibold uppercase tracking-wide text-[#dc2626] flex items-center gap-1.5">
@@ -386,8 +405,12 @@ function MembershipSignup() {
                   <p className="text-xs font-semibold uppercase tracking-wide text-gray-700 flex items-center gap-1.5">
                     <ShieldCheck className="h-3.5 w-3.5 text-green-600" /> Then Direct Debit (GoCardless)
                   </p>
-                  <div className="flex justify-between"><span className="text-gray-500">Monthly lesson fees</span><strong>{pounds(fee)} on the 1st, from {ukDate(firstOfNextMonth(start))}</strong></div>
-                  <p className="text-xs text-gray-500">Suit, licence and first month are <strong>not</strong> taken on Direct Debit — only the ongoing monthly membership.</p>
+                  {fee === 0
+                    ? <p className="text-xs text-gray-700"><strong>No monthly fee with your code, so no Direct Debit is needed.</strong> You only pay the suit and licence today.</p>
+                    : <>
+                        <div className="flex justify-between"><span className="text-gray-500">Monthly lesson fees</span><strong>{pounds(fee)} on the 1st, from {ukDate(firstOfNextMonth(start))}</strong></div>
+                        <p className="text-xs text-gray-500">Suit, licence and first month are <strong>not</strong> taken on Direct Debit — only the ongoing monthly membership.</p>
+                      </>}
                 </div>
               </>
             })()}
