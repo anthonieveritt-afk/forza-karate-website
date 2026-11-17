@@ -415,7 +415,7 @@ function MembershipSignup() {
               </>
             })()}
           </div>
-          <p className="flex gap-2 text-xs text-gray-500"><CreditCard className="h-4 w-4 shrink-0 text-[#dc2626]" /> You&apos;ll pay the one-off total securely with Stripe. After that, GoCardless opens so you can set up the monthly Direct Debit (bank details protected by the Direct Debit Guarantee).</p>
+          <p className="flex gap-2 text-xs text-gray-500"><CreditCard className="h-4 w-4 shrink-0 text-[#dc2626]" /> {codeInfo?.percent === 100 ? <>You&apos;ll pay the suit and licence securely with Stripe. With your code there is no monthly fee, so there is no Direct Debit to set up.</> : <>You&apos;ll pay the one-off total securely with Stripe. After that, GoCardless opens so you can set up the monthly Direct Debit (bank details protected by the Direct Debit Guarantee).</>}</p>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <Button type="submit" size="lg" className="w-full" disabled={busy}>
             {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opening card payment…</> : 'Pay now by card'}
