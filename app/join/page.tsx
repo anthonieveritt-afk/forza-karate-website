@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { CheckCircle, ArrowRight, ShoppingBag, CreditCard, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
-import { getEnrolmentToken, submitEnrolment } from '@/app/actions/enrolment'
+import { getEnrolmentToken, submitEnrolment, validateDiscountCode } from '@/app/actions/enrolment'
 import { HONEYPOT_FIELD } from '@/lib/enrolment-guard'
 import { saveJoinPrefill } from '@/lib/joinPrefill'
 
@@ -51,6 +51,11 @@ export default function JoinPage() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [enrolMemberId, setEnrolMemberId] = useState<number | null>(null)
   const [enrolmentToken, setEnrolmentToken] = useState('')
+  const [discountInput, setDiscountInput] = useState('')
+  const [discountApplied, setDiscountApplied] = useState<{ code: string; label: string } | null>(null)
+  const [discountError, setDiscountError] = useState('')
+  const [discountLoading, setDiscountLoading] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -62,9 +67,43 @@ export default function JoinPage() {
 
   const nextSteps = [ddStep]
 
+  async function applyDiscountCode() {
+    const code = discountInput.trim()
+    if (!code) return
+    setDiscountLoading(true)
+    setDiscountError('')
+    try {
+      const result = await validateDiscountCode(code)
+      if (result.valid && result.discountLabel) {
+        setDiscountApplied({ code: code.toUpperCase(), label: result.discountLabel })
+        setDiscountError('')
+      } else {
+        setDiscountApplied(null)
+        setDiscountError(result.message || "That code isn't valid")
+      }
+    } catch {
+      setDiscountApplied(null)
+      setDiscountError("We couldn't check that code just now. Please try again.")
+    } finally {
+      setDiscountLoading(false)
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setSubmitError('')
     setStatus('loading')
+    const typedCode = discountInput.trim()
+    if (typedCode && !discountApplied) {
+      const result = await validateDiscountCode(typedCode)
+      if (!result.valid || !result.discountLabel) {
+        setDiscountError(result.message || "That code isn't valid")
+        setStatus('idle')
+        return
+      }
+      setDiscountApplied({ code: typedCode.toUpperCase(), label: result.discountLabel })
+    }
+
     const f = new FormData(e.currentTarget)
     const g = (k: string) => f.get(k) as string
     try {
@@ -94,7 +133,7 @@ export default function JoinPage() {
         currentBelt: g('currentBelt'),
         membershipType: g('membershipType'),
         heardAboutUs: g('heardAboutUs') || undefined,
-        discountCode: g('discountCode') || undefined,
+        discountCode: discountApplied?.code || typedCode || undefined,
         enrolmentToken: g('enrolmentToken') || enrolmentToken,
         companyUrl: g(HONEYPOT_FIELD) || '',
       })
@@ -114,7 +153,14 @@ export default function JoinPage() {
         sessionStorage.setItem('pendingEnrolMemberId', String(mid))
       }
       setStatus('done')
-    } catch {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : ''
+      if (message && /code/i.test(message)) {
+        setDiscountError(message)
+        setStatus('idle')
+        return
+      }
+      setSubmitError(message || '')
       setStatus('error')
     }
   }
@@ -187,7 +233,7 @@ export default function JoinPage() {
 
               {status === 'error' && (
                 <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm text-center">
-                  Something went wrong — please try again or email us at hello@forzakarate.co.uk
+                  {submitError || 'Something went wrong — please try again or email us at hello@forzakarate.co.uk'}
                 </div>
               )}
 
@@ -419,10 +465,40 @@ export default function JoinPage() {
                 </select>
               </div>
 
-              {/* ── Discount / members code ── */}
-              <div>
-                <label className={label}>Members / discount code <span className="text-gray-400 font-normal">(optional)</span></label>
-                <input name="discountCode" type="text" placeholder="Enter code if you have one" className={input} />
+              {/* ── Discount / members code (validated server-side against Office Access Codes) ── */}
+              <div data-testid="discount-code-field">
+                <label className={label} htmlFor="discountCode">Members / discount code <span className="text-gray-400 font-normal">(optional)</span></label>
+                {discountApplied ? (
+                  <div data-testid="discount-code-applied" className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-green-200 bg-green-50">
+                    <div>
+                      <p className="text-sm font-semibold text-green-800">Code applied — {discountApplied.label}</p>
+                      <p className="text-xs text-green-700 font-mono">{discountApplied.code}</p>
+                    </div>
+                    <button type="button" className="text-sm font-medium text-green-800 underline" onClick={() => { setDiscountApplied(null); setDiscountInput(''); setDiscountError('') }}>
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      id="discountCode"
+                      data-testid="discount-code-input"
+                      name="discountCode"
+                      type="text"
+                      autoComplete="off"
+                      spellCheck={false}
+                      value={discountInput}
+                      onChange={e => { setDiscountInput(e.target.value.toUpperCase()); setDiscountError('') }}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); applyDiscountCode() } }}
+                      placeholder="Enter code if you have one"
+                      className={input}
+                    />
+                    <Button type="button" data-testid="discount-code-apply" onClick={applyDiscountCode} disabled={discountLoading || !discountInput.trim()} className="shrink-0 h-11">
+                      {discountLoading ? 'Checking…' : 'Apply'}
+                    </Button>
+                  </div>
+                )}
+                {discountError && <p data-testid="discount-code-error" className="mt-1.5 text-xs text-red-600">{discountError}</p>}
               </div>
 
               {/* ── Submit ── */}
