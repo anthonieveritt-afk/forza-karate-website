@@ -1,6 +1,7 @@
 'use server'
 
 import { enrolmentGuardDecision, enrolmentSecret, issueEnrolmentToken } from '@/lib/enrolment-guard'
+import { normalizeJoinCode, validateOfficeAccessCode } from '@/lib/officeAccessCode'
 
 export interface EnrolmentData {
   firstName: string
@@ -41,6 +42,16 @@ export async function getEnrolmentToken(): Promise<string> {
   return issueEnrolmentToken(secret)
 }
 
+
+export async function validateDiscountCode(code: string): Promise<{
+  valid: boolean
+  discountPercent?: number
+  discountLabel?: string
+  message?: string
+}> {
+  return validateOfficeAccessCode(code)
+}
+
 export async function submitEnrolment(data: EnrolmentData): Promise<{ memberId: number }> {
   const honbuUrl = (process.env.CLUB_HONBU_URL || DEFAULT_HONBU).replace(/\/$/, '')
   const honbuSecret = process.env.CLUB_HONBU_WEBHOOK_SECRET?.trim()
@@ -67,6 +78,16 @@ export async function submitEnrolment(data: EnrolmentData): Promise<{ memberId: 
     throw new Error('Please refresh the page and try again.')
   }
 
+  const enteredCode = normalizeJoinCode(data.discountCode)
+  let discountCode = ''
+  if (enteredCode) {
+    const checked = await validateOfficeAccessCode(enteredCode)
+    if (!checked.valid) {
+      throw new Error(checked.message || "That code isn't valid")
+    }
+    discountCode = enteredCode
+  }
+
   const res = await fetch(`${honbuUrl}/api/webhooks/formsmarts/licence?token=${encodeURIComponent(honbuSecret)}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -90,7 +111,7 @@ export async function submitEnrolment(data: EnrolmentData): Promise<{ memberId: 
       'Licence Type': data.membershipType || 'Student',
       Source: 'Forza website join form',
       'Join Flow': 'website',
-      'Discount Code': data.discountCode || '',
+      'Discount Code': discountCode,
     }),
   })
 
