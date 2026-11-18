@@ -46,6 +46,10 @@ function PayDone() {
           setError(d.error ?? 'Could not start Direct Debit.')
           return
         }
+        if (d.noDirectDebit) {
+          router.replace('/join/membership/done?free=1')
+          return
+        }
         if (d.alreadyFulfilled) {
           router.replace(`/join/membership/done?br=${d.billingRequestId}`)
           return

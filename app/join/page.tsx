@@ -146,6 +146,7 @@ export default function JoinPage() {
           ? { givenName: g('firstName'), familyName: g('lastName'), email: g('email'), phone: g('phone'), address: [g('addressLine1'), g('addressLine2')].filter(Boolean).join(', '), city: g('town'), postCode: g('postcode') }
           : { givenName: g('parentFirstName') || '', familyName: g('parentLastName') || '', email: g('parentEmail') || '', phone: g('parentPhone') || '', address: [g('addressLine1'), g('addressLine2')].filter(Boolean).join(', '), city: g('town'), postCode: g('postcode') },
         emergency: { name: g('emergencyName') || '', phone: g('emergencyPhone') || '' },
+        discountCode: (discountApplied?.code || typedCode || '').toUpperCase() || undefined,
       })
       const mid = result.memberId || 0
       setEnrolMemberId(mid || null)

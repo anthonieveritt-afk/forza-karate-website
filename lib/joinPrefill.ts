@@ -4,6 +4,8 @@ export type JoinPrefill = {
   firstName: string; surname: string; dateOfBirth: string; belt: string; medical: string
   parent: { givenName: string; familyName: string; email: string; phone: string; address: string; city: string; postCode: string }
   emergency: { name: string; phone: string }
+  /** Access code the person entered on /join (already validated there). Re-validated on the server at checkout. */
+  discountCode?: string
   savedAt: number
 }
 const KEY = 'forzaJoinPrefill'

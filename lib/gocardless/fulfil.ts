@@ -5,7 +5,7 @@ import { gc, GcError } from './client'
 import { sendEmail, envAddresses } from '@/lib/email'
 import { honbuSignupUrl, honbuSecret } from '@/lib/honbu'
 import { loadSignup, loadOutcome, saveOutcome, loadCardOutcome, saveCardOutcome, type Outcome, type Signup, type CardOutcome, type StripePayment } from './store'
-import { PLANS, DOJOS, proRataPence, proRataLabel, firstOfNextMonth, extrasLineItems } from './plans'
+import { PLANS, DOJOS, proRataPence, proRataLabel, firstOfNextMonth, extrasLineItems, signupMonthlyPence } from './plans'
 
 /**
  * Club Honbu hand-off: POST /api/enrolment/website-signup (Honbu routes/website-signup.ts).
@@ -37,10 +37,13 @@ export function honbuBody(brId: string | null, s: Signup, g: HonbuGc | null) {
   const dd = g ? { customerId: g.customerId, mandateId: g.mandateId, subscriptionId: g.subscriptionId, startDate: g.subscriptionStart ?? undefined,
     firstPaymentId: g.firstPaymentId, extrasPaymentId: g.extrasPaymentId } : null
   return {
-    ...(cardModel ? { model: 'card-then-dd', signupId: s.signupId, stage: g ? 'complete' : 'card_paid_awaiting_direct_debit' } : {}),
+    // A £0 monthly fee (100% code) has no Direct Debit step, so the card payment IS the completed sign-up.
+    ...(cardModel ? { model: 'card-then-dd', signupId: s.signupId, stage: g || signupMonthlyPence(s) === 0 ? 'complete' : 'card_paid_awaiting_direct_debit' } : {}),
     ...(brId ? { billingRequestId: brId } : {}),
     plan: s.plan,
-    monthlyFeePence: PLANS[s.plan].price,
+    monthlyFeePence: signupMonthlyPence(s),
+    fullMonthlyFeePence: PLANS[s.plan].price,
+    ...(s.discount ? { discount: { code: s.discount.code, percent: s.discount.percent } } : {}),
     dojo: s.dojo,
     clubName: DOJOS[s.dojo],
     classTime: s.classTime,
@@ -55,7 +58,7 @@ export function honbuBody(brId: string | null, s: Signup, g: HonbuGc | null) {
     ...(dd ? { gocardless: dd } : {}),
     payments: { ...(stripe ? { card: stripe } : {}), ...(dd ? { directDebit: dd } : {}) },
     ...(stripe ? { stripe, paymentReference: stripe.paymentIntentId ?? stripe.sessionId } : {}),
-    firstPaymentPence: s.proRataPence ?? proRataPence(PLANS[s.plan].price, s.startDate),
+    firstPaymentPence: s.proRataPence ?? proRataPence(signupMonthlyPence(s), s.startDate),
     upfrontPence: stripe?.amountPence ?? undefined,
     extrasPence: s.extrasPence,
     oneOffCollectedVia: stripe ? 'stripe' : 'gocardless',
@@ -166,7 +169,7 @@ export async function processBillingRequest(brId: string, opts: { honbuWaits?: n
   let firstPaymentId: string | null = existing?.firstPaymentId ?? null
   let firstPaymentDate: string | null = existing?.firstPaymentDate ?? null
   let extrasPaymentId: string | null = existing?.extrasPaymentId ?? null
-  const fee = PLANS[signup.plan].price
+  const fee = signupMonthlyPence(signup)
   const names = signup.students.map(x => `${x.firstName} ${x.surname}`).join(', ')
   const { mandates: m } = await gc(`/mandates/${mandateId}`)
   const earliest: string = m.next_possible_charge_date ?? signup.startDate

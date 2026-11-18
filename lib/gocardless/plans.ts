@@ -119,3 +119,15 @@ export function licenceFeeForAge(age: number | null): number {
 export function licenceFeePence(_type: LicenceType, dob: string, on = new Date()): number {
   return licenceFeeForAge(ageOn(dob, on))
 }
+
+/** Monthly fee after an access-code discount, in pence. 100% gives 0. Percent is clamped to 0-100; never negative. */
+export function discountedMonthlyPence(fullPence: number, percent: number): number {
+  const full = Math.max(0, Math.round(Number(fullPence) || 0))
+  const p = Math.min(100, Math.max(0, Number(percent) || 0))
+  return Math.max(0, Math.round((full * (100 - p)) / 100))
+}
+
+/** The monthly fee this sign-up is actually charged: the discounted fee when a code was applied, else the plan price. */
+export function signupMonthlyPence(s: { plan: PlanKey; discount?: { monthlyPence: number } | null }): number {
+  return s.discount ? s.discount.monthlyPence : PLANS[s.plan].price
+}

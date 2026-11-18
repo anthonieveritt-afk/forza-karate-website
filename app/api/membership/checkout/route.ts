@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getForzaStripe, SITE_URL, UNAVAILABLE_MSG } from '@/lib/paid/stripe'
-import { PLANS, pounds, proRataLabel, extrasLineItems } from '@/lib/gocardless/plans'
+import { PLANS, pounds, proRataLabel, extrasLineItems, proRataPence, discountedMonthlyPence } from '@/lib/gocardless/plans'
+import { normalizeJoinCode, validateOfficeAccessCode } from '@/lib/officeAccessCode'
 import { verifyTrialJoinToken } from '@/lib/trialJoin'
 import { parseMembershipBody } from '@/lib/gocardless/parse-signup'
 import { newSignupId, saveSignup, type Signup } from '@/lib/gocardless/store'
@@ -22,11 +23,25 @@ export async function POST(req: Request) {
 
   const signupId = newSignupId()
   const { signup: core } = parsed
+
+  // Access code: re-validated here on the server (the browser's idea of the price is never used).
+  // The discount applies to the monthly membership fee, and so to the pro-rata first month; suit and licence are full price.
+  let discount: Signup['discount'] = null
+  const enteredCode = normalizeJoinCode(typeof b?.discountCode === 'string' ? b.discountCode : '')
+  if (enteredCode) {
+    const checked = await validateOfficeAccessCode(enteredCode)
+    if (!checked.valid) return NextResponse.json({ error: checked.message || "That code isn't valid" }, { status: 400 })
+    const full = PLANS[core.plan].price
+    discount = { code: enteredCode, percent: checked.discountPercent, fullMonthlyPence: full, monthlyPence: discountedMonthlyPence(full, checked.discountPercent) }
+    core.proRataPence = proRataPence(discount.monthlyPence, core.startDate)
+  }
+  const monthlyPence = discount ? discount.monthlyPence : PLANS[core.plan].price
   const oneOff = core.proRataPence + core.extrasPence
   if (oneOff <= 0) return NextResponse.json({ error: 'Nothing to charge.' }, { status: 400 })
 
   const signup: Signup = {
     ...core,
+    discount,
     signupId,
     trialMemberId: verifyTrialJoinToken(b?.trialToken),
     stripe: null,
@@ -46,17 +61,19 @@ export async function POST(req: Request) {
         mode: 'payment',
         customer_email: core.parent.email,
         line_items: [
-          {
-            quantity: 1,
-            price_data: {
-              currency: 'gbp',
-              unit_amount: core.proRataPence,
-              product_data: {
-                name: 'First month (pro-rata)',
-                description: `${PLANS[core.plan].label} · ${proRataLabel(core.startDate)} from ${core.startDate}`,
-              },
-            },
-          },
+          ...(core.proRataPence > 0
+            ? [{
+                quantity: 1,
+                price_data: {
+                  currency: 'gbp' as const,
+                  unit_amount: core.proRataPence,
+                  product_data: {
+                    name: 'First month (pro-rata)',
+                    description: `${PLANS[core.plan].label} · ${proRataLabel(core.startDate)} from ${core.startDate}${discount ? ` · code ${discount.code} (${discount.percent}% off)` : ''}`,
+                  },
+                },
+              }]
+            : []),
           ...(core.extrasPence > 0
             ? [{
                 quantity: 1,
@@ -79,6 +96,7 @@ export async function POST(req: Request) {
           dojo: core.dojo,
           students: names.slice(0, 450),
           amountPence: String(oneOff),
+          ...(discount ? { discountCode: discount.code, discountPercent: String(discount.percent) } : {}),
         },
         custom_text: {
           submit: {
@@ -106,7 +124,7 @@ export async function POST(req: Request) {
       signupId,
       oneOffPence: oneOff,
       oneOffLabel: pounds(oneOff),
-      monthlyPence: PLANS[core.plan].price,
+      monthlyPence,
     })
   } catch (err) {
     console.error('membership checkout error', err)
