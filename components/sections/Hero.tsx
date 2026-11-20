@@ -15,6 +15,8 @@ const HERO_ZOOM = 1.0
 // 1, 2, 3, 4 (Book a Trial ad), 5, 7, 8, 18, 19, 22, 23 and 35 (last).
 // Image files for removed slides are left in public/; only this list changed.
 const photos = [
+  // Added 20 Nov 2026 as the lead slide. Faces sit in the upper-middle of the photo, so keep the crop high (16:9 desktop trims top/bottom).
+  { src: '/images/hero/team-medals.webp',   alt: 'Forza Karate students celebrating with medals and trophies', position: '50% 30%' },
   { src: '/hero.webp',                      alt: 'Forza Karate Club members',          position: '50% 30%' }, // live 1
   { src: '/hero2.webp',                     alt: 'Forza Karate Club competition squad', position: '50% 30%' }, // live 2
   { src: '/hero4.jpg',                      alt: 'Forza Karate Club training hall',    position: '50% 35%' }, // live 3
@@ -29,14 +31,14 @@ const photos = [
 ]
 
 type Slide =
-  | { kind: 'photo'; key: string; src: string; alt: string }
+  | { kind: 'photo'; key: string; src: string; alt: string; position?: string }
   | { kind: 'ad'; key: string; href: string; eyebrow: string; title: string; sub: string; cta: string; img: string }
 
 const adTrial: Slide = { kind: 'ad', key: 'ad-trial', href: '/trial-class', eyebrow: 'Forza Karate Club', title: 'Beginners welcome — click here for a trial', sub: 'New to karate? All ages, no experience needed.', cta: 'Book a Trial', img: '/hero-ad-trial.webp' } // live 4
 
-const photoSlides: Slide[] = photos.map((p) => ({ kind: 'photo', key: p.src, src: p.src, alt: p.alt }))
-// Display order matches kept live positions: 1–3, trial ad (4), then 5, 7, 8, 18, 19, 22, 23, 35.
-const slides: Slide[] = [...photoSlides.slice(0, 3), adTrial, ...photoSlides.slice(3)]
+const photoSlides: Slide[] = photos.map((p, i) => ({ kind: 'photo', key: p.src, src: p.src, alt: p.alt, ...(i === 0 ? { position: p.position } : {}) }))
+// Display order: team-medals lead slide, then live 1–3, trial ad, then 5, 7, 8, 18, 19, 22, 23, 35.
+const slides: Slide[] = [...photoSlides.slice(0, 4), adTrial, ...photoSlides.slice(4)]
 
 const HERO_SIZES = '(max-width: 1280px) 100vw, 1280px'
 
@@ -76,7 +78,7 @@ export default function Hero() {
                 aria-hidden={!visible}
                 style={{
                   objectFit: 'cover',
-                  objectPosition: '50% 40%',
+                  objectPosition: slide.position ?? '50% 40%',
                   transform: `scale(${HERO_ZOOM})`,
                   ...frame,
                   pointerEvents: 'none',
