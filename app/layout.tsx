@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -8,6 +8,13 @@ import { CartProvider } from '@/lib/cart-context'
 import { SITE_URL, orgSchema } from '@/lib/seo'
 import { Analytics } from '@vercel/analytics/next'
 import MetaPixel from '@/components/tracking/MetaPixel'
+
+// The site is light-only. Declaring this stops phone browsers (Chrome/Samsung/Opera "dark mode for websites")
+// from auto-darkening pages and recolouring things like belts and logos.
+export const viewport: Viewport = {
+  colorScheme: 'light',
+  themeColor: '#ffffff',
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -42,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en-GB">
+    <html lang="en-GB" style={{ colorScheme: 'light' }}>
       <body className="min-h-screen flex flex-col">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
         <CartProvider>
