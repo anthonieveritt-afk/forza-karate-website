@@ -26,6 +26,8 @@ describe('image optimization', () => {
     expect(config).toContain('deviceSizes:')
     expect(config).toContain('deviceSizes: [640, 750, 828, 1080, 1200, 1920]')
     expect(config).toContain(R2_IMAGE_HOST)
+    // Vercel's optimizer returns 402 once the plan limit is hit, which blanks every photo.
+    expect(config).toContain('unoptimized: true')
   })
 
   it('uses next/image on the hero, mounts only nearby slides, and priorities the first photo only', () => {

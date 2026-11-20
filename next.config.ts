@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
   // Trailing slashes are handled in redirects() so old WordPress URLs (/page/) need one hop, not two.
   skipTrailingSlashRedirect: true,
   images: {
+    // Vercel's image optimizer is over its plan limit and answers 402 (OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED)
+    // for any photo size it has not already cached, so photos vanish. Serve the files as they are instead.
+    // Local photos in /public are already compressed webp; R2 photos come straight from R2.
+    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     // Cap the longest edge we ask Vercel to emit; 4K widths are wasted on phones.
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
