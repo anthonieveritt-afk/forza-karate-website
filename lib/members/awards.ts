@@ -55,7 +55,10 @@ export function awardYear(a: Pick<PortalAward, 'certificateDate'>): string {
 /** "Gold – Student of the Year 2026" / "Bronze – Best Attendance · Rayleigh 2026" / "Most Improved 2026". */
 export function awardHeadline(a: Pick<PortalAward, 'awardTitle' | 'place' | 'club' | 'certificateDate'>): string {
   const metal = PLACE_METAL[a.place]
-  const title = `${a.awardTitle}${a.club ? ` · ${a.club}` : ''}`
+  const club = (a.club ?? '').trim()
+  const named = (a.awardTitle ?? '').trim()
+  // Don't repeat the club when the title already names it (e.g. "Best Attendance – Rayleigh Tuesday").
+  const title = club && !named.toLowerCase().includes(club.toLowerCase()) ? `${named} · ${club}` : named
   const year = awardYear(a)
   return `${metal ? `${metal} – ` : ''}${title}${year && !title.includes(year) ? ` ${year}` : ''}`
 }
