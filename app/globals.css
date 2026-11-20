@@ -2,6 +2,8 @@
 @import "tailwindcss";
 
 :root {
+  /* Light only, whatever the device dark-mode setting is. */
+  color-scheme: only light;
   --background: #ffffff;
   --foreground: #111111;
 }
