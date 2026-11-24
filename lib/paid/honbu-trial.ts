@@ -12,6 +12,7 @@ export type TrialDetails = {
   ageGroup: string
   message?: string
   utm?: Record<string, string | undefined>
+  bookedSession?: string
 }
 
 /** "utm_source=facebook|utm_medium=paid|…" or "" when the visit had no UTMs. */
@@ -52,6 +53,7 @@ export async function postTrialToHonbu(d: TrialDetails, paidNote?: string): Prom
       'Date of Birth': d.dateOfBirth || '',
       'Which Club': d.dojo,
       'Preferred Class': d.ageGroup,
+      'Booked Session': d.bookedSession || '',
       'Parent Name': d.parentName,
       'How did you hear': notes,
       Medical: d.message || '',
