@@ -1,11 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-:root {
-  /* Light only, whatever the device dark-mode setting is. */
-  color-scheme: only light;
+:root, html, body {
+  /* 'light only' opts out of Safari Adaptive Dark Mode and Chromium Auto Dark.
+     Plain 'light' is not enough — those browsers will still recolour the page. */
+  color-scheme: light only;
   --background: #ffffff;
   --foreground: #111111;
+}
+
+/* Belt SVGs must keep their true colours even if a browser still tries to auto-darken. */
+.belt-icon {
+  color-scheme: light only;
+  forced-color-adjust: none;
 }
 
 * {
