@@ -9,10 +9,12 @@ import { SITE_URL, orgSchema } from '@/lib/seo'
 import { Analytics } from '@vercel/analytics/next'
 import MetaPixel from '@/components/tracking/MetaPixel'
 
-// The site is light-only. Declaring this stops phone browsers (Chrome/Samsung/Opera "dark mode for websites")
-// from auto-darkening pages and recolouring things like belts and logos.
+// The site is light-only. 'light only' (the 'only' keyword) is required to opt out of
+// Safari 27.3 Adaptive Dark Mode and Chromium Auto Dark, which otherwise invert
+// luminance (white belts go black, brown goes peach, black belts go white).
+// Plain 'light' is not an opt-out — those browsers still auto-darken the page.
 export const viewport: Viewport = {
-  colorScheme: 'light',
+  colorScheme: 'light only',
   themeColor: '#ffffff',
 }
 
@@ -49,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en-GB" style={{ colorScheme: 'light' }}>
+    <html lang="en-GB" style={{ colorScheme: 'light only' }}>
       <body className="min-h-screen flex flex-col">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
         <CartProvider>

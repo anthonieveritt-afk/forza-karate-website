@@ -53,7 +53,8 @@ export default function BeltIcon({ color, border, stripe, doubleStripe }: BeltIc
     <svg
       viewBox="145.5 205.5 500 200"
       xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-auto drop-shadow-sm"
+      className="belt-icon w-full h-auto drop-shadow-sm"
+      style={{ colorScheme: 'light only' }}
       aria-hidden="true"
     >
       <defs>
