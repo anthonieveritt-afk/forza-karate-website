@@ -14,7 +14,9 @@ import MetaPixel from '@/components/tracking/MetaPixel'
 // luminance (white belts go black, brown goes peach, black belts go white).
 // Plain 'light' is not an opt-out — those browsers still auto-darken the page.
 export const viewport: Viewport = {
-  colorScheme: 'light only',
+  // Next.js types ColorSchemeEnum as 'only light'; 'light only' is the same CSS value
+  // (Apple's documented Adaptive Dark Mode opt-out) and is what we emit in the meta tag.
+  colorScheme: 'light only' as 'only light',
   themeColor: '#ffffff',
 }
 
