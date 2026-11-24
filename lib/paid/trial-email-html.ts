@@ -30,18 +30,18 @@ ${cta}
 const p = (s: string) => `<p style="margin:0 0 16px">${s}</p>`
 const row = (k: string, v: string) => `<tr><td style="padding:8px 12px 8px 0;font-family:${HEAD};font-weight:900;font-size:13px;text-transform:uppercase;color:#C41230;vertical-align:top;white-space:nowrap">${esc(k)}</td><td style="padding:8px 0;font-family:${BODY};font-size:16px;color:#111111;border-bottom:1px solid #EEEEEA">${esc(v)}</td></tr>`
 
-export type TrialInfo = { parentName?: string; childName?: string; age?: string; email?: string; phone?: string; dojo?: string; ageGroup?: string; message?: string; sessionName?: string; amount: string; sessionId: string; test: boolean; honbuOk: boolean; closed?: { label: string; backMonday: string } | null; when?: string; where?: string }
+export type TrialInfo = { parentName?: string; childName?: string; age?: string; email?: string; phone?: string; dojo?: string; ageGroup?: string; message?: string; sessionName?: string; amount: string; sessionId: string; test: boolean; honbuOk: boolean; closed?: { label: string; backMonday: string } | null; when?: string; where?: string; restriction?: string }
 
 export function withSessionDetails<T extends TrialInfo>(t: T): T {
   const sess = sessionById(t.sessionName)
   if (!sess) return t
-  return { ...t, dojo: t.dojo || (sess.dojo === 'rayleigh' ? 'Rayleigh' : 'Upminster'), when: formatSessionLabel(sess).split(' at ')[0], where: `${sess.venueName}, ${sess.venueAddress}` }
+  return { ...t, dojo: t.dojo || (sess.dojo === 'rayleigh' ? 'Rayleigh' : 'Upminster'), when: formatSessionLabel(sess).split(' at ')[0], where: `${sess.venueName}, ${sess.venueAddress}`, restriction: sess.restrictionNote }
 }
 
 export function parentConfirmationHtml(raw: TrialInfo): string {
   const t = withSessionDetails(raw)
   const first = (t.parentName || '').split(' ')[0] || 'there'
-  const details = `${row('Class', t.ageGroup || '')}${t.when ? row('When', t.when) : ''}${t.where ? row('Where', t.where) : row('Dojo', t.dojo || '')}${row('Paid', t.amount)}`
+  const details = `${row('Class', t.ageGroup || '')}${t.when ? row('When', t.when) : ''}${t.where ? row('Where', t.where) : row('Dojo', t.dojo || '')}${t.restriction ? row('Please note', t.restriction) : ''}${row('Paid', t.amount)}`
   const body = [
     p(`Hi ${esc(first)},`),
     p(`Thanks for booking a trial class at Forza Karate${t.childName ? ` for <strong>${esc(t.childName)}</strong>` : ''} — your <strong>${esc(t.amount)}</strong> payment has gone through.`),
@@ -60,7 +60,7 @@ export function clubNotifyHtml(raw: TrialInfo): string {
   const body = [
     p(`A <strong>${esc(t.amount)}</strong> trial class has been paid for online.${t.test ? ' <strong style="color:#C41230">[TEST MODE]</strong>' : ''}`),
     t.closed ? `<p style="margin:0 0 16px;padding:12px 16px;background:#C41230;color:#FFFFFF;font-weight:bold">${esc(t.closed.label.toUpperCase())} — first class next teaching week (w/c ${esc(t.closed.backMonday)}). Don't book mid-break.</p>` : '',
-    `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 16px;width:100%">${row('Student', `${t.childName || t.parentName || ''}${t.age ? ` (age ${t.age})` : ''}`)}${row('Contact', t.parentName || '')}${row('Email', t.email || '')}${row('Phone', t.phone || '')}${row('Class', t.ageGroup || '')}${t.when ? row('When', t.when) : ''}${t.where ? row('Where', t.where) : row('Dojo', t.dojo || '')}${t.message ? row('Notes', t.message) : ''}${row('Stripe', t.sessionId)}</table>`,
+    `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 16px;width:100%">${row('Student', `${t.childName || t.parentName || ''}${t.age ? ` (age ${t.age})` : ''}`)}${row('Contact', t.parentName || '')}${row('Email', t.email || '')}${row('Phone', t.phone || '')}${row('Class', t.ageGroup || '')}${t.when ? row('When', t.when) : ''}${t.where ? row('Where', t.where) : row('Dojo', t.dojo || '')}${t.restriction ? row('Please note', t.restriction) : ''}${t.message ? row('Notes', t.message) : ''}${row('Stripe', t.sessionId)}</table>`,
     t.honbuOk
       ? `<p style="margin:0 0 16px;padding:12px 16px;background:#111111;color:#FFFFFF;font-weight:bold">✓ Added to Club Honbu trial list.</p>`
       : `<p style="margin:0 0 16px;padding:12px 16px;background:#C41230;color:#FFFFFF;font-weight:bold">⚠ Could NOT add to Club Honbu automatically — please add by hand.</p>`,

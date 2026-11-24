@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function TrialSuccessPage({ searchParams }: { searchParams: Promise<{ session_id?: string }> }) {
   const { session_id } = await searchParams
-  let paid = false, who = '', where = '', when = '', amount = ''
+  let paid = false, who = '', where = '', when = '', restriction = '', amount = ''
   const stripe = getForzaStripe()
   if (stripe && session_id) {
     try {
@@ -22,6 +22,7 @@ export default async function TrialSuccessPage({ searchParams }: { searchParams:
       const sess = sessionById(s.metadata?.sessionName)
       when = sess ? `${sess.day} ${sess.time}` : ''
       where = sess ? `${sess.venueName}, ${sess.venueAddress}` : [s.metadata?.ageGroup, s.metadata?.dojo].filter(Boolean).join(' at ')
+      restriction = sess?.restrictionNote || ''
       amount = gbp(s.amount_total ?? 0)
     } catch { /* fall through */ }
   }
@@ -41,6 +42,7 @@ export default async function TrialSuccessPage({ searchParams }: { searchParams:
               <p className="text-[#111111] font-medium leading-relaxed mb-2">
                 {when && <>Come along {when}. </>}
                 {where && <>{where}.</>}
+                {restriction && <> {restriction}.</>}
               </p>
             )}
             <p className="text-gray-500 leading-relaxed mb-8">Just wear something comfy — no kit needed. Come and try it out, then ask questions!</p>

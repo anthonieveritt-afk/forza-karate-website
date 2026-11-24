@@ -55,6 +55,7 @@ async function handleTrial(s: Stripe.Checkout.Session) {
       `Class: ${m.ageGroup}.`,
       info.when ? `When: ${info.when}.` : '',
       info.where ? `Where: ${info.where}.` : `Dojo: ${m.dojo}.`,
+      info.restriction ? `Please note: ${info.restriction}.` : '',
       info.closed
         ? `This week is ${info.closed.label}, so there are no classes. Come for this class the week beginning ${info.closed.backMonday} — the first week back.`
         : 'Please come along to this class. No need to wait for a further confirmation of the time.',
@@ -73,7 +74,7 @@ async function handleTrial(s: Stripe.Checkout.Session) {
     info.closed ? `${info.closed.label.toUpperCase()} — first class next teaching week (w/c ${info.closed.backMonday}). Don't book mid-break.` : '',
     `Student: ${m.childName || m.parentName}${m.age ? ` (age ${m.age})` : ''}`,
     `Contact: ${m.parentName} · ${m.email} · ${m.phone}`,
-    info.when || info.where ? `Class: ${m.ageGroup} — ${[info.when, info.where].filter(Boolean).join(' at ')}` : `Class: ${m.ageGroup} at ${m.dojo}`,
+    info.when || info.where ? `Class: ${m.ageGroup} — ${[info.when, info.where].filter(Boolean).join(' at ')}${info.restriction ? ` (${info.restriction})` : ''}` : `Class: ${m.ageGroup} at ${m.dojo}`,
     m.message ? `Notes: ${m.message}` : '',
     `Stripe session: ${s.id}`,
     'Pricing: the £10 is for the trial only (not deducted from membership). If they join, membership starts the week after at the full monthly rate.',

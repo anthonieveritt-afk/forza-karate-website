@@ -7,17 +7,18 @@ const FRI = 'Friday Rayleigh – 3.40–4.40pm'
 const SAT = 'Saturday – 10–11am'
 
 describe('trial session catalogue', () => {
-  it('does not offer Friday 3:40 Rayleigh (RPS pupils only)', () => {
-    expect(sessionById(FRI)?.trialEligible).toBe(false)
-    expect(eligibleSessions({ dojo: 'rayleigh', ageGroup: 'ninjas' }).map(s => s.id)).toEqual([TUE, SAT])
-    expect(eligibleSessions({ dojo: 'rayleigh' }).some(s => s.id === FRI)).toBe(false)
+  it('offers Friday 3:40 Rayleigh, labelled Rayleigh Primary School pupils only', () => {
+    expect(sessionById(FRI)?.trialEligible).toBe(true)
+    expect(sessionById(FRI)?.restrictionNote).toBe('Rayleigh Primary School pupils only')
+    expect(eligibleSessions({ dojo: 'rayleigh', ageGroup: 'ninjas' }).map(s => s.id)).toEqual([TUE, FRI, SAT])
+    expect(formatBookedSessionText(FRI)).toMatch(/Rayleigh Primary School pupils only/)
   })
 
   it('treats Saturday as Rayleigh so holiday logic applies', () => {
     expect(parseDojoKey(SAT)).toBe('rayleigh')
   })
 
-  it('matches legacy bare Rayleigh + Age 4 to ninja classes only', () => {
+  it('matches legacy bare Rayleigh + Age 4 to Tuesday and Saturday, not Friday or Tuesday 7–8', () => {
     const extras = { notes: 'Age: 4' }
     expect(trialMatchesSession('Rayleigh', TUE, extras)).toBe(true)
     expect(trialMatchesSession('Rayleigh', SAT, extras)).toBe(true)
@@ -50,5 +51,22 @@ describe('parent confirmation email', () => {
 
   it('formats booked session text for emails', () => {
     expect(formatBookedSessionText(TUE)).toMatch(/Tuesday 6:15–7:00pm at Rayleigh Primary School/)
+  })
+
+  it('labels Friday as Rayleigh Primary School pupils only in the confirmation email', () => {
+    const html = parentConfirmationHtml({
+      parentName: 'Chris Reeve',
+      childName: 'Harper Example',
+      ageGroup: 'Forza Ninjas (4–6)',
+      dojo: 'Rayleigh',
+      sessionName: FRI,
+      amount: '£10.00',
+      sessionId: 'cs_test',
+      test: true,
+      honbuOk: true,
+    })
+    expect(html).toMatch(/Friday 3:40/)
+    expect(html).toMatch(/Rayleigh Primary School pupils only/)
+    expect(html).not.toMatch(/72 hours/)
   })
 })

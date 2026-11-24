@@ -2,7 +2,8 @@
  *  forzakarate.co.uk `lib/paid/trial-sessions.ts` and club-honbu `artifacts/api-server/src/lib/trial-sessions.ts`.
  *
  *  `id` must match Forza Club Honbu classSessions / trialSessions exactly (en-dashes).
- *  Friday 3:40 Rayleigh is Rayleigh Primary School pupils only — never offered as a trial.
+ *  Friday 3:40 Rayleigh is offered as a trial, clearly labelled Rayleigh Primary School pupils only.
+ *  It is not used for read-side matching of legacy bare-dojo bookings (e.g. "Rayleigh").
  */
 export type DojoKey = "rayleigh" | "upminster"
 export type AgeGroupKey = "ninjas" | "juniors" | "seniors" | "adult"
@@ -16,6 +17,10 @@ export type TrialSession = {
   venueAddress: string
   ageGroups: AgeGroupKey[]
   trialEligible: boolean
+  /** Shown on the booking form and in emails when this class is chosen. */
+  restrictionNote?: string
+  /** If false, legacy bare-dojo rows (e.g. session_attended = "Rayleigh") are not auto-matched onto this class. */
+  matchLegacyBareDojo?: boolean
 }
 
 export const RAYLEIGH_VENUE = {
@@ -89,7 +94,9 @@ export const TRIAL_SESSIONS: TrialSession[] = [
     time: "3:40–4:40pm",
     ...RAYLEIGH_VENUE,
     ageGroups: ["ninjas", "juniors"],
-    trialEligible: false, // RPS after-school club — pupils only
+    trialEligible: true,
+    restrictionNote: "Rayleigh Primary School pupils only",
+    matchLegacyBareDojo: false,
   },
   {
     id: "Saturday – 10–11am",
@@ -214,13 +221,15 @@ export function trialMatchesSession(sessionAttended: string | null | undefined, 
   if (sessionById(sessionAttended)?.id === register.id) return true
   const bare = bareDojoOf(sessionAttended)
   if (!bare || bare !== register.dojo) return false
+  if (register.matchLegacyBareDojo === false) return false
   const age = inferAgeGroup(extras)
-  if (!age) return true // unknown age: still show on every trial-eligible class at that dojo
+  if (!age) return true // unknown age: still show on every trial-eligible class at that dojo (except restricted ones)
   return register.ageGroups.includes(age)
 }
 
 export function formatSessionLabel(session: TrialSession): string {
-  return `${session.day} ${session.time} at ${session.venueName}, ${session.venueAddress}`
+  const base = `${session.day} ${session.time} at ${session.venueName}, ${session.venueAddress}`
+  return session.restrictionNote ? `${base} (${session.restrictionNote})` : base
 }
 
 export function formatSessionShort(session: TrialSession): string {
@@ -234,7 +243,7 @@ export function formatBookedSessionText(sessionAttended?: string | null, extras?
   const bare = bareDojoOf(sessionAttended)
   if (bare) {
     const age = inferAgeGroup(extras)
-    const list = eligibleSessions({ dojo: bare, ageGroup: age || undefined })
+    const list = eligibleSessions({ dojo: bare, ageGroup: age || undefined }).filter((s) => s.matchLegacyBareDojo !== false)
     if (list.length) return list.map((s) => formatSessionLabel(s)).join("; ")
   }
   return (sessionAttended || "").trim() || "your trial class"

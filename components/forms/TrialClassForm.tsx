@@ -170,6 +170,7 @@ export default function TrialClassForm() {
                 <span className="text-sm text-[#111111]">
                   <span className="font-semibold">{s.day} {s.time}</span>
                   <span className="block text-gray-500">{s.venueName}, {s.venueAddress}</span>
+                  {s.restrictionNote && <span className="block text-[#dc2626] font-medium mt-0.5">{s.restrictionNote}</span>}
                 </span>
               </label>
             ))
