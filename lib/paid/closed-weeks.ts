@@ -5,6 +5,8 @@
 //          /home/box/shared/growth-sales/dojo-holiday-calendars-2026-10-26.md (Club Ops confirmed 26 Oct 2026).
 // OWNER: Club Operations — add ranges per dojo as confirmed. No other closed weeks 2 Nov – 18 Dec 2026.
 // Dates are UK local, inclusive; `back` = Monday of the next teaching week.
+import { parseDojoKey } from '@/lib/paid/trial-sessions'
+
 export type DojoKey = 'rayleigh' | 'upminster'
 type Range = { from: string; to: string; label: string; back: string }
 
@@ -22,10 +24,7 @@ export const CLOSED_BY_DOJO: Record<DojoKey, Range[]> = {
 }
 
 export function dojoKey(dojo?: string | null): DojoKey | null {
-  const d = (dojo || '').toLowerCase()
-  if (d.includes('rayleigh')) return 'rayleigh'
-  if (d.includes('upminster')) return 'upminster'
-  return null
+  return parseDojoKey(dojo)
 }
 
 const ukDate = (d: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/London', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d)

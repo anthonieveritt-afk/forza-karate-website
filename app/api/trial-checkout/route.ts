@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getForzaStripe, SITE_URL, UNAVAILABLE_MSG } from '@/lib/paid/stripe'
 import { TRIAL_PRICE_PENCE } from '@/lib/paid/catalogue'
 import { dobError } from '@/lib/dob'
+import { formatSessionLabel, parseAgeGroupKey, parseDojoKey, sessionById, type AgeGroupKey } from '@/lib/paid/trial-sessions'
 
 const AGE_GROUPS: Record<string, string> = {
   ninjas: 'Forza Ninjas (4–6)', juniors: 'Forza Juniors (7–10)', seniors: 'Forza Seniors (11+)', adult: 'Adult',
@@ -24,6 +25,7 @@ export async function POST(req: NextRequest) {
     ageGroup: clip(body.ageGroup, 20),
     dojo: clip(body.preferredDojo, 20),
     message: clip(body.message, 400),
+    sessionName: clip(body.sessionName, 80),
   }
   const utm = {
     utm_source: clip(body.utm_source, 80), utm_medium: clip(body.utm_medium, 80),
@@ -37,6 +39,13 @@ export async function POST(req: NextRequest) {
   if (!AGE_GROUPS[d.ageGroup] || !DOJOS[d.dojo]) {
     return NextResponse.json({ error: 'Please choose an age group and a dojo.' }, { status: 400 })
   }
+  const sess = sessionById(d.sessionName)
+  const ageKey = parseAgeGroupKey(d.ageGroup) as AgeGroupKey | null
+  const dojoKey = parseDojoKey(d.dojo)
+  if (!sess || !sess.trialEligible || !ageKey || !sess.ageGroups.includes(ageKey) || (dojoKey && sess.dojo !== dojoKey)) {
+    return NextResponse.json({ error: 'Please choose a class day and time.' }, { status: 400 })
+  }
+  const dojoLabel = sess.dojo === 'rayleigh' ? 'Rayleigh' : 'Upminster'
 
   const stripe = getForzaStripe()
   if (!stripe) return NextResponse.json({ error: UNAVAILABLE_MSG, unavailable: true }, { status: 503 })
@@ -52,7 +61,7 @@ export async function POST(req: NextRequest) {
           unit_amount: TRIAL_PRICE_PENCE,
           product_data: {
             name: 'Forza Karate trial class',
-            description: `${AGE_GROUPS[d.ageGroup]} · ${DOJOS[d.dojo]} — come and try it out!`,
+            description: `${AGE_GROUPS[d.ageGroup]} · ${formatSessionLabel(sess)} — come and try it out!`,
           },
         },
       }],
@@ -60,7 +69,8 @@ export async function POST(req: NextRequest) {
       metadata: {
         source: 'forza-karate-website', kind: 'trial',
         parentName: d.parentName, childName: d.childName, age: d.age, email: d.email, phone: d.phone,
-        dateOfBirth: d.dateOfBirth, ageGroup: AGE_GROUPS[d.ageGroup], dojo: DOJOS[d.dojo], message: d.message,
+        dateOfBirth: d.dateOfBirth, ageGroup: AGE_GROUPS[d.ageGroup], dojo: dojoLabel, message: d.message,
+        sessionName: sess.id,
         ...utm,
       },
       custom_text: { submit: { message: 'The £10 is for the trial class only and is not taken off membership. If you join, membership starts the week after at the full monthly rate.' } },

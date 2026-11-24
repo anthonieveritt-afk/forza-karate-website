@@ -17,7 +17,7 @@ const perks = [
   'No kit or uniform needed',
   'No commitment required',
   'All ages welcome — 4 to adult',
-  "We'll be in touch within 72 hours",
+  "You'll get the class day, time and venue in your confirmation email",
 ]
 
 export default function TrialClassPage() {
