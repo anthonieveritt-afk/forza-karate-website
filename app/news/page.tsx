@@ -2,8 +2,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { categoriesFromPosts, formatDate, cardThumbnail } from '@/lib/news'
+import { groupNewsCategories, newsCategoryHref } from '@/lib/news-category-groups'
 import { getAllPosts } from '@/lib/honbu-news'
 import NewsCardImage from '@/components/news/NewsCardImage'
+import NewsCategoryNav from '@/components/news/NewsCategoryNav'
 
 export const revalidate = 300
 
@@ -22,34 +24,15 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
   const ALIASES: Record<string, string> = { 'preparation-training-2': 'preparation-training' }
   if (sp.category && ALIASES[sp.category]) redirect(`/news?category=${ALIASES[sp.category]}${sp.page ? `&page=${sp.page}` : ''}`)
   const cats = categoriesFromPosts(posts)
+  const groups = groupNewsCategories(cats)
   const active = cats.find((c) => c.slug === sp.category)
   const list = active ? posts.filter((p) => p.categories.some((c) => c.slug === active.slug)) : posts
   const pages = Math.max(1, Math.ceil(list.length / PER_PAGE))
   const page = Math.min(pages, Math.max(1, parseInt(sp.page ?? '1', 10) || 1))
   const shown = list.slice((page - 1) * PER_PAGE, page * PER_PAGE)
-  const href = (p: number, c = active?.slug) => {
-    const q = new URLSearchParams()
-    if (c) q.set('category', c)
-    if (p > 1) q.set('page', String(p))
-    const s = q.toString()
-    return s ? `/news?${s}` : '/news'
-  }
+  const href = (p: number, c = active?.slug) => newsCategoryHref(c, p)
   const chip = (on: boolean) =>
     `px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${on ? 'bg-[#111111] text-white border-[#111111]' : 'bg-white text-gray-600 border-black/12 hover:border-black/25'}`
-
-  const item = (on: boolean) => (on ? 'text-[#111111] font-medium' : 'hover:text-[#111111]')
-  const catList = (
-    <ul className="space-y-1.5">
-      <li><Link href="/news" className={item(!active)} aria-current={!active ? 'page' : undefined}>All <span className="text-gray-400">({posts.length})</span></Link></li>
-      {cats.filter((c) => c.count >= 3).map((c) => (
-        <li key={c.slug}>
-          <Link href={href(1, c.slug)} className={item(active?.slug === c.slug)} aria-current={active?.slug === c.slug ? 'page' : undefined}>
-            {c.name} <span className="text-gray-400">({c.count})</span>
-          </Link>
-        </li>
-      ))}
-    </ul>
-  )
 
   return (
     <div className="bg-white">
@@ -65,12 +48,11 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
       </section>
 
       <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto grid gap-10 lg:grid-cols-[minmax(0,1fr)_200px]">
-          <details className="lg:hidden text-sm text-gray-500 border-b border-black/5 pb-3 -mt-6">
-            <summary className="cursor-pointer select-none">Categories{active ? `: ${active.name}` : ''}</summary>
-            <div className="mt-3">{catList}</div>
-          </details>
-          <div className="min-w-0">
+        <div className="max-w-7xl mx-auto grid gap-10 lg:grid-cols-[minmax(0,1fr)_240px]">
+          <div className="text-sm -mt-6 lg:mt-0 lg:col-start-2 lg:row-start-1">
+            <NewsCategoryNav groups={groups} allCount={posts.length} activeSlug={active?.slug} />
+          </div>
+          <div className="min-w-0 lg:col-start-1 lg:row-start-1">
           <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
             {shown.map((p) => (
               <article key={p.slug} className="group rounded-2xl border border-black/5 overflow-hidden bg-white hover:shadow-md transition-shadow">
@@ -94,10 +76,6 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
             </nav>
           )}
           </div>
-          <aside aria-label="News categories" className="hidden lg:block text-sm text-gray-500">
-            <h2 className="text-xs uppercase tracking-wider text-gray-400 mb-3">Categories</h2>
-            {catList}
-          </aside>
         </div>
       </section>
     </div>
