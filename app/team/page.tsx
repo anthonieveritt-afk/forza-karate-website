@@ -19,33 +19,34 @@ const eliteSquad = [
   'A. Wong',
 ]
 
-const kumiteAthletes = [
-  'Kobe Yogarajah',
-  'Y. Yogarajah',
-  'Q. Wong',
-  'A. Wong',
-  'N. Mac',
-  'H. Dossor',
-  'David Butlin',
-  'A. Austin',
-  'Claire Buss',
-  'A. Buss',
-  'Q. Godfrey',
-  'A. Tebbutt',
-  'L. Tran',
+// Counts follow the photo cards shown. These arrays are the single source
+// for both the grid and the heading total, so the two cannot drift.
+const kumitePhotos = [
+  { src: '/team/kumite-y-yogarajah.jpg' },
+  { src: '/team/kumite-q-wong.jpg' },
+  { src: '/team/kumite-h-dosser.jpg' },
+  { src: '/team/kumite-q-godfrey.jpg' },
+  { src: '/team/kumite-a-tebbutt.jpg' },
+  { src: '/team/kumite-06.jpg' },
+  { src: '/team/kumite-7.jpg' },
+  { src: '/team/kumite-new-01.jpg' },
+  { src: '/team/kata-nam-mac.jpg' },
+  { src: '/team/kata-c-buss.jpg' },
+  { src: '/team/l-tran.jpg' },
 ]
 
-const kataAthletes = [
-  'Kobe Yogarajah',
-  'Y. Yogarajah',
-  'Claire Buss',
-  'A. Mac',
-  'N. Mac',
-  'L. Tran',
+const kataPhotos = [
+  { src: '/team/y-yogarajah.jpg' },
+  { src: '/team/a-wong.jpg' },
+  { src: '/team/q-wong.jpg' },
+  { src: '/team/kata-ahm-mac.jpg' },
+  { src: '/team/kata-nam-mac.jpg' },
+  { src: '/team/kata-c-buss.jpg' },
+  { src: '/team/l-tran.jpg' },
 ]
 
-const paraAthletes = [
-  'L. Buss',
+const paraPhotos = [
+  { src: '/team/para-athlete-01.jpg' },
 ]
 
 const coaches = [
@@ -57,22 +58,6 @@ const coaches = [
 const paraCoaches = [
   { name: 'Claire Buss', grade: '2nd Kyu', role: 'Para Head Coach' },
 ]
-
-function AthleteList({ names }: { names: string[] }) {
-  return (
-    <ul className="mt-6 space-y-2">
-      {names.map((name) => (
-        <li
-          key={name}
-          className="flex items-center gap-3 py-2.5 border-b border-black/5 last:border-0"
-        >
-          <div className="w-1.5 h-1.5 rounded-full bg-[#dc2626] flex-shrink-0" />
-          <span className="text-sm font-medium text-[#111111]">{name}</span>
-        </li>
-      ))}
-    </ul>
-  )
-}
 
 export default function TeamPage() {
   return (
@@ -135,21 +120,9 @@ export default function TeamPage() {
                 <Trophy className="h-5 w-5 text-[#dc2626]" />
                 <h2 className="text-2xl font-bold text-[#111111]">Kumite Team</h2>
               </div>
-              <p className="text-sm text-gray-400">{kumiteAthletes.length} athletes</p>
+              <p className="text-sm text-gray-400">{kumitePhotos.length} athletes</p>
               <div className="mt-6 grid grid-cols-3 gap-3">
-                {[
-                  { src: '/team/kumite-y-yogarajah.jpg', },
-                  { src: '/team/kumite-q-wong.jpg', },
-                  { src: '/team/kumite-h-dosser.jpg', },
-                  { src: '/team/kumite-q-godfrey.jpg', },
-                  { src: '/team/kumite-a-tebbutt.jpg', },
-                  { src: '/team/kumite-06.jpg', },
-                  { src: '/team/kumite-7.jpg', },
-                  { src: '/team/kumite-new-01.jpg', },
-                  { src: '/team/kata-nam-mac.jpg', },
-                  { src: '/team/kata-c-buss.jpg', },
-                  { src: '/team/l-tran.jpg', },
-                ].map((a) => (
+                {kumitePhotos.map((a) => (
                   <div key={a.src} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
                       src={a.src}
@@ -169,17 +142,9 @@ export default function TeamPage() {
                 <Trophy className="h-5 w-5 text-[#dc2626]" />
                 <h2 className="text-2xl font-bold text-[#111111]">Kata Team</h2>
               </div>
-              <p className="text-sm text-gray-400">{kataAthletes.length} athletes</p>
+              <p className="text-sm text-gray-400">{kataPhotos.length} athletes</p>
               <div className="mt-6 grid grid-cols-3 gap-3">
-                {[
-                  { src: '/team/y-yogarajah.jpg', },
-                  { src: '/team/a-wong.jpg', },
-                  { src: '/team/q-wong.jpg', },
-                  { src: '/team/kata-ahm-mac.jpg', },
-                  { src: '/team/kata-nam-mac.jpg', },
-                  { src: '/team/kata-c-buss.jpg', },
-                  { src: '/team/l-tran.jpg', },
-                ].map((a) => (
+                {kataPhotos.map((a) => (
                   <div key={a.src} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
                       src={a.src}
@@ -199,17 +164,19 @@ export default function TeamPage() {
                 <Trophy className="h-5 w-5 text-[#dc2626]" />
                 <h2 className="text-2xl font-bold text-[#111111]">Para Karate</h2>
               </div>
-              <p className="text-sm text-gray-400">{paraAthletes.length} athlete</p>
+              <p className="text-sm text-gray-400">{paraPhotos.length} athlete</p>
               <div className="mt-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                <div className="rounded-2xl overflow-hidden border border-black/8">
-                  <Image
-                    src="/team/para-athlete-01.jpg"
-                    alt="Para Karate athlete"
-                    width={300}
-                    height={380}
-                    className="w-full object-cover object-top"
-                  />
-                </div>
+                {paraPhotos.map((a) => (
+                  <div key={a.src} className="rounded-2xl overflow-hidden border border-black/8">
+                    <Image
+                      src={a.src}
+                      alt="Para Karate athlete"
+                      width={300}
+                      height={380}
+                      className="w-full object-cover object-top"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
 
