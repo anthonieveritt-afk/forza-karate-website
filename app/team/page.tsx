@@ -148,6 +148,7 @@ export default function TeamPage() {
                   { src: '/team/kumite-new-01.jpg', },
                   { src: '/team/kata-nam-mac.jpg', },
                   { src: '/team/kata-c-buss.jpg', },
+                  { src: '/team/l-tran.jpg', },
                 ].map((a) => (
                   <div key={a.src} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
@@ -177,6 +178,7 @@ export default function TeamPage() {
                   { src: '/team/kata-ahm-mac.jpg', },
                   { src: '/team/kata-nam-mac.jpg', },
                   { src: '/team/kata-c-buss.jpg', },
+                  { src: '/team/l-tran.jpg', },
                 ].map((a) => (
                   <div key={a.src} className="rounded-2xl overflow-hidden border border-black/8">
                     <Image
