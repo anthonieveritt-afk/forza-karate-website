@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import LogoTicker from '@/components/layout/LogoTicker'
 import MusicPlayer from '@/components/layout/MusicPlayer'
+import HideOnVotePoster from '@/components/layout/HideOnVotePoster'
 import { CartProvider } from '@/lib/cart-context'
 import { SITE_URL, orgSchema } from '@/lib/seo'
 import { Analytics } from '@vercel/analytics/next'
@@ -57,11 +58,15 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
         <CartProvider>
-          <Navbar />
+          <HideOnVotePoster>
+            <Navbar />
+          </HideOnVotePoster>
           <main className="flex-1">{children}</main>
-          <LogoTicker />
-          <Footer />
-          <MusicPlayer />
+          <HideOnVotePoster>
+            <LogoTicker />
+            <Footer />
+            <MusicPlayer />
+          </HideOnVotePoster>
         </CartProvider>
         <Analytics />
         <MetaPixel />
