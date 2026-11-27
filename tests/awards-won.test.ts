@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { COMMONWEALTH_SHARE_TEXT, awardsEmptyText, normaliseUpcoming, normaliseAwards, awardHeadline, awardShareText, gradingShareText, shareLinks, awardFileBase, formatAwardDay, SHARE_URL } from '@/lib/members/awards'
+import { COMMONWEALTH_SHARE_TEXT, awardsEmptyText, normaliseUpcoming, normaliseAwards, awardHeadline, awardShareText, gradingShareText, shareLinks, awardFileBase, formatAwardDay, SHARE_URL, isHeldRelease } from '@/lib/members/awards'
 
 const award = { awardTitle: 'Student of the Year', place: '1st', club: '', certificateDate: '2026-11-27' }
 
@@ -60,5 +60,11 @@ describe('awards won empty state', () => {
   it('falls back to generic text', () => {
     expect(normaliseUpcoming({ upcoming: null })).toBe(null)
     expect(awardsEmptyText(null)).toBe('No awards yet — certificates the club awards you will appear here.')
+  })
+  it('hides a held far-future release teaser', () => {
+    expect(isHeldRelease('2099-12-31T21:00:00.000Z')).toBe(true)
+    expect(isHeldRelease('2027-06-01T18:30:00.000Z')).toBe(false)
+    expect(normaliseUpcoming({ upcoming: { eventName: 'End of Year Presentation 2026', releaseAt: '2099-12-31T21:00:00.000Z' } })).toBe(null)
+    expect(awardsEmptyText({ eventName: 'End of Year Presentation 2026', releaseAt: '2099-12-31T21:00:00.000Z' })).toBe('No awards yet — certificates the club awards you will appear here.')
   })
 })
