@@ -104,9 +104,16 @@ export function formatAwardDay(iso: string): string {
 
 export type UpcomingRelease = { eventName: string; releaseAt: string }
 
+/** Parked / held releases (year 2099+) are not advertised in the Awards won empty state. */
+export function isHeldRelease(releaseAt: string): boolean {
+  const t = Date.parse(releaseAt)
+  return Number.isFinite(t) && new Date(t).getUTCFullYear() >= 2099
+}
+
 export function normaliseUpcoming(d: unknown): UpcomingRelease | null {
   const u = (d as { upcoming?: unknown })?.upcoming as Record<string, unknown> | null | undefined
   if (!u || typeof u.eventName !== 'string' || typeof u.releaseAt !== 'string' || Number.isNaN(Date.parse(u.releaseAt))) return null
+  if (isHeldRelease(u.releaseAt)) return null
   return { eventName: u.eventName, releaseAt: u.releaseAt }
 }
 
@@ -127,7 +134,7 @@ function ukTimeAndDay(iso: string): { time: string; day: string } {
 
 /** Empty-state line for Awards won. */
 export function awardsEmptyText(upcoming: UpcomingRelease | null): string {
-  if (!upcoming) return 'No awards yet — certificates the club awards you will appear here.'
+  if (!upcoming || isHeldRelease(upcoming.releaseAt)) return 'No awards yet — certificates the club awards you will appear here.'
   const name = upcoming.eventName.replace(/\s+\d{4}$/, '').trim() || 'the next presentation'
   const { time, day } = ukTimeAndDay(upcoming.releaseAt)
   return `No awards yet — certificates from the ${name} will appear here after ${time} on ${day}.`
